@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Dashboard" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <meta name="keywords" content="Dashboard, clientes, pedidos, potogas">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <!-- Select 2 -->
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Datepicker -->
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css">
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/@chenfengyuan/datepicker/datepicker.min.css" rel="stylesheet">
+
+    <!-- Timepicker -->
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css">
+
+    <!-- DataTables -->
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <!-- <link href="./assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="./assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />    -->
+
+    <!-- <link rel="stylesheet" href="./assets/libs/@chenfengyuan/datepicker/datepicker.min.css"> -->
+
+    <!-- Bootstrap Css -->
+    <link href="https://themesbrand.com/skote/layouts/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <!-- <link href="https://themesbrand.com/skote/layouts/assets/css/icons.min.css" rel="stylesheet" type="text/css" /> -->
+    <!-- App Css-->
+    <link href="https://themesbrand.com/skote/layouts/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
+</head>
+
+<body data-topbar="dark" data-spy="scroll" data-offset="175">
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        <header id="page-topbar">
+            <div class="navbar-header">
+                <div class="d-flex">
+                    <!-- LOGO -->
+                    <div class="navbar-brand-box">
+                        <a href="index.html" class="logo ">
+                            <span class="logo-lg">
+                                <img src="assets/images/logo.png" alt="" height="120"> Call center
+                            </span>
+                        </a>
+                    </div>
+                    <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect d-lg-none" id="vertical-menu-btn">
+                        <i class="mdi mdi-menu"></i>
+                    </button>
+                </div>
+
+                <div class="d-flex">
+                    <div class="d-inline-block">
+                        <a href="javascript:;" target="" class="header-item">03/04/2022 06:32 pm</a>
+                    </div>
+                    <div class="d-none d-md-inline-block">
+                        <a href="javascript:;" target="_blank" class="header-item">Rol: Call center</a>
+                    </div>
+                    <div class="d-inline-block">
+                        <a href="javascript:;" target="_blank" class="header-item">Noel Alexander Aponte APG</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-contents">
+
+            <div class="modal fade modal-customer" tabindex="-1" role="dialog" aria-labelledby="labelBy" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="labelBy">Cliente</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="form-cliente" action="https://i-ptg-test-drt-proxy-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/drt-proxy?script=1060&deploy=1" onsubmit="return false;" enctype="multipart/form-data" method="POST" autocomplete="off">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group floating-label d-none">
+                                            <label>ID</label>
+                                            <input type="text" class="form-control" name="id" value="">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-12">
+                                        <div class="form-group floating-label">
+                                            <label>Planta</label>
+                                            <input type="text" class="form-control" name="planta">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-4">
+                                        <div class="form-group floating-label">
+                                            <label>Nombre</label>
+                                            <input type="text" class="form-control" name="nombre">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-4">
+                                        <div class="form-group floating-label">
+                                            <label>Segundo nombre</label>
+                                            <input type="text" class="form-control" name="middleName">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-4">
+                                        <div class="form-group floating-label">
+                                            <label>Apellido</label>
+                                            <input type="text" class="form-control" name="lastname">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Email</label>
+                                            <input type="text" class="form-control" name="email">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Email adicional</label>
+                                            <input type="text" class="form-control" name="adicionales">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Teléfono 1</label>
+                                            <input type="text" class="form-control" name="telefono">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Teléfono 2</label>
+                                            <input type="text" class="form-control" name="telefonoalt">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Subsidiaria</label>
+                                            <input type="text" class="form-control" name="subsidiaria">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>RFC</label>
+                                            <input type="text" class="form-control" name="rfc">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-12">
+                                        <div class="form-check form-check-success">
+                                            <input class="form-check-input" type="checkbox" id="regimetype" checked="">
+                                            <label class="form-check-label" for="regimetype">
+                                                Tipo de régimen
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Régimen</label>
+                                            <select type="text" class="form-select" name="regimenid">
+                                                <option value="1">Opción 1</option>
+                                                <option value="2">Opción 2</option>
+                                                <option value="3">Opción 3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Tipo de servicio</label>
+                                            <select type="text" class="form-select" name="typeService">
+                                                <option value="1">Cilindro</option>
+                                                <option value="2">Estacionario</option>
+                                                <option value="3">Carburación</option>
+                                                <option value="4">Ambos</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-12">
+                                        <div class="form-group floating-label">
+                                            <label>Observaciones</label>
+                                            <textarea class="form-control" rows="4" name="observations"></textarea>
+                                        </div>
+                                    </div>
+                                    
+                                    <hr>
+                                    <h5>Direcciones</h5>
+
+                                    <div class="mb-3 col-sm-4">
+                                        <div class="form-group floating-label">
+                                            <label>Ciudad</label>
+                                            <input type="text" class="form-control" name="city">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-4">
+                                        <div class="form-group floating-label">
+                                            <label>Ruta</label>
+                                            <select type="text" class="form-select" name="ruta">
+                                                <option value="1">Ruta 1</option>
+                                                <option value="2">Ruta 2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-4">
+                                        <div class="form-group floating-label">
+                                            <label>Colonia</label>
+                                            <input type="text" class="form-control" name="colonia">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-12">
+                                        <div class="form-group floating-label">
+                                            <label>Calle</label>
+                                            <input type="text" class="form-control" name="nameStreet">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Entre calle</label>
+                                            <input type="text" class="form-control" name="street_aux1">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Y</label>
+                                            <input type="text" class="form-control" name="street_aux2">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Número externo</label>
+                                            <input type="text" class="form-control" name="numExterno">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Número interno</label>
+                                            <input type="text" class="form-control" name="numInterno">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Estado</label>
+                                            <input type="text" class="form-control" name="stateName">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <div class="form-group floating-label">
+                                            <label>Código postal</label>
+                                            <input type="text" class="form-control" name="zip">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-sm-12">
+                                        <div class="form-check form-check-success">
+                                            <input class="form-check-input" type="checkbox" id="principal" checked="">
+                                            <label class="form-check-label" for="principal">
+                                                Principal
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-success w-md agregar-direccion">Agregar dirección</button>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table class="table mb-0 data-tables">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Principal</th>
+                                                        <th>Ciudad</th>
+                                                        <th>Ruta</th>
+                                                        <th>Colonia</th>
+                                                        <th>Calle</th>
+                                                        <th>Entre calle</th>
+                                                        <th>Y</th>
+                                                        <th>Número externo</th>
+                                                        <th>Número interno</th>
+                                                        <th>Estado</th>
+                                                        <th>Código postal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Si</td>
+                                                        <td>Zapopan</td>
+                                                        <td>Ruta 1</td>
+                                                        <td>Vistas de otoño</td>
+                                                        <td>Aracely Souza</td>
+                                                        <td>Calle 1</td>
+                                                        <td>Calle 2</td>
+                                                        <td>200</td>
+                                                        <td>100</td>
+                                                        <td>Jalisco</td>
+                                                        <td>45046</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary save">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <ul class="nav nav-pills nav-justified" role="tablist">
+                                        <li class="nav-item waves-effect waves-light">
+                                            <a class="nav-link active" data-bs-toggle="tab" href="#clientes-1" role="tab">
+                                                <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                                <span class="d-none d-sm-block">Clientes</span> 
+                                            </a>
+                                        </li>
+                                        <li class="nav-item waves-effect waves-light">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#pedidos-1" role="tab">
+                                                <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                                                <span class="d-none d-sm-block">Pedidos</span> 
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content p-3 text-muted">
+                                        <div class="tab-pane active" id="clientes-1" role="tabpanel">
+                                            <div class="d-xl-flex">
+                                                <div class="w-100">
+                                                    <div class="p-lg-1">
+                                                        <form class="row row-cols-lg-auto g-3 align-items-center">
+                                                            <div class="col-md-9">
+                                                                <input type="text" class="form-control" placeholder="Teléfono, nombre(s), correo electrónico...">
+                                                            </div>
+                                                          
+                                                            <div class="col-md-3 text-right">
+                                                                <button type="button" class="btn btn-danger w-md agregar-cliente">Agregar <i class="mdi mdi-account"></i></button>
+                                                                <button type="button" class="btn btn-warning w-md editar-cliente">Editar <i class="mdi mdi-pencil"></i></button>
+                                                            </div>
+                                                        </form>
+
+                                                        <div class="row" style="margin-top: 20px;">
+                                                            <div class="col-md-12 text-right">
+                                                                <span class="badge rounded-pill bg-danger float-end" key="t-new">Contrato</span>
+                                                                <span class="badge rounded-pill bg-danger float-end" key="t-new">Inactivo</span>
+                                                                <span class="badge rounded-pill bg-danger float-end" key="t-new">Tienen pedido(s) pendiente(s)</span>
+                                                                <span class="badge rounded-pill bg-warning float-end" key="t-new">No suspendido</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row" style="margin-top: 20px;">
+                                                            <div class="col-md-4 text-left">
+                                                                <label>ID</label> <span style="font-weight: bold;">0</span>
+                                                            </div>
+                                                            <div class="col-md-4 text-left">
+                                                                <label>Nombre</label> <span style="font-weight: bold;">Busque un cliente</span>
+                                                            </div>
+                                                            <div class="col-md-4 text-left">
+                                                                <label>Teléfono</label> <span style="font-weight: bold;">Sin teléfono</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <label for="horizontal-firstname-input" class="col-md-1 col-form-label">Dirección</label>
+                                                            <div class="col-md-7">
+                                                                <input type="text" class="form-control" id="horizontal-firstname-input" placeholder="Dirección ">
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <button type="submit" class="btn btn-warning"><i class="mdi mdi-plus"></i></button>
+                                                                <button type="submit" class="btn btn-warning"><i class="mdi mdi-pencil"></i></button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row" style="margin-top: 20px;">
+                                                            <div class="col-md-6 text-left">
+                                                                <label>Giro:</label> <span style="font-weight: bold;">Sin giro</span>
+                                                            </div>
+                                                            <div class="col-md-6 text-left">
+                                                                <label>Contrato:</label> <span style="font-weight: bold;">Pendiente de validar</span>
+                                                            </div>
+                                                            <div class="col-md-6 text-left">
+                                                                <label>Zona de ventas:</label> <span style="font-weight: bold;">Sin zona de venta</span>
+                                                            </div>
+                                                            <div class="col-md-6 text-left">
+                                                                <label>Zona de precios:</label> <span style="font-weight: bold;">Sin zona de precio</span>
+                                                            </div>
+                                                            <div class="col-md-6 text-left">
+                                                                <label>Notas:</label> <span style="font-weight: bold;">Sin Notas</span>
+                                                            </div>
+                                                            <div class="col-md-6 text-left">
+                                                                <label>Tipo cliente:</label> <span style="font-weight: bold;">Sin tipo cliente</span>
+                                                            </div>
+                                                            <div class="col-md-6 text-left">
+                                                                <label>Tipo servicio:</label> <span style="font-weight: bold;">Sin servicio</span>
+                                                            </div>
+                                                            <div class="col-md-6 text-left">
+                                                                <label>Ruta:</label> <span style="font-weight: bold;"></span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="table-responsive">
+                                                                    <table class="table mb-0 data-table">
+                                
+                                                                        <thead class="table-light">
+                                                                            <tr>
+                                                                                <!-- <th>#</th> -->
+                                                                                <th>Cliente</th>
+                                                                                <th>Fecha solicitud</th>
+                                                                                <th>Fecha comprometida</th>
+                                                                                <th>Hora de visita</th>
+                                                                                <th>Número de documento</th>
+                                                                                <th>Estado</th>
+                                                                                <!-- <th>Número de casa</th> -->
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div> <!-- end padding-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="pedidos-1" role="tabpanel">
+                                            
+                                            <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-bs-toggle="tab" href="#listado-de-pedidos" role="tab" aria-selected="true">
+                                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                                        <span class="d-none d-sm-block">Listado de pedidos</span> 
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-bs-toggle="tab" href="#profile1" role="tab" aria-selected="false">
+                                                        <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                                                        <span class="d-none d-sm-block">Fugas y quejas</span> 
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content p-3 text-muted">
+                                                <div class="tab-pane active" id="listado-de-pedidos" role="tabpanel">
+                                                    <form id="form-data" action="/" onsubmit="return false;" enctype="multipart/form-data" method="POST" autocomplete="off">
+                                                        <div class="row">
+
+                                                            <div class="col-md-4 mb-3">
+                                                                <label class="form-label">Fecha prometida</label>
+                                                                <input type="text" name="fecha_prometida" class="form-control date-picker" value="">
+                                                            </div>
+
+                                                            <div class="col-md-4 mb-3">
+                                                                <label>Desde</label>
+                                                                <input type="text" name="desde" class="form-control timepicker" value="">
+                                                            </div>
+
+                                                            <div class="col-md-4 mb-3">
+                                                                <label>Hasta</label>
+                                                                <input type="text" name="hasta" class="form-control timepicker" value="">
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label for="servicio">Servicio</label>
+                                                                <select class="form-control form-select" name="servicio">
+                                                                    <option value="0">Seleccione un servicio</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label for="zona_venta">Zona de venta</label>
+                                                                <input type="text" name="zona_venta" class="form-control" value="">
+                                                            </div>
+                                                            
+                                                            
+                                                        </div>
+
+                                                        <div class="d-flex flex-wrap mt-4 gap-2">
+                                                            <button type="submit" class="btn btn-danger"><i class="mdi mdi-plus"></i> Agregar producto</button>
+                                                        </div>
+                                                    </form>
+
+                                                    <div class="row mg-20">
+                                                        <div class="col-md-12">
+                                                            <div class="table-responsive">
+                                                                <table class="table mb-0">
+                            
+                                                                    <thead class="table-light">
+                                                                        <tr>
+                                                                            <th>Nombre</th>
+                                                                            <th>Número documento</th>
+                                                                            <th>Teléfono</th>
+                                                                            <th>Tipo de servicio</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>Laura C PTG</td>
+                                                                            <td>2226</td>
+                                                                            <td>33446589</td>
+                                                                            <th scope="row">Pedido cilindro</th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Noel Apoten PTG</td>
+                                                                            <td>2241r</td>
+                                                                            <td>33456432</td>
+                                                                            <th scope="row"></th>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane" id="profile1" role="tabpanel">
+                                                    <p class="mb-0">
+                                                        Food truck fixie locavore, accusamus mcsweeney's marfa nulla
+                                                        single-origin coffee squid. Exercitation +1 labore velit, blog
+                                                        sartorial PBR leggings next level wes anderson artisan four loko
+                                                        farm-to-table craft beer twee. Qui photo booth letterpress,
+                                                        commodo enim craft beer mlkshk aliquip jean shorts ullamco ad
+                                                        vinyl cillum PBR. Homo nostrud organic, assumenda labore
+                                                        aesthetic magna delectus.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end card body-->
+                            </div> <!-- end card-->
+                        </div>
+                    </div>
+                    <!-- end row -->
+                </div> <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+
+            <footer class="footer" style="left: 0px;">
+                <div class="container-fluids">
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <script>document.write(new Date().getFullYear())</script> © Disruptt.
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    <!-- JAVASCRIPT -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/jquery/jquery.min.js"></script>
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="assets/libs/simplebar/simplebar.min.js"></script> -->
+    <!-- <script src="assets/libs/jquery.easing/jquery.easing.min.js"></script> -->
+
+    <!-- Datatablets -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Datepicker -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/@chenfengyuan/datepicker/datepicker.min.js"></script>
+
+    <!-- Timepicker -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+    
+    <!-- Extra -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/metismenu/metisMenu.min.js"></script>
+    <!-- <script src="https://themesbrand.com/skote/layouts/assets/libs/simplebar/simplebar.min.js"></script> -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- <script src="assets/js/app.js"></script> -->
+    <script src="https://themesbrand.com/skote/layouts/assets/js/app.js"></script>
+
+    <script type="text/javascript">
+        $('body').delegate('.agregar-cliente', 'click', function() {
+            // console.log('hola');
+            $('div.modal-customer').modal('show');
+            // $('div.modal-customer').modal();
+
+        });
+        $( document ).ready(function() {
+            //Set up the timepicker inputs
+            $(".timepicker").timepicker({
+                showPeriod: true,
+                showLeadingZero: false,
+                zIndex: 9999
+            });
+
+            // $('#tabs a#idOfTabContainingStartTime').bind('click', function(){
+            //     if( $(".timepicker").length ){
+            //          $('.timepicker').timepicker({
+            //              showPeriod: true,
+            //              showLeadingZero: false
+            //          });
+            //     }
+            // })
+
+            //Set up the datepiciker inputs
+            $( ".date-picker" ).datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: "yyyy-mm-dd",
+            });
+
+            $('table.data-table').fadeOut();
+
+            const url = "http://3.144.199.196/api/proxy-drt";
+            let data = {
+                "typeOfRequest": "POST",
+                "url": "https://i-ptg-test-drt-proxy-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/drt-proxy?script=1060&deploy=1",
+                "data": {
+                    "nombre": "Gregorio Iribarren PTG",
+                    "id": "1"
+                }
+            }
+
+            $.ajax({
+                method: "POST",
+                url: url,
+                data: data,
+                // cache:false,
+                // contentType: false,
+                // processData: false,
+                success: function(data) {
+                    let rows = data.data;
+                    console.log(rows);
+
+                    $('table.data-table tbody').children().remove();
+
+                    for ( var key in rows ) {
+                        if ( rows.hasOwnProperty( key ) ) {
+                            var no_pedido = rows[key].no_pedido;
+                            $('table.data-table tbody').append(
+                                '<tr>'+
+                                    // '<th scope="row">'+no_pedido+'</th>'+
+                                    '<td>'+rows[key].nombre_cliente+'</td>'+
+                                    '<td>'+rows[key].fecha_solicitud+'</td>'+
+                                    '<td>'+rows[key].fecha_prometida+'</td>'+
+                                    '<td>'+rows[key].hora_prometido+'</td>'+
+                                    '<td>'+rows[key].no_pedido+'</td>'+
+                                    '<td>'+rows[key].estado+'</td>'+
+                                '</tr>'
+                            )
+                        }
+                    }
+
+                    $('table.data-table').DataTable();
+
+                    $('table.data-table').fadeIn();
+                    // alert(data.msg);
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr, status, error);
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

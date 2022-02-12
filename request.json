@@ -1,0 +1,156 @@
+Petición para buscar un cliente
+{
+  "typeOfRequest": "POST",
+  "url": "https://i-ptg-test-customer-query-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/customer-query",
+  "data": {
+    "planta": "314",
+    "phone": "7121735607",
+    "colonia": "",
+    "numExterno": "",
+    "zip": "",
+    "nameStreet": "",
+    "city": "",
+    "stateName": "",
+    "email": "",
+    "name": ""
+  }
+}
+
+Petición para la zona de venta
+{
+  "typeOfRequest": "POST",
+  "url": "https://i-ptg-test-info-zones-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/info-zones",
+  "data": {
+    "colonia": ""
+  }
+}
+
+Petición para buscar las oportunidades/pedidos de un cliente
+Nota: El parámetro id es el id del cliente buscado 
+{
+  "typeOfRequest": "POST",
+  "url": "https://i-ptg-test-qry-pedidos-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/qry-pedidos",
+  "data": {
+    "id": "37806"
+  }
+}
+
+Petición para obtener los estados
+{
+  "typeOfRequest": "GET",
+  "url": "https://apisgratis.com/cp/entidades/",
+  "data": {}
+}
+
+Petición para obtener ciudades
+{
+  "typeOfRequest": "GET",
+  "url": "https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI",
+  "data": {}
+}
+
+Petición para obtener las colonias
+{
+  "typeOfRequest": "GET",
+  "url": "https://apisgratis.com/cp/cp/ciudad/?valor=AGUASCALIENTES",
+  "data": {}
+}
+
+Petición para obtener zonas de venta
+{
+  "typeOfRequest": "GET",
+  "url": "https://i-ptg-test-get-pricezones-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/get-zones",
+  "data": {}
+}
+
+Petición para guardar clientes
+{
+  "typeOfRequest": "POST",
+  "url": "https://i-ptg-test-customers-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/customers",
+  "data": {
+    "customers": [
+      {
+        "planta": "322",
+        "nombre": "Cliente de prueba",
+        "middleName": "Doe",
+        "email": "correo@test.com",
+        "telefono": "9801010",
+        "telefonoAlt": "",
+        "subsidiaria": "16",
+        "rfc": "",
+        "regimeType": true,
+        "regimenId": "3",
+        "typeService": "1",
+        "observations": "Cliente de prueba, borrar luego",
+        "address": [
+          {
+            "city": "Aguascalientes",
+            "colonia": "Olivares Santana",
+            "nameStreet": "Calle principal aquí",
+            "street_aux1": "",
+            "street_aux2": "",
+            "numExterno": "44",
+            "numInterno": "0",
+            "stateName": "Aguascalientes",
+            "zip": "20010",
+            "latitud": "",
+            "longitud": "",
+            "principal": true,
+            "domFacturacion": false
+          }
+        ],
+        "emails": {
+          "principal": "correo@test.com"
+        }
+      }
+    ]
+  }
+}
+
+
+Petición para guardar una dirección
+{
+  "typeOfRequest": "PUT",
+  "url": "https://i-ptg-test-customers-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/customers",
+  "data": {
+    "customers": [
+      {
+        "id": "37806",
+        "bodyFields": {},
+        "bodyAddress": [
+          {
+            "city": "San Luis Potosi",
+            "colonia": "Agua Sal",
+            "nameStreet": "Calle siempre viva",
+            "street_aux1": "",
+            "numExterno": "10",
+            "numInterno": "0",
+            "stateName": "San Luis Potosi",
+            "zip": "78385",
+            "latitud": "",
+            "longitud": "",
+            "principal": false,
+            "domFacturacion": false
+          }
+        ]
+      }
+    ]
+  }
+}
+
+Petición para mostrar avisos
+{
+  "typeOfRequest": "GET",
+  "url": "https://i-ptg-test-drt-proxy-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/drt-proxy?script=1075&deploy=1",
+  "data": {}
+}
+
+Petición
+{
+  "typeOfRequest": "GET",
+  "url": "https://i-ptg-test-get-conceptos-dtt-middleware.apps.mw-cluster.kt77.p1.openshiftapps.com/get-conceptos",
+  "data": {}
+}
+
+5539579536
+Planta cardenas
