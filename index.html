@@ -154,12 +154,12 @@
             color: #355da7;
         }
         .content-input-primary .form-ptg-primary[type="date"]::-webkit-calendar-picker-indicator {
-            background: url(assets/images/calendar.png) center/80% no-repeat;
+            background: url(https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47999&c=5298967_SB1&h=ap_ChgXBZcGtXt-0cCUgtiAdcQ0GwlDOUwRUbTSXJOVGLBvm) center/80% no-repeat;
             cursor: pointer;
         }
 
         .content-input-primary .form-ptg-primary[type="time"]::-webkit-calendar-picker-indicator {
-            background: url(assets/images/time.png) center/80% no-repeat;
+            background: url(https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47998&c=5298967_SB1&h=dTMS58AOq5BNJEv4o7eqLopFTUHTH_RE_0AeE6ronFdNxfIX) center/80% no-repeat;
             cursor: pointer;
         }
         .form-search {
@@ -364,7 +364,7 @@
                 <button type="button" class="btn bg-primary-cc btn-flat btn-header"><i class="fa-solid fa-bars"></i></button>
             </div>
             <div class="col-auto p-0">
-                <img src="assets/images/logo_ptg.jpg" alt="" height="56">
+                <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47997&c=5298967_SB1&h=XCM9Qw8SSpqCq4FqTkuyuCCRBX28-Dd5A_4ngS6j8NK6r23B" alt="" height="56">
             </div>
             <div class="col header-title">
                 Call Center
@@ -393,7 +393,7 @@
                     </div>
                     <div class="col-auto">
                         <div class="chip bg-primary-cc">
-                            <img src="assets/images/default-user.png"> Alexis Chiw
+                            <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47996&c=5298967_SB1&h=w9FU3tphwpeGh2U7tj_dTBfRy_QKLEEecSPE2ID7uFJinYd8"> Alexis Chiw
                           </div>
                     </div>
                 </div>
@@ -633,7 +633,7 @@
                 </div>
                 <div class="row align-items-center ft-16 pb-2">
                     <div class="col-2">
-                      <label>Id: <span class="fw-bold" id="idCliente">12312</label>
+                      <label>Id: <span class="fw-bold" id="idCliente">42254</label>
                     </div>
           
                     <div class="col-2">
@@ -776,7 +776,7 @@
                     </tr>
                   </thead>
         
-                  <tbody *ngIf="!isLoadingPedidos">
+                  <tbody style="text-align: center;" *ngIf="!isLoadingPedidos">
                     
                   </tbody>
                 </table>
@@ -1111,6 +1111,186 @@
     <script src="https://themesbrand.com/skote/layouts/assets/js/app.js"></script>
     <!-- Funciones generales -->
     <script type="text/javascript">
+        // Código de Conrado y Christian
+        let urlPlantas        = '${ds.getPlantas}';
+        let urlCrearOp        = '${ds.createOPP}';
+        let urlObtenerPedidos = '${ds.getOPP}';
+
+        // Ajax para obtener las plantas
+        let dataPlantas = {
+            "requestType" : 'getPlantas'
+        };
+
+        $.ajax({
+            url: urlPlantas,
+            method: 'GET',
+            data: JSON.stringify(dataPlantas),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (data) {
+                // console.log('Data: ', data);
+                setSelectPlants(JSON.parse(data));
+
+            }, error: function (xhr, status, error) {
+                console.log('Error en la consulta');
+            }
+        });
+
+        // Método para llenar el select de plantas
+        function setSelectPlants(items) {
+            if ( items.length ) {
+                $('select#plantas').children('option').remove();
+                for ( var key in items ) {
+                    if ( items.hasOwnProperty( key ) ) {
+                        $("select#plantas").append(
+                            '<option value='+items[key].id+'>'+items[key].nombre+'</option>'
+                        );
+                    }
+                }
+            } else {
+                console.warn('No hay plantas por cargar');
+            }
+        }
+
+        // Ajax para crear un pedido
+        let pedidoData = {
+            "opportunities": [
+                {
+                    "status": "10",
+                    "dateCreate": "10/01/2022",
+                    "closeDate": "11/01/2022",
+                    "customer": "26163",
+                    "operario": "1178",
+                    "route": "1",
+                    "turn": "1",
+                    "paymentMethod": "1",
+                    "origen": "1",
+                    "typeservice": "1",
+                    "comentary": "esto es un comentario",
+                    "rangeH1": "12:33",
+                    "rangeH2": "13:33",
+                    "numero_viaje": "60",
+                    "zona_precio": "1",
+                    "tipo": "4",
+                    "weekDay": [
+                        1,
+                        3,
+                        5
+                    ],
+                    "items": [
+                        {
+                            "article": 1754,
+                            "quantity": 1,
+                            "units": "1",
+                            "eliminar": true,
+                            "zoneprice": "225",
+                            "capacity": "10"
+                        }
+                    ]
+                }
+            ]
+        }
+
+        // $.ajax({
+        //     url: urlCrearOp,
+        //     method: 'POST',
+        //     data: JSON.stringify(pedidoData),
+        //     contentType: 'application/json',
+        //     dataType: 'json',
+        //     success: function (data) {
+        //         console.log('pedido creado exitósamente', data);
+        //         // setSelectPlants(JSON.parse(data));
+
+        //     }, error: function (xhr, status, error) {
+        //         console.log('Error en la consulta');
+        //     }
+        // });
+
+
+        // Función y ajax para obtener los pedidos
+        function getCasosOportunidades() {
+            let dataObtenerPedido = {
+                "id" : $("#idCliente").text()
+            };
+
+            $.ajax({
+                url: urlObtenerPedidos,
+                method: 'POST',
+                data: JSON.stringify(dataObtenerPedido),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('pedidos obtenidos exitósamente', data);
+                    setHistoricTable('pedidos', data);
+
+                }, error: function (xhr, status, error) {
+                    console.log('Error en la consulta', error);
+                }
+            });
+        }
+
+        function setHistoricTable(type = 'pedidos',  data) {
+            $('div#historic-data').fadeOut();
+            let items = [];
+
+            if( type == 'pedidos' ){
+                items = data.oportunidades;
+            } else{
+                items = data.casos;
+            }
+
+            $('div#historic-data table.table-gen tbody').children('tr').remove();
+
+            if ( items.length ) {
+                // console.log('Tiene varios registros');
+                for ( var key in items ) {
+                    if ( items.hasOwnProperty( key ) ) {
+                        console.log('entró a hacer un append');
+                        $('div#historic-data table.table-gen tbody').append(
+                            '<tr>'+
+                                '<td>Popover</td>'+
+                                '<td>Checkbox</td>'+
+                                '<td>Red b</td>'+
+                                '<td>'+items[key].fecha+'</td>'+
+                                '<td>'+( items[key].fechaNotificacion ?? 'Sin fecha visita' )+'</td>'+
+                                '<td>'+( items[key].horaCierre ?? 'Sin hora cierre' )+'</td>'+
+                                '<td>'+( items[key].numeroDocumento ?? 'Sin número de documento' )+'</td>'+
+                                '<td>'+( items[key].numeroCaso ?? 'Sin número de caso' )+'</td>'+
+                                '<td>'+( items[key].asunto ?? 'Sin asunto' )+'</td>'+
+                                '<td>'+( items[key].nombreCliente ?? 'Sin nombre de cliente' )+'</td>'+
+                                '<td>'+( items[key].telefono ?? 'Sin teléfono' )+'</td>'+
+                                '<td>'+( items[key].representanteVentas ?? 'Sin agente' )+'</td>'+
+                                '<td>'+( items[key].monitor ?? 'Sin asignado' )+'</td>'+
+                                '<td>'+( items[key].estado ?? 'Sin estado' )+'</td>'+
+                                '<td>'+( items[key].prioridad ?? 'Sin prioridad' )+'</td>'+
+                                '<td>'+( items[key].motivoCancelacion ?? '' )+'</td>'+
+                                '<td>'+( items[key].cierrePrevisto ?? 'Sin asignar' )+'</td>'+
+                                '<td>'+( items[key].horaCierre ?? 'Sin hora cierre' )+'</td>'+
+                                '<td>'+( items[key].origenServicio ? items[key].origenServicio : 'Sin origen servicio' )+'</td>'+
+                                '<td>'+( items[key].tipoServicio ?? 'Sin tipo servicio' )+'</td>'+
+                                '<td>'+( items[key].articulo ?? 'Sin artículo' )+'</td>'+
+                                '<td>'+( items[key].fechaNotificacion ?? 'Sin fecha notificación' )+'</td>'+
+                                '<td>'+( items[key].tipoTransaccion ?? 'Sin tipo transacción' )+'</td>'+
+                                '<td>'+( items[key].nota ?? 'Sin nota' )+'</td>'+
+                                '<td>'+( items[key].conductorAsignado ?? 'Sin conductor asignado' )+'</td>'+
+                                '<td>'+( items[key].metodoPago ?? 'Sin método de pago' )+'</td>'+
+                                '<td>'+( items[key].notaRapida ?? 'Sin nota rápida' )+'</td>'+
+                                '<td>'+( items[key].unidad ?? 'Sin unidad' )+'</td>'+
+                            '</tr>'
+                        );
+                    }
+                }
+            } else {
+                console.warn('No hay plantas por cargar');
+            }
+
+            // Vuelve a mostrar la tabla
+            $('div#historic-data').fadeIn('slow');
+        }
+
+        
+        // Fin de código de Conrado y Christian
+
         function initComponents() {
             /* Inicia todos los form-search */
             $(".form-search .fa-magnifying-glass").click(function() {
