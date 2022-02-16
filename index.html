@@ -428,7 +428,7 @@
                     </div>
                     <div class="col-auto">
                         <div class="chip bg-primary-cc">
-                            <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47996&c=5298967_SB1&h=w9FU3tphwpeGh2U7tj_dTBfRy_QKLEEecSPE2ID7uFJinYd8"> Alexis Chiw
+                            <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47996&c=5298967_SB1&h=w9FU3tphwpeGh2U7tj_dTBfRy_QKLEEecSPE2ID7uFJinYd8"> <span class="user-name">Alexis Chiw</span>
                           </div>
                     </div>
                 </div>
@@ -668,21 +668,21 @@
                 </div>
                 <div class="row align-items-center ft-16 pb-2">
                     <div class="col-2">
-                      <label>Id: <span class="fw-bold" id="idCliente">42254</label>
+                      <label>Id: <span class="fw-bold" id="idCliente">0</label>
                     </div>
           
                     <div class="col-2">
                       <label>Nombre:</label>
                     </div>
                     <div class="col">
-                      <label class="fw-bold" id="nombreCliente">Alexis Chiw</label>
+                      <label class="fw-bold" id="nombreCliente">Busque un Cliente</label>
                     </div>
           
                     <div class="col-2">
                       <label>Teléfono:</label>
                     </div>
                     <div class="col">
-                      <label class="fw-bold" id="telefonoCliente">6695333469</label>
+                      <label class="fw-bold" id="telefonoCliente">Sin teléfono</label>
                     </div>
                 </div>
                 <div class="row align-items-center ft-16 pb-2">
@@ -692,7 +692,7 @@
 
                     <div class="col pr-0">
                       <select id="direccionCliente" class="form-ptg">
-                          <option>Ejemplo de dirección</option>
+                          <option>Sin direcciones</option>
                       </select>
                     </div>
           
@@ -844,7 +844,7 @@
                         <div class="col-4">
                             <div class="content-input content-input-primary">
                                 <label>Desde</label>
-                                <input id="desdePededio" type="time" class="form-ptg form-ptg-primary">
+                                <input id="desdePedido" type="time" class="form-ptg form-ptg-primary">
                             </div>
                         </div>
                         <div class="col-4">
@@ -1540,13 +1540,22 @@
     <!-- <script src="assets/js/app.js"></script> -->
     <script src="https://themesbrand.com/skote/layouts/assets/js/app.js"></script>
 
+    <!-- Sweet alert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!-- Moment js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <!-- Funciones generales -->
     <script type="text/javascript">
+        userName          = '${ds.userName}';
+        userRole          = '${ds.userRole}';
         urlPlantas        = '${ds.getPlantas}';
         urlCrearOp        = '${ds.createOPP}';
         urlObtenerPedidos = '${ds.getOPP}';
-
-        console.log(urlPlantas);
+        urlObtenerCliente = '${ds.getCustomer}';
+        urlObtenerZona    = '${ds.getColoniaZona}';
+        customerGlobal    = null;
 
         function initComponents() {
             /* Inicia todos los form-search */
