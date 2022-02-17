@@ -28,8 +28,11 @@ function searchCustomer(search) {
             // Encontró un cliente
             swal.close();
             if ( data.isSuccessful ) {
+                $('#agregarDireccion').attr('disabled', false);
                 customerGlobal = data.data[0];
                 setCustomerInfo(data.data[0]);
+            } else {
+                // Aquí  iría el código para limpiar la vista del cliente
             }
             console.log('Data: ', data);
 
@@ -157,7 +160,7 @@ function setDir(direccion) {
     let str = '';
 
     str += direccion.nameStreet;
-    direccion.numExterno ? str+= direccion.numExterno : '';
+    direccion.numExterno ? str+= ' #'+direccion.numExterno : '';
     direccion.colonia    ? str+= ', Col. '+direccion.colonia : '';
     direccion.stateName  ? str+= ', '+direccion.stateName : '';
     direccion.city       ? str+= ', '+direccion.city : '';
@@ -325,9 +328,13 @@ function setHistoricTable( data ) {
 function setTrOppCases(item, type = 'casos') {
      
     let tr = '<tr>'+
-        '<td>Popover</td>'+
-        '<td>Checkbox</td>'+
-        '<td>Red b</td>'+
+        '<td></td>'+
+        '<td>'+
+        '   <div class="text-center">'+
+                '<input class="form-check-input" type="checkbox" value="" id="'+item.id_Transaccion+'">'+
+            '</div>'+
+        '</td>'+
+        '<td><button class="btn btn-danger"></button></td>'+
         '<td>'+( item.fecha ?? 'Sin fecha')+'</td>'+
         '<td>'+( item.fechaNotificacion ?? 'Sin fecha visita' )+'</td>'+
         '<td>'+( item.hora_visita ?? 'Sin hora visita' )+'</td>'+

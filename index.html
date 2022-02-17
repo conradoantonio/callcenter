@@ -536,6 +536,15 @@
                     <h5 class="modal-title" id="titleNotasAdicionalesModal">Dirección</h5>
                 </div>
                 <div class="modal-body">
+                    <!-- Se agregó este campo para diferenciar la funcionalidad que tendrá el modal -->
+                    <div class="row pb-2 d-none">
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <label>Tipo*</label>
+                                <input class="form-ptg form-ptg-primary" id="tipoAccionDireccion" readonly>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row pb-2">
                         <div class="col-6">
                             <div class="content-input content-input-primary">
@@ -603,7 +612,7 @@
                         <div class="col-4">
                             <div class="content-input content-input-primary">
                                 <label>Zona de venta*</label>
-                                <input class="form-ptg form-ptg-primary" id="zonaVentaDireccion">
+                                <input class="form-ptg form-ptg-primary" readonly id="zonaVentaDireccion">
                             </div>
                         </div>
                     </div>
@@ -611,14 +620,14 @@
                         <div class="col-12">
                             <div class="content-input content-input-primary">
                                 <label>Ruta*</label>
-                                <input class="form-ptg form-ptg-primary" id="rutaDireccion">
+                                <input class="form-ptg form-ptg-primary" readonly id="rutaDireccion">
                             </div>
                         </div>
                     </div>
                 </div>            
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
-                    <button id="guardarNotaAdicional" type="button" class="btn btn-primary">Guardar</button>
+                    <button id="guardarDireccion" type="button" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>
@@ -697,7 +706,7 @@
                     </div>
           
                     <div class="col-auto pr-0">
-                        <button id="agregarDireccion" type="button" class="btn bg-secondary-cc"><i class="fa-solid fa-plus"></i></button>
+                        <button id="agregarDireccion" disabled type="button" class="btn bg-secondary-cc"><i class="fa-solid fa-plus"></i></button>
                     </div>
                     <div class="col-auto">
                         <button id="editarDireccion" type="button" class="btn bg-secondary-cc"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -1339,9 +1348,37 @@
                                     </div>
                                     <div class="card mt-4">
                                         <div class="card-body">
-                                            <div class="text-center my-5">
-                                                Sin direcciones registradas.
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-address">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Dirección</th>
+                                                            <th scope="col" class="text-center">Principal</th>
+                                                            <th scope="col" class="text-center">Acciones</th>
+                                                            <!-- <th scope="col">Handle</th> -->
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="text-center" colspan="3">Sin direcciones</td>
+                                                        </tr>
+                                                        <!-- <tr>
+                                                            <td>Aquí va toda la dirección</td>
+                                                            <td class="text-center">
+                                                                <div class="text-center">
+                                                                    <input class="form-check-input" type="checkbox" value="" id="address_1">
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button class="btn btn-sm btn-info"> <i class="fa fa-pen-to-square"></i> </button>
+                                                            </td>
+                                                        </tr> -->
+                                                    </tbody>
+                                                </table>
                                             </div>
+                                            <!-- <div class="text-center my-5">
+                                                Sin direcciones registradas.
+                                            </div> -->
                                         </div>
                                     </div>
                                     <div class="row mt-3">
@@ -1500,7 +1537,7 @@
                                             <button onclick="next('domicilio')" type="button" class="btn bg-dark-cc">Anterior</button>
                                         </div>
                                         <div class="col-auto">
-                                            <button type="button" class="btn bg-dark-cc">Guardar</button>
+                                            <button type="button" id="guardarCliente" class="btn bg-dark-cc">Guardar</button>
                                         </div>
                                         <div class="col"></div>
                                     </div>
@@ -1548,14 +1585,28 @@
 
     <!-- Funciones generales -->
     <script type="text/javascript">
-        userName          = '${ds.userName}';
-        userRole          = '${ds.userRole}';
-        urlPlantas        = '${ds.getPlantas}';
-        urlCrearOp        = '${ds.createOPP}';
-        urlObtenerPedidos = '${ds.getOPP}';
-        urlObtenerCliente = '${ds.getCustomer}';
-        urlObtenerZona    = '${ds.getColoniaZona}';
-        customerGlobal    = null;
+        userName           = '${ds.userName}';
+        userRole           = '${ds.userRole}';
+        urlPlantas         = '${ds.getPlantas}';
+        urlCrearOp         = '${ds.createOPP}';
+        urlObtenerPedidos  = '${ds.getOPP}';
+        urlObtenerCliente  = '${ds.getCustomer}';
+        urlObtenerZona     = '${ds.getColoniaZona}';
+        urlObtenerZonas    = '${ds.getZone}';
+        urlGuardarCliente  = '${ds.postCustomer}';
+        // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
+        // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
+        // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
+        urlGetPlaces       = '${ds.getCities}';
+        customerGlobal     = null;
+
+        console.log(urlGetPlaces);
+
+        // Limpia los campos del modal direcciones al cerrarse
+        $('body').delegate('div#formDireccionesModal','hidden.bs.modal', function() {
+            $(this).find('.form-ptg').val('');
+        });
+
 
         function initComponents() {
             /* Inicia todos los form-search */
@@ -1584,9 +1635,9 @@
                 }
             });
 
-            $("#agregarDirecciones").click(function() {
-                $("#formDireccionesModal").modal("show")
-            });
+            // $("#agregarDirecciones").click(function() {
+            //     $("#formDireccionesModal").modal("show")
+            // });
 
             $("#agregarProducto").click(function() {
                 $("#envaseFormProductos").prop("checked", false);
@@ -1628,9 +1679,9 @@
                 $("#tab-"+$(this).data("tab")).removeClass("d-none");
             });
 
-            $("#agregarDireccion").click(function() {
-                $("#formDireccionesModal").modal("show")
-            });
+            // $("#agregarDireccion").click(function() {
+            //     $("#formDireccionesModal").modal("show")
+            // });
 
             $(".btn-expand").click(function() {
                 if($(this).find("i").hasClass('fa-caret-right')) {
@@ -1949,6 +2000,12 @@
 
     <!-- Archivo de javascript de Conrado y Christian -->
     <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48000&c=5298967_SB1&h=NdnUdwRduXUwIZT7XVuERyzOKZbJ-_QPY03zg7xKZQRHX1wG&_xt=.js"></script>
+    
+    <!-- Archivo para las llamadas de estados, ciudades, colonias y zonas -->
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48157&c=5298967_SB1&h=Cxgu5tpk6-yXeCEIqFicKPDbhSY17i5nQ_hHUZoAhEP0TLyA&_xt=.js"></script>
+
+    <!-- Archivo para los métodos y funciones de clientes -->
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48282&c=5298967_SB1&h=3R_nDdYVdb7OzqNvcpiI1XbKQXvZjlewuCa-Rp3UAlvw9BZ1&_xt=.js"></script>
 </body>
 
 </html>
