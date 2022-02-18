@@ -1408,7 +1408,7 @@
                                                         </div>
                                                         <div class="col">
                                                             <div class="content-input">
-                                                                <select id="productoFormCliente" class="form-ptg">
+                                                                <select id="frecuenciaFormCliente" class="form-ptg">
                                                                     <option value="1">día(s)</option>
                                                                     <option value="2">Semana(s)</option>
                                                                     <option value="3">Mes(es)</option>
@@ -1492,7 +1492,7 @@
                                         </div>
                                         <div class="col-auto">
                                             <div class="form-check check-ptg">
-                                                <input class="form-check-input" value="domestico" type="radio" name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
+                                                <input class="form-check-input" value="1" type="radio" name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
                                                 <label class="form-check-label" for="tipoAccionFormCliente1">
                                                     Teléfono
                                                 </label>
@@ -1500,7 +1500,7 @@
                                         </div>
                                         <div class="col-auto">
                                             <div class="form-check check-ptg">
-                                                <input class="form-check-input" value="domestico" type="radio" name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
+                                                <input class="form-check-input" value="2" type="radio" name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
                                                 <label class="form-check-label" for="tipoAccionFormCliente1">
                                                     Aviso
                                                 </label>
@@ -1508,7 +1508,7 @@
                                         </div>
                                         <div class="col-auto">
                                             <div class="form-check check-ptg">
-                                                <input class="form-check-input" value="domestico" type="radio" name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
+                                                <input class="form-check-input" value="4" type="radio" name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
                                                 <label class="form-check-label" for="tipoAccionFormCliente1">
                                                     Programar
                                                 </label>
@@ -1576,6 +1576,7 @@
     <script type="text/javascript">
         userName           = '${ds.userName}';
         userRole           = '${ds.userRole}';
+        userSubsidiary     = '${ds.userSubsidiary}';
         urlPlantas         = '${ds.getPlantas}';
         urlCrearOp         = '${ds.createOPP}';
         urlObtenerPedidos  = '${ds.getOPP}';
@@ -1590,13 +1591,10 @@
         customerGlobal     = null;
         listAddress        = [];
 
-        console.log(urlGetPlaces);
-
         // Limpia los campos del modal direcciones al cerrarse
         $('body').delegate('div#formDireccionesModal','hidden.bs.modal', function() {
             $(this).find('.form-ptg').val('');
         });
-
 
         function initComponents() {
             /* Inicia todos los form-search */
