@@ -196,6 +196,8 @@ function getRoute(val) {
 
                 $("input#rutaDireccion").val(splitRuta[1] ?? '');
                 $("input#zonaVentaDireccion").val(route.zona_venta);
+                $("input#rutaColoniaIdDireccion").val(route.id);
+                $("input#rutaIdDireccion").val(route.ubicacionCil);
             }
 
         }, error: function (xhr, status, error) {

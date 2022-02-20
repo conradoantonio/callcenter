@@ -624,6 +624,22 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row pb-2 d-none">
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <label>Ruta colonia ID*</label>
+                                <input class="form-ptg form-ptg-primary" readonly id="rutaColoniaIdDireccion">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2 d-none">
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <label>Ruta ID*</label>
+                                <input class="form-ptg form-ptg-primary" readonly id="rutaIdDireccion">
+                            </div>
+                        </div>
+                    </div>
                 </div>            
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
@@ -1584,6 +1600,7 @@
         urlObtenerZona     = '${ds.getColoniaZona}';
         urlObtenerZonas    = '${ds.getZone}';
         urlGuardarCliente  = '${ds.postCustomer}';
+        urlObtenerArticulos = '${ds.getItems}';
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
         // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
@@ -1994,6 +2011,9 @@
 
     <!-- Archivo para los métodos y funciones de clientes -->
     <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48282&c=5298967_SB1&h=3R_nDdYVdb7OzqNvcpiI1XbKQXvZjlewuCa-Rp3UAlvw9BZ1&_xt=.js"></script>
+
+    <!-- Archivo para pedidos -->
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48294&c=5298967_SB1&h=e4yUeaRx4W4srxQQZvmnIjYsdUwv9zAzd_VYjVHZcssnXtwt&_xt=.js"></script>
 </body>
 
 </html>

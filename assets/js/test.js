@@ -1,5 +1,3 @@
-// Código de Conrado y Christian
-
 // Se inyecta la información del usuario logueado
 $('span.user-name').text(userName);
 $('span#role').text(userRole);
@@ -7,7 +5,7 @@ $('span#role').text(userRole);
 // Evento que dispara la búsqueda de un cliente
 $('input#buscarCliente').on('keypress',function(e) {
     if( e.which == 13 ) {
-        loadMsg('success', false, 'Espere un momento...');
+        loadMsg('Espere un momento...');
         searchCustomer( $(this).val() );
     }
 });
@@ -32,7 +30,10 @@ function searchCustomer(search) {
                 customerGlobal = data.data[0];
                 setCustomerInfo(data.data[0]);
             } else {
-                // Aquí  iría el código para limpiar la vista del cliente
+                infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
+                // Limpia los campos de cliente
+                customerGlobal = null;
+                clearCustomerInfo();
             }
             console.log('Data: ', data);
 
@@ -365,20 +366,43 @@ function setTrOppCases(item, type = 'casos') {
     return tr;
 }
 
-// Método para mostrar un sweet alert customizado
-function loadMsg(type, buttons = true, title, msg = '') {
-    // swal({
-    //     title: title,
-    //     text: msg,
-    //     icon: type ?? 'info',
-    //     buttons: buttons,
-    //     closeOnEsc: false,
-    //     // dangerMode: true,
-    // })
+// Método para limpiar la data del cliente cuando falla una búsqueda
+function clearCustomerInfo () {
+    // Inhabilita el botón de agregar dirección
+    $('#agregarDireccion').attr('disabled', true);
 
+    // Se reinician los labels
+    $('#idCliente').text('0');
+    $('#nombreCliente').text('Busque un cliente');
+    $('#telefonoCliente').text('Sin teléfono');
+    $('#giroCliente').text('Sin giro');
+    $('#contratoCliente').text('Pendiente de validar');
+    $('#zonaVentaCliente').text('Sin Zona de Venta');
+    $('#zonaPrecioCliente').text('Sin Zona de Precio');
+    $('#notasCliente').text('Sin Notas');
+    $('#tipoCliente').text('Sin tipo cliente');
+    $('#tipoServicioCliente').text('Sin servicio');
+    $('#rutaCliente').text('Sin ruta');
+
+    // Se reinicia el select de las direcciones
+    $('select#direccionCliente').children('option').remove();
+    $('select#direccionCliente').append('<option>Sin direcciones</option>');
+
+    // Se quitan los casos y oportunidades
+    $('div#historic-data table.table-gen tbody').children('tr').remove();
+
+    // Se remueven los datos personalizados del cliente del form de pedidos
+    $('#desdePedido, #hastaPedido, #zonaVentaPedido').val('');
+
+    customerGlobal = null;
+}
+
+// Muestra un mensaje de cargando...
+function loadMsg(msg = 'Espere un momento porfavor...') {
+    
     let swalObj = {
-        title: title,
-        buttons: buttons,
+        title: msg,
+        buttons: false,
         closeOnEsc: false,
         closeOnClickOutside: false,
         content: {
@@ -389,16 +413,27 @@ function loadMsg(type, buttons = true, title, msg = '') {
         }
     };
 
-    // El contenido se reemplazará en caso de tener un mensaje por defecto
-    if ( msg ) {
-        swalObj['content'] = {
+    swal(swalObj).catch(swal.noop);
+
+}
+
+// Muestra un sweetalert personalizado
+function infoMsg(type, title, msg = '', timer = null) {
+
+    let swalObj = {
+        title: title,
+        icon: type ?? 'info',
+        // buttons: false,
+        closeOnEsc: false,
+        closeOnClickOutside: false,
+        timer: timer,
+        content: {
             element: "div",
             attributes: {
-                innerHTML: msg
+                innerHTML:"<p class='text-response'>"+msg ?? "¡Cambios guardados exitosamente!"+"</p>"
             },
         }
-    }
+    };
 
     swal(swalObj).catch(swal.noop);
 }
-// Fin de código de Conrado y Christian
