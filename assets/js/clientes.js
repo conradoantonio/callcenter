@@ -19,11 +19,6 @@ $("button#guardarCliente").click( function() {
     saveCustomer();
 });
 
-// Elimina el registro de una dirección antes de guardarla
-$("button#guardarDireccion").click( function() {
-    console.log('se eliminará la dirección');
-});
-
 // Método para validar los campos de una dirección
 function validateAddressFields() {
     let tipoAccion = $("#tipoAccionDireccion").val();
@@ -82,6 +77,16 @@ function validateAddressFields() {
                 // $('input#'+timeUnix).prop('checked', true);
             }
             $('div#formDireccionesModal').modal('hide');
+        } else if( tipoAccion == 'guardar' ) {
+            let dataToSend = {
+                id : customerGlobal.id,
+                bodyFields : {
+                    'custentity_ptg_indicaciones_cliente' : customerGlobal?.notasCustomer
+                },
+                bodyAddress : [address.obj]
+            }
+
+            saveAddress(dataToSend);
         }
         
     } else {
@@ -126,6 +131,40 @@ function getAddressOnList() {
         obj : addressObj
     };
 }
+
+// Método que llama un reslet para guardar una nueva dirección a un cliente
+function saveAddress(dataToSend) {
+    let arrayCustomers = [];
+
+    arrayCustomers.push(dataToSend);
+
+    let dataCustomerBody = {
+        "customers" : arrayCustomers,
+    };
+
+    $.ajax({
+        url: urlGuardarCliente,
+        method: 'PUT',
+        data: JSON.stringify(dataCustomerBody),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (data) {
+            console.log('Data: ', data);
+
+            if ( data.isSuccessful ) {
+                infoMsg('success', 'Dirección actualizada exitósamente');
+                // clearCustomerForm('create');
+            } else {
+                infoMsg('error', 'Dirección no creada', 'Revise que la información proporcionada sea la correcta')
+            }
+
+        }, error: function (xhr, status, error) {
+            infoMsg('error', 'Algo salió mal en la creación del registro');
+            console.log('Error en la consulta', xhr, status, error);
+        }
+    });
+}
+
 // Guarda la información de un cliente en Netsuite
 function saveCustomer() {
     let canContinue = false;
