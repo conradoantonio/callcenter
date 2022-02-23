@@ -86,6 +86,7 @@ function validateAddressFields() {
                 bodyAddress : [address.obj]
             }
 
+            loadMsg('Guardando dirección...');
             saveAddress(dataToSend);
         }
         
@@ -153,7 +154,8 @@ function saveAddress(dataToSend) {
 
             if ( data.isSuccessful ) {
                 infoMsg('success', 'Dirección actualizada exitósamente');
-                // clearCustomerForm('create');
+                $('div.modal').modal('hide');
+                searchCustomer(customerGlobal.telefono);
             } else {
                 infoMsg('error', 'Dirección no creada', 'Revise que la información proporcionada sea la correcta')
             }
