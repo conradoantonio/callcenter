@@ -3,6 +3,11 @@
 let comboArticulos = $('#capacidadFormProductos');
 let btnAddArticles = $('#guardarProductosForm');
 let txtZonaPrecios = $('#zonaPrecioCliente');
+let txtCantidad = $('#cantidadFormProductos');
+let flagArticuloEm = $('#envaseFormProductos');
+let txtValorSinIva = $('#valorFormProductos');
+let txtValorConIva = $('#totalFormProductos');
+let btnGuardarPedido = $('#guardarPedido')
 
 //#endregion
 
@@ -11,7 +16,9 @@ let txtZonaPrecios = $('#zonaPrecioCliente');
 //#region Variables de objetos
 
 let articulos = [];
-let articleGrid = [];
+let items = [];
+let opportunities = [];
+let articulosGrid = [];
 
 //#endregion
 
@@ -23,6 +30,10 @@ $(document).ready(function () {
     getArticulos();
 
     onClickAddProducto();
+
+    onChangeValue();
+
+    savePedido();
 });
 //#endregion
 
@@ -32,6 +43,7 @@ $(document).ready(function () {
 
 // funcion para obtener los articulos  /* Cambiar Subsidiaria */
 async function getArticulos() {
+    console.log('entro en articulos');
     // urlObtenerArticulos
     await requests(urlObtenerArticulos, 'GET', {}).then(async (response) => {
         let tmpArticulos = [];
@@ -52,14 +64,32 @@ async function getArticulos() {
 
 async function onClickAddProducto() {
     btnAddArticles.on('click', function () {
-        console.log('Get Item Selected', comboArticulos.val());
+
+        let tmp;
+
+        articulos.forEach(item => {
+            if (comboArticulos.val() === item.id) {
+                tmp = item;
+
+                articulosGrid.push({ article: item.id, capacity: item.capacidad_litros, quantity: txtCantidad.val(), units: '1', zoneprice: "1" });
+            }
+        });
+
+        console.log('tmp', tmp);
+        console.log('checkBox', flagArticuloEm.val());
+
+        let prices = $('#zonaPrecioCliente').text().replace('$', '');
+
         let dataItem = {
-            producto: await articulos.find(item => item.id === comboArticulos.val()),
-            cantidad: '1',
-            capacidad: '1',
-            valor: '1',
-            envase: '1'
+            id: tmp.id,
+            producto: tmp.descipcion,
+            cantidad: txtCantidad.val(),
+            capacidad: tmp.capacidad_litros,
+            valor: (tmp.capacidad_litros * prices) * txtCantidad.val(),
+            envase: 'false'
         };
+
+        console.log('element', dataItem);
 
         $("#sinProductos").addClass("d-none");
         $("#productosCilindroPedido").removeClass("d-none");
@@ -92,6 +122,79 @@ async function onClickAddProducto() {
     });
 }
 
+
+async function onChangeValue() {
+    txtCantidad.on('change', function () {
+        let tmp;
+        let prices = $('#zonaPrecioCliente').text().replace('$', '');
+
+
+        articulos.forEach(item => {
+            if (comboArticulos.val() === item.id) {
+                tmp = item;
+                txtValorSinIva.val((tmp.capacidad_litros * prices) * parseFloat(txtCantidad.val()));
+                txtValorConIva.val((parseFloat(txtValorSinIva.val()) * 0.16) + parseFloat(txtValorSinIva.val()));
+            }
+        });
+
+    });
+}
+
+async function savePedido() {
+    btnGuardarPedido.on('click', function () {
+        let tmp = {
+            "status": "10",
+            "dateCreate": "21/02/2022",
+            "closeDate": "21/02/2022",
+            "customer": $('#idCliente').text(),
+            "operario": '',
+            "route": "1",
+            "turn": "1",
+            "paymentMethod": "1",
+            "origen": "4",
+            "typeservice": "4",
+            "comentary": $('#observacionesPagoPedido').val(),
+            "rangeH1": "12:33",
+            "rangeH2": "13:33",
+            "numero_viaje": "60",
+            "zona_precio": "1",
+            "tipo": "4",
+            "weekDay": [
+                1,
+                3,
+                5
+            ],
+            "items": articulosGrid
+        };
+
+        opportunities.push(tmp);
+
+        console.log('Guardar pedido', { opportunities: opportunities });
+
+        loadMsg('Cargando');
+
+        requests(urlCrearPedido, 'POST', { opportunities: opportunities }).then((response) => {
+            console.log('response', response);
+            swal.close();
+            opportunities = [];
+
+            clearFields();
+
+            infoMsg('success', 'Pedido', 'El pedido se a creado de manera correcta', 2000)
+        });
+    });
+}
+
+async function clearFields() {
+    $('#fechaPrometidaPedido').val('');
+    $('#desdePedido').val('');
+    $('#hastaPedido').val('');
+    $('#observacionesPagoPedido').text('');
+
+    $("#sinProductos").removeClass("d-none");
+    $("#productosCilindroPedido").addClass("d-none");
+    $("#productosCilindroPedido").find(".content").remove();
+}
 //#endregion
 
 
