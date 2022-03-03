@@ -437,3 +437,24 @@ function infoMsg(type, title, msg = '', timer = null) {
 
     swal(swalObj).catch(swal.noop);
 }
+
+function confirmMsg(type, title, callback) {
+
+    let swalObj = {
+        title: title,
+        icon: type ?? 'info',
+        buttons:["Cancelar", "Aceptar"],
+        closeOnEsc: false,
+        closeOnClickOutside: false,
+        /*content: {
+            element: "div",
+            attributes: {
+                innerHTML:"<p class='text-response'>"+msg ?? "¡Cambios guardados exitosamente!"+"</p>"
+            },
+        }*/
+    };
+
+    swal(swalObj).then((resp) => {
+        callback(resp);
+    }).catch(swal.noop);
+}

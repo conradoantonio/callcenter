@@ -190,6 +190,11 @@
             padding-bottom: 9px;
         }
 
+        select.form-ptg {
+            padding-top: 11.5px;
+            padding-bottom: 11.5px;
+        }
+
         .form-ptg-primary {
             border: solid 2px #355da7;
             color: #355da7;
@@ -451,6 +456,28 @@
         #content-avisos {
             height: calc(100vh - (100vh - 290px) - 56px);
         }
+
+        .border-bp {
+            border-bottom: 1px solid #355da7;
+        }
+
+        .form-check-input.form-ptg-primary:checked {
+            background-color: #355da7;
+            border-color: #355da7;
+        }
+
+        .border-radius-primary {
+            border: 2px solid #355da7;
+            border-radius: 10px;
+            height: 100%;
+            width: 100%;
+        }
+
+        .modal-body {
+            max-height: calc(100vh - 205px);
+            overflow: auto;
+        }
+        
     </style>
 </head>
 
@@ -488,8 +515,6 @@
                             border-width: 1px; 
                             border-color: #808080; 
                             color: #000;">
-                            <option value="p1">PLANTA CARDENAS</option>
-                            <option value="p2">PLANTA CEDRAL</option>
                         </select>
                     </div>
                     <div class="col-auto">
@@ -576,7 +601,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                         aria-label="Close">Cancelar</button>
-                    <button id="guardarProductosForm" type="button" class="btn btn-primary">Guardar</button>
+                    <button id="guardarProductosForm" type="button" data-bs-dismiss="modal" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>
@@ -714,6 +739,172 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row pb-2">
+                        <div class="col-12">
+                            <label class="title-ptg color-primary fw-bold border-bp w-100" style="font-size: 20px;">Programación</label>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col">
+                            <div class="content-input content-input-primary">
+                                <label>Tipo de servicio*</label>
+                                <select id="tipoServicioFormCliente" class="form-ptg form-ptg-primary">
+                                    <option value="1">Cilindro</option>
+                                    <option value="2">Estacionario</option>
+                                    <option value="4">Ambos</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="content-input content-input-primary" id="capacidadTipoServicioContent">
+                                <label>Capacidad*</label>
+                                <select id="selectCapacidadTipoServicio" class="form-ptg form-ptg-primary">
+                                    <option value="10">10 lts</option>
+                                    <option value="20">20 lts</option>
+                                    <option value="30">30 lts</option>
+                                </select>
+                                <input id="inputCapacidadTipoServicio" type="number" class="form-ptg form-ptg-primary d-none">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-auto align-self-center">
+                            <label class="title-ptg color-primary" style="font-size: 16px;">Tipo de acción*:</label>
+                        </div>
+                        <div class="col-auto align-self-center">
+                            <div class="form-check check-ptg">
+                                <input class="form-check-input form-ptg-primary" value="1" type="radio"
+                                    name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
+                                <label class="form-check-label color-primary" for="tipoAccionFormCliente1">
+                                    Teléfono
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-auto align-self-center">
+                            <div class="form-check check-ptg">
+                                <input class="form-check-input form-ptg-primary" value="2" type="radio"
+                                    name="tipoAccionFormCliente" id="tipoAccionFormClient1">
+                                <label class="form-check-label color-primary" for="tipoAccionFormCliente1">
+                                    Aviso
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-auto align-self-center">
+                            <div class="form-check check-ptg">
+                                <input class="form-check-input form-ptg-primary" value="4" type="radio"
+                                    name="tipoAccionFormCliente" id="tipoAccionFormClient1">
+                                <label class="form-check-label color-primary" for="tipoAccionFormCliente1">
+                                    Programar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2 tipo-aviso-programado d-none">
+                        <div class="col-6">
+                            <div class="border-radius-primary p-2">
+                                <label class="title-ptg color-primary" style="font-size: 20px">Frecuencia*</label>
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <label class="title-ptg color-primary"
+                                            style="font-size: 16px;">Cada</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="content-input content-input-primary" style="width: 90px;">
+                                            <input id="cadaFormCliente" type="number"
+                                                class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="content-input content-input-primary">
+                                            <select id="frecuenciaFormCliente" class="form-ptg form-ptg-primary">
+                                                <option value="1">día(s)</option>
+                                                <option value="2">Semana(s)</option>
+                                                <option value="3">Mes(es)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                        <div class="col-6">
+                            <div class="border-radius-primary p-2">
+                                <label class="title-ptg color-primary" style="font-size: 20px">Horario preferifo*</label>
+                                <div class="content-input content-input-primary">
+                                    <label>Entre las</label>
+                                    <input id="entreFormCliente" type="time" class="form-ptg form-ptg-primary">
+                                </div>
+                                <div class="content-input content-input-primary">
+                                    <label>y las</label>
+                                    <input id="lasFormCliente" type="time" class="form-ptg form-ptg-primary">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-6 tipo-aviso-programado d-none">
+                            <div class="border-radius-primary p-2">
+                                <label class="title-ptg color-primary" style="font-size: 20px">Día de la semana*</label>
+                                <div class="row">
+                                    <div class="col-auto">
+                                        <div class="content-input content-input-primary">
+                                            <label>L</label>
+                                            <input id="lunesFormCliente" type="checkbox"
+                                                class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="content-input content-input-primary">
+                                            <label>M</label>
+                                            <input id="martesFormCliente" type="checkbox"
+                                                class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="content-input content-input-primary">
+                                            <label>M</label>
+                                            <input id="miercolesFormCliente" type="checkbox"
+                                                class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="content-input content-input-primary">
+                                            <label>J</label>
+                                            <input id="juevesFormCliente" type="checkbox"
+                                                class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="content-input content-input-primary">
+                                            <label>V</label>
+                                            <input id="viernesFormCliente" type="checkbox"
+                                                class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="content-input content-input-primary">
+                                            <label>S</label>
+                                            <input id="sabadoFormCliente" type="checkbox"
+                                                class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="content-input content-input-primary">
+                                            <label>D</label>
+                                            <input id="domingoFormCliente" type="checkbox"
+                                                class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="content-input content-input-primary">
+                                <label>Observaciones</label>
+                                <textarea placeholder="observaciones" id="indicacionesFormCliente" rows="3"
+                                    class="form-ptg form-ptg-primary"></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
@@ -771,7 +962,7 @@
                 </div>
                 <div class="row align-items-center ft-16 pb-2">
                     <div class="col-2">
-                        <label>Id: <span class="fw-bold" id="idCliente">0</label>
+                        <label>Id: <span class="fw-bold" id="idCliente">0</span></label>
                     </div>
 
                     <div class="col-2">
@@ -914,7 +1105,7 @@
                             <th style="min-width: 355px" class="ion-text-center">Tipo Transaccion</th>
                             <th style="min-width: 355px" class="ion-text-center">Nota</th>
                             <th style="min-width: 355px" class="ion-text-center">Tecnico / Conductor Asignado</th>
-                            <th style="min-width: 355px" class="ion-text-center">Metodo Pago</th>
+                            <th style="min-width: 355px" class="ion-text-center">Método Pago</th>
                             <th style="min-width: 355px" class="ion-text-center">Nota Rapida</th>
                             <th style="min-width: 355px" class="ion-text-center">Unidad</th>
                         </tr>
@@ -1058,14 +1249,14 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-3">
-                            <div class="content-input content-input-primary d-none">
+                        <div class="col-3 d-none">
+                            <div class="content-input content-input-primary">
                                 <label>Referencia</label>
                                 <input id="referenciaPagoPedido" class="form-ptg form-ptg-primary"> </select>
                             </div>
                         </div>
-                        <div class="col-5">
-                            <div class="content-input content-input-primary d-none">
+                        <div class="col-5 d-none">
+                            <div class="content-input content-input-primary">
                                 <label>Folio de autorización</label>
                                 <input id="folioAutorizacionPedido" class="form-ptg form-ptg-primary"> </select>
                             </div>
@@ -1258,12 +1449,6 @@
                     <div class="col-auto title-tab">
                         <i class="fa-solid fa-angle-right"></i>
                     </div>
-                    <div onclick="next('programacion')" class="col-auto title-tab" data-tab="programacion">
-                        Programación
-                    </div>
-                    <div class="col-auto title-tab">
-                        <i class="fa-solid fa-angle-right"></i>
-                    </div>
                 </div>
 
                 <div id="tab-client-inicio" class="row tabs-clientes">
@@ -1275,7 +1460,7 @@
                                     <div class="col-6 text-center">
                                         <div class="card" style="height: 100%;">
                                             <div class="card-body">
-                                                <label class="title-ptg mb-3">¿Tipo de régimen?</label>
+                                                <label class="title-ptg mb-3">¿Tipo de cliente?</label>
                                                 <div class="row">
                                                     <div class="col"></div>
                                                     <div class="col-auto">
@@ -1420,18 +1605,6 @@
                                                     type="text" class="form-ptg">
                                             </div>
                                         </div>
-                                        <div class="col">
-                                            <div class="content-input">
-                                                <label>Tipo de servicio*</label>
-                                                <select id="tipoServicioFormCliente" class="form-ptg">
-                                                    <option value="cilindro">Cilindro</option>
-                                                    <option value="estacionario">Estacionario</option>
-                                                    <option value="ambos">Ambos</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                        </div>
                                     </div>
                                     <div class="row pb-2">
                                         <div class="col-8">
@@ -1482,7 +1655,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Dirección</th>
-                                                            <th scope="col" class="text-center">Principal</th>
+                                                            <th scope="col" class="text-center">Entrega</th>
                                                             <th scope="col" class="text-center">Acciones</th>
                                                             <!-- <th scope="col">Handle</th> -->
                                                         </tr>
@@ -1503,171 +1676,6 @@
                                         <div class="col"></div>
                                         <div class="col-auto">
                                             <button onclick="next('contacto')" type="button"
-                                                class="btn bg-dark-cc">Anterior</button>
-                                        </div>
-                                        <div class="col-auto">
-                                            <button onclick="next('programacion')" type="button"
-                                                class="btn bg-dark-cc">Siguiente</button>
-                                        </div>
-                                        <div class="col"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col"></div>
-                    </div>
-                </div>
-                <div id="tab-client-programacion" class="tabs-clientes d-none">
-                    <div class="row">
-                        <div class="col"></div>
-                        <div class="col-12 col-xl-10">
-                            <div class="card mt-4">
-                                <div class="card-body">
-                                    <div class="row pb-2">
-                                        <div class="col-4">
-                                            <div class="card" style="height: 100%;">
-                                                <div class="card-body" style="height: 100%;">
-                                                    <label class="title-ptg">Frecuencia</label>
-                                                    <div class="row align-items-center">
-                                                        <div class="col-auto">
-                                                            <label class="title-ptg"
-                                                                style="font-size: 16px;">Cada</label>
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <div class="content-input" style="width: 90px;">
-                                                                <input id="cadaFormCliente" type="number"
-                                                                    class="form-ptg">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <div class="content-input">
-                                                                <select id="frecuenciaFormCliente" class="form-ptg">
-                                                                    <option value="1">día(s)</option>
-                                                                    <option value="2">Semana(s)</option>
-                                                                    <option value="3">Mes(es)</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="card" style="height: 100%;">
-                                                <div class="card-body">
-                                                    <label class="title-ptg">Horario preferifo</label>
-                                                    <div class="content-input">
-                                                        <label>Entre las</label>
-                                                        <input id="entreFormCliente" type="time" class="form-ptg">
-                                                    </div>
-                                                    <div class="content-input">
-                                                        <label>y las</label>
-                                                        <input id="lasFormCliente" type="time" class="form-ptg">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="card" style="height: 100%;">
-                                                <div class="card-body">
-                                                    <label class="title-ptg">Día de la semana</label>
-                                                    <div class="row">
-                                                        <div class="col-auto">
-                                                            <div class="content-input">
-                                                                <label>L</label>
-                                                                <input id="lunesFormCliente" type="checkbox"
-                                                                    class="form-ptg">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <div class="content-input">
-                                                                <label>M</label>
-                                                                <input id="martesFormCliente" type="checkbox"
-                                                                    class="form-ptg">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <div class="content-input">
-                                                                <label>M</label>
-                                                                <input id="miercolesFormCliente" type="checkbox"
-                                                                    class="form-ptg">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <div class="content-input">
-                                                                <label>J</label>
-                                                                <input id="juevesFormCliente" type="checkbox"
-                                                                    class="form-ptg">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <div class="content-input">
-                                                                <label>V</label>
-                                                                <input id="viernesFormCliente" type="checkbox"
-                                                                    class="form-ptg">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <div class="content-input">
-                                                                <label>S</label>
-                                                                <input id="sabadoFormCliente" type="checkbox"
-                                                                    class="form-ptg">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <div class="content-input">
-                                                                <label>D</label>
-                                                                <input id="domingoFormCliente" type="checkbox"
-                                                                    class="form-ptg">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-4 pb-2 ion-align-items-center">
-                                        <div class="col-auto">
-                                            <label class="title-ptg" style="font-size: 16px;">Tipo de acción*:</label>
-                                        </div>
-                                        <div class="col-auto">
-                                            <div class="form-check check-ptg">
-                                                <input class="form-check-input" value="1" type="radio"
-                                                    name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
-                                                <label class="form-check-label" for="tipoAccionFormCliente1">
-                                                    Teléfono
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <div class="form-check check-ptg">
-                                                <input class="form-check-input" value="2" type="radio"
-                                                    name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
-                                                <label class="form-check-label" for="tipoAccionFormCliente1">
-                                                    Aviso
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <div class="form-check check-ptg">
-                                                <input class="form-check-input" value="4" type="radio"
-                                                    name="tipoAccionFormCliente" id="tipoAccionFormClient1" checked>
-                                                <label class="form-check-label" for="tipoAccionFormCliente1">
-                                                    Programar
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col-8">
-                                            <textarea id="indicacionesFormCliente" rows="3" placeholder="Nota..."
-                                                class="form-ptg"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col"></div>
-                                        <div class="col-auto">
-                                            <button onclick="next('domicilio')" type="button"
                                                 class="btn bg-dark-cc">Anterior</button>
                                         </div>
                                         <div class="col-auto">
@@ -1736,16 +1744,18 @@
         urlObtenerZonas = '${ds.getZone}';
         urlGuardarCliente = '${ds.postCustomer}';
         urlObtenerArticulos = '${ds.getItems}';
+        urlCrearPedido = '${ds.createOPP}';
+        getMethodPayments = '${ds.getMethodPayments}';
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
         // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
         urlGetPlaces = '${ds.getCities}';
         customerGlobal = null;
-        listAddress = [];
 
         // Limpia los campos del modal direcciones al cerrarse
         $('body').delegate('div#formDireccionesModal', 'hidden.bs.modal', function () {
             $(this).find('.form-ptg').val('');
+            $(this).find('.form-ptg').prop('checked', false);
         });
 
         function initComponents() {
@@ -1766,12 +1776,12 @@
             });
 
             $("#metodoPagoPedido").change(function () {
-                if ($(this).val() == "Transferencia" || $(this).val() == "Prepago") {
-                    $("#referenciaPagoPedido").parent().removeClass("d-none");
-                    $("#folioAutorizacionPedido").parent().removeClass("d-none");
+                if ($(this).val() == "8" || $(this).val() == "2" || $(this).val() == "5" || $(this).val() == "6"){
+                    //$("#referenciaPagoPedido").parent().parent().removeClass("d-none");
+                    $("#folioAutorizacionPedido").parent().parent().removeClass("d-none");
                 } else {
-                    $("#referenciaPagoPedido").parent().addClass("d-none");
-                    $("#folioAutorizacionPedido").parent().addClass("d-none");
+                    //$("#referenciaPagoPedido").parent().parent().addClass("d-none");
+                    $("#folioAutorizacionPedido").parent().parent().addClass("d-none");
                 }
             });
 
@@ -1887,6 +1897,24 @@
                 }
             });
 
+            $("input[name=tipoAccionFormCliente]").change(function () {
+                if ($("input[name=tipoAccionFormCliente]:checked").val() == "1") {
+                    $(".tipo-aviso-programado").addClass('d-none');
+                } else {
+                    $(".tipo-aviso-programado").removeClass('d-none');
+                }
+            });
+
+            $("#tipoServicioFormCliente").change(function () {
+                if($(this).val() == "1") {
+                    $("#capacidadTipoServicioContent").find("input").addClass("d-none");
+                    $("#capacidadTipoServicioContent").find("select").removeClass("d-none");
+                } else {
+                    $("#capacidadTipoServicioContent").find("select").addClass("d-none");
+                    $("#capacidadTipoServicioContent").find("input").removeClass("d-none");
+                }
+            });
+
             $("#btnBack").click(function () {
                 if ($("#btnBack").data("back") == "home-view") {
                     $("#btnMenu").removeClass("d-none");
@@ -1917,8 +1945,7 @@
                     !$("#apellidoPaternoFormCliente").val().trim() ||
                     ($("input[name=requiereFactura]:checked").val() == "si" && !$("#rfcFormCliente").val().trim()) ||
                     !$("#correoFormCliente").val().trim() ||
-                    !$("#telefonoPrincipalFormCliente").val().trim() ||
-                    !$("#tipoServicioFormCliente").val().trim()) {
+                    !$("#telefonoPrincipalFormCliente").val().trim()) {
                     next = false;
                 }
             }
@@ -2052,8 +2079,27 @@
             origins.forEach((element, i) => {
                 $("#origenPedido").append('<option value="' + element + '">' + element + '</option>');
             });
-            payment_methods.forEach((element, i) => {
-                $("#metodoPagoPedido").append('<option value="' + element + '">' + element + '</option>');
+            
+            $.ajax({
+                url: getMethodPayments,
+                method: 'GET',
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('Data: ', data);
+
+                    if ( data.success ) {
+                        data.data.forEach((element, i) => {
+                            $("#metodoPagoPedido").append('<option value="' + element.id + '" '+(i == 0 ? 'selected' : '')+'>' + element.method + '</option>');
+                        });
+                    } else {
+                        infoMsg('error', 'Algo salió mal al obtener los metodos de pago')
+                    }
+
+                }, error: function (xhr, status, error) {
+                    infoMsg('error', 'Algo salió mal al obtener los metodos de pago');
+                    console.log('Error en la consulta', xhr, status, error);
+                }
             });
         }
 
