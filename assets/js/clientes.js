@@ -135,6 +135,9 @@ $('body').delegate('.delete-address', 'click', function () {
                 element.find('.check-entrega').parent().html('<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>');
             } else {
                 $(this).closest('.address').remove();
+                if($('table.table-address tbody').find(".address").length == 0) {
+                    $('table.table-address tbody').append('<tr><td class="text-center" colspan="3">Sin direcciones</td></tr>');
+                }
             }
         }
     })
@@ -165,37 +168,38 @@ function getAddressOnList() {
     }
 
     let addressObj = {
-        principal     : $('table.table-address tbody').find(".address").length == 0 ? true : false,
-        stateName     : $("#estadoDireccion").val().trim(),
-        city          : $("#municipioDireccion").val().trim(),
-        zip           : $("#cpDireccion").val().trim(),
-        nameStreet    : $("#calleDireccion").val().trim(),
-        numExterno    : $("#exteriorDireccion").val().trim(),
-        numInterno    : $("#interiorDireccion").val().trim(),
-        colonia       : $("#coloniaDireccion").val().trim(),
-        latitud       : "",
-        longitud      : "",
-        street_aux1   : $("#entre1Direccion").val().trim(),
-        street_aux2   : $("#entre2Direccion").val().trim(),
+        principal       : $('table.table-address tbody').find(".address").length == 0 ? true : false,
+        domFacturacion  : $('table.table-address tbody').find(".address").length == 0 ? true : false,
+        stateName       : $("#estadoDireccion").val().trim(),
+        city            : $("#municipioDireccion").val().trim(),
+        zip             : $("#cpDireccion").val().trim(),
+        nameStreet      : $("#calleDireccion").val().trim(),
+        numExterno      : $("#exteriorDireccion").val().trim(),
+        numInterno      : $("#interiorDireccion").val().trim(),
+        colonia         : $("#coloniaDireccion").val().trim(),
+        latitud         : "",
+        longitud        : "",
+        street_aux1     : $("#entre1Direccion").val().trim(),
+        street_aux2     : $("#entre2Direccion").val().trim(),
         //zonaVenta     : $("#zonaVentaDireccion").val().trim(),
-        ruta          : $("#rutaColoniaIdDireccion").val().trim(),
-        idRoute       : $("#rutaIdDireccion").val().trim(),
-        typeContact   : parseInt($("input[name=tipoAccionFormCliente]:checked").val()),
-        cada          : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? parseInt($("#cadaFormCliente").val()) : null,
-        frecuencia    : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? parseInt($("#frecuenciaFormCliente").val()) : null,
-        entre_las     : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? horaInicioStr : null,
-        y_las         : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? horaFinStr : null,
-        lunes         : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#lunesFormCliente").prop("checked") : null,
-        martes        : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#martesFormCliente").prop("checked") : null,
-        miercoles     : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#miercolesFormCliente").prop("checked") : null,
-        jueves        : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ?  $("#juevesFormCliente").prop("checked") : null,
-        viernes       : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#viernesFormCliente").prop("checked") : null,
-        sabado        : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#sabadoFormCliente").prop("checked") : null,
-        domingo       : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#domingoFormCliente").prop("checked") : null,
-        typeService   : parseInt($("#tipoServicioFormCliente").val()),
-        capacidad     : $("#tipoServicioFormCliente").val() == "1" ? parseInt($("#selectCapacidadTipoServicio").val()) : parseInt($("#inputCapacidadTipoServicio").val()),
-        observaciones : $("#indicacionesFormCliente").val().trim(),
-        etiqueta      : ''
+        ruta            : $("#rutaColoniaIdDireccion").val().trim(),
+        idRoute         : $("#rutaIdDireccion").val().trim(),
+        typeContact     : parseInt($("input[name=tipoAccionFormCliente]:checked").val()),
+        cada            : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? parseInt($("#cadaFormCliente").val()) : null,
+        frecuencia      : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? parseInt($("#frecuenciaFormCliente").val()) : null,
+        entre_las       : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? horaInicioStr : null,
+        y_las           : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? horaFinStr : null,
+        lunes           : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#lunesFormCliente").prop("checked") : null,
+        martes          : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#martesFormCliente").prop("checked") : null,
+        miercoles       : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#miercolesFormCliente").prop("checked") : null,
+        jueves          : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ?  $("#juevesFormCliente").prop("checked") : null,
+        viernes         : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#viernesFormCliente").prop("checked") : null,
+        sabado          : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#sabadoFormCliente").prop("checked") : null,
+        domingo         : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#domingoFormCliente").prop("checked") : null,
+        typeService     : parseInt($("#tipoServicioFormCliente").val()),
+        capacidad       : $("#tipoServicioFormCliente").val() == "1" ? parseInt($("#selectCapacidadTipoServicio").val()) : parseInt($("#inputCapacidadTipoServicio").val()),
+        commentsAddress : $("#indicacionesFormCliente").val().trim(),
+        tag             : ''
     }
 
     addressStr += addressObj['nameStreet'];
@@ -290,9 +294,9 @@ function saveCustomer() {
             let element = $($('table.table-address tbody').find(".address")[x]);
             let address = element.data('address');
             if(address.principal) {
-                address.etiqueta = "00";
+                address.tag = "00";
             } else {
-                address.etiqueta = "0"+count;
+                address.tag = "0"+count;
                 count = count + 1;
             }
             element.data('address', address);
