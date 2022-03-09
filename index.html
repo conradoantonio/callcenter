@@ -719,7 +719,7 @@
                         <div class="col-12">
                             <div class="content-input content-input-primary">
                                 <label>Ruta*</label>
-                                <input class="form-ptg form-ptg-primary" readonly id="rutaDireccion">
+                                <input class="form-ptg form-ptg-primary" readonly id="rutaDireccion" data-ruta-obj="">
                             </div>
                         </div>
                     </div>
@@ -739,33 +739,68 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row pb-2 d-none">
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <label>Ruta 2 ID*</label>
+                                <input class="form-ptg form-ptg-primary" readonly id="rutaId2Direccion">
+                            </div>
+                        </div>
+                    </div>
                     <div class="row pb-2">
                         <div class="col-12">
                             <label class="title-ptg color-primary fw-bold border-bp w-100" style="font-size: 20px;">Programación</label>
                         </div>
                     </div>
                     <div class="row pb-2">
-                        <div class="col">
+                        <div class="col-12">
                             <div class="content-input content-input-primary">
                                 <label>Tipo de servicio*</label>
                                 <select id="tipoServicioFormCliente" class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
                                     <option value="1">Cilindro</option>
                                     <option value="2">Estacionario</option>
                                     <option value="4">Ambos</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="content-input content-input-primary" id="capacidadTipoServicioContent">
-                                <label>Capacidad*</label>
-                                <select id="selectCapacidadTipoServicio" class="form-ptg form-ptg-primary">
+                        
+                        <div class="col-8 d-none art-fre-cil">
+                            <div class="content-input content-input-primary">
+                                <label>Artículo frecuente cilindro*</label>
+                                <select id="articuloFrecuenteCilFormCliente" class="form-ptg form-ptg-primary">
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4 d-none art-fre-cil">
+                            <div class="content-input content-input-primary" id="capacidadCilTipoServicioContent">
+                                <label>Cantidad*</label>
+                                <select id="selectCapacidadCilTipoServicio" class="form-ptg form-ptg-primary">
                                     <option value="10">10 lts</option>
                                     <option value="20">20 lts</option>
                                     <option value="30">30 lts</option>
                                 </select>
-                                <input id="inputCapacidadTipoServicio" type="number" class="form-ptg form-ptg-primary d-none">
+                                <!-- <input id="inputCapacidadCilTipoServicio" type="number" min="1" class="form-ptg form-ptg-primary"> -->
                             </div>
                         </div>
+                        <div class="col-8 d-none art-fre-est">
+                            <div class="content-input content-input-primary">
+                                <label>Artículo frecuente estacionario*</label>
+                                <select id="articuloFrecuenteEstFormCliente" class="form-ptg form-ptg-primary">
+                                    <option value="1">Artículo 1</option>
+                                    <option value="2">Artículo 2</option>
+                                    <option value="3">Artículo 3</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4 d-none art-fre-est">
+                            <div class="content-input content-input-primary" id="capacidadEstTipoServicioContent">
+                                <label>Capacidad*</label>
+                                <input id="inputCapacidadEstTipoServicio" type="number" min="1" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                        
                     </div>
                     <div class="row pb-2">
                         <div class="col-auto align-self-center">
@@ -810,8 +845,7 @@
                                     </div>
                                     <div class="col-auto">
                                         <div class="content-input content-input-primary" style="width: 90px;">
-                                            <input id="cadaFormCliente" type="number"
-                                                class="form-ptg form-ptg-primary">
+                                            <input id="cadaFormCliente" type="number" min="1" class="form-ptg form-ptg-primary">
                                         </div>
                                     </div>
                                     <div class="col">
@@ -828,7 +862,7 @@
                         </div>
                         <div class="col-6">
                             <div class="border-radius-primary p-2">
-                                <label class="title-ptg color-primary" style="font-size: 20px">Horario preferifo*</label>
+                                <label class="title-ptg color-primary" style="font-size: 20px">Horario preferido*</label>
                                 <div class="content-input content-input-primary">
                                     <label>Entre las</label>
                                     <input id="entreFormCliente" type="time" class="form-ptg form-ptg-primary">
@@ -1577,7 +1611,7 @@
                                     <div class="row pb-2">
                                         <div class="col-5">
                                             <div class="content-input">
-                                                <label>Correo electrónica*</label>
+                                                <label>Correo electrónico*</label>
                                                 <input id="correoFormCliente" placeholder="email@example.com"
                                                     type="text" class="form-ptg">
                                             </div>
@@ -1735,7 +1769,7 @@
     <script type="text/javascript">
         userName = '${ds.userName}';
         userRole = '${ds.userRole}';
-        userSubsidiary =/* '${ds.userSubsidiary}' */ '16';
+        userSubsidiary = '${ds.userSubsidiary}';
         urlPlantas = '${ds.getPlantas}';
         urlCrearOp = '${ds.createOPP}';
         urlObtenerPedidos = '${ds.getOPP}';
@@ -1751,11 +1785,19 @@
         // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
         urlGetPlaces = '${ds.getCities}';
         customerGlobal = null;
+        direccionDefault = null;
+
+        console.log(userSubsidiary);
 
         // Limpia los campos del modal direcciones al cerrarse
         $('body').delegate('div#formDireccionesModal', 'hidden.bs.modal', function () {
             $(this).find('.form-ptg').val('');
             $(this).find('.form-ptg').prop('checked', false);
+            $(this).find('select.form-ptg').each(function( index ) {
+                $( this ).val($(this).children("option:first").val());
+            });
+
+            $('.art-fre-est, .art-fre-cil').addClass('d-none');
         });
 
         function initComponents() {
