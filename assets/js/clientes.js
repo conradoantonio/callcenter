@@ -41,8 +41,10 @@ function validateAddressFields() {
         //!$("#entre2Direccion").val().trim()    ||
         !$("#zonaVentaDireccion").val().trim() ||
         !$("#rutaDireccion").val().trim() ||
-        ($("#tipoServicioFormCliente").val() == "1" && (!$("#selectCapacidadTipoServicio").val() || !$("#selectCapacidadTipoServicio").val().trim())) ||
-        ($("#tipoServicioFormCliente").val() != "1" && !$("#inputCapacidadTipoServicio").val().trim()) ||
+        !$("#tipoServicioFormCliente").val().trim() ||
+        ( $("#tipoServicioFormCliente").val() == 1 && ( !$("#articuloFrecuenteCilFormCliente").val() || !$("#selectCapacidadCilTipoServicio").val() ) ) ||
+        ( $("#tipoServicioFormCliente").val() == 2 && ( !$("#articuloFrecuenteEstFormCliente").val() || !$("#inputCapacidadEstTipoServicio").val().trim() ) ) ||
+        ( $("#tipoServicioFormCliente").val() == 4 && ( !$("#articuloFrecuenteCilFormCliente").val() || !$("#selectCapacidadCilTipoServicio").val() || !$("#articuloFrecuenteEstFormCliente").val() || !$("#inputCapacidadEstTipoServicio").val().trim() ) ) ||
         ($("input[name=tipoAccionFormCliente]:checked").val() != "1" && !$("#cadaFormCliente").val().trim()) ||
         ($("input[name=tipoAccionFormCliente]:checked").val() != "1" && (!$("#frecuenciaFormCliente").val() || !$("#frecuenciaFormCliente").val().trim())) ||
         ($("input[name=tipoAccionFormCliente]:checked").val() != "1" && !$("#entreFormCliente").val().trim()) ||
@@ -135,9 +137,6 @@ $('body').delegate('.delete-address', 'click', function () {
                 element.find('.check-entrega').parent().html('<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>');
             } else {
                 $(this).closest('.address').remove();
-                if($('table.table-address tbody').find(".address").length == 0) {
-                    $('table.table-address tbody').append('<tr><td class="text-center" colspan="3">Sin direcciones</td></tr>');
-                }
             }
         }
     })
@@ -169,7 +168,6 @@ function getAddressOnList() {
 
     let addressObj = {
         principal       : $('table.table-address tbody').find(".address").length == 0 ? true : false,
-        domFacturacion  : $('table.table-address tbody').find(".address").length == 0 ? true : false,
         stateName       : $("#estadoDireccion").val().trim(),
         city            : $("#municipioDireccion").val().trim(),
         zip             : $("#cpDireccion").val().trim(),
@@ -181,9 +179,10 @@ function getAddressOnList() {
         longitud        : "",
         street_aux1     : $("#entre1Direccion").val().trim(),
         street_aux2     : $("#entre2Direccion").val().trim(),
-        //zonaVenta     : $("#zonaVentaDireccion").val().trim(),
+        //zonaVenta       : $("#zonaVentaDireccion").val().trim(),
         ruta            : $("#rutaColoniaIdDireccion").val().trim(),
         idRoute         : $("#rutaIdDireccion").val().trim(),
+        idRoute2        : $("#rutaId2Direccion").val().trim(),
         typeContact     : parseInt($("input[name=tipoAccionFormCliente]:checked").val()),
         cada            : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? parseInt($("#cadaFormCliente").val()) : null,
         frecuencia      : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? parseInt($("#frecuenciaFormCliente").val()) : null,
@@ -237,7 +236,7 @@ function saveAddress(dataToSend) {
         success: function (data) {
             console.log('Data: ', data);
 
-            if ( data.isSuccessful ) {
+            if ( data.success ) {
                 infoMsg('success', 'Dirección actualizada exitósamente');
                 $('div.modal').modal('hide');
                 searchCustomer(customerGlobal.telefono);
@@ -318,13 +317,13 @@ function saveCustomer() {
             planta : $('select#plantas').val(),
             telefono : $("input#telefonoPrincipalFormCliente").val(),
             telefonoAlt : $("input#telefonoAlternoFormCliente").val(),
-            subsidiaria : 16,// Seteado de forma estática
+            subsidiary : 25,// Seteado de forma estática
             regimenId : regimenId,
             //typeService : typeService,
             address : listAddress
         }
         console.log(customer);
-        return;
+        // return;
         loadMsg('Guardando información...');
         saveCustomerAjax(customer);
     } else {
@@ -354,93 +353,13 @@ function saveCustomerAjax(customer) {
         success: function (data) {
             console.log('Data: ', data);
             
-            if ( data.isSuccessful ) {
+            if ( data.success ) {
                 infoMsg('success', 'Cliente registrado exitósamente');
                 clearCustomerForm('create');
             } else {
+                let msg = data.message;
                 swal.close();
-                infoMsg('error', 'Cliente no creado', 'Revise que la información proporcionada sea la correcta')
-            }
-
-        }, error: function (xhr, status, error) {
-            infoMsg('error', 'Algo salió mal en la creación del registro')
-            console.log('Error en la consulta', xhr, status, error);
-        }
-    });
-}
-
-// Guarda la información de un cliente
-function setCustomerBody(customerId) {
-    let customStartTime = customEndTime = new Date();
-    let yLas            = $("#lasFormCliente").val();
-    let entreLas        = $("#entreFormCliente").val();
-    //let periodoContacto = $("select#frecuenciaFormCliente").val();
-    let horaInicio      = entreLas.split(':');
-    let horaFin         = yLas.split(':');
-    let horaInicioStr   = horaFinStr = "";
-
-    if ( horaInicio.length ) {
-        customStartTime.setHours(horaInicio[0]);
-        customStartTime.setMinutes(horaInicio[1]);
-        horaInicioStr = moment(customStartTime).format('hh:mm a');
-        console.log('Hora inicio: '+ horaInicioStr);
-    }
-
-    if ( horaFin.length ) {
-        customEndTime.setHours(horaFin[0]);
-        customEndTime.setMinutes(horaFin[1]);
-        horaFinStr = moment(customEndTime).format('hh:mm a');
-        console.log('Hora fin: '+ horaFinStr);
-    }
-
-    let body = {
-        //custentity_ptg_cada_ : parseInt( $("input#cadaFormCliente").val() ),
-        //custentity_ptg_periododecontacto_ : parseInt( periodoContacto ),
-        custentity_ptg_entrelas_ : horaInicioStr,
-        custentity_ptg_ylas_ : horaFinStr,
-        custentity_ptg_lunes_ : $("#lunesFormCliente").is(':checked'),
-        custentity_ptg_martes_ :$("#martesFormCliente").is(':checked'),
-        custentity_ptg_miercoles_ : $("#miercolesFormCliente").is(':checked'),
-        custentity_ptg_jueves_ : $("#juevesFormCliente").is(':checked'),
-        custentity_ptg_viernes_ : $("#viernesFormCliente").is(':checked'),
-        custentity_ptg_sabado_ : $("#sabadoFormCliente").is(':checked'),
-        custentity_ptg_domingo_ : $("#domingoFormCliente").is(':checked'),
-        //custentityptg_tipodecontacto_ : parseInt( $("input[name=tipoAccionFormCliente]:checked").val() ),
-        custentity_ptg_indicaciones_cliente : $("#indicacionesFormCliente").val()
-    }
-
-    let request = {
-        id : customerId,
-        bodyFields : body,
-        bodyAddress : []
-    }
-
-    saveCustomerBody(request);
-    console.log(body);
-}
-
-// Guarda los datos del body del cliente (Los datos del formulario de programación)
-function saveCustomerBody(customer) {
-    let arrayCustomers = [];
-    arrayCustomers.push(customer)
-    let dataCustomerBody = {
-        "customers" : arrayCustomers,
-    };
-
-    $.ajax({
-        url: urlGuardarCliente,
-        method: 'PUT',
-        data: JSON.stringify(dataCustomerBody),
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function (data) {
-            console.log('Data: ', data);
-
-            if ( data.isSuccessful ) {
-                infoMsg('success', 'Cliente registrado exitósamente');
-                clearCustomerForm('create');
-            } else {
-                infoMsg('error', 'Cliente no creado', 'Revise que la información proporcionada sea la correcta')
+                infoMsg('error', 'Cliente no creado', msg ?? 'Revise que la información proporcionada sea la correcta');
             }
 
         }, error: function (xhr, status, error) {
@@ -467,7 +386,7 @@ function clearCustomerForm(type = 'create') {
 
     // Tab inicio
     $("input#tipoRegimen1").prop('checked', true);
-    $("input#requiereFactura1").prop('checked', true);
+    $("input#requiereFactura2").prop('checked', true);
     $("input#giroNegocioFormCliente").parent().addClass('d-none');
 
     // Tab contacto

@@ -10,37 +10,33 @@ $('input#buscarCliente').on('keypress',function(e) {
     }
 });
 
+// Función para filtrar clientes por un texto
 function searchCustomer(search) {
+    clearCustomerInfo();
+
     let dataSearchCustomer = {
         "phone"  : search,
         "planta" : $("select#plantas").val(),
     };
 
-    $.ajax({
-        url: urlObtenerCliente,
-        method: 'POST',
-        data: JSON.stringify(dataSearchCustomer),
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function (data) {
-            // Encontró un cliente
-            swal.close();
-            if ( data.isSuccessful ) {
-                $('#agregarDireccion').attr('disabled', false);
-                customerGlobal = data.data[0];
-                setCustomerInfo(data.data[0]);
-            } else {
-                infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
-                // Limpia los campos de cliente
-                customerGlobal = null;
-                clearCustomerInfo();
-            }
-            console.log('Data: ', data);
+    let settings = {
+        url    : urlObtenerCliente,
+        method : 'POST',
+        data   : JSON.stringify(dataSearchCustomer),
+    }
 
-        }, error: function (xhr, status, error) {
-            swal.close();
-            console.log('Error en la consulta', xhr, status, error);
-        }
+    setAjax(settings).then((response) => {
+        swal.close();
+        console.log(response);
+        customerGlobal = response.data[0];
+        setCustomerInfo(response.data[0]);
+        $('#agregarDireccion').attr('disabled', false);
+    }).catch((error) => {
+        infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
+        // Limpia los campos de cliente
+        customerGlobal = null;
+        clearCustomerInfo();
+        console.log(error);
     });
 }
 
@@ -56,7 +52,6 @@ function setCustomerInfo(customer) {
     $('#contratoCliente').text(customer.contrato ? customer.contrato : 'Pendiente de validar');
     $('#notasCliente').text(customer.notasCustomer ? customer.notasCustomer : 'Sin notas');
     $('#tipoCliente').text(customer.typeCustomer);
-    $('#tipoServicioCliente').text(customer.tipoServicio);
 
     // Agrega las direcciones del cliente al select
     $('#direccionCliente').children('option').remove();
@@ -76,83 +71,82 @@ function setCustomerInfo(customer) {
             }
         }
     }
+    if ( direccionDefault?.typeService ) {
+        $('#tipoServicioCliente').text(direccionDefault.typeService);
+    }
 
     // Obtiene los casos y oportunidades del cliente
     getCasosOportunidades();
 
     // Se obtienen los datos de la colonia
-    getColoniaZona(direccionDefault?.colonia);
+    getColoniaZona(direccionDefault?.colonia, direccionDefault?.zip);
 }
 
 // Obtiene la información de la zona acorde a la colonia por default del cliente
-function getColoniaZona(colonia) {
+function getColoniaZona(colonia, zip) {
     let zona = null;
-    let dataGetZona = {
-        "colonia" : colonia,
-    };
+    let url  = urlObtenerZonas.concat('&zip='+zip+'&colonia='+colonia);
+    let settings = {
+        url      : url,
+        method   : 'GET',
+        data     : null,
+    }
 
-    $.ajax({
-        url: urlObtenerZona,
-        method: 'POST',
-        data: JSON.stringify(dataGetZona),
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function (data) {
-            // console.log('Esta es la data de la zona:', data);
-            let ruta = data[0].nameUbicacionCil;
-            let splitRuta = ruta.split(" : ");
-            let desde = customerGlobal.desde;
-            let hasta = customerGlobal.hasta;
-            let horaInicioFormateada = horaFinFormateada = horas = null;
+    setAjax(settings).then((response) => {
+        let data = response.data;
+        console.log('Esta es la data de la zona:', data);
+        let ruta = data[0].nameUbicacionCil;
+        let splitRuta = ruta.split(" : ");
+        let desde = customerGlobal.desde;
+        let hasta = customerGlobal.hasta;
+        let horaInicioFormateada = horaFinFormateada = horas = null;
 
-            $('#zonaVentaCliente').text(data[0].idInterno);
-            $('#zonaPrecioCliente').text('$'+data[0].precio);
-            $('#rutaCliente').text(splitRuta[1] ?? "Sin ruta");
-            $('#zonaVentaPedido').val(data[0]?.idInterno);
+        $('#zonaVentaCliente').text(data[0].id);
+        $('#zonaPrecioCliente').text('$'+data[0].precio);
+        $('#rutaCliente').text(splitRuta[1] ?? "Sin ruta");
+        $('#zonaVentaPedido').val(data[0]?.id);
 
-            if ( desde ) {
-                let medioDia = desde.split(" ");
-                let horaInicio = desde.split(":");
+        if ( desde ) {
+            let medioDia = desde.split(" ");
+            let horaInicio = desde.split(":");
 
-                // Se le suma 12 horas por el formato de 24 hrs
-                if ( medioDia[1].toUpperCase() == 'PM' ) {
-                    horas = new Number(horaInicio[0]) + 12;
-                } else {
-                    horas = horaInicio[0];
-                }
-
-                let customDate = new Date();
-                customDate.setHours(horas);
-                customDate.setMinutes(horaInicio[1].split(" ")[0]);
-
-                let horaInicioStr = moment(customDate).format('HH:mm');
-                $('#desdePedido').val(horaInicioStr);
-            } 
-
-            if ( hasta ) {
-                let medioDia = hasta.split(" ");
-                let horaInicio = hasta.split(":");
-                console.log('medioDia:', medioDia);
-
-                // Se le suma 12 horas por el formato de 24 hrs
-                if ( medioDia[1].toUpperCase() == 'PM' ) {
-                    horas = new Number(horaInicio[0]) + 12;
-                } else {
-                    horas = horaInicio[0];
-                }
-
-                let customDate = new Date();
-                customDate.setHours(horas);
-                customDate.setMinutes(horaInicio[1].split(" ")[0]);
-
-                let horaFinStr = moment(customDate).format('HH:mm');
-                $('#hastaPedido').val(horaFinStr);
-
+            // Se le suma 12 horas por el formato de 24 hrs
+            if ( medioDia[1].toUpperCase() == 'PM' ) {
+                horas = new Number(horaInicio[0]) + 12;
+            } else {
+                horas = horaInicio[0];
             }
-        }, error: function (xhr, status, error) {
-            swal.close();
-            console.log('Error en la consulta', xhr, status, error);
+
+            let customDate = new Date();
+            customDate.setHours(horas);
+            customDate.setMinutes(horaInicio[1].split(" ")[0]);
+
+            let horaInicioStr = moment(customDate).format('HH:mm');
+            $('#desdePedido').val(horaInicioStr);
+        } 
+
+        if ( hasta ) {
+            let medioDia = hasta.split(" ");
+            let horaInicio = hasta.split(":");
+            console.log('medioDia:', medioDia);
+
+            // Se le suma 12 horas por el formato de 24 hrs
+            if ( medioDia[1].toUpperCase() == 'PM' ) {
+                horas = new Number(horaInicio[0]) + 12;
+            } else {
+                horas = horaInicio[0];
+            }
+
+            let customDate = new Date();
+            customDate.setHours(horas);
+            customDate.setMinutes(horaInicio[1].split(" ")[0]);
+
+            let horaFinStr = moment(customDate).format('HH:mm');
+            $('#hastaPedido').val(horaFinStr);
+
         }
+    }).catch((error) => {
+        console.log(error);
     });
 }
 
@@ -170,25 +164,47 @@ function setDir(direccion) {
     return str;
 }
 
-// Ajax para obtener las plantas
-let dataPlantas = {
-    "requestType" : 'getPlantas'
-};
+// Función para obtener las plantas
+function getPlantas() {
+    let dataPlantas = {
+        "requestType" : 'getPlantas'
+    };
 
-$.ajax({
-    url: urlPlantas,
-    method: 'GET',
-    data: JSON.stringify(dataPlantas),
-    contentType: 'application/json',
-    dataType: 'json',
-    success: function (data) {
-        // console.log('Data: ', data);
-        setSelectPlants(JSON.parse(data));
-
-    }, error: function (xhr, status, error) {
-        console.log('Error en la consulta');
+    let settings = {
+        url      : urlPlantas,
+        method   : 'GET',
+        data     : JSON.stringify(dataPlantas),
     }
-});
+
+    setAjax(settings).then((response) => {
+        console.log(response);
+        setSelectPlants((response.data));
+    }).catch((error) => {
+        console.log(error);
+    });
+
+    setAjax(settings);
+}
+
+// Función para obtener los artículos
+function getArticulos() {
+    let settings = {
+        url      : urlObtenerArticulos,
+        method   : 'GET',
+    }
+
+    setAjax(settings).then((response) => {
+        console.log(response);
+        setSelectArticulos((response.data));
+    }).catch((error) => {
+        console.log(error);
+    });
+
+    setAjax(settings);
+}
+
+getPlantas();
+getArticulos();
 
 // Método para llenar el select de plantas
 function setSelectPlants(items) {
@@ -203,6 +219,29 @@ function setSelectPlants(items) {
         }
     } else {
         console.warn('No hay plantas por cargar');
+    }
+}
+
+// Método para llenar los select de artículos
+function setSelectArticulos(items) {
+    if ( items.length ) {
+        $('select#articuloFrecuenteCilFormCliente, select#articuloFrecuenteEstFormCliente').children('option').remove();
+        // $('select#articuloFrecuenteEstFormCliente').children('option').remove();
+        for ( var key in items ) {
+            if ( items.hasOwnProperty( key ) ) {
+                if (items[key].tipo_articulo == 1) {// Cilindro
+                    $("select#articuloFrecuenteCilFormCliente").append(
+                        '<option value='+items[key].id+'>'+items[key].nombre+'</option>'
+                    );
+                } else if (items[key].tipo_articulo == 2) {// Estacionario
+                    $("select#articuloFrecuenteEstFormCliente").append(
+                        '<option value='+items[key].id+'>'+items[key].nombre+'</option>'
+                    );
+                }
+            }
+        }
+    } else {
+        console.warn('No hay artículos por cargar');
     }
 }
 
@@ -245,21 +284,6 @@ let pedidoData = {
     ]
 }
 
-// $.ajax({
-//     url: urlCrearOp,
-//     method: 'POST',
-//     data: JSON.stringify(pedidoData),
-//     contentType: 'application/json',
-//     dataType: 'json',
-//     success: function (data) {
-//         console.log('pedido creado exitósamente', data);
-//         // setSelectPlants(JSON.parse(data));
-
-//     }, error: function (xhr, status, error) {
-//         console.log('Error en la consulta');
-//     }
-// });
-
 
 // Función y ajax para obtener los pedidos
 function getCasosOportunidades() {
@@ -267,19 +291,20 @@ function getCasosOportunidades() {
         "id" : $("#idCliente").text()
     };
 
-    $.ajax({
-        url: urlObtenerPedidos,
-        method: 'POST',
-        data: JSON.stringify(dataObtenerPedido),
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function (data) {
-            console.log('pedidos obtenidos exitósamente', data);
-            setHistoricTable(data);
+    let settings = {
+        url      : urlObtenerPedidos,
+        method   : 'POST',
+        data     : JSON.stringify(dataObtenerPedido),
+    }
 
-        }, error: function (xhr, status, error) {
-            console.log('Error en la consulta', error);
-        }
+    // Se remueven registros previos
+    $('div#historic-data table.table-gen tbody').children('tr').remove();
+
+    setAjax(settings).then((response) => {
+        console.log('pedidos obtenidos exitósamente', response);
+            setHistoricTable(JSON.parse(response.data));
+    }).catch((error) => {
+        console.log('Error en la consulta', error);
     });
 }
 
@@ -288,14 +313,9 @@ function setHistoricTable( data ) {
     $('div#historic-data').fadeOut();
     let casos         = data.casos;
     let oportunidades = data.oportunidades;
-    console.warn(casos, oportunidades);
-
-    // Se remueven registros previos
-    $('div#historic-data table.table-gen tbody').children('tr').remove();
 
     // Checa casos
     if ( casos.length ) {
-        // console.log('Tiene varios registros');
         for ( var key in casos ) {
             if ( casos.hasOwnProperty( key ) ) {
                 $('div#historic-data table.table-gen tbody').append(
@@ -304,12 +324,11 @@ function setHistoricTable( data ) {
             }
         }
     } else {
-        console.warn('No hay oportunidades por cargar');
+        console.warn('No hay casos por cargar');
     }
 
     // Checa oportunidades
     if ( oportunidades.length ) {
-        // console.log('Tiene varios registros');
         for ( var key in oportunidades ) {
             if ( oportunidades.hasOwnProperty( key ) ) {
                 $('div#historic-data table.table-gen tbody').append(
@@ -446,15 +465,67 @@ function confirmMsg(type, title, callback) {
         buttons:["Cancelar", "Aceptar"],
         closeOnEsc: false,
         closeOnClickOutside: false,
-        /*content: {
-            element: "div",
-            attributes: {
-                innerHTML:"<p class='text-response'>"+msg ?? "¡Cambios guardados exitosamente!"+"</p>"
-            },
-        }*/
     };
 
     swal(swalObj).then((resp) => {
         callback(resp);
     }).catch(swal.noop);
+}
+
+// Call a global ajax method
+// function setAjax(settings) {
+//     $.ajax({
+//         url: settings.url,
+//         method: settings.method,
+//         contentType: 'application/json',
+//         data: settings.data ?? null,
+//         // data: JSON.stringify(content),
+//         dataType: 'json',
+//         success: function (response) {
+//             let msg = '';
+//             if ( response.success ) {
+//                 if ( settings.callback ) {
+//                     window[settings.callback](response, settings);
+//                 } else {
+//                     msg = response.msg ? response.msg : 'Información procesada exitósamente';
+//                     infoMsg('success', msg);
+//                 }
+//             } else {
+//                 msg = response.msg ? response.msg : 'Algo salió mal';
+//                 infoMsg('error', msg);
+//             }
+
+//         }, error: function (xhr, status, error) {
+//             infoMsg('error', 'Algo salió mal.');
+//             console.log('Error en la consulta', xhr, status, error);
+//         }
+//     });
+// }
+
+function setAjax(settings) {
+    // Generamos el AJAX dinamico para las peticiones relacionadas con peddos
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: settings.url,
+            method: settings.method,
+            data: settings.data ?? null,
+            // data: JSON.stringify(data),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (response) {
+                if ( response.success ) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                    swal.close();
+                    msg = response.msg ? response.msg : 'La petición no devolvió datos';
+                    console.log('info', msg);
+                    // infoMsg('info', msg);
+                }
+            }, error: function (xhr, status, error) {
+                console.error('mensaje de error');
+                reject({ xhr: xhr, status: status, error: error });
+            }
+        });
+    });
 }

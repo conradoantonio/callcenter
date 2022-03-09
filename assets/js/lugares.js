@@ -37,6 +37,25 @@ $('select#coloniaDireccion').on('change', function(e) {
     }
 });
 
+// Se debe modificar la ruta dependiendo del tipo de servicio
+$('select#tipoServicioFormCliente').on('change', function(e) {
+    let val = $(this).val();
+
+    if ( val == 1 ) {// Cilindros
+        $('.art-fre-est').addClass('d-none');
+        $('.art-fre-cil').removeClass('d-none');
+    } else if ( val == 2 ) {// Estacionarios
+        $('.art-fre-cil').addClass('d-none');
+        $('.art-fre-est').removeClass('d-none');
+    } else if ( val == 4 ) {// Ambas
+        $('.art-fre-est, .art-fre-cil').removeClass('d-none');
+    } else {// Se seleccionó la primera opción
+        $('.art-fre-est, .art-fre-cil').addClass('d-none');
+    }
+    // Nota: Preferible agregar una función que haga esto.
+    console.log('Falta código para validar los inputs relacionados a las rutas');
+});
+
 // Obtiene los estados disponibles
 function getStates(country = 'México') {
     let content = {
@@ -181,28 +200,44 @@ function getRoute(val) {
     let zip     = $( "select#coloniaDireccion option:selected").data('cp');
     let url     = urlObtenerZonas.concat('&zip='+zip+'&colonia='+colonia);
 
-    $.ajax({
-        url: url,
-        method: 'GET',
-        contentType: 'application/json',
-        // data: JSON.stringify(content),
-        dataType: 'json',
-        success: function (data) {
-            // console.log('Data: ', data);
-            // swal.close();
-            if ( data.length ) {
-                let route = data[0];
-                let splitRuta = route.nameUbicacionCil.split(" : ");
+    let settings = {
+        url    : url,
+        method : 'GET',
+    }
 
-                $("input#rutaDireccion").val(splitRuta[1] ?? '');
-                $("input#zonaVentaDireccion").val(route.zona_venta);
-                $("input#rutaColoniaIdDireccion").val(route.id);
-                $("input#rutaIdDireccion").val(route.ubicacionCil);
+    setAjax(settings).then((response) => {
+        let data = response.data;
+        let tipoServicioId = $('#tipoServicioFormCliente').val();
+        // console.log('Data: ', data);
+        // swal.close();
+        if ( data.length ) {
+            $('#rutaDireccion').data('ruta-obj', data[0]);
+            // console.log('Data: ', data);
+            let route = data[0];
+            let nombreRuta = ubicacionId = '';
+            let ubicacionId2 = null;
+            let splitRutaCil = route.nameUbicacionCil.split(" : ");
+            let splitRutaEst = route.nameUbicacionEst.split(" : ");
+            if ( tipoServicioId == 1 ) {//Cilindro
+                splitRutaCil[1] ? ( nombreRuta+=splitRutaCil[1] ) : '';
+                ubicacionId = route.ubicacionCil;
+            } else if( tipoServicioId == 2 ) {// Estacionario
+                splitRutaEst[1] ? ( nombreRuta+=splitRutaEst[1] ) : '';
+                ubicacionId = route.ubicacionEst;
+            } else if( tipoServicioId == 4 ) {// Ambas
+                splitRutaCil[1] ? ( nombreRuta+=splitRutaCil[1] ) : '';
+                splitRutaEst[1] ? ( nombreRuta+=', '+splitRutaEst[1] ) : '';
+                ubicacionId  = route.ubicacionCil;
+                ubicacionId2 = route.ubicacionEst;
             }
 
-        }, error: function (xhr, status, error) {
-            swal.close();
-            console.log('Error en la consulta', xhr, status, error);
+            $("input#rutaDireccion").val(nombreRuta);
+            $("input#zonaVentaDireccion").val(route.zona_venta);
+            $("input#rutaColoniaIdDireccion").val(route.id);
+            $("input#rutaIdDireccion").val(ubicacionId);
+            $("input#rutaId2Direccion").val(ubicacionId2);
         }
+    }).catch((error) => {
+        console.log('La consulta no obtuvo información', error);
     });
 }

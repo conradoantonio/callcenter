@@ -43,11 +43,11 @@ $(document).ready(function () {
 
 // funcion para obtener los articulos  /* Cambiar Subsidiaria */
 async function getArticulos() {
-    console.log('entro en articulos');
+    // console.log('entro en articulos');
     // urlObtenerArticulos
     await requests(urlObtenerArticulos, 'GET', {}).then(async (response) => {
         let tmpArticulos = [];
-        tmpArticulos = JSON.parse(response);
+        tmpArticulos = JSON.parse(response.data);
 
         await tmpArticulos.forEach(element => {
             if (element.subcidiaria === userSubsidiary && element.tipo_articulo === '1') {
