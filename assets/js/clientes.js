@@ -42,9 +42,9 @@ function validateAddressFields() {
         !$("#zonaVentaDireccion").val().trim() ||
         !$("#rutaDireccion").val().trim() ||
         !$("#tipoServicioFormCliente").val().trim() ||
-        ( $("#tipoServicioFormCliente").val() == 1 && ( !$("#articuloFrecuenteCilFormCliente").val() || !$("#selectCapacidadCilTipoServicio").val() ) ) ||
+        ( $("#tipoServicioFormCliente").val() == 1 && ( !$("#articuloFrecuenteCilFormCliente").val() || !$("#inputCapacidadCilTipoServicio").val() ) ) ||
         ( $("#tipoServicioFormCliente").val() == 2 && ( !$("#articuloFrecuenteEstFormCliente").val() || !$("#inputCapacidadEstTipoServicio").val().trim() ) ) ||
-        ( $("#tipoServicioFormCliente").val() == 4 && ( !$("#articuloFrecuenteCilFormCliente").val() || !$("#selectCapacidadCilTipoServicio").val() || !$("#articuloFrecuenteEstFormCliente").val() || !$("#inputCapacidadEstTipoServicio").val().trim() ) ) ||
+        ( $("#tipoServicioFormCliente").val() == 4 && ( !$("#articuloFrecuenteCilFormCliente").val() || !$("#inputCapacidadCilTipoServicio").val() || !$("#articuloFrecuenteEstFormCliente").val() || !$("#inputCapacidadEstTipoServicio").val().trim() ) ) ||
         ($("input[name=tipoAccionFormCliente]:checked").val() != "1" && !$("#cadaFormCliente").val().trim()) ||
         ($("input[name=tipoAccionFormCliente]:checked").val() != "1" && (!$("#frecuenciaFormCliente").val() || !$("#frecuenciaFormCliente").val().trim())) ||
         ($("input[name=tipoAccionFormCliente]:checked").val() != "1" && !$("#entreFormCliente").val().trim()) ||
@@ -148,6 +148,7 @@ function getAddressOnList() {
     let customStartTime = customEndTime = new Date();
     let yLas            = $("#lasFormCliente").val();
     let entreLas        = $("#entreFormCliente").val();
+    let tipoServicioId  = $("#tipoServicioFormCliente").val();
     //let periodoContacto = $("select#frecuenciaFormCliente").val();
     let horaInicio      = entreLas.split(':');
     let horaFin         = yLas.split(':');
@@ -196,9 +197,22 @@ function getAddressOnList() {
         sabado          : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#sabadoFormCliente").prop("checked") : null,
         domingo         : $("input[name=tipoAccionFormCliente]:checked").val() != "1" ? $("#domingoFormCliente").prop("checked") : null,
         typeService     : parseInt($("#tipoServicioFormCliente").val()),
-        capacidad       : $("#tipoServicioFormCliente").val() == "1" ? parseInt($("#selectCapacidadTipoServicio").val()) : parseInt($("#inputCapacidadTipoServicio").val()),
         commentsAddress : $("#indicacionesFormCliente").val().trim(),
         tag             : ''
+    }
+
+    // Se agregan campos acorde al tipo de servicio
+    if ( tipoServicioId == "1" ) {// Cilindros
+        addressObj['frequencyItem']  = $("#articuloFrecuenteCilFormCliente").val();
+        addressObj['capacidad']      = $("#inputCapacidadCilTipoServicio").val();
+    } else if ( tipoServicioId == "2" ) {// Estacionarios
+        addressObj['frequencyItem']  = $("#articuloFrecuenteEstFormCliente").val();
+        addressObj['capacidad']      = $("#inputCapacidadEstTipoServicio").val();
+    } else if ( tipoServicioId == "4" ) {// Ambos
+        addressObj['frequencyItem' ] = $("#articuloFrecuenteCilFormCliente").val();
+        addressObj['capacidad']      = $("#inputCapacidadCilTipoServicio").val();
+        addressObj['frequencyItem2'] = $("#articuloFrecuenteEstFormCliente").val();
+        addressObj['capacidad2']     = $("#inputCapacidadEstTipoServicio").val();
     }
 
     addressStr += addressObj['nameStreet'];
@@ -269,7 +283,8 @@ function saveCustomer() {
     if ( canContinue ) {
         let tipoRegimen     = $("input[name=tipoRegimen]:checked").val();
         let requiereFactura = $("input[name=requiereFactura]:checked").val();
-        let middleName      = tipoRegimen != 'domestico' ? $('input#giroNegocioFormCliente').val() : "";
+        let businessType    = tipoRegimen != 'domestico' ? $('input#giroNegocioFormCliente').val() : "";
+        // let middleName      = tipoRegimen != 'domestico' ? $('input#giroNegocioFormCliente').val() : "";
         let lastName        = $('input#apellidoPaternoFormCliente').val()+' '+$('input#apellidoMaternoFormCliente').val();
         let rfc             = requiereFactura == 'si' ? $('input#rfcFormCliente').val() : "";
         let email           = $("input#correoFormCliente").val();
@@ -304,7 +319,8 @@ function saveCustomer() {
 
         let customer = {
             nombre : $('input#nombreFormCliente').val(),
-            middleName : middleName,
+            // middleName : middleName,
+            // businessType : businessType,
             lastName : lastName.trim(),
             rfc : rfc,
             regimeType : regimenId != 3 ? false : true,

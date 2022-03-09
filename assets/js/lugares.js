@@ -33,6 +33,7 @@ $('select#coloniaDireccion').on('change', function(e) {
         $('input#cpDireccion').val( cp );
         getRoute( val );
     } else {
+        console.log('Falta código para resetear las rutas');
         $('input#cpDireccion').val( '' );
     }
 });
@@ -40,6 +41,7 @@ $('select#coloniaDireccion').on('change', function(e) {
 // Se debe modificar la ruta dependiendo del tipo de servicio
 $('select#tipoServicioFormCliente').on('change', function(e) {
     let val = $(this).val();
+    let route = $('#rutaDireccion').data('ruta-obj');
 
     if ( val == 1 ) {// Cilindros
         $('.art-fre-est').addClass('d-none');
@@ -52,6 +54,14 @@ $('select#tipoServicioFormCliente').on('change', function(e) {
     } else {// Se seleccionó la primera opción
         $('.art-fre-est, .art-fre-cil').addClass('d-none');
     }
+
+    // Setea o resetea los campos de ruta
+    if ( route  ) {
+        setRouteData(route);
+    } else {
+        $("input#rutaDireccion, input#zonaVentaDireccion, input#rutaColoniaIdDireccion, input#rutaIdDireccion, input#rutaId2Direccion").val('');
+    }
+
     // Nota: Preferible agregar una función que haga esto.
     console.log('Falta código para validar los inputs relacionados a las rutas');
 });
@@ -207,37 +217,52 @@ function getRoute(val) {
 
     setAjax(settings).then((response) => {
         let data = response.data;
-        let tipoServicioId = $('#tipoServicioFormCliente').val();
-        // console.log('Data: ', data);
-        // swal.close();
+        // let tipoServicioId = $('#tipoServicioFormCliente').val();
         if ( data.length ) {
             $('#rutaDireccion').data('ruta-obj', data[0]);
-            // console.log('Data: ', data);
-            let route = data[0];
-            let nombreRuta = ubicacionId = '';
-            let ubicacionId2 = null;
-            let splitRutaCil = route.nameUbicacionCil.split(" : ");
-            let splitRutaEst = route.nameUbicacionEst.split(" : ");
-            if ( tipoServicioId == 1 ) {//Cilindro
-                splitRutaCil[1] ? ( nombreRuta+=splitRutaCil[1] ) : '';
-                ubicacionId = route.ubicacionCil;
-            } else if( tipoServicioId == 2 ) {// Estacionario
-                splitRutaEst[1] ? ( nombreRuta+=splitRutaEst[1] ) : '';
-                ubicacionId = route.ubicacionEst;
-            } else if( tipoServicioId == 4 ) {// Ambas
-                splitRutaCil[1] ? ( nombreRuta+=splitRutaCil[1] ) : '';
-                splitRutaEst[1] ? ( nombreRuta+=', '+splitRutaEst[1] ) : '';
-                ubicacionId  = route.ubicacionCil;
-                ubicacionId2 = route.ubicacionEst;
-            }
-
-            $("input#rutaDireccion").val(nombreRuta);
-            $("input#zonaVentaDireccion").val(route.zona_venta);
-            $("input#rutaColoniaIdDireccion").val(route.id);
-            $("input#rutaIdDireccion").val(ubicacionId);
-            $("input#rutaId2Direccion").val(ubicacionId2);
+            setRouteData(data[0]);
+        } else {
+            $('#rutaDireccion').data('ruta-obj', null);
+            $("input#rutaDireccion, input#zonaVentaDireccion, input#rutaColoniaIdDireccion, input#rutaIdDireccion, input#rutaId2Direccion").val('');
         }
     }).catch((error) => {
         console.log('La consulta no obtuvo información', error);
     });
+}
+
+// Cambia la información de los campos relacionados a la ruta de envío
+function setRouteData(route) {
+    let tipoServicioId = $('#tipoServicioFormCliente').val();
+    // console.log('Data: ', data);
+    let nombreRuta = ubicacionId = '';
+    let zonaVenta = route.zona_venta;
+    let routeId = route.id;
+    let ubicacionId2 = null;
+    let splitRutaCil = route.nameUbicacionCil.split(" : ");
+    let splitRutaEst = route.nameUbicacionEst.split(" : ");
+    if ( tipoServicioId == 1 ) {//Cilindro
+        console.log('cilindro');
+        splitRutaCil[1] ? ( nombreRuta+=splitRutaCil[1] ) : '';
+        ubicacionId = route.ubicacionCil;
+    } else if( tipoServicioId == 2 ) {// Estacionario
+        console.log('estacionario');
+        splitRutaEst[1] ? ( nombreRuta+=splitRutaEst[1] ) : '';
+        ubicacionId = route.ubicacionEst;
+    } else if( tipoServicioId == 4 ) {// Ambas
+        console.log('ambas');
+        splitRutaCil[1] ? ( nombreRuta+=splitRutaCil[1] ) : '';
+        splitRutaEst[1] ? ( nombreRuta+=', '+splitRutaEst[1] ) : '';
+        ubicacionId  = route.ubicacionCil;
+        ubicacionId2 = route.ubicacionEst;
+    } else {// No se ha seleccionado nada
+        console.log('ninguna seleccionada');
+        nombreRuta = zonaVenta = '';
+        ubicacionId = ubicacionId2 = routeId = null;
+    }
+
+    $("input#rutaDireccion").val(nombreRuta);
+    $("input#zonaVentaDireccion").val(zonaVenta);
+    $("input#rutaColoniaIdDireccion").val(routeId);
+    $("input#rutaIdDireccion").val(ubicacionId);
+    $("input#rutaId2Direccion").val(ubicacionId2);
 }

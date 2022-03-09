@@ -776,12 +776,12 @@
                         <div class="col-4 d-none art-fre-cil">
                             <div class="content-input content-input-primary" id="capacidadCilTipoServicioContent">
                                 <label>Cantidad*</label>
-                                <select id="selectCapacidadCilTipoServicio" class="form-ptg form-ptg-primary">
+                                <input id="inputCapacidadCilTipoServicio" type="number" min="1" class="form-ptg form-ptg-primary">
+                                <!-- <select id="selectCapacidadCilTipoServicio" class="form-ptg form-ptg-primary">
                                     <option value="10">10 lts</option>
                                     <option value="20">20 lts</option>
                                     <option value="30">30 lts</option>
-                                </select>
-                                <!-- <input id="inputCapacidadCilTipoServicio" type="number" min="1" class="form-ptg form-ptg-primary"> -->
+                                </select> -->
                             </div>
                         </div>
                         <div class="col-8 d-none art-fre-est">
@@ -1797,6 +1797,7 @@
                 $( this ).val($(this).children("option:first").val());
             });
 
+            $('#rutaDireccion').data('ruta-obj', null);
             $('.art-fre-est, .art-fre-cil').addClass('d-none');
         });
 
