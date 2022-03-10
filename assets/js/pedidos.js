@@ -47,7 +47,8 @@ async function getArticulos() {
     // urlObtenerArticulos
     await requests(urlObtenerArticulos, 'GET', {}).then(async (response) => {
         let tmpArticulos = [];
-        tmpArticulos = JSON.parse(response.data);
+        tmpArticulos = response.data;
+        console.log('trae articulos', tmpArticulos);
 
         await tmpArticulos.forEach(element => {
             if (element.subcidiaria === userSubsidiary && element.tipo_articulo === '1') {

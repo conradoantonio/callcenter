@@ -182,8 +182,6 @@ function getPlantas() {
     }).catch((error) => {
         console.log(error);
     });
-
-    setAjax(settings);
 }
 
 // Función para obtener los artículos
@@ -199,12 +197,59 @@ function getArticulos() {
     }).catch((error) => {
         console.log(error);
     });
-
-    setAjax(settings);
 }
 
+// Función para obtener los tipos de pago
+function getMetodosPago() {
+    let settings = {
+        url      : getMethodPayments,
+        method   : 'GET',
+    }
+
+    setAjax(settings).then((response) => {
+        console.log(response);
+        setSelectMetodosPago((response.data));
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+// Función para obtener la lista de origen del servicio
+function getServiceOrigin() {
+    let settings = {
+        url      : urlGetServicesOriginList,
+        method   : 'GET',
+    }
+
+    setAjax(settings).then((response) => {
+        console.log(response);
+        setSelectServiceOrigin((response.data));
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+// Función para obtener los giros de negocio
+function getBusinessType() {
+    let settings = {
+        url      : urlGetBusinessType,
+        method   : 'GET',
+    }
+
+    setAjax(settings).then((response) => {
+        console.log(response);
+        setSelectBusinessType((response.data));
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+// Pobla los selects dinámicos de los formularios
 getPlantas();
 getArticulos();
+getMetodosPago();
+getServiceOrigin();
+getBusinessType();
 
 // Método para llenar el select de plantas
 function setSelectPlants(items) {
@@ -242,6 +287,54 @@ function setSelectArticulos(items) {
         }
     } else {
         console.warn('No hay artículos por cargar');
+    }
+}
+
+// Método para llenar el select de método de pago
+function setSelectMetodosPago(items) {
+    $('select#metodoPagoPedido').children('option').remove();
+    if ( items.length ) {
+        for ( var key in items ) {
+            if ( items.hasOwnProperty( key ) ) {
+                $("select#metodoPagoPedido").append(
+                    '<option value='+items[key].id+'>'+items[key].method+'</option>'
+                );
+            }
+        }
+    } else {
+        console.warn('No hay métodos de pago por cargar');
+    }
+}
+
+// Método para llenar el select de origen de servicio
+function setSelectServiceOrigin(items) {
+    $('select#origenPedido').children('option').remove();
+    if ( items.length ) {
+        for ( var key in items ) {
+            if ( items.hasOwnProperty( key ) ) {
+                $("select#origenPedido").append(
+                    '<option value='+items[key].id+'>'+items[key].name+'</option>'
+                );
+            }
+        }
+    } else {
+        console.warn('No hay registros por cargar');
+    }
+}
+
+// Método para llenar el select de giro de negocio
+function setSelectBusinessType(items) {
+    $('select#giroNegocioFormCliente').children('option').remove();
+    if ( items.length ) {
+        for ( var key in items ) {
+            if ( items.hasOwnProperty( key ) ) {
+                $("select#giroNegocioFormCliente").append(
+                    '<option value='+items[key].id+'>'+items[key].name+'</option>'
+                );
+            }
+        }
+    } else {
+        console.warn('No hay registros por cargar');
     }
 }
 

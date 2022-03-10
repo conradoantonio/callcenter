@@ -1556,9 +1556,8 @@
                                 </div>
                                 <div class="content-input mt-3 d-none">
                                     <label>Giro del negocio*</label>
-                                    <input id="giroNegocioFormCliente"
-                                        placeholder="Cafetería y venta de té, Industria cultural y creativa, etc"
-                                        type="text" class="form-ptg">
+                                    <select id="giroNegocioFormCliente" class="form-ptg form-ptg-primary">
+                                    </select>
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col"></div>
@@ -1780,6 +1779,8 @@
         urlObtenerArticulos = '${ds.getItems}';
         urlCrearPedido = '${ds.createOPP}';
         getMethodPayments = '${ds.getMethodPayments}';
+        urlGetServicesOriginList = '${ds.getServicesOriginList}';
+        urlGetBusinessType = '${ds.getBusinessType}';
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
         // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
@@ -1979,7 +1980,7 @@
                 }
 
                 if (($("input[name=tipoRegimen]:checked").val() == "comercial" || $("input[name=tipoRegimen]:checked").val() == "industrial")) {
-                    if (!$("#giroNegocioFormCliente").val().trim()) {
+                    if (!$("#giroNegocioFormCliente").val()) {
                         next = false;
                     }
                 }
@@ -2110,41 +2111,10 @@
     </script>
 
     <script type="text/javascript">
-        let origins = ["WhatsApp", "PotoApp", "FaceBook", "Call center", "Página Web", "Chat", "Buzón"],
-            payment_methods = ["Efectivo", "Vale", "Prepago", "Cortesia", "Tarjeta de crédito", "Tarjeta de débito"];
         $(document).ready(function () {
             initComponents();
             getToday();
-            llenaCampos();
         });
-
-        function llenaCampos() {
-            origins.forEach((element, i) => {
-                $("#origenPedido").append('<option value="' + element + '">' + element + '</option>');
-            });
-            
-            $.ajax({
-                url: getMethodPayments,
-                method: 'GET',
-                contentType: 'application/json',
-                dataType: 'json',
-                success: function (data) {
-                    console.log('Data: ', data);
-
-                    if ( data.success ) {
-                        data.data.forEach((element, i) => {
-                            $("#metodoPagoPedido").append('<option value="' + element.id + '" '+(i == 0 ? 'selected' : '')+'>' + element.method + '</option>');
-                        });
-                    } else {
-                        infoMsg('error', 'Algo salió mal al obtener los metodos de pago')
-                    }
-
-                }, error: function (xhr, status, error) {
-                    infoMsg('error', 'Algo salió mal al obtener los metodos de pago');
-                    console.log('Error en la consulta', xhr, status, error);
-                }
-            });
-        }
 
         function getToday() {
             let $this = this;

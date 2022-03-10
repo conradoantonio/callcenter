@@ -283,8 +283,8 @@ function saveCustomer() {
     if ( canContinue ) {
         let tipoRegimen     = $("input[name=tipoRegimen]:checked").val();
         let requiereFactura = $("input[name=requiereFactura]:checked").val();
-        let businessType    = tipoRegimen != 'domestico' ? $('input#giroNegocioFormCliente').val() : "";
-        // let middleName      = tipoRegimen != 'domestico' ? $('input#giroNegocioFormCliente').val() : "";
+        let businessType    = tipoRegimen != 'domestico' ? $('select#giroNegocioFormCliente').val() : "";
+        // let middleName      = tipoRegimen != 'domestico' ? $('select#giroNegocioFormCliente').val() : "";
         let lastName        = $('input#apellidoPaternoFormCliente').val()+' '+$('input#apellidoMaternoFormCliente').val();
         let rfc             = requiereFactura == 'si' ? $('input#rfcFormCliente').val() : "";
         let email           = $("input#correoFormCliente").val();
@@ -319,8 +319,8 @@ function saveCustomer() {
 
         let customer = {
             nombre : $('input#nombreFormCliente').val(),
-            // middleName : middleName,
-            // businessType : businessType,
+            middleName : '',
+            businessType : businessType,
             lastName : lastName.trim(),
             rfc : rfc,
             regimeType : regimenId != 3 ? false : true,
@@ -403,7 +403,7 @@ function clearCustomerForm(type = 'create') {
     // Tab inicio
     $("input#tipoRegimen1").prop('checked', true);
     $("input#requiereFactura2").prop('checked', true);
-    $("input#giroNegocioFormCliente").parent().addClass('d-none');
+    $("select#giroNegocioFormCliente").parent().addClass('d-none');
 
     // Tab contacto
     $("input#rfcFormCliente").parent().addClass('d-none');
