@@ -13,6 +13,24 @@ $("#agregarDirecciones, #agregarDireccion").click( function() {
     }
 });
 
+// Cuando el select de estados cambie, manda a llamar la petición de obtener ciudades
+$('select#direccionCliente').on('change', function(e) {
+    let direccion = $( this ).children('option:selected').data('address');
+    console.log('esta es la dirección', direccion);
+    if ( direccion ) {
+        setColoniaZonaData( direccion );
+    } else {// Podría ser buena práctica meter este bloque de código en una función
+        // Estos campos están en la tarjeta de cliente
+        $('#zonaVentaCliente').text('Sin Zona de Venta');
+        $('#zonaPrecioCliente').text('Sin Zona de Precio');
+        $('#rutaCliente').text("Sin ruta");
+        
+        // Estos campos están en el formulario de pedido
+        $('#zonaVentaPedido, #desdePedido, #hastaPedido').val('');
+    }
+});
+
+
 // Valida una dirección a guardar
 $("button#guardarDireccion").click( function() {
     validateAddressFields();

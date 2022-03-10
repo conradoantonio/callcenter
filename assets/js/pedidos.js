@@ -48,7 +48,7 @@ async function getArticulos() {
     await requests(urlObtenerArticulos, 'GET', {}).then(async (response) => {
         let tmpArticulos = [];
         tmpArticulos = response.data;
-        console.log('trae articulos', tmpArticulos);
+        // console.log('trae articulos', tmpArticulos);
 
         await tmpArticulos.forEach(element => {
             if (element.subcidiaria === userSubsidiary && element.tipo_articulo === '1') {

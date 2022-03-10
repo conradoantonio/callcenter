@@ -27,7 +27,7 @@ function searchCustomer(search) {
 
     setAjax(settings).then((response) => {
         swal.close();
-        console.log(response);
+        console.log('Cliente encontrado', response);
         customerGlobal = response.data[0];
         setCustomerInfo(response.data[0]);
         $('#agregarDireccion').attr('disabled', false);
@@ -66,7 +66,7 @@ function setCustomerInfo(customer) {
                 let textoDireccion = setDir(direcciones[key]);
 
                 $('#direccionCliente').append(
-                    '<option '+(direcciones[key].defaultShipping ? 'selected' : '')+' value="'+direcciones[key].idAdress+'">'+textoDireccion+'</option>'
+                    '<option '+(direcciones[key].defaultShipping ? 'selected' : '')+' data-address='+"'"+JSON.stringify(direcciones[key])+"'"+' value="'+direcciones[key].idAdress+'">'+textoDireccion+'</option>'
                 );
             }
         }
@@ -79,7 +79,71 @@ function setCustomerInfo(customer) {
     getCasosOportunidades();
 
     // Se obtienen los datos de la colonia
-    getColoniaZona(direccionDefault?.colonia, direccionDefault?.zip);
+    setColoniaZonaData(direccionDefault);
+    console.log(direccionDefault);
+    // getColoniaZona(direccionDefault?.colonia, direccionDefault?.zip);
+}
+
+// Setea los datos de la dirección actual seleccionada del cliente
+function setColoniaZonaData(direccion) {
+    // Estos campos están en la tarjeta de cliente
+    $('#zonaVentaCliente').text('Sin Zona de Venta');
+    $('#zonaPrecioCliente').text('Sin Zona de Precio');
+    $('#rutaCliente').text("Sin ruta");
+    
+    // Estos campos están en el formulario de pedido
+    $('#zonaVentaPedido, #desdePedido, #hastaPedido').val('');
+
+    let zonaRuta = direccion.dataZoneRoute;
+    // console.log('Esta es la data de la zona:', zonaRuta);
+    let ruta = zonaRuta.nameUbicacionCil;
+    let splitRuta = ruta.split(" : ");
+    let desde = direccion.ptg_entre_addr;
+    let hasta = direccion.ptg_y_addr;
+    let horaInicioFormateada = horaFinFormateada = horas = null;
+
+    $('#zonaVentaCliente').text(zonaRuta.zona_venta);
+    $('#zonaPrecioCliente').text('$'+zonaRuta.precio);
+    $('#rutaCliente').text(splitRuta[1] ?? "Sin ruta");
+    $('#zonaVentaPedido').val(zonaRuta?.zona_venta);
+
+    if ( desde ) {
+        let medioDia = desde.split(" ");
+        let horaInicio = desde.split(":");
+
+        // Se le suma 12 horas por el formato de 24 hrs
+        if ( medioDia[1].toUpperCase() == 'PM' ) {
+            horas = new Number(horaInicio[0]) + 12;
+        } else {
+            horas = horaInicio[0];
+        }
+
+        let customDate = new Date();
+        customDate.setHours(horas);
+        customDate.setMinutes(horaInicio[1].split(" ")[0]);
+
+        let horaInicioStr = moment(customDate).format('HH:mm');
+        $('#desdePedido').val(horaInicioStr);
+    } 
+
+    if ( hasta ) {
+        let medioDia = hasta.split(" ");
+        let horaInicio = hasta.split(":");
+
+        // Se le suma 12 horas por el formato de 24 hrs
+        if ( medioDia[1].toUpperCase() == 'PM' ) {
+            horas = new Number(horaInicio[0]) + 12;
+        } else {
+            horas = horaInicio[0];
+        }
+
+        let customDate = new Date();
+        customDate.setHours(horas);
+        customDate.setMinutes(horaInicio[1].split(" ")[0]);
+
+        let horaFinStr = moment(customDate).format('HH:mm');
+        $('#hastaPedido').val(horaFinStr);
+    }
 }
 
 // Obtiene la información de la zona acorde a la colonia por default del cliente
@@ -94,7 +158,7 @@ function getColoniaZona(colonia, zip) {
 
     setAjax(settings).then((response) => {
         let data = response.data;
-        console.log('Esta es la data de la zona:', data);
+        // console.log('Esta es la data de la zona:', data);
         let ruta = data[0].nameUbicacionCil;
         let splitRuta = ruta.split(" : ");
         let desde = customerGlobal.desde;
@@ -177,7 +241,6 @@ function getPlantas() {
     }
 
     setAjax(settings).then((response) => {
-        console.log(response);
         setSelectPlants((response.data));
     }).catch((error) => {
         console.log(error);
@@ -192,7 +255,6 @@ function getArticulos() {
     }
 
     setAjax(settings).then((response) => {
-        console.log(response);
         setSelectArticulos((response.data));
     }).catch((error) => {
         console.log(error);
@@ -207,7 +269,6 @@ function getMetodosPago() {
     }
 
     setAjax(settings).then((response) => {
-        console.log(response);
         setSelectMetodosPago((response.data));
     }).catch((error) => {
         console.log(error);
@@ -222,7 +283,6 @@ function getServiceOrigin() {
     }
 
     setAjax(settings).then((response) => {
-        console.log(response);
         setSelectServiceOrigin((response.data));
     }).catch((error) => {
         console.log(error);
@@ -237,7 +297,6 @@ function getBusinessType() {
     }
 
     setAjax(settings).then((response) => {
-        console.log(response);
         setSelectBusinessType((response.data));
     }).catch((error) => {
         console.log(error);
