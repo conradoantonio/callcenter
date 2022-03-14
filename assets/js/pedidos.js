@@ -311,12 +311,22 @@ async function savePedido() {
             // "numero_viaje" : "",
             "zona_precio" : 2,//Este es el Id de la zona
             "customer" : $('#idCliente').text(),
-            "operario" : 14296,
-            // "operario" : userId,
+            // "operario" : 14296,
+            "operario" : userId,
             "typeservice" : 1,
             "time" : "12:00 pm",
             "turn" : 1,
-            "paymentMethod" : 1,
+            "paymentMethod" : $('#metodoPagoPedido').val(),
+            // "paymentMethod" : [
+            //     {
+            //         'metodo': 1,
+            //         'monto' : 300
+            //     }, 
+            //     {
+            //         'metodo': 1,
+            //         'monto' : 300
+            //     }
+            // ],
             "origen" : $('#idCliente').val(),
             "comentary" : $('#observacionesPagoPedido').val(),
             "folio" : "",
