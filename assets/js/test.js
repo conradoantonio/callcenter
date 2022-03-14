@@ -27,10 +27,10 @@ function searchCustomer(search) {
 
     setAjax(settings).then((response) => {
         swal.close();
-        console.log('Cliente encontrado', response);
+        // console.log('Cliente encontrado', response);
         customerGlobal = response.data[0];
         setCustomerInfo(response.data[0]);
-        $('#agregarDireccion').attr('disabled', false);
+        $('#agregarDireccion, #guardarPedido, #agregarProducto').attr('disabled', false);
     }).catch((error) => {
         infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
         // Limpia los campos de cliente
@@ -80,7 +80,7 @@ function setCustomerInfo(customer) {
 
     // Se obtienen los datos de la colonia
     setColoniaZonaData(direccionDefault);
-    console.log(direccionDefault);
+    // console.log('Dirección por default', direccionDefault);
     // getColoniaZona(direccionDefault?.colonia, direccionDefault?.zip);
 }
 
@@ -329,17 +329,17 @@ function setSelectPlants(items) {
 // Método para llenar los select de artículos
 function setSelectArticulos(items) {
     if ( items.length ) {
-        $('select#articuloFrecuenteCilFormCliente, select#articuloFrecuenteEstFormCliente').children('option').remove();
+        $('select#articuloFrecuenteCilFormCliente, select#articuloFrecuenteEstFormCliente, select#capacidadFormProductos').children('option').remove();
         // $('select#articuloFrecuenteEstFormCliente').children('option').remove();
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
                 if (items[key].tipo_articulo == 1) {// Cilindro
-                    $("select#articuloFrecuenteCilFormCliente").append(
-                        '<option value='+items[key].id+'>'+items[key].nombre+'</option>'
+                    $("select#articuloFrecuenteCilFormCliente, select#capacidadFormProductos").append(
+                        '<option value='+items[key].id+' data-articulo=' + "'" + JSON.stringify(items[key]) + "'" + '>'+items[key].nombre+'</option>'
                     );
                 } else if (items[key].tipo_articulo == 2) {// Estacionario
                     $("select#articuloFrecuenteEstFormCliente").append(
-                        '<option value='+items[key].id+'>'+items[key].nombre+'</option>'
+                        '<option value='+items[key].id+' data-articulo=' + "'" + JSON.stringify(items[key]) + "'" + '>'+items[key].nombre+'</option>'
                     );
                 }
             }
@@ -397,46 +397,6 @@ function setSelectBusinessType(items) {
     }
 }
 
-// Ajax para crear un pedido
-let pedidoData = {
-    "opportunities": [
-        {
-            "status": "10",
-            "dateCreate": "10/01/2022",
-            "closeDate": "11/01/2022",
-            "customer": "26163",
-            "operario": "1178",
-            "route": "1",
-            "turn": "1",
-            "paymentMethod": "1",
-            "origen": "1",
-            "typeservice": "1",
-            "comentary": "esto es un comentario",
-            "rangeH1": "12:33",
-            "rangeH2": "13:33",
-            "numero_viaje": "60",
-            "zona_precio": "1",
-            "tipo": "4",
-            "weekDay": [
-                1,
-                3,
-                5
-            ],
-            "items": [
-                {
-                    "article": 1754,
-                    "quantity": 1,
-                    "units": "1",
-                    "eliminar": true,
-                    "zoneprice": "225",
-                    "capacity": "10"
-                }
-            ]
-        }
-    ]
-}
-
-
 // Función y ajax para obtener los pedidos
 function getCasosOportunidades() {
     let dataObtenerPedido = {
@@ -453,8 +413,8 @@ function getCasosOportunidades() {
     $('div#historic-data table.table-gen tbody').children('tr').remove();
 
     setAjax(settings).then((response) => {
-        console.log('pedidos obtenidos exitósamente', response);
-            setHistoricTable(JSON.parse(response.data));
+        // console.log('pedidos obtenidos exitósamente', response);
+        setHistoricTable(JSON.parse(response.data));
     }).catch((error) => {
         console.log('Error en la consulta', error);
     });
@@ -476,7 +436,7 @@ function setHistoricTable( data ) {
             }
         }
     } else {
-        console.warn('No hay casos por cargar');
+        // console.warn('No hay casos por cargar');
     }
 
     // Checa oportunidades
@@ -489,7 +449,7 @@ function setHistoricTable( data ) {
             }
         }
     } else {
-        console.warn('No hay oportunidades por cargar');
+        // console.warn('No hay oportunidades por cargar');
     }
 
     // Vuelve a mostrar la tabla
@@ -540,7 +500,7 @@ function setTrOppCases(item, type = 'casos') {
 // Método para limpiar la data del cliente cuando falla una búsqueda
 function clearCustomerInfo () {
     // Inhabilita el botón de agregar dirección
-    $('#agregarDireccion').attr('disabled', true);
+    $('#agregarDireccion, #guardarPedido, #agregarProducto').attr('disabled', true);
 
     // Se reinician los labels
     $('#idCliente').text('0');
@@ -566,6 +526,15 @@ function clearCustomerInfo () {
     $('#desdePedido, #hastaPedido, #zonaVentaPedido').val('');
 
     customerGlobal = null;
+
+    // Se resetea la tabla de productos de los pedidos
+    $('.productosCilindroPedido').children('tbody').children('tr').remove();
+    $('.productosEstacionarioPedido').children('tbody').children('tr').remove();
+
+    $('.productosCilindroPedido').parent().parent().addClass('d-none');
+    $('.productosEstacionarioPedido').parent().parent().addClass('d-none');
+
+    $('#sinProductos').removeClass('d-none');
 }
 
 // Muestra un mensaje de cargando...
@@ -625,35 +594,6 @@ function confirmMsg(type, title, callback) {
 }
 
 // Call a global ajax method
-// function setAjax(settings) {
-//     $.ajax({
-//         url: settings.url,
-//         method: settings.method,
-//         contentType: 'application/json',
-//         data: settings.data ?? null,
-//         // data: JSON.stringify(content),
-//         dataType: 'json',
-//         success: function (response) {
-//             let msg = '';
-//             if ( response.success ) {
-//                 if ( settings.callback ) {
-//                     window[settings.callback](response, settings);
-//                 } else {
-//                     msg = response.msg ? response.msg : 'Información procesada exitósamente';
-//                     infoMsg('success', msg);
-//                 }
-//             } else {
-//                 msg = response.msg ? response.msg : 'Algo salió mal';
-//                 infoMsg('error', msg);
-//             }
-
-//         }, error: function (xhr, status, error) {
-//             infoMsg('error', 'Algo salió mal.');
-//             console.log('Error en la consulta', xhr, status, error);
-//         }
-//     });
-// }
-
 function setAjax(settings) {
     // Generamos el AJAX dinamico para las peticiones relacionadas con peddos
     return new Promise((resolve, reject) => {
