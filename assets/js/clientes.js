@@ -17,6 +17,7 @@ $("#agregarDirecciones, #agregarDireccion").click( function() {
 $('select#direccionCliente').on('change', function(e) {
     let direccion = $( this ).children('option:selected').data('address');
     console.log('esta es la dirección', direccion);
+    resetProductList();
     if ( direccion ) {
         setColoniaZonaData( direccion );
     } else {// Podría ser buena práctica meter este bloque de código en una función

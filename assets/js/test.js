@@ -5,13 +5,29 @@ $('span#role').text(userRole);
 // Evento que dispara la búsqueda de un cliente
 $('input#buscarCliente').on('keypress',function(e) {
     if( e.which == 13 ) {
-        loadMsg('Espere un momento...');
-        searchCustomer( $(this).val() );
+        let buscar = $(this).val();
+        let listaVacia = $('#sinProductos').is(':visible');
+        if (! listaVacia ) {// Tiene productos agregados
+            swal({
+                title: 'Tiene un pedido en curso, ¿Está seguro de continuar con la búsqueda de un cliente nuevo?',
+                icon: 'warning',
+                buttons:["Cancelar", "Aceptar"],
+                dangerMode: true,
+            }).then((accept) => {
+                if ( accept ) {
+                    searchCustomer( buscar );
+                }
+            }).catch(swal.noop);
+        } else {
+            searchCustomer( buscar );
+        }
     }
 });
 
 // Función para filtrar clientes por un texto
 function searchCustomer(search) {
+    loadMsg('Espere un momento...');
+
     clearCustomerInfo();
 
     let dataSearchCustomer = {
@@ -30,11 +46,10 @@ function searchCustomer(search) {
         // console.log('Cliente encontrado', response);
         customerGlobal = response.data[0];
         setCustomerInfo(response.data[0]);
-        $('#agregarDireccion, #guardarPedido, #agregarProducto').attr('disabled', false);
+        $('#agregarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago').attr('disabled', false);
     }).catch((error) => {
         infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
         // Limpia los campos de cliente
-        customerGlobal = null;
         clearCustomerInfo();
         console.log(error);
     });
@@ -66,7 +81,7 @@ function setCustomerInfo(customer) {
                 let textoDireccion = setDir(direcciones[key]);
 
                 $('#direccionCliente').append(
-                    '<option '+(direcciones[key].defaultShipping ? 'selected' : '')+' data-address='+"'"+JSON.stringify(direcciones[key])+"'"+' value="'+direcciones[key].idAdress+'">'+textoDireccion+'</option>'
+                    '<option '+(direcciones[key].defaultShipping ? 'selected' : '')+' data-address='+"'"+JSON.stringify(direcciones[key])+"'"+' value="'+direcciones[key].idAddressLine+'">'+textoDireccion+'</option>'
                 );
             }
         }
@@ -500,7 +515,7 @@ function setTrOppCases(item, type = 'casos') {
 // Método para limpiar la data del cliente cuando falla una búsqueda
 function clearCustomerInfo () {
     // Inhabilita el botón de agregar dirección
-    $('#agregarDireccion, #guardarPedido, #agregarProducto').attr('disabled', true);
+    $('#agregarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago').attr('disabled', true);
 
     // Se reinician los labels
     $('#idCliente').text('0');
@@ -526,15 +541,24 @@ function clearCustomerInfo () {
     $('#desdePedido, #hastaPedido, #zonaVentaPedido').val('');
 
     customerGlobal = null;
+    resetProductList();
+}
 
-    // Se resetea la tabla de productos de los pedidos
+// Resetea la tabla de productos de los pedidos y métodos de pago
+function resetProductList(){
+    // Productos
     $('.productosCilindroPedido').children('tbody').children('tr').remove();
     $('.productosEstacionarioPedido').children('tbody').children('tr').remove();
 
     $('.productosCilindroPedido').parent().parent().addClass('d-none');
     $('.productosEstacionarioPedido').parent().parent().addClass('d-none');
-
+    
     $('#sinProductos').removeClass('d-none');
+    
+    // Métodos de pago
+    $('.productosMetodoPago').children('tbody').children('tr').remove();
+    $('.productosMetodoPago').parent().parent().addClass('d-none');
+    $('#sinMetodosPago').removeClass('d-none');
 }
 
 // Muestra un mensaje de cargando...
@@ -556,6 +580,30 @@ function loadMsg(msg = 'Espere un momento porfavor...') {
     swal(swalObj).catch(swal.noop);
 
 }
+
+// Regresa el valor de un input tiempicker al formato de netsuite
+function formatTime(value, format = 'h:mm a') {
+    let hora = value.split(':');
+    let customDateTime = new Date();
+
+    if ( hora.length ) {
+
+        customDateTime.setHours(hora[0]);
+        customDateTime.setMinutes(hora[1]);
+
+        return moment(customDateTime).format(format);
+
+    } 
+
+    return '';
+}
+
+// Debe limpiarse el formulario
+$('select#plantas').on('change', function(e) {
+    clearCustomerInfo();
+    resetProductList();
+});
+
 
 // Muestra un sweetalert personalizado
 function infoMsg(type, title, msg = '', timer = null) {

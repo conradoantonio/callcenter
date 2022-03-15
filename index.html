@@ -607,6 +607,43 @@
         </div>
     </div>
 
+    <div id="formMetodoPagosModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleMetodoPagosModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 400px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleMetodoPagosModal">Agregar método de pago</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row pb-2">
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <label>Método de pago</label>
+                                <select id="metodoPagoPedido" class="form-ptg form-ptg-primary">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 d-none">
+                            <div class="content-input content-input-primary">
+                                <label>Referencia</label>
+                                <input id="referenciaPagoPedido" class="form-ptg form-ptg-primary"> </select>
+                            </div>
+                        </div>
+                        <div class="col-12 d-none">
+                            <div class="content-input content-input-primary">
+                                <label>Folio de autorización</label>
+                                <input id="folioAutorizacionPedido" class="form-ptg form-ptg-primary"> </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+                    <button id="guardarProductosForm" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="formNotasAdicionalesModal" class="modal fade" tabindex="-1" role="dialog"
         aria-labelledby="titleNotasAdicionalesModal" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 300px;">
@@ -1210,8 +1247,9 @@
                             <label class="color-primary ft-18">Lista de pedido</label>
                         </div>
                         <div class="col-auto">
-                            <button id="agregarProducto" disabled type="button" class="btn bg-secondary-cc"><i
-                                    class="fa-solid fa-plus"></i> Agregar producto</button>
+                            <button id="agregarProducto" disabled type="button" class="btn bg-secondary-cc">
+                                <i class="fa-solid fa-plus"></i> Agregar producto
+                            </button>
                         </div>
                     </div>
                     <div class="row">
@@ -1292,79 +1330,53 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div id="productosCilindroPedido" class="d-none pb-2">
-                        <div class="row bg-primary-cc ft-16 pt-3 pb-1">
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-3">
-                                        Producto
-                                    </div>
-                                    <div class="col-2">
-                                        Cantidad
-                                    </div>
-                                    <div class="col-3">
-                                        Capacidad
-                                    </div>
-                                    <div class="col-2">
-                                        Valor
-                                    </div>
-                                    <div class="col-2">
-                                        Envase
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fa-solid fa-ellipsis-vertical ft-24 invisible"></i>
-                            </div>
+                    <div class="row pb-2 align-items-center">
+                        <div class="col">
+                            <label class="color-primary ft-18">Lista de métodos de pago</label>
                         </div>
-                        <div class="content">
-
+                        <div class="col-auto">
+                            <button id="agregarMetodoPago" disabled type="button" class="btn bg-secondary-cc">
+                                <i class="fa-solid fa-plus"></i> Agregar método de pago
+                            </button>
                         </div>
                     </div>
-                    <div id="productosEstacionarioPedido" class="d-none pb-2">
-                        <div class="row bg-primary-cc ft-16 pt-3 pb-1">
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-5">
-                                        Producto
-                                    </div>
-                                    <div class="col-3">
-                                        Litros
-                                    </div>
-                                    <div class="col-2">
-                                        Monto
-                                    </div>
-                                    <div class="col-2">
-                                        Total
-                                    </div>
+                    <div class="row">
+                        <div class="card-body">
+                            <div class="col-12 d-none">
+                                <div class="table-responsive">
+                                    <table class="table table-striped productosMetodoPago">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Método</th>
+                                                <th scope="col" class="text-center">Folio</th>
+                                                <th scope="col" class="text-center">Monto</th>
+                                                <th scope="col" class="text-center">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- <tr>
+                                                <td>Efectivo</td>
+                                                <td class="text-center">N/A</td>
+                                                <td class="text-center">$600 mxn</td>
+                                                <td class="text-center">
+                                                    <button class="btn btn-sm btn-danger delete-metodo-pago"> <i class="fa-solid fa-trash-can"></i> </button>
+                                                </td>
+                                            </tr> -->
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
+                                                <td colspan="1" class="text-center total">$0 mxn</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
                             </div>
-                            <div class="col-auto">
-                                <i class="fa-solid fa-ellipsis-vertical ft-24 invisible"></i>
-                            </div>
-                        </div>
-                        <div class="content">
-
-                        </div>
-                    </div> -->
-                    <div class="row pb-2 align-items-center">
-                        <div class="col-4">
-                            <div class="content-input content-input-primary">
-                                <label>Método de pago</label>
-                                <select id="metodoPagoPedido" class="form-ptg form-ptg-primary">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-3 d-none">
-                            <div class="content-input content-input-primary">
-                                <label>Referencia</label>
-                                <input id="referenciaPagoPedido" class="form-ptg form-ptg-primary"> </select>
-                            </div>
-                        </div>
-                        <div class="col-5 d-none">
-                            <div class="content-input content-input-primary">
-                                <label>Folio de autorización</label>
-                                <input id="folioAutorizacionPedido" class="form-ptg form-ptg-primary"> </select>
+                            <div class="col-12" id="sinMetodosPago" style="position: relative; min-height: 90px;">
+                                <div
+                                    style="text-align: center; position: absolute; top: 0; bottom: 0; right: 0; left: 0; font-size: 15px; margin: auto; height: 25px;">
+                                    <label class="color-primary">Sin métodos de pago registrados.</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1749,8 +1761,9 @@
                                             <label class="title-ptg">Lista de direcciones</label>
                                         </div>
                                         <div class="col-auto">
-                                            <button id="agregarDirecciones" type="button" class="btn bg-secondary-cc"><i
-                                                    class="fa-solid fa-plus"></i> Agregar domicilio</button>
+                                            <button id="agregarDirecciones" type="button" class="btn bg-secondary-cc">
+                                                <i class="fa-solid fa-plus"></i> Agregar domicilio
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="card mt-4">
