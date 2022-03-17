@@ -100,7 +100,65 @@ $("#agregarProducto").click(function () {
 });
 
 // Abre el modal de métodos de pago
-$("#agregarProducto").click(function () {
+$("#agregarMetodoPago").click(function () {
+    $('#formMetodoPagosModal').modal('show');
+});
+
+// Valida los inputs disponibles en los métodos de pago
+$("#metodoPagoPedido").change(function () {
+    let metodoId = $(this).val();
+    if ( ["8", "2", "5", "6"].includes( metodoId ) ) {// Si el método de pago es transferencia, prepago, tarjeta de crédito, tarjeta de débito
+        $("#folioAutorizacionPedido").parent().parent().removeClass("d-none");
+    } else {
+        $("#folioAutorizacionPedido").parent().parent().addClass("d-none");
+    }
+});
+
+// Agrega un método de pago nuevo
+$('#guardarMetodoPagoForm').on('click', function () {
+    let canContinue = false;
+    let conFolio    = ["8", "2", "5", "6"];
+    let metodoId    = $("#metodoPagoPedido").val();
+    // let numMetodos  = $('table.productosMetodoPago tbody').children('tr.metodos').length;
+
+    if(!metodoId || !$("#montoPagoPedido").val()  || ( conFolio.includes(metodoId) && ( !$("#folioAutorizacionPedido").val() ) ) ) {
+        canContinue = false;
+    } else {
+        canContinue = true;
+    }
+
+    if(! canContinue ) { 
+        alert("Favor de llenar todos los campos con *");
+        return; 
+    }
+
+    $('#sinMetodosPago').addClass('d-none');
+    $('.productosMetodoPago').parent().parent().removeClass('d-none');
+
+    let total        = parseFloat($('#montoPagoPedido').val()).toFixed(2);
+    let folio        = $('#folioAutorizacionPedido').val().trim();
+    let metodoNombre = $("#metodoPagoPedido").children(':selected').text();
+    let metodoObj    = {
+        tipo_pago : metodoId,
+        monto     : total,
+        folio     : folio,
+    };
+   
+    // Se llena la información del item
+    $(".productosMetodoPago tbody").append(
+        '<tr data-item-id='+metodoId+' class="metodo-item" data-item=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
+            '<td>'+metodoNombre+'</td>'+
+            '<td class="text-center">'+(folio ? folio : 'No aplica')+'</td>'+
+            '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+            '<td class="text-center">'+
+                '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPago" data-item-id='+metodoId+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+            '</td>'+
+        '</tr>'
+    );
+
+    // Falta código para setear un total
+    setTotalMetodoPago( $(".productosMetodoPago") );
+    $('#formMetodoPagosModal').modal('hide');
 
 });
 
@@ -291,9 +349,27 @@ function onChangeValue(element) {
     }
 }
 
+// Guarda la información de un pedido
 async function savePedido() {
     btnGuardarPedido.on('click', function () {
+        
+        // let canContinue = false;
+        // if(
+        //     //!$("#cadaFormCliente").val().trim()                         ||
+        //     //!$("#frecuenciaFormCliente").val().trim()                   ||
+        //     //!$("#entreFormCliente").val().trim()                        ||
+        //     //!$("#lasFormCliente").val().trim()                          ||
+        //     $('table.productosMetodoPago tbody').find("tr.metodo").length == 0
+        // ) {
+        //     canContinue = false;
+        // } else {
+        //     canContinue = true;
+        // }
+
+        // if (! canContinue ) { return; }
+
         let articulosArr = [];
+        let pagosArr     = [{"tipo_pago":"1","monto":464}];
 
         if (! $('table.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {
             $('table.productosEstacionarioPedido > tbody  > tr.product-item').each(function() {
@@ -336,16 +412,7 @@ async function savePedido() {
             "folio"         : "",
             "tipo"          : typeService,
             "items"         : articulosArr,
-            // "paymentMethod" : [
-            //     {
-            //         'metodo': 1,
-            //         'monto' : 300
-            //     }, 
-            //     {
-            //         'metodo': 1,
-            //         'monto' : 300
-            //     }
-            // ],
+            "pago"          : pagosArr,
         }
 
         opportunities.push(tmp);
@@ -424,6 +491,19 @@ function setTotalPedido(table) {
     table.children('tbody').children('tr.product-item').each(function() {
         // let articulo = $( this ).data('item');
         let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(4)").data('total')).toFixed(2);
+        total = Number(total) + Number(subtotal);
+    });
+
+    table.children('tfoot').find('td.total').text('$'+total+' mxn');
+}
+
+// Calcula el total del método de pago
+function setTotalMetodoPago(table) {
+    let total = parseFloat(0).toFixed(2);
+
+    table.children('tbody').children('tr.metodo-item').each(function() {
+        // let articulo = $( this ).data('item');
+        let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(2);
         total = Number(total) + Number(subtotal);
     });
 

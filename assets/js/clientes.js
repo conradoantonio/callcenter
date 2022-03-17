@@ -101,10 +101,6 @@ function validateAddressFields() {
                 '</tr>'
             )
 
-            // Marca como principal si es que es la única dirección existente
-            if (! numAddress ) {
-                // $('input#'+timeUnix).prop('checked', true);
-            }
             $('div#formDireccionesModal').modal('hide');
         } else if( tipoAccion == 'guardar' ) {
             let dataToSend = {

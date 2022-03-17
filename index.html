@@ -615,20 +615,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="row pb-2">
-                        <div class="col-12">
+                        <div class="col-12 pb-2">
                             <div class="content-input content-input-primary">
                                 <label>Método de pago</label>
                                 <select id="metodoPagoPedido" class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-12 d-none">
+                        <div class="col-12 pb-2">
                             <div class="content-input content-input-primary">
-                                <label>Referencia</label>
-                                <input id="referenciaPagoPedido" class="form-ptg form-ptg-primary"> </select>
+                                <label>Monto a pagar</label>
+                                <input id="montoPagoPedido" oninput="onlyNumbers(this.value, '#montoPagoPedido')" class="form-ptg form-ptg-primary"> </select>
                             </div>
                         </div>
-                        <div class="col-12 d-none">
+                        <div class="col-12 pb-2 d-none">
                             <div class="content-input content-input-primary">
                                 <label>Folio de autorización</label>
                                 <input id="folioAutorizacionPedido" class="form-ptg form-ptg-primary"> </select>
@@ -638,7 +639,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
-                    <button id="guardarProductosForm" type="button" class="btn btn-primary">Guardar</button>
+                    <button id="guardarMetodoPagoForm" type="button" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>
@@ -1354,19 +1355,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- <tr>
-                                                <td>Efectivo</td>
-                                                <td class="text-center">N/A</td>
-                                                <td class="text-center">$600 mxn</td>
-                                                <td class="text-center">
-                                                    <button class="btn btn-sm btn-danger delete-metodo-pago"> <i class="fa-solid fa-trash-can"></i> </button>
-                                                </td>
-                                            </tr> -->
+                                            
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                                 <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
-                                                <td colspan="1" class="text-center total">$0 mxn</td>
+                                                <td colspan="1" class="text-center total" data-total="">$100 mxn</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -1404,6 +1398,9 @@
                             <div class="content-input content-input-primary">
                                 <label>Tipo de caso</label>
                                 <select id="tipoCasoFugaQueja" class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="1">Fuga</option>
+                                    <option value="2">Quejas</option>
                                 </select>
                             </div>
                         </div>
@@ -1411,6 +1408,7 @@
                             <div class="content-input content-input-primary">
                                 <label>Concepto</label>
                                 <select id="conceptoFugaQueja" class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
                                 </select>
                             </div>
                         </div>
@@ -1437,50 +1435,59 @@
                         </div>
                         <div class="col-4">
                             <div class="content-input content-input-primary">
-                                <label>Año</label>
-                                <input id="anioFugaQueja" type="number" class="form-ptg form-ptg-primary">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row pb-2">
-                        <div class="col-4">
-                            <div class="content-input content-input-primary">
-                                <label>Email</label>
-                                <input id="emailFugaQueja" type="email" class="form-ptg form-ptg-primary">
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="content-input content-input-primary">
-                                <label>Teléfono</label>
-                                <input id="telefonoFugaQueja" type="text" class="form-ptg form-ptg-primary">
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="content-input content-input-primary">
                                 <label>Prioridad</label>
                                 <select id="prioridadFugaQueja" class="form-ptg form-ptg-primary">
-                                    <option>Alta</option>
-                                    <option>Media</option>
-                                    <option>Baja</option>
+                                    <option value="1">Alta</option>
+                                    <option value="2">Media</option>
+                                    <option value="3">Baja</option>
                                 </select>
                             </div>
                         </div>
+                        <!-- <div class="col-4">
+                            <div class="content-input content-input-primary">
+                                <label>Año de fabricación</label>
+                                <input id="anioFugaQueja" type="number" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div> -->
                     </div>
                     <div class="row pb-2">
-                        <div class="col-4">
+                        <div class="col-6">
                             <div class="content-input content-input-primary">
-                                <label>Asociar permiso</label>
+                                <label>Email</label>
+                                <input id="emailFugaQueja" readonly type="email" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="content-input content-input-primary">
+                                <label>Teléfono</label>
+                                <input id="telefonoFugaQueja" readonly type="text" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-6">
+                            <div class="content-input content-input-primary">
+                                <label>Asociar servicio</label>
                                 <select id="asociarServicioFugaQueja" class="form-ptg form-ptg-primary">
                                 </select>
                             </div>
                         </div>
-                        <div class="col-8">
+                        <div class="col-6">
+                            <div class="content-input content-input-primary">
+                                <label>Asociar a otro caso</label>
+                                <select id="asociarCasoFugaQueja" class="form-ptg form-ptg-primary">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row pb-2">
+                        <div class="col-12">
                             <div class="content-input content-input-primary">
                                 <label>Nota principal</label>
                                 <input id="notaPrincipalFugaQueja" type="text" class="form-ptg form-ptg-primary">
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row pb-2">
                         <div class="col-4">
                             <div class="row ion-align-items-center">
@@ -1501,8 +1508,8 @@
                         </div>
                         <div class="col-8">
                             <div class="content-input content-input-primary">
-                                <label>Descripción del cliente</label>
-                                <input id="descripcionClienteFugaQueja" type="text" class="form-ptg form-ptg-primary">
+                                <label>Descripción del caso</label>
+                                <input id="descripcionCasoFugaQueja" type="text" class="form-ptg form-ptg-primary">
                             </div>
                         </div>
                     </div>
@@ -1510,8 +1517,9 @@
                         <div class="col">
                         </div>
                         <div class="col-auto">
-                            <button id="guardarPedido" type="button" class="btn bg-secondary-cc"><i
-                                    class="fa-solid fa-floppy-disk"></i> Guardar caso</button>
+                            <button id="guardarFugaQueja" disabled type="button" class="btn bg-secondary-cc">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar caso
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1867,10 +1875,13 @@
         getMethodPayments = '${ds.getMethodPayments}';
         urlGetServicesOriginList = '${ds.getServicesOriginList}';
         urlGetBusinessType = '${ds.getBusinessType}';
+        urlGuardarFugaQueja = '${ds.postFugasQuejas}';
+        urlGetConceptosCasos = '${ds.getLisConceptosCasos}';
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
         // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
         urlGetPlaces = '${ds.getCities}';
+        conceptoFugasQuejasArr = [];
         customerGlobal = null;
         direccionDefault = null;
 
@@ -1884,6 +1895,15 @@
 
             $('#rutaDireccion').data('ruta-obj', null);
             $('.art-fre-est, .art-fre-cil').addClass('d-none');
+        });
+
+        // Limpia los campos del modal método de pago
+        $('body').delegate('div#formMetodoPagosModal', 'hidden.bs.modal', function () {
+            $(this).find('.form-ptg').val('');
+            $(this).find('select.form-ptg').each(function( index ) {
+                $( this ).val($(this).children("option:first").val());
+            });
+            $('#folioAutorizacionPedido').parent().parent().addClass('d-none');
         });
 
         function initComponents() {
@@ -1903,16 +1923,6 @@
             $(".form-search .fa-xmark").click(function () {
                 $(this).addClass('d-none');
                 $(this).parent().find("input").val('');
-            });
-
-            $("#metodoPagoPedido").change(function () {
-                if ($(this).val() == "8" || $(this).val() == "2" || $(this).val() == "5" || $(this).val() == "6"){
-                    //$("#referenciaPagoPedido").parent().parent().removeClass("d-none");
-                    $("#folioAutorizacionPedido").parent().parent().removeClass("d-none");
-                } else {
-                    //$("#referenciaPagoPedido").parent().parent().addClass("d-none");
-                    $("#folioAutorizacionPedido").parent().parent().addClass("d-none");
-                }
             });
 
             // $("#agregarDirecciones").click(function() {
@@ -2193,6 +2203,10 @@
     <!-- Archivo para pedidos -->
     <script
         src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=109000&c=5298967_SB1&h=_rK1v0syyFwEdnlT3PbUjW5_ThyZEB_9slMy6Pb7GHH1gWHr&_xt=.js"></script>
+
+    <!-- Archivo para fugas y quejas -->
+    <script
+        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=110690&c=5298967_SB1&h=AIoFrYKLxwKcvOcS_8ecyxWzz45hkzkB9ckr7PwpOrRdA7dq&_xt=.js"></script>
 </body>
 
 </html>

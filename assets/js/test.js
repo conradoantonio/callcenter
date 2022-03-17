@@ -6,8 +6,8 @@ $('span#role').text(userRole);
 $('input#buscarCliente').on('keypress',function(e) {
     if( e.which == 13 ) {
         let buscar = $(this).val();
-        let listaVacia = $('#sinProductos').is(':visible');
-        if (! listaVacia ) {// Tiene productos agregados
+        let tieneProductos = $('#sinProductos').hasClass('d-none');
+        if ( tieneProductos ) {// Tiene productos agregados
             swal({
                 title: 'Tiene un pedido en curso, ¿Está seguro de continuar con la búsqueda de un cliente nuevo?',
                 icon: 'warning',
@@ -46,7 +46,7 @@ function searchCustomer(search) {
         // console.log('Cliente encontrado', response);
         customerGlobal = response.data[0];
         setCustomerInfo(response.data[0]);
-        $('#agregarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago').attr('disabled', false);
+        $('#agregarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', false);
     }).catch((error) => {
         infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
         // Limpia los campos de cliente
@@ -67,6 +67,9 @@ function setCustomerInfo(customer) {
     $('#contratoCliente').text(customer.contrato ? customer.contrato : 'Pendiente de validar');
     $('#notasCliente').text(customer.notasCustomer ? customer.notasCustomer : 'Sin notas');
     $('#tipoCliente').text(customer.typeCustomer);
+    // Campos del formulario quejas y fugas
+    $('#emailFugaQueja').val(customer.email);
+    $('#telefonoFugaQueja').val(customer.telefono);
 
     // Agrega las direcciones del cliente al select
     $('#direccionCliente').children('option').remove();
@@ -344,18 +347,20 @@ function setSelectPlants(items) {
 // Método para llenar los select de artículos
 function setSelectArticulos(items) {
     if ( items.length ) {
-        $('select#articuloFrecuenteCilFormCliente, select#articuloFrecuenteEstFormCliente, select#capacidadFormProductos').children('option').remove();
+        $('select#articuloFrecuenteCilFormCliente, select#articuloFrecuenteEstFormCliente, select#capacidadFormProductos, select#articuloFugaQueja').children('option').remove();
+        $('select#articuloFugaQueja').append('<option value="">Seleccione una opción</option>')
         // $('select#articuloFrecuenteEstFormCliente').children('option').remove();
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
-                if (items[key].tipo_articulo == 1) {// Cilindro
-                    $("select#articuloFrecuenteCilFormCliente, select#capacidadFormProductos").append(
-                        '<option value='+items[key].id+' data-articulo=' + "'" + JSON.stringify(items[key]) + "'" + '>'+items[key].nombre+'</option>'
-                    );
-                } else if (items[key].tipo_articulo == 2) {// Estacionario
-                    $("select#articuloFrecuenteEstFormCliente").append(
-                        '<option value='+items[key].id+' data-articulo=' + "'" + JSON.stringify(items[key]) + "'" + '>'+items[key].nombre+'</option>'
-                    );
+                let articulo = '<option value='+items[key].id+' data-articulo=' + "'" + JSON.stringify(items[key]) + "'" + '>'+items[key].nombre+'</option>';
+                if ( items[key].tipo_articulo == 1 ) {// Cilindro
+                    $("select#articuloFrecuenteCilFormCliente, select#capacidadFormProductos").append( articulo );
+                } else if ( items[key].tipo_articulo == 2 ) {// Estacionario
+                    $("select#articuloFrecuenteEstFormCliente").append( articulo );
+                }
+
+                if ( [1,2].includes(Number(items[key].tipo_articulo)) ) {
+                    $("select#articuloFugaQueja").append( articulo );
                 }
             }
         }
@@ -368,6 +373,7 @@ function setSelectArticulos(items) {
 function setSelectMetodosPago(items) {
     $('select#metodoPagoPedido').children('option').remove();
     if ( items.length ) {
+        $("select#metodoPagoPedido").append('<option value="">Seleccione una opción</option>')
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
                 $("select#metodoPagoPedido").append(
@@ -426,28 +432,34 @@ function getCasosOportunidades() {
 
     // Se remueven registros previos
     $('div#historic-data table.table-gen tbody').children('tr').remove();
+    $('select#asociarServicioFugaQueja, select#asociarCasoFugaQueja').children('option').remove();
+    $('select#asociarServicioFugaQueja, select#asociarCasoFugaQueja').append('<option value="">Seleccione una opción</option>');
 
     setAjax(settings).then((response) => {
         // console.log('pedidos obtenidos exitósamente', response);
-        setHistoricTable(JSON.parse(response.data));
+        setCasosOportunidades(JSON.parse(response.data));
     }).catch((error) => {
         console.log('Error en la consulta', error);
     });
 }
 
 // Valida el contenido de casos y oportunidades y llama la función setTrOppCases
-function setHistoricTable( data ) {
+function setCasosOportunidades( data ) {
     $('div#historic-data').fadeOut();
     let casos         = data.casos;
     let oportunidades = data.oportunidades;
-
+    console.log('Casos', casos);
+    console.log('Oportunidades', oportunidades);
     // Checa casos
     if ( casos.length ) {
+        // numero de documento, fecha
         for ( var key in casos ) {
             if ( casos.hasOwnProperty( key ) ) {
                 $('div#historic-data table.table-gen tbody').append(
                     setTrOppCases( casos[key] )
                 );
+
+                $('select#asociarCasoFugaQueja').append('<option value="'+casos[key].id_Transaccion+'">No. caso: '+casos[key].numeroCaso+' - Fecha visita: '+casos[key].fecha_visita+'</option>');
             }
         }
     } else {
@@ -461,6 +473,9 @@ function setHistoricTable( data ) {
                 $('div#historic-data table.table-gen tbody').append(
                     setTrOppCases( oportunidades[key] )
                 );
+
+                $('select#asociarServicioFugaQueja').append('<option value="'+oportunidades[key].id_Transaccion+'"> No. documento: '+oportunidades[key].numeroDocumento+' - Fecha: '+oportunidades[key].fecha+'</option>');
+
             }
         }
     } else {
@@ -483,7 +498,7 @@ function setTrOppCases(item, type = 'casos') {
         '</td>'+
         '<td><button class="btn btn-danger"></button></td>'+
         '<td>'+( item.fecha ?? 'Sin fecha')+'</td>'+
-        '<td>'+( item.fechaNotificacion ?? 'Sin fecha visita' )+'</td>'+
+        '<td>'+( item.fecha_visita ?? 'Sin fecha visita' )+'</td>'+
         '<td>'+( item.hora_visita ?? 'Sin hora visita' )+'</td>'+
         '<td>'+( item.numeroDocumento ?? 'Sin número de documento' )+'</td>'+
         '<td>'+( item.numeroCaso ?? 'Sin número de caso' )+'</td>'+
@@ -515,7 +530,7 @@ function setTrOppCases(item, type = 'casos') {
 // Método para limpiar la data del cliente cuando falla una búsqueda
 function clearCustomerInfo () {
     // Inhabilita el botón de agregar dirección
-    $('#agregarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago').attr('disabled', true);
+    $('#agregarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', true);
 
     // Se reinician los labels
     $('#idCliente').text('0');
@@ -539,6 +554,9 @@ function clearCustomerInfo () {
 
     // Se remueven los datos personalizados del cliente del form de pedidos
     $('#desdePedido, #hastaPedido, #zonaVentaPedido').val('');
+
+    // Se remueven los datos personalizados del cliente en quejas y figas
+    $('#emailFugaQueja, #telefonoFugaQueja').val('');
 
     customerGlobal = null;
     resetProductList();
@@ -602,8 +620,17 @@ function formatTime(value, format = 'h:mm a') {
 $('select#plantas').on('change', function(e) {
     clearCustomerInfo();
     resetProductList();
+    clearFields();
 });
 
+// Valida que el valor introducido a un input siempre sea de tipo numérico con máximo 2 decimales
+function onlyNumbers(value, input) {
+    value = value.replace(/[^0-9.]/g, ''); 
+    value = value.replace(/(\..*)\./g, '$1');
+    value = (value.indexOf('.') >= 0) ? (value.substr(0, value.indexOf('.')) + value.substr(value.indexOf('.'), 3)) : value;
+    
+    $(input).val(value);
+}
 
 // Muestra un sweetalert personalizado
 function infoMsg(type, title, msg = '', timer = null) {
