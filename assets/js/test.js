@@ -321,12 +321,27 @@ function getBusinessType() {
     });
 }
 
+// Obtiene la lista de cancelación
+function getListaCancelacion() {
+    let settings = {
+        url    : urlGetListaCancelacion,
+        method : 'GET',
+    }
+
+    setAjax(settings).then((response) => {
+        setSelectCancelacion((response.data));
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
 // Pobla los selects dinámicos de los formularios
 getPlantas();
 getArticulos();
 getMetodosPago();
 getServiceOrigin();
 getBusinessType();
+getListaCancelacion();
 
 // Método para llenar el select de plantas
 function setSelectPlants(items) {
@@ -418,6 +433,25 @@ function setSelectBusinessType(items) {
     }
 }
 
+
+// Método para llenar el select de motivos de cancelación para un caso u oportunidad
+function setSelectCancelacion(items) {
+    $('select#cancelarOppMotivo').children('option').remove();
+    if ( items.length ) {
+        $("select#cancelarOppMotivo").append('<option value="">Seleccione una opción</option>')
+        for ( var key in items ) {
+            if ( items.hasOwnProperty( key ) ) {
+                $("select#cancelarOppMotivo").append(
+                    '<option value='+items[key].id+'>'+items[key].name+'</option>'
+                );
+            }
+        }
+    } else {
+        console.warn('No hay registros por cargar');
+    }
+}
+
+
 // Función y ajax para obtener los pedidos
 function getCasosOportunidades() {
     let dataObtenerPedido = {
@@ -489,10 +523,24 @@ function setCasosOportunidades( data ) {
 // Método para llenar la tabla de casos y oportunidades
 function setTrOppCases(item, type = 'casos') {
      
-    let tr = '<tr>'+
-        '<td></td>'+
+    let tr = 
+    '<tr data-item='+"'"+JSON.stringify(item)+"'"+'>'+
+        '<td class="text-center sticky-col" style="z-index: 50;">'+
+            '<div class="btn-group dropend vertical-center">'+
+                '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
+                '<ul class="dropdown-menu">'+
+                    '<li onclick="verDetalles(this)" class="px-2 py-1 c-pointer" style="font-size: 16px">'+
+                        '<i class="fa-solid fa-eye color-primary"></i> Ver detalles'+
+                    '</li>'+
+                    '<li onclick="cancelarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px">'+
+                        '<i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio'+
+                    '</li>'+
+                '</ul>'+
+            '</div>'+
+            // '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+        '</td>'+
         '<td>'+
-        '   <div class="text-center">'+
+            '<div class="text-center">'+
                 '<input class="form-check-input" type="checkbox" value="" id="'+item.id_Transaccion+'">'+
             '</div>'+
         '</td>'+
@@ -666,6 +714,86 @@ function confirmMsg(type, title, callback) {
     swal(swalObj).then((resp) => {
         callback(resp);
     }).catch(swal.noop);
+}
+
+// Método para ver el detalle de los casos y/o oportunidades
+function verDetalles($this) {
+    let pedido = $($this).closest("tr").data("item");
+    console.log(pedido);
+
+    $("#verDetallesCliente").html(customerGlobal.id + " - " + customerGlobal.nombreCompleto);
+    $("#verDetallesTipoServicio").html(customerGlobal.typeCustomer.trim());
+    $("#verDetallesTelefono").html(customerGlobal.telefono.trim());
+    $("#verDetallesServicio").html(pedido.id_Transaccion);
+    $("#verDetallesDireccion").html($('#direccionCliente').children(':selected').text());
+
+    $("#verDetallesVehiculo").html(pedido.nombre_vehiculo.trim() ? pedido.nombre_vehiculo.trim() : 'Sin asignar');
+    $("#verDetallesZona").html(pedido.zone);
+    $("#verDetallesUsuarioMonitor").html(pedido.monitor.trim() ? pedido.monitor.trim() : 'Sin asignar');
+    $("#verDetallesDireccionw").html(pedido.direccion);
+    $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
+    $("#verDetallesFechaPedido").html(dateFormatFromDate(pedido.fecha_solicitud, '5'));
+
+    // '<td>'+( item.fecha ?? 'Sin fecha')+'</td>'+
+    // '<td>'+( item.fecha_visita ?? 'Sin fecha visita' )+'</td>'+
+    // '<td>'+( item.hora_visita ?? 'Sin hora visita' )+'</td>'+
+    // '<td>'+( item.numeroDocumento ?? 'Sin número de documento' )+'</td>'+
+    // '<td>'+( item.numeroCaso ?? 'Sin número de caso' )+'</td>'+
+    // '<td>'+( item.asunto ?? 'Sin asunto' )+'</td>'+
+    // '<td>'+( item.nombreCliente ?? 'Sin nombre de cliente' )+'</td>'+
+    // '<td>'+( item.telefono ?? 'Sin teléfono' )+'</td>'+
+    // '<td>'+( item.representanteVentas ?? 'Sin agente' )+'</td>'+
+    // '<td>'+( item.monitor ?? 'Sin asignado' )+'</td>'+
+    // '<td>'+( item.estado ?? 'Sin estado' )+'</td>'+
+    // '<td>'+( item.prioridad ?? 'Sin prioridad' )+'</td>'+
+    // '<td>'+( item.motivoCancelacion ?? 'Sin motivo cancelación' )+'</td>'+
+    // '<td>'+( item.cierrePrevisto ?? 'Sin cierre previsto' )+'</td>'+
+    // '<td>'+( item.horaCierre ?? 'Sin hora cierre' )+'</td>'+
+    // '<td>'+( item.origenServicio ? item.origenServicio : 'Sin origen servicio' )+'</td>'+
+    // '<td>'+( item.tipoServicio ?? 'Sin tipo servicio' )+'</td>'+
+    // '<td>'+( item.articulo ?? 'Sin artículo' )+'</td>'+
+    // '<td>'+( item.fechaNotificacion ?? 'Sin fecha notificación' )+'</td>'+
+    // '<td>'+( item.tipoTransaccion ?? 'Sin tipo transacción' )+'</td>'+
+    // '<td>'+( item.nota ?? 'Sin nota' )+'</td>'+
+    // '<td>'+( item.conductorAsignado ?? 'Sin conductor asignado' )+'</td>'+
+    // '<td>'+( item.metodoPago ?? 'Sin método de pago' )+'</td>'+
+    // '<td>'+( item.nota_rapida ?? 'Sin nota rápida' )+'</td>'+
+    // '<td>'+( item.unidad ?? 'Sin unidad' )+'</td>'+
+    
+    
+
+    // $("#verDetallesVehiculo").html(pedido.nombre_vehiculo.trim() ? pedido.nombre_vehiculo.trim() : 'Sin asignar');
+    // $("#verDetallesZona").html(pedido.zona);
+    // $("#verDetallesUsuarioMonitor").html(pedido.usuario_monitor.trim() ? pedido.usuario_monitor.trim() : 'Sin asignar');
+    // $("#verDetallesDireccionw").html(pedido.direccion);
+    // $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
+    // $("#verDetallesFechaPedido").html(dateFormatFromDate(pedido.fecha_solicitud, '5'));
+    // $("#verDetallesFechaNotificacion").html(pedido.fecha_notificacion ? dateFormatFromDate(pedido.fecha_notificacion, '5') + " - " + pedido.hora_notificacion : 'Sin asignar');
+    // $("#verDetallesTipoProducto").html("");
+    // vrTiposServicios.forEach(element => {
+    //     if(pedido.servicio == element.id) {
+    //         $("#verDetallesTipoProducto").html(element.nombre);
+    //     }
+    // });
+    // if($("#verDetallesTipoProducto").html().trim() == "") {
+    //     $("#verDetallesTipoProducto").html("Desconocido");
+    // }
+    // $("#verDetallesContrato").html(pedido.contrato ? pedido.contrato : 'Sin contrato');
+    // $("#verDetallesAgenteAtiende").html(pedido.usuario_pedido_solicitud);
+    // $("#verDetallesTiempoNotificacion").html(pedido.fecha_hora_notificacion ? getRestTime(dateFormatFromString(pedido.fecha_notificacion+(pedido.hora_notificacion ? " "+pedido.hora_notificacion : ''), "1")) : 'Sin asignar');
+    // $("#verDetallesObservaciones").html(pedido.observaciones ? pedido.observaciones : 'Sin observaciones');
+    $("#formVerDetallesPedidos").modal("show");
+}
+
+// Abre el modal para cancelar el pedido
+function cancelarPedido($this) {
+    let pedido = $($this).closest("tr").data("item");
+    $("#cancelarOppPedido").html(pedido.no_pedido ? " - " + pedido.no_pedido : '');
+    // $('#cancelarOppObservaciones').val('').trigger('change');
+
+    // $('#cancelarOppObservaciones').val(null);
+    $("#cancelarOppModal").data("item", pedido);
+    $("#cancelarOppModal").modal("show");
 }
 
 // Call a global ajax method

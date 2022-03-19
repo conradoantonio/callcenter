@@ -412,6 +412,83 @@
             color: #000000;
         }
 
+        .c-pointer {
+            cursor: pointer;
+        }
+
+        .content-input .select2 {
+            font-size: 16px;
+            border: solid 2px #9d9b99;
+            border-radius: 9px;
+            padding-left: 9px;
+            color: #737373;
+            padding-bottom: 9px;
+            padding: 2px 9px;
+            background: white;
+            width: 100% !important;
+        }
+
+        .content-input.content-input-primary .select2 {
+            border: solid 2px #355da7;
+            color: #355da7;
+        }
+
+        .content-input .select2 .select2-selection {
+            border: 0;
+        }
+
+        .content-input .select2 .select2-selection .select2-selection__rendered {
+            padding-left: 0;
+        }
+
+        #content-forms.no-expand .tabs-content {
+            height: calc(100vh - 324px);
+        }
+
+        #content-avisos {
+            height: calc(100vh - (100vh - 290px) - 56px);
+        }
+
+        .content-input .select2 {
+            font-size: 16px;
+            border: solid 2px #9d9b99;
+            border-radius: 9px;
+            padding-left: 9px;
+            color: #737373;
+            padding-bottom: 9px;
+            padding: 2px 9px;
+            background: white;
+            width: 100% !important;
+        }
+
+        .content-input.content-input-primary .select2 {
+            border: solid 2px #355da7;
+            color: #355da7;
+        }
+
+        .content-input .select2 .select2-selection {
+            border: 0;
+        }
+
+        .content-input .select2 .select2-selection .select2-selection__rendered {
+            padding-left: 0;
+        }
+
+        .content-gen {
+            border-radius: 20px;
+            background-color: #efefef;
+        }
+
+        .content-gen .title {
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .content-gen .resp {
+            color: #000000;
+            border-bottom: 1px solid #000000;
+        }
+
         .card {
             box-shadow: rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
         }
@@ -549,8 +626,8 @@
                                 <label>Producto</label>
                                 <select id="productoFormProductos" class="form-ptg form-ptg-primary">
                                     <option value="">Seleccione una opción</option>
-                                    <option value="cilindro" class="opt-pro-pedido-cilindro" disabled>Cilindro</option>
-                                    <option value="estacionario" class="opt-pro-pedido-estacionario" disabled>Estacionario</option>
+                                    <option value="cilindro" class="opt-pro-pedido-cilindro">Cilindro</option>
+                                    <option value="estacionario" class="opt-pro-pedido-estacionario">Estacionario</option>
                                 </select>
                             </div>
                         </div>
@@ -987,6 +1064,113 @@
         </div>
     </div>
 
+    <div id="formVerDetallesPedidos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleerDetallesPedidosModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=110815&c=5298967_SB1&h=he-4rJolZ3J7WidhKv2oNWSuYY-s45IhArkF-ivqlvB7sd_A"
+                            alt="" width="120">
+                        </div>
+                        <div class="col text-center">
+                            <label class="fw-bold" style="font-size: 22px;" id="verDetallesCliente"></label><br>
+                            <label class="fw-bold" style="font-size: 18px;" id="verDetallesTelefono"></label><br>
+                            <label class="fw-bold" style="font-size: 16px;" id="verDetallesDireccion"></label><br>
+                            <label class="fw-bold" style="font-size: 16px;">Tipo: <span id="verDetallesTipoServicio"></span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="content-gen">
+                        <div class="row p-3">
+                          <div class="col-3 title">Servicio</div>
+                          <div id="verDetallesServicio" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Vehículo</div>
+                          <div id="verDetallesVehiculo" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Zona</div>
+                          <div id="verDetallesZona" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Usuario Monitor</div>
+                          <div id="verDetallesUsuarioMonitor" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Direccíon</div>
+                          <div id="verDetallesDireccion2" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Fecha Prometida</div>
+                          <div id="verDetallesFechaPrometida" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Fecha Pedido</div>
+                          <div id="verDetallesFechaPedido" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Fecha Notificación</div>
+                          <div id="verDetallesFechaNotificacion" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Tipo Producto</div>
+                          <div id="verDetallesTipoProducto" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Contrato</div>
+                          <div id="verDetallesContrato" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Agente atiende</div>
+                          <div id="verDetallesAgenteAtiende" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3 align-items-end">
+                          <div class="col-3 title">Tiempo de notificación</div>
+                          <div id="verDetallesTiempoNotificacion" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Observaciones</div>
+                          <div id="verDetallesObservaciones" class="col-9 resp"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cancelarOppModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titlecancelarOppModalModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titlecancelarOppModalModal">Cancelar servicio<span id="cancelarOppPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="content-input content-input-primary col-12">
+                            <label>Motivo de Cancelacion*</label><br>
+                            <select id="cancelarOppMotivo" class="form-ptg form-ptg-primary">
+                            </select>
+                        </div>
+                        <div class="content-input content-input-primary mt-3 col-12">
+                            <label>Observaciones*</label><br>
+                            <textarea rows="3" id="cancelarOppObservaciones" class="form-ptg form-ptg-primary"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
+                    <button id="guardarCancelarOpp" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="home-view" class="row w-100 m-0">
         <div class="col-6 h-100 p-0" style="overflow: hidden; position: relative;">
             <div class="btn-expand" style="z-index: 2;">
@@ -1132,54 +1316,41 @@
                 <table class="table-gen table-gen-blue">
                     <thead>
                         <tr>
-                            <th style="min-width: 40px; z-index: 1; left: 0;" class="ion-text-center sticky-col">
-                                <ion-button fill="clear"
-                                    style="font-size: 18px; --padding-start: 0; --padding-end: 0; --color: #fff">
-                                    <i class="fa-solid fa-arrow-rotate-right"></i>
-                                </ion-button>
-
-                                <div
-                                    style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;">
-                                </div>
+                            <th style="min-width: 40px; z-index: 51; left: 0px;" class="text-center sticky-col">
+                                <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
+                                <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                             </th>
-
-                            <th style="min-width: 40px; z-index: 1; left: 40px;" class="ion-text-center sticky-col">
-                                <div
-                                    style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;">
-                                </div>
+                            <th style="min-width: 40px; z-index: 51; left: 40px;" class="text-center sticky-col">
+                                <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                             </th>
-
-                            <th style="min-width: 40px; z-index: 1; left: 80px;" class="ion-text-center sticky-col">
-                                <div
-                                    style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;">
-                                </div>
+                            <th style="min-width: 40px; z-index: 51; left: 80px;" class="text-center sticky-col">
+                                <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                             </th>
-
-                            <th style="min-width: 95px" class="ion-text-center">Fecha Solicitud</th>
-                            <th style="min-width: 95px" class="ion-text-center">Fecha Comprometida</th>
-                            <th style="min-width: 95px" class="ion-text-center">Hora Visita</th>
-                            <th style="min-width: 135px" class="ion-text-center">Número de Documento</th>
-                            <th style="min-width: 135px" class="ion-text-center">Número de Caso</th>
-                            <th style="min-width: 135px" class="ion-text-center">Asunto</th>
-                            <th style="min-width: 155px" class="ion-text-center">Nombre del Cliente</th>
-                            <th style="min-width: 155px" class="ion-text-center">Telefono</th>
-                            <th style="min-width: 135px" class="ion-text-center">Agente Call Center</th>
-                            <th style="min-width: 135px" class="ion-text-center">Monitor</th>
-                            <th style="min-width: 265px" class="ion-text-center">Estado</th>
-                            <th style="min-width: 265px" class="ion-text-center">Prioridad</th>
-                            <th style="min-width: 125px" class="ion-text-center">Motivo Cancelación</th>
-                            <th style="min-width: 130px" class="ion-text-center">Cierre Previsto</th>
-                            <th style="min-width: 150px" class="ion-text-center">Hora Cierre</th>
-                            <th style="min-width: 355px" class="ion-text-center">Origen Servicio</th>
-                            <th style="min-width: 355px" class="ion-text-center">Tipo Servicio</th>
-                            <th style="min-width: 355px" class="ion-text-center">Articulo</th>
-                            <th style="min-width: 355px" class="ion-text-center">Fecha Notificacion</th>
-                            <th style="min-width: 355px" class="ion-text-center">Tipo Transaccion</th>
-                            <th style="min-width: 355px" class="ion-text-center">Nota</th>
-                            <th style="min-width: 355px" class="ion-text-center">Tecnico / Conductor Asignado</th>
-                            <th style="min-width: 355px" class="ion-text-center">Método Pago</th>
-                            <th style="min-width: 355px" class="ion-text-center">Nota Rapida</th>
-                            <th style="min-width: 355px" class="ion-text-center">Unidad</th>
+                            <th style="min-width: 95px" class="text-center" style="z-index: 51;">Fecha Solicitud</th>
+                            <th style="min-width: 95px" class="text-center" style="z-index: 51;">Fecha Comprometida</th>
+                            <th style="min-width: 95px" class="text-center" style="z-index: 51;">Hora Visita</th>
+                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Número de Documento</th>
+                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Número de Caso</th>
+                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Asunto</th>
+                            <th style="min-width: 155px" class="text-center" style="z-index: 51;">Nombre del Cliente</th>
+                            <th style="min-width: 155px" class="text-center" style="z-index: 51;">Telefono</th>
+                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Agente Call Center</th>
+                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Monitor</th>
+                            <th style="min-width: 265px" class="text-center" style="z-index: 51;">Estado</th>
+                            <th style="min-width: 265px" class="text-center" style="z-index: 51;">Prioridad</th>
+                            <th style="min-width: 125px" class="text-center" style="z-index: 51;">Motivo Cancelación</th>
+                            <th style="min-width: 130px" class="text-center" style="z-index: 51;">Cierre Previsto</th>
+                            <th style="min-width: 150px" class="text-center" style="z-index: 51;">Hora Cierre</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Origen Servicio</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Tipo Servicio</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Articulo</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Fecha Notificacion</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Tipo Transaccion</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Nota</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Tecnico / Conductor Asignado</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Método Pago</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Nota Rapida</th>
+                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Unidad</th>
                         </tr>
                     </thead>
 
@@ -1284,7 +1455,7 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="5" style="text-align: right; font-weight: bold;">Total</td>
-                                                <td colspan="1" class="text-center total">$0 mxn</td>
+                                                <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -1317,7 +1488,7 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
-                                                <td colspan="1" class="text-center total">$0 mxn</td>
+                                                <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -1857,6 +2028,9 @@
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <!-- Funciones generales -->
     <script type="text/javascript">
         userId = '${ds.userId}';
@@ -1877,6 +2051,9 @@
         urlGetBusinessType = '${ds.getBusinessType}';
         urlGuardarFugaQueja = '${ds.postFugasQuejas}';
         urlGetConceptosCasos = '${ds.getLisConceptosCasos}';
+        urlGuardarNotaMensaje = '${ds.postNoteandMessage}';
+        urlGetListaCancelacion = '${ds.getListCancellReason}';
+        
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
         // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
@@ -1884,6 +2061,14 @@
         conceptoFugasQuejasArr = [];
         customerGlobal = null;
         direccionDefault = null;
+
+        
+        $('#cancelarOppMotivo').select({
+            dropdownParent: $('#cancelarOppModal')
+        });
+        // $(document).on('select2:open', () => {
+        //     document.querySelector('.select2-search__field').focus();
+        // });
 
         // Limpia los campos del modal direcciones al cerrarse
         $('body').delegate('div#formDireccionesModal', 'hidden.bs.modal', function () {

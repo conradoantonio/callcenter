@@ -1,0 +1,18 @@
+Cuando sea un producto tipo cilindro, se va a multiplicar la capacidad en kilos del cilindro por el precio de la zona de venta por la cantidad, este resultado colocarse en el campo valor
+Luego, el de valor, se le agregará el 16% del IVA y se colocará en Total
+
+Cuando se crean oportunidades desde call center validar si el producto enviado es Gas LP, si si, se envía a SGC, de lo contrario, lo ignora
+Si es un pedido de tipo cilindro, este no se enviará a SGC, solamente deberá de enviar a la app movil
+Además, se podrá agregar múltiples cantidades de cilindros, y si se agregara el mismo cilindro, se agregaría la nueva cantidad al mismo
+
+Cuando se cambie el valor del select de plantas, se debe limpiar todo el registro de clientes y pedidos.
+
+Puntos que faltan:
+- Agregar el producto de envase cuando el check "envase" sea clickeado
+- Agregar funcionalidad de editar el producto para el pedido
+- Configurar el mínimo de venta de litros acorde a la planta seleccionada
+- Configurar el máximo de venta de litros acorde a la dirección seleccionada
+- Cuando se cambie el valor del select de plantas, limpiar todos los formularios (Ya)
+- Modificar a dos puntos decimales el total (Ya)
+- Que el total sea el editable en lugar del valor (estacionarios) (Ya)
+- Cuando se busque un cliente, y en la lista de productos hay alguno, preguntar en un sweetalert si desea continuar (Ya)

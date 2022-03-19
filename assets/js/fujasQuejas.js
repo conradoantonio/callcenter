@@ -73,6 +73,12 @@ $('#guardarFugaQueja').on('click', function () {
     }
 
     let casos = [];
+    let notas = [];
+
+    $('#notasAdicionales tbody').children('tr.notasAdicionalesItem').each(function( index ) {
+        let texto = $( this ).children('td').siblings("td:nth-child(1)").text();
+        notas.push(texto);
+    });
 
     let tmp = {
         "title": $('#tipoCasoFugaQueja').children(':selected').text(),
@@ -109,6 +115,9 @@ $('#guardarFugaQueja').on('click', function () {
         infoMsg('success', 'El caso se ha creado de manera correcta', '', 2000);
         console.log('Pedido creado exitósamente', response);
         casos = [];
+        if ( notas.length ) {// Contiene notas por dar de alta
+            saveNotas(notas, response.data[0], 'caso');
+        }
         clearFugasQuejasForm();
     }).catch((error) => {
         infoMsg('error', 'El pedido no ha sido creado', 'Verifique que la información sea correcta');
@@ -117,6 +126,37 @@ $('#guardarFugaQueja').on('click', function () {
         console.log(error);
     });
 });
+
+// Guarda las notas de un caso u opotunidad
+function saveNotas(notas, idRelacionado, tipoTransaccion) {
+    let notasArr = [];
+    let mensaje = tipoTransaccion == 'caso' ? 'nota' : 'mensaje';
+
+    for ( var i = 0; i < notas.length; i++ ) {
+
+        let notaObj = {
+            "type" : mensaje,
+            "transaccion" : tipoTransaccion,
+            "idRelacionado" : idRelacionado,
+            "titulo" : tipoTransaccion,
+            "nota" : notas[i]            
+        }
+        notasArr.push(notaObj);
+
+    }
+
+    let settings = {
+        url    : urlGuardarNotaMensaje,
+        method : 'POST',
+        data   : JSON.stringify({ informacion: notasArr }),
+    }
+    
+    setAjax(settings).then((response) => {
+        console.log(response);
+    }).catch((error) => {
+        console.log('Notas no registradas', error);
+    });
+}
 
 // Método para limpiar la data del cliente cuando falla una búsqueda
 function clearFugasQuejasForm() {
