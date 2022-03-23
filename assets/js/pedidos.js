@@ -248,10 +248,13 @@ async function onClickAddProducto() {
             let envase    = $('#envaseFormProductos').is(':checked');
             let articulo  = {
                 "zoneprice" : prices,// Este es el valor de la zona
+                "tipo"      : 1,
                 "capacity"  : capacidad,
                 "quantity"  : $( '#cantidadFormProductos' ).val(),
                 "article"   : $( '#capacidadFormProductos' ).val()
             };
+
+            agregarEnvase(envase, $(".productosCilindroPedido"), artSel, prices);
             
             if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado
 
@@ -275,7 +278,7 @@ async function onClickAddProducto() {
                         '<td class="text-center">'+articulo['quantity']+'</td>'+
                         '<td class="text-center">'+capacidad+' kg</td>'+
                         '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
-                        '<td class="text-center">'+(envase ? 'Si' : 'No')+'</td>'+
+                        // '<td class="text-center">'+(envase ? 'Si' : 'No')+'</td>'+
                         '<td class="text-center">'+
                             '<button class="btn btn-sm btn-info edit-producto-cil"> <i class="fa fa-pen-to-square"></i> </button> '+
                             '<button class="btn btn-sm btn-danger delete-producto-cil" data-table-ref=".productosCilindroPedido" data-item-id='+articulo.article+'> <i class="fa-solid fa-trash-can"></i> </button>'+
@@ -295,6 +298,7 @@ async function onClickAddProducto() {
             let litros = parseInt( $("#litrosFormProductos").val() );
             let articulo = {
                 "zoneprice" : prices,// Este es el valor de la zona
+                "tipo"      : 2,
                 "capacity"  : litros,
                 "quantity"  : 1,
                 "article"   : 4088// ID de GAS LP
@@ -335,6 +339,58 @@ async function onClickAddProducto() {
         // Desvanece el modal
         $('#formProductosModal').modal('hide');
     });
+}
+
+// Agrega el envase seleccionado de un cilindro
+function agregarEnvase(conEnvase, table, cilindro, zonaVenta) {
+    if (! conEnvase ) { return; }// Sólo si tiene envase valida el proceso
+
+    let artEnvase = null; 
+
+    // Si el tipo de artículo es envase y coincide con la capacidad del artículo seleccionado
+    for (let i = 0; i < articulosArr.length; i++) {
+        if ( articulosArr[i].tipo_articulo == 5 && articulosArr[i].capacidad_litros == cilindro.capacidad_litros ) {
+            artEnvase = articulosArr[i];
+        }
+        
+    }
+    
+    if (! artEnvase ) { return; }// No encontró el envase del artículo y no agrega nada
+
+    let searchTr = $('tr[data-item-id="'+artEnvase.id+'"]');
+    
+    if (! searchTr.length ) {// Se verifica si el artículo fue previamente registrado
+
+        let artObj  = {
+            "zoneprice" : zonaVenta,// Este es el valor de la zona
+            "tipo"      : 5,
+            "precio"    : artEnvase.basePrice,
+            "capacity"  : artEnvase.capacidad_litros,
+            "quantity"  : 1,
+            "article"   : artEnvase.id
+        };
+
+        let total = parseFloat( Number(artEnvase.basePrice) ).toFixed(2);
+
+        // Se llena la información del item
+        $(table).children("tbody").append(
+            '<tr data-item-id='+artEnvase.id+' class="product-item" data-item=' + "'" + JSON.stringify(artObj) + "'" + '>' +
+                '<td class="text-center">'+(artEnvase.nombre ? artEnvase.nombre : 'Sin nombre asignado')+'</td>'+
+                '<td class="text-center">'+artObj['quantity']+'</td>'+
+                '<td class="text-center">'+artObj['capacity']+' kg</td>'+
+                '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                '<td class="text-center">'+
+                    // '<button class="btn btn-sm btn-info edit-producto-cil"> <i class="fa fa-pen-to-square"></i> </button> '+
+                    '<button class="btn btn-sm btn-danger delete-producto-cil" data-table-ref=".productosCilindroPedido" data-item-id='+artEnvase.id+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                '</td>'+
+            '</tr>'
+        );
+        
+    } else {
+        
+        console.log('El envase ya había sido agregado');
+
+    }
 }
 
 // Método para calcular los campos valor y total acorde al tipo de producto.
@@ -411,11 +467,7 @@ async function savePedido() {
         }
         
         let canContinue = false;
-        if(
-            !$("#fechaPrometidaPedido").val().trim()
-            //!$("#lasFormCliente").val().trim()                          ||
-            // $('table.productosMetodoPago tbody').find("tr.metodo").length == 0
-        ) {
+        if( !$("#fechaPrometidaPedido").val().trim() || ( totalPedido != totalMetodosPago ) ) {
             canContinue = false;
         } else {
             canContinue = true;
@@ -424,7 +476,11 @@ async function savePedido() {
         if (! canContinue ) {
             $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
             $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
-            alert("Favor de llenar todos los campos con *");
+            if ( totalPedido != totalMetodosPago ) {
+                alert("El total a pagar debe ser igual al total de productos enlistados");
+            } else {
+                alert("Favor de llenar todos los campos con *");
+            }
             return; 
         }
 
@@ -444,7 +500,7 @@ async function savePedido() {
 
         // Agrega la lista de métodos de pago
         $('table.productosMetodoPago > tbody  > tr.metodo-item').each(function() {
-            pagosArr.push( $( this ).data('item') );
+            pagosArr.push( $( this ).data('metodo') );
         });
 
         console.log(articulosArr);
@@ -534,7 +590,7 @@ $('body').delegate('.delete-producto-cil, .delete-producto-est','click', functio
         dangerMode: true,
     }).then((accept) => {
         if ( accept ) {
-            $('tr[data-item-id="'+id+'"]').remove();
+            $(table).children('tbody').children('tr[data-item-id="'+id+'"]').remove();
             validarTablaProductos( $(table) );
         }
     }).catch(swal.noop);
@@ -545,7 +601,6 @@ $('body').delegate('.delete-metodo-pago','click', function() {
     let metodo  = $(this).parent().parent().data('metodo');
     let table = $(this).data('table-ref');
     let id    = ( metodo && metodo.tipo_pago ? metodo.tipo_pago : 0 );
-    console.log(metodo);
 
     swal({
         title: '¿Desea eliminar el método de pago seleccionado?',
@@ -555,7 +610,6 @@ $('body').delegate('.delete-metodo-pago','click', function() {
     }).then((accept) => {
         if ( accept ) {
             $(table).children('tbody').children('tr[data-metodo-id="'+id+'"]').remove();
-            // $('.productosMetodoPago > tbody > tr[data-metodo-id="'+id+'"]').remove();
             validarTablaMetodosPago( $(table) );
         }
     }).catch(swal.noop);
@@ -588,10 +642,10 @@ function setTotalPedido(table) {
     table.children('tbody').children('tr.product-item').each(function() {
         // let articulo = $( this ).data('item');
         let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(4)").data('total')).toFixed(2);
-        total = Number(total) + Number(subtotal);
+        total = parseFloat( Number(total) + Number(subtotal) ).toFixed(2);
     });
 
-    table.children('tfoot').find('td.total').data('total', parseFloat(total).toFixed(2));
+    table.children('tfoot').find('td.total').data('total', total);
     table.children('tfoot').find('td.total').text('$'+total+' mxn');
 }
 
@@ -602,10 +656,10 @@ function setTotalMetodosPago(table) {
     table.children('tbody').children('tr.metodo-item').each(function() {
         // let articulo = $( this ).data('item');
         let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(2);
-        total = Number(total) + Number(subtotal);
+        total = parseFloat( Number(total) + Number(subtotal) ).toFixed(2);
     });
 
-    table.children('tfoot').find('td.total').data('total', parseFloat(total).toFixed(2));
+    table.children('tfoot').find('td.total').data('total', total);
     table.children('tfoot').find('td.total').text('$'+total+' mxn');
 }
 

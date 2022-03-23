@@ -1324,12 +1324,12 @@
                     <div class="col-auto pl-0 badgesClientes d-none" id="badgeDescuento">
                         <span class="badge ft-12">Tiene descuento</span>
                     </div>
-                    <div class="col-auto pl-0 badgesClientes" id="badgePendientes">
-                        <span class="badge bg-danger-cc ft-12">Tienen pedido(s) pendiente(s)</span>
+                    <div class="col-auto pl-0 badgesClientes d-none" id="badgePendientes">
+                        <span class="badge bg-danger-cc ft-12">Tiene pedido(s) pendiente(s)</span>
                     </div>
-                    <div class="col-auto pl-0 badgesClientes" id="badgeSuspendido">
+                    <!-- <div class="col-auto pl-0 badgesClientes" id="badgeSuspendido">
                         <span class="badge bg-warning-cc ft-12">No suspendido</span>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="row align-items-center ft-16 pb-2">
                     <div class="col-2">
@@ -1582,7 +1582,7 @@
                                                 <th scope="col" class="text-center">Cantidad</th>
                                                 <th scope="col" class="text-center">Capacidad</th>
                                                 <th scope="col" class="text-center">Valor</th>
-                                                <th scope="col" class="text-center">Envase</th>
+                                                <!-- <th scope="col" class="text-center">Envase</th> -->
                                                 <th scope="col" class="text-center">Acciones</th>
                                             </tr>
                                         </thead>
@@ -1601,7 +1601,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="5" style="text-align: right; font-weight: bold;">Total</td>
+                                                <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
                                                 <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
                                             </tr>
                                         </tfoot>
@@ -2209,6 +2209,7 @@
         urlGetPlaces = '${ds.getCities}';
         conceptoFugasQuejasArr = [];
         estadosOppArr = [];
+        articulosArr = [];
         customerGlobal = null;
         direccionDefault = null;
         

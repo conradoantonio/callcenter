@@ -60,7 +60,7 @@ function setCustomerInfo(customer) {
     let direcciones = customer.addr;
     let zonaVenta = direccionDefault = null;
     
-    $('#badgeActivo, #badgeInactivo, #badgeDescuento').addClass('d-none');
+    $('#badgeActivo, #badgeInactivo, #badgeDescuento, #badgePendientes').addClass('d-none');
     $('#badgeDescuento').children('span.badge').removeClass('bg-danger-cc, bg-success-cc'); // Se le quita la clase success o danger
     
     $('#idCliente').text(customer.id);
@@ -436,6 +436,7 @@ function setSelectPlants(items) {
 // Método para llenar los select de artículos
 function setSelectArticulos(items) {
     if ( items.length ) {
+        articulosArr = items;
         $('select#articuloFrecuenteCilFormCliente, select#articuloFrecuenteEstFormCliente, select#capacidadFormProductos, select#articuloFugaQueja').children('option').remove();
         $('select#articuloFugaQueja').append('<option value="">Seleccione una opción</option>')
         // $('select#articuloFrecuenteEstFormCliente').children('option').remove();
@@ -454,6 +455,7 @@ function setSelectArticulos(items) {
             }
         }
     } else {
+        articulosArr = [];
         console.warn('No hay artículos por cargar');
     }
 }
@@ -560,6 +562,7 @@ function setCasosOportunidades( data ) {
     $('div#historic-data').fadeOut();
     let casos         = data.casos;
     let oportunidades = data.oportunidades;
+    let pendientes    = [];
     console.log('Casos', casos);
     console.log('Oportunidades', oportunidades);
     // Checa casos
@@ -586,12 +589,22 @@ function setCasosOportunidades( data ) {
                     setTrOppCases( oportunidades[key], 'oportunidades' )
                 );
 
+                // Hay pendientes
+                if ( oportunidades[key] ) {
+
+                }
+
                 $('select#asociarServicioFugaQueja').append('<option value="'+oportunidades[key].id_Transaccion+'"> No. documento: '+oportunidades[key].numeroDocumento+' - Fecha: '+oportunidades[key].fecha+'</option>');
 
             }
         }
     } else {
         // console.warn('No hay oportunidades por cargar');
+    }
+
+    // Enlista el número de documento de la oportunidad
+    if ( badgePendientes.length ) {
+
     }
 
     // Vuelve a mostrar la tabla
@@ -737,18 +750,20 @@ function loadMsg(msg = 'Espere un momento porfavor...') {
 }
 
 // Regresa el valor de un input tiempicker al formato de netsuite
-function formatTime(value, format = 'h:mm a') {
-    let hora = value.split(':');
-    let customDateTime = new Date();
-
-    if ( hora.length ) {
-
-        customDateTime.setHours(hora[0]);
-        customDateTime.setMinutes(hora[1]);
-
-        return moment(customDateTime).format(format);
-
-    } 
+function formatTime(value, format = 'hh:mm a') {
+    if ( value ) {
+        let hora = value.split(':');
+        let customDateTime = new Date();
+    
+        if ( hora.length ) {
+    
+            customDateTime.setHours(hora[0]);
+            customDateTime.setMinutes(hora[1]);
+    
+            return moment(customDateTime).format(format);
+    
+        }
+    }
 
     return '';
 }
