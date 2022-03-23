@@ -110,6 +110,26 @@ $("#agregarProducto").click(function () {
 
 // Abre el modal de métodos de pago
 $("#agregarMetodoPago").click(function () {
+    let totalProducto = 0;
+    let totalMetodosPago = 0;
+    let montoRestante = 0;
+    // Calcula el total del pedido basándose en los productos agregados al listado
+    if (! $('.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {// Estacionario
+        totalProducto = $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
+    } else if (! $('.productosCilindroPedido').parent().parent().hasClass('d-none') ) {// Cilindro
+        totalProducto = $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
+    }
+
+    // Calcula el total de método de pago basándose en los especificados en la lista
+    if (! $('.productosMetodoPago').parent().parent().hasClass('d-none') ) {// Contiene métodos
+        totalMetodosPago = $('.productosMetodoPago').children('tfoot').find('td.total').data('total');
+    }
+
+    montoRestante = parseFloat( Number(totalProducto) - Number(totalMetodosPago) ).toFixed(2);
+    montoRestante = montoRestante > 0 ? montoRestante : 0;
+
+    $('#montoPagoPedido').val(montoRestante);
+
     $('#formMetodoPagosModal').modal('show');
 });
 
@@ -141,6 +161,8 @@ $('#guardarMetodoPagoForm').on('click', function () {
         return; 
     }
 
+    let searchTr = $('table.productosMetodoPago > tbody > tr[data-metodo-id="'+metodoId+'"]');
+
     $('#sinMetodosPago').addClass('d-none');
     $('.productosMetodoPago').parent().parent().removeClass('d-none');
 
@@ -152,19 +174,30 @@ $('#guardarMetodoPagoForm').on('click', function () {
         monto     : total,
         folio     : folio,
     };
-   
-    // Se llena la información del item
-    $(".productosMetodoPago tbody").append(
-        '<tr data-item-id='+metodoId+' class="metodo-item" data-item=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
-            '<td>'+metodoNombre+'</td>'+
-            '<td class="text-center">'+(folio ? folio : 'No aplica')+'</td>'+
-            '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
-            '<td class="text-center">'+
-                '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPago" data-item-id='+metodoId+'> <i class="fa-solid fa-trash-can"></i> </button>'+
-            '</td>'+
-        '</tr>'
-    );
 
+    if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado y se edita el row
+
+        searchTr.data('metodo', metodoObj);
+        searchTr.children('td').siblings("td:nth-child(2)").text(folio ? folio : 'No aplica');
+        searchTr.children('td').siblings("td:nth-child(3)").data('total', total);
+        searchTr.children('td').siblings("td:nth-child(3)").text('$'+total+' mxn');
+        console.log(metodoObj);
+        
+    } else {// Se llena la información del item
+        
+        $(".productosMetodoPago tbody").append(
+            '<tr data-metodo-id='+metodoId+' class="metodo-item" data-metodo=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
+                '<td>'+metodoNombre+'</td>'+
+                '<td class="text-center">'+(folio ? folio : 'No aplica')+'</td>'+
+                '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                '<td class="text-center">'+
+                    '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPago" data-metodo-id='+metodoId+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                '</td>'+
+            '</tr>'
+        );
+
+    }
+   
     // Falta código para setear un total
     setTotalMetodoPago( $(".productosMetodoPago") );
     $('#formMetodoPagosModal').modal('hide');
@@ -209,10 +242,9 @@ async function onClickAddProducto() {
 
             $('.productosCilindroPedido').parent().parent().removeClass('d-none');
             
-            let total     = parseFloat($('#totalFormProductos').val());
+            let total     = parseFloat($('#totalFormProductos').val()).toFixed(2);
             let artSel    = $( '#capacidadFormProductos' ).children('option:selected').data('articulo');
             let capacidad = parseInt( ( artSel && artSel.capacidad_litros ? artSel.capacidad_litros : 0 ) );
-            // let capacidad = parseInt( $('#cantidadFormProductos').val() );
             let envase    = $('#envaseFormProductos').is(':checked');
             let articulo  = {
                 "zoneprice" : prices,// Este es el valor de la zona
@@ -259,8 +291,8 @@ async function onClickAddProducto() {
 
             $('.productosEstacionarioPedido').parent().parent().removeClass('d-none');
             
-            let total  = parseFloat($('#totalFormProductos').val());
-            let litros = parseInt($("#litrosFormProductos").val());
+            let total  = parseFloat( $('#totalFormProductos').val() ).toFixed(2);
+            let litros = parseInt( $("#litrosFormProductos").val() );
             let articulo = {
                 "zoneprice" : prices,// Este es el valor de la zona
                 "capacity"  : litros,
@@ -325,12 +357,12 @@ function onChangeValue(element) {
     if ( tipoProducto == 'cilindro' ) {// Cilindro
         if ( elementId == 'cantidadFormProductos' || elementId == 'capacidadFormProductos' ) {
 
-            subtotal = Math.ceil( capArticulo *  cantidad * prices);
+            subtotal = parseFloat( capArticulo *  cantidad * prices).toFixed(2);
             $('#valorFormProductos').val(subtotal);
 
         }
 
-        total = Math.ceil(subtotal * 1.16);
+        total = parseFloat(subtotal * 1.16).toFixed(2);
         $('#totalFormProductos').val(total);
         
     } else if ( tipoProducto == 'estacionario' ) {// Estacionario
@@ -341,13 +373,13 @@ function onChangeValue(element) {
             subtotal = parseFloat(total / 1.16).toFixed(2);
             // subtotal = Math.ceil( $('#valorFormProductos').val() );
             // subtotal = ( isNaN(subtotal) ? 0 : subtotal );
-            litros = Math.ceil(subtotal / prices);
+            litros = parseFloat(subtotal / prices).toFixed(2);
             $('#litrosFormProductos').val(litros);
 
         } else if( elementId == 'litrosFormProductos' ) {// Se calcula el total acorde a los litros
 
             subtotal = parseInt(litros * prices); 
-            total = Math.ceil(subtotal * 1.16);
+            total = parseFloat(subtotal * 1.16).toFixed(2);
             $('#totalFormProductos').val(total);
             
         }
@@ -366,19 +398,23 @@ async function savePedido() {
         let totalPedido = 0;
         let totalMetodosPago = 0;
 
+        // Calcula el total del pedido basándose en los productos agregados al listado
         if (! $('.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {// Estacionario
             totalPedido = $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
         } else if (! $('.productosCilindroPedido').parent().parent().hasClass('d-none') ) {// Cilindro
             totalPedido = $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
         }
+
+        // Calcula el total de método de pago basándose en los especificados en la lista
+        if (! $('.productosMetodoPago').parent().parent().hasClass('d-none') ) {// Contiene métodos
+            totalMetodosPago = $('.productosMetodoPago').children('tfoot').find('td.total').data('total');
+        }
         
         let canContinue = false;
         if(
-            //!$("#cadaFormCliente").val().trim()                         ||
-            //!$("#frecuenciaFormCliente").val().trim()                   ||
-            //!$("#entreFormCliente").val().trim()                        ||
+            !$("#fechaPrometidaPedido").val().trim()
             //!$("#lasFormCliente").val().trim()                          ||
-            $('table.productosMetodoPago tbody').find("tr.metodo").length == 0
+            // $('table.productosMetodoPago tbody').find("tr.metodo").length == 0
         ) {
             canContinue = false;
         } else {
@@ -386,15 +422,16 @@ async function savePedido() {
         }
 
         if (! canContinue ) {
-            
             $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
             $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
+            alert("Favor de llenar todos los campos con *");
             return; 
         }
 
         let articulosArr = [];
-        let pagosArr     = [{"tipo_pago":"1","monto":464}];
+        let pagosArr     = [];
 
+        // Agrega la lista de artículos
         if (! $('table.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {
             $('table.productosEstacionarioPedido > tbody  > tr.product-item').each(function() {
                 articulosArr.push( $( this ).data('item') );
@@ -405,28 +442,28 @@ async function savePedido() {
             });
         }
 
+        // Agrega la lista de métodos de pago
+        $('table.productosMetodoPago > tbody  > tr.metodo-item').each(function() {
+            pagosArr.push( $( this ).data('item') );
+        });
+
         console.log(articulosArr);
 
         let direccionSel = $('#direccionCliente').children(':selected').data('address');
         let typeService  = '';
-        let statusOpp    = '';
+        let statusOpp    = 2;
         $('.productosCilindroPedido').is(':visible') ? typeService = 1 : '';
         $('.productosEstacionarioPedido').is(':visible') ? typeService = 2 : '';
 
-        if( direccionSel.typeContact  == 1 ) { statusOpp = 6; }// Teléfono
-        if( direccionSel.typeContact  == 2 ) { statusOpp = 6; }// Aviso
-        if( direccionSel.typeContact  == 4 ) { statusOpp = 1; }// Programado
-
         let tmp = {
             "status"        : 11,
-            // "numero_viaje"  : "",
             "zona_precio"   : 2,//Este es el Id de la zona
             "customer"      : $('#idCliente').text(),
             "idAddressShip" : $('#direccionCliente').val(),
             "statusOpp"     : statusOpp,
             "operario"      : userId,
             "typeservice"   : typeService,
-            "time"          : "12:00 pm",
+            // "time"          : "12:00 pm",
             "turn"          : 1,
             "paymentMethod" : $('#metodoPagoPedido').val(),
             "origen"        : $('#idCliente').val(),
@@ -457,6 +494,7 @@ async function savePedido() {
             opportunities = [];
             clearFields();
         }).catch((error) => {
+            opportunities = [];
             infoMsg('error', 'El pedido no ha sido creado', 'Verifique que la información sea correcta');
             // Limpia los campos de cliente
             
@@ -469,17 +507,21 @@ async function clearFields() {
     // $('#fechaPrometidaPedido').val('');
     $('#desdePedido, #hastaPedido, #observacionesPagoPedido').val('');
 
-    $("#sinProductos").removeClass("d-none");
+    $("#sinProductos, #sinMetodosPago").removeClass("d-none");
     
     $("table.productosCilindroPedido").parent().parent().addClass("d-none");
     $("table.productosCilindroPedido").children('tbody').children('tr').remove();
     $("table.productosEstacionarioPedido").parent().parent().addClass("d-none");
     $("table.productosEstacionarioPedido").children('tbody').children('tr').remove();
+
+    // Remueve los métodos de pago
+    $("table.productosMetodoPago").parent().parent().addClass("d-none");
+    $("table.productosMetodoPago").children('tbody').children('tr').remove();
     // $("#productosCilindroPedido").find(".content").remove();
 }
 //#endregion
 
-//Send a request for a single delete
+// Elimina un artículo de la tabla
 $('body').delegate('.delete-producto-cil, .delete-producto-est','click', function() {
     let item  = $(this).parent().parent().data('item');
     let table = $(this).data('table-ref');
@@ -491,14 +533,35 @@ $('body').delegate('.delete-producto-cil, .delete-producto-est','click', functio
         buttons:["Cancelar", "Aceptar"],
         dangerMode: true,
     }).then((accept) => {
-        if ( accept ){
+        if ( accept ) {
             $('tr[data-item-id="'+id+'"]').remove();
             validarTablaProductos( $(table) );
         }
     }).catch(swal.noop);
 });
 
-// Valida la información mostrada en la lista de pedidos
+// Elimina un método de pago de la tabla
+$('body').delegate('.delete-metodo-pago','click', function() {
+    let metodo  = $(this).parent().parent().data('metodo');
+    let table = $(this).data('table-ref');
+    let id    = ( metodo && metodo.tipo_pago ? metodo.tipo_pago : 0 );
+    console.log(metodo);
+
+    swal({
+        title: '¿Desea eliminar el método de pago seleccionado?',
+        icon: 'warning',
+        buttons:["Cancelar", "Aceptar"],
+        dangerMode: true,
+    }).then((accept) => {
+        if ( accept ) {
+            $(table).children('tbody').children('tr[data-metodo-id="'+id+'"]').remove();
+            // $('.productosMetodoPago > tbody > tr[data-metodo-id="'+id+'"]').remove();
+            validarTablaMetodosPago( $(table) );
+        }
+    }).catch(swal.noop);
+});
+
+// Valida la información mostrada en la lista de artículos
 function validarTablaProductos(table) {
     if (! table.children('tbody').children('tr.product-item').length ) {
         table.parent().parent().addClass('d-none');
@@ -508,6 +571,16 @@ function validarTablaProductos(table) {
     setTotalPedido(table);
 }
 
+// Valida la información mostrada en la lista de métodos de pago
+function validarTablaMetodosPago(table) {
+    if (! table.children('tbody').children('tr.metodo-item').length ) {
+        table.parent().parent().addClass('d-none');
+        $('#sinMetodosPago').removeClass('d-none');
+    }
+
+    setTotalMetodosPago(table);
+}
+
 // Calcula el total de los productos
 function setTotalPedido(table) {
     let total = parseFloat(0).toFixed(2);
@@ -515,6 +588,20 @@ function setTotalPedido(table) {
     table.children('tbody').children('tr.product-item').each(function() {
         // let articulo = $( this ).data('item');
         let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(4)").data('total')).toFixed(2);
+        total = Number(total) + Number(subtotal);
+    });
+
+    table.children('tfoot').find('td.total').data('total', parseFloat(total).toFixed(2));
+    table.children('tfoot').find('td.total').text('$'+total+' mxn');
+}
+
+// Calcula el total de los métodos de pago agregados
+function setTotalMetodosPago(table) {
+    let total = parseFloat(0).toFixed(2);
+
+    table.children('tbody').children('tr.metodo-item').each(function() {
+        // let articulo = $( this ).data('item');
+        let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(2);
         total = Number(total) + Number(subtotal);
     });
 
@@ -539,6 +626,8 @@ function setTotalMetodoPago(table) {
 // Método que ejecuta la cancelación de un pedido
 $("#guardarCancelarOpp").click(function () {
     let canContinue = false;
+    let statusID = null;
+    let pedido = $("div#cancelarOppModal").data("item");
     if( !$("#cancelarOppObservaciones").val().trim() ||  !$("#cancelarOppMotivo").val().trim() ) {
         canContinue = false;
     } else {
@@ -546,9 +635,7 @@ $("#guardarCancelarOpp").click(function () {
     }
 
     if (! canContinue ) {
-        
         alert("Favor de llenar todos los campos con *");
-
         return; 
     }
 
@@ -559,12 +646,65 @@ $("#guardarCancelarOpp").click(function () {
         dangerMode: true,
     }).then((accept) => {
         if ( accept ) {
-            searchCustomer( buscar );
+            // Busca el ID del status cancelado
+            estadosOppArr.forEach(element => {
+                if( element.nombre.toLowerCase().trim() == "cancelado" ) {
+                    statusID = element.id;
+                }
+            });
+
+            let dataSend = {
+                "opportunitiesUpdate": [
+                    {
+                        "id": pedido.id_Transaccion,
+                        "bodyFields": {
+                            "custbody_ptg_estado_pedido": statusID,
+                            "custbody_ptg_motivo_cancelation" : $("#cancelarOppMotivo").val()
+                        },
+                        "lines": [
+                            
+                        ]
+                    }
+                ]
+            };
+            console.log('Primer data', dataSend);
+            loadMsg();
+            let settings = {
+                url      : urlActualizarOpp,
+                method   : 'PUT',
+                data     : JSON.stringify(dataSend)
+            }
+            console.log('Settings', settings);
+            setAjax(settings).then((response) => {
+                console.log('exito cancelando', response);
+                let nota = [{ 
+                    type: "nota", 
+                    idRelacionado: pedido.id_Transaccion, 
+                    titulo: userName + " (Cancelación de servicio)", 
+                    nota: $("#cancelarOppObservaciones").val().trim(),
+                    transaccion: "oportunidad"
+                }];
+                let settingsNota = {
+                    url      : urlGuardarNotaMensaje,
+                    method   : 'POST',
+                    data: JSON.stringify({ informacion: nota })
+                }
+                setAjax(settingsNota).then((response) => {
+                    console.log('exito agregando la nota');
+                    $("#cancelarOppModal").modal("hide");
+                    infoMsg('success', '', "Servicio cancelado correctamente");
+                }).catch((error) => {
+                    console.log(error);
+                    swal.close();
+                });
+                       
+            }).catch((error) => {
+                console.log(error);
+                swal.close();
+            });
         }
     }).catch(swal.noop);
 });
-
-//#region Servicios
 
 // funcion para generar las peticiones
 function requests(url, method, data) {

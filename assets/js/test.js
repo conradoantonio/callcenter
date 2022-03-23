@@ -59,7 +59,10 @@ function searchCustomer(search) {
 function setCustomerInfo(customer) {
     let direcciones = customer.addr;
     let zonaVenta = direccionDefault = null;
-
+    
+    $('#badgeActivo, #badgeInactivo, #badgeDescuento').addClass('d-none');
+    $('#badgeDescuento').children('span.badge').removeClass('bg-danger-cc, bg-success-cc'); // Se le quita la clase success o danger
+    
     $('#idCliente').text(customer.id);
     $('#nombreCliente').text(customer.nombreCompleto);
     $('#telefonoCliente').text(customer.telefono);
@@ -70,6 +73,30 @@ function setCustomerInfo(customer) {
     // Campos del formulario quejas y fugas
     $('#emailFugaQueja').val(customer.email);
     $('#telefonoFugaQueja').val(customer.telefono);
+
+    if ( customer.statusCostumer == 'Activo') { $('#badgeActivo').removeClass('d-none'); }
+    else if ( customer.statusCostumer == 'Inactivo') { $('#badgeInactivo').removeClass('d-none');  }
+    
+    // Muestra el badge de descuento
+    if ( customer.descuento ) {
+        let tipoDescuento = null;
+        let saldoVencido = parseFloat(customer.saldoVencido).toFixed(2);
+        $('#badgeDescuento').removeClass('d-none');
+        if ( saldoVencido > 0 ) {
+            $('#badgeDescuento').children('span.badge').addClass('bg-danger-cc');
+        } else {
+            $('#badgeDescuento').children('span.badge').addClass('bg-success-cc');
+        }
+        
+        if ( customer.tipoDescuento == "1" ) {// Porcentaje
+            tipoDescuento = 'Porcentaje';
+        } else if ( customer.tipoDescuento == "2" ) {// Lineal
+            tipoDescuento = 'Lineal';
+        }
+
+        $('.descuento-tipo').children('td').siblings("td:nth-child(2)").text(tipoDescuento ? tipoDescuento : 'Sin asignar');
+        $('.descuento-cantidad').children('td').siblings("td:nth-child(2)").text(customer.descuento ? customer.descuento : 'Sin asignar');
+    }
 
     // Agrega las direcciones del cliente al select
     $('#direccionCliente').children('option').remove();
@@ -98,8 +125,40 @@ function setCustomerInfo(customer) {
 
     // Se obtienen los datos de la colonia
     setColoniaZonaData(direccionDefault);
-    // console.log('Dirección por default', direccionDefault);
-    // getColoniaZona(direccionDefault?.colonia, direccionDefault?.zip);
+
+    // Setea la información del modal
+    setAlianzaComercial(customer);
+}
+
+// Setea los datos dependiendo del tipo de alianza del cliente: contrato, crédito o contado
+function setAlianzaComercial(customer) {
+    let tipoAlianza = customer.alianzaComercial.toUpperCase();
+    let infoComercial = customer.objInfoComercial;
+    $('tr.alianza').addClass('d-none');
+    if ( tipoAlianza ==  'CONTRATO' ) {
+        $('#badgeAlianza').removeClass('d-none');
+        $('#badgeAlianza').children('span').text('Contrato');
+        $('.alianza-no-contrato, .alianza-fecha-inicio, .alianza-limite-credito, .alianza-dias-credito, .alianza-saldo-disponible, .alianza-dias-vencidos, .alianza-monto-adeudo').removeClass('d-none')
+        $('.alianza-fecha-alta').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaAlta ? infoComercial.fechaAlta : 'Sin asignar');
+        $('.alianza-no-contrato').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
+        $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaInicio ? infoComercial.fechaInicio : 'Sin asignar');
+        $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? infoComercial.limiteCredito : 'Sin asignar');
+        $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
+        $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? infoComercial.saldoDisponible : 'Sin asignar');
+        $('.alianza-dias-vencidos').children('td').siblings("td:nth-child(2)").text(infoComercial.diasAtraso ? infoComercial.diasAtraso : 'Sin asignar');
+        $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? infoComercial.creditoUtilizado : 'Sin asignar');
+    } else if ( tipoAlianza ==  'CREDITO' ) {
+        $('#badgeAlianza').children('span').text('Crédito');
+        $('#badgeAlianza').removeClass('d-none');
+        $('.alianza-fecha-inicio, .alianza-limite-credito, .alianza-dias-credito, .alianza-saldo-disponible, .alianza-dias-vencidos, .alianza-monto-adeudo').removeClass('d-none')
+        $('.alianza-fecha-alta').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaAlta ? infoComercial.fechaAlta : 'Sin asignar');
+        $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaInicio ? infoComercial.fechaInicio : 'Sin asignar');
+        $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? infoComercial.limiteCredito : 'Sin asignar');
+        $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
+        $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? infoComercial.saldoDisponible : 'Sin asignar');
+        $('.alianza-dias-vencidos').children('td').siblings("td:nth-child(2)").text(infoComercial.diasAtraso ? infoComercial.diasAtraso : 'Sin asignar');
+        $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? infoComercial.creditoUtilizado : 'Sin asignar');
+    }
 }
 
 // Setea los datos de la dirección actual seleccionada del cliente
@@ -246,6 +305,20 @@ function setDir(direccion) {
     return str;
 }
 
+// Función para obtener la lista de estatus de las oportunidades
+function getListaStatusOpp() {
+    let settings = {
+        url      : urlGetEstadosOpp,
+        method   : 'GET',
+    }
+
+    setAjax(settings).then((response) => {
+        estadosOppArr = response.data;
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
 // Función para obtener las plantas
 function getPlantas() {
     let dataPlantas = {
@@ -339,8 +412,9 @@ function getListaCancelacion() {
 getPlantas();
 getArticulos();
 getMetodosPago();
-getServiceOrigin();
 getBusinessType();
+getServiceOrigin();
+getListaStatusOpp();
 getListaCancelacion();
 
 // Método para llenar el select de plantas
@@ -465,7 +539,11 @@ function getCasosOportunidades() {
     }
 
     // Se remueven registros previos
+    let table = $('div#historic-data table').DataTable();
+    
+    table.destroy();
     $('div#historic-data table.table-gen tbody').children('tr').remove();
+ 
     $('select#asociarServicioFugaQueja, select#asociarCasoFugaQueja').children('option').remove();
     $('select#asociarServicioFugaQueja, select#asociarCasoFugaQueja').append('<option value="">Seleccione una opción</option>');
 
@@ -490,7 +568,7 @@ function setCasosOportunidades( data ) {
         for ( var key in casos ) {
             if ( casos.hasOwnProperty( key ) ) {
                 $('div#historic-data table.table-gen tbody').append(
-                    setTrOppCases( casos[key] )
+                    setTrOppCases( casos[key], 'casos' )
                 );
 
                 $('select#asociarCasoFugaQueja').append('<option value="'+casos[key].id_Transaccion+'">No. caso: '+casos[key].numeroCaso+' - Fecha visita: '+casos[key].fecha_visita+'</option>');
@@ -505,7 +583,7 @@ function setCasosOportunidades( data ) {
         for ( var key in oportunidades ) {
             if ( oportunidades.hasOwnProperty( key ) ) {
                 $('div#historic-data table.table-gen tbody').append(
-                    setTrOppCases( oportunidades[key] )
+                    setTrOppCases( oportunidades[key], 'oportunidades' )
                 );
 
                 $('select#asociarServicioFugaQueja').append('<option value="'+oportunidades[key].id_Transaccion+'"> No. documento: '+oportunidades[key].numeroDocumento+' - Fecha: '+oportunidades[key].fecha+'</option>');
@@ -517,6 +595,7 @@ function setCasosOportunidades( data ) {
     }
 
     // Vuelve a mostrar la tabla
+    $('div#historic-data table').DataTable();
     $('div#historic-data').fadeIn('slow');
 }
 
@@ -545,31 +624,38 @@ function setTrOppCases(item, type = 'casos') {
             '</div>'+
         '</td>'+
         '<td><button class="btn btn-danger"></button></td>'+
-        '<td>'+( item.fecha ?? 'Sin fecha')+'</td>'+
-        '<td>'+( item.fecha_visita ?? 'Sin fecha visita' )+'</td>'+
-        '<td>'+( item.hora_visita ?? 'Sin hora visita' )+'</td>'+
-        '<td>'+( item.numeroDocumento ?? 'Sin número de documento' )+'</td>'+
-        '<td>'+( item.numeroCaso ?? 'Sin número de caso' )+'</td>'+
-        '<td>'+( item.asunto ?? 'Sin asunto' )+'</td>'+
-        '<td>'+( item.nombreCliente ?? 'Sin nombre de cliente' )+'</td>'+
-        '<td>'+( item.telefono ?? 'Sin teléfono' )+'</td>'+
-        '<td>'+( item.representanteVentas ?? 'Sin agente' )+'</td>'+
-        '<td>'+( item.monitor ?? 'Sin asignado' )+'</td>'+
-        '<td>'+( item.estado ?? 'Sin estado' )+'</td>'+
-        '<td>'+( item.prioridad ?? 'Sin prioridad' )+'</td>'+
-        '<td>'+( item.motivoCancelacion ?? 'Sin motivo cancelación' )+'</td>'+
-        '<td>'+( item.cierrePrevisto ?? 'Sin cierre previsto' )+'</td>'+
-        '<td>'+( item.horaCierre ?? 'Sin hora cierre' )+'</td>'+
-        '<td>'+( item.origenServicio ? item.origenServicio : 'Sin origen servicio' )+'</td>'+
-        '<td>'+( item.tipoServicio ?? 'Sin tipo servicio' )+'</td>'+
-        '<td>'+( item.articulo ?? 'Sin artículo' )+'</td>'+
-        '<td>'+( item.fechaNotificacion ?? 'Sin fecha notificación' )+'</td>'+
-        '<td>'+( item.tipoTransaccion ?? 'Sin tipo transacción' )+'</td>'+
-        '<td>'+( item.nota ?? 'Sin nota' )+'</td>'+
-        '<td>'+( item.conductorAsignado ?? 'Sin conductor asignado' )+'</td>'+
-        '<td>'+( item.metodoPago ?? 'Sin método de pago' )+'</td>'+
-        '<td>'+( item.nota_rapida ?? 'Sin nota rápida' )+'</td>'+
-        '<td>'+( item.unidad ?? 'Sin unidad' )+'</td>'+
+        '<td>'+( item.fecha ?? 'Sin fecha')+'</td>'+//Fecha creación
+        '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin fecha prometida' ) : 'Sin fecha prometida' )+'</td>'+// Fecha prometida
+        '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
+        '<td>'+( type == "casos" ? ( item.numeroCaso ?? 'Sin asignar' ) : ( item.numeroDocumento ?? 'Sin asignar' ) )+'</td>'+// Numero de documento u caso
+        '<td>'+( type == "casos" ? ( item.asunto ?? 'Sin asignar' ) : ( item.tipoTransaccion ?? 'Sin asignar' ) )+'</td>'+// Asunto
+        '<td>'+( type == "casos" ? ( item.fecha_visita ?? 'Sin asignar' ) : ( item.cierrePrevisto ?? 'Sin asignar' ) )+'</td>'+// Fecha visita
+        '<td>'+( type == "casos" ? ( item.hora_visita ?? 'Sin asignar' ) : ( item.horaVisita ?? 'Sin asignar' ) )+'</td>'+// Hora visita
+        '<td>'+( type == "casos" ? ( item.estatus ?? 'Sin asignar' ) : ( item.estado ?? 'Sin asignar' ) )+'</td>'+// Estado
+        '<td>'+( type == "casos" ? ( item.prioridad ?? 'Sin asignar' ) : 'N/A' )+'</td>'+// Prioridad
+        // '<td>'+( item.hora_visita ?? 'Sin hora visita' )+'</td>'+
+        // '<td>'+( item.numeroDocumento ?? 'Sin número de documento' )+'</td>'+
+        // '<td>'+( item.numeroCaso ?? 'Sin número de caso' )+'</td>'+
+        // '<td>'+( item.asunto ?? 'Sin asunto' )+'</td>'+
+        // '<td>'+( item.nombreCliente ?? 'Sin nombre de cliente' )+'</td>'+
+        // '<td>'+( item.telefono ?? 'Sin teléfono' )+'</td>'+
+        // '<td>'+( item.representanteVentas ?? 'Sin agente' )+'</td>'+
+        // '<td>'+( item.monitor ?? 'Sin asignado' )+'</td>'+
+        // '<td>'+( item.estado ?? 'Sin estado' )+'</td>'+
+        // '<td>'+( item.prioridad ?? 'Sin prioridad' )+'</td>'+
+        // '<td>'+( item.motivoCancelacion ?? 'Sin motivo cancelación' )+'</td>'+
+        // '<td>'+( item.cierrePrevisto ?? 'Sin cierre previsto' )+'</td>'+
+        // '<td>'+( item.horaCierre ?? 'Sin hora cierre' )+'</td>'+
+        // '<td>'+( item.origenServicio ? item.origenServicio : 'Sin origen servicio' )+'</td>'+
+        // '<td>'+( item.tipoServicio ?? 'Sin tipo servicio' )+'</td>'+
+        // '<td>'+( item.articulo ?? 'Sin artículo' )+'</td>'+
+        // '<td>'+( item.fechaNotificacion ?? 'Sin fecha notificación' )+'</td>'+
+        // '<td>'+( item.tipoTransaccion ?? 'Sin tipo transacción' )+'</td>'+
+        // '<td>'+( item.nota ?? 'Sin nota' )+'</td>'+
+        // '<td>'+( item.conductorAsignado ?? 'Sin conductor asignado' )+'</td>'+
+        // '<td>'+( item.metodoPago ?? 'Sin método de pago' )+'</td>'+
+        // '<td>'+( item.nota_rapida ?? 'Sin nota rápida' )+'</td>'+
+        // '<td>'+( item.unidad ?? 'Sin unidad' )+'</td>'+
     '</tr>';
 
     return tr;
@@ -605,6 +691,9 @@ function clearCustomerInfo () {
 
     // Se remueven los datos personalizados del cliente en quejas y figas
     $('#emailFugaQueja, #telefonoFugaQueja').val('');
+
+    // Se remueven los badge de información adicional del cliente
+    $('#badgeAlianza, #badgeDescuento, #badgeActivo, #badgeInactivo').addClass('d-none');
 
     customerGlobal = null;
     resetProductList();
@@ -725,50 +814,27 @@ function verDetalles($this) {
     $("#verDetallesTipoServicio").html(customerGlobal.typeCustomer.trim());
     $("#verDetallesTelefono").html(customerGlobal.telefono.trim());
     $("#verDetallesServicio").html(pedido.id_Transaccion);
-    $("#verDetallesDireccion").html($('#direccionCliente').children(':selected').text());
+    $("#verDetallesDireccion").html(pedido.rutaAsignada ? pedido.rutaAsignada : 'Sin asignar');
 
-    $("#verDetallesVehiculo").html(pedido.nombre_vehiculo.trim() ? pedido.nombre_vehiculo.trim() : 'Sin asignar');
-    $("#verDetallesZona").html(pedido.zone);
-    $("#verDetallesUsuarioMonitor").html(pedido.monitor.trim() ? pedido.monitor.trim() : 'Sin asignar');
-    $("#verDetallesDireccionw").html(pedido.direccion);
-    $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
-    $("#verDetallesFechaPedido").html(dateFormatFromDate(pedido.fecha_solicitud, '5'));
-
-    // '<td>'+( item.fecha ?? 'Sin fecha')+'</td>'+
-    // '<td>'+( item.fecha_visita ?? 'Sin fecha visita' )+'</td>'+
-    // '<td>'+( item.hora_visita ?? 'Sin hora visita' )+'</td>'+
-    // '<td>'+( item.numeroDocumento ?? 'Sin número de documento' )+'</td>'+
-    // '<td>'+( item.numeroCaso ?? 'Sin número de caso' )+'</td>'+
-    // '<td>'+( item.asunto ?? 'Sin asunto' )+'</td>'+
-    // '<td>'+( item.nombreCliente ?? 'Sin nombre de cliente' )+'</td>'+
-    // '<td>'+( item.telefono ?? 'Sin teléfono' )+'</td>'+
-    // '<td>'+( item.representanteVentas ?? 'Sin agente' )+'</td>'+
-    // '<td>'+( item.monitor ?? 'Sin asignado' )+'</td>'+
-    // '<td>'+( item.estado ?? 'Sin estado' )+'</td>'+
-    // '<td>'+( item.prioridad ?? 'Sin prioridad' )+'</td>'+
-    // '<td>'+( item.motivoCancelacion ?? 'Sin motivo cancelación' )+'</td>'+
-    // '<td>'+( item.cierrePrevisto ?? 'Sin cierre previsto' )+'</td>'+
-    // '<td>'+( item.horaCierre ?? 'Sin hora cierre' )+'</td>'+
-    // '<td>'+( item.origenServicio ? item.origenServicio : 'Sin origen servicio' )+'</td>'+
-    // '<td>'+( item.tipoServicio ?? 'Sin tipo servicio' )+'</td>'+
-    // '<td>'+( item.articulo ?? 'Sin artículo' )+'</td>'+
-    // '<td>'+( item.fechaNotificacion ?? 'Sin fecha notificación' )+'</td>'+
-    // '<td>'+( item.tipoTransaccion ?? 'Sin tipo transacción' )+'</td>'+
-    // '<td>'+( item.nota ?? 'Sin nota' )+'</td>'+
-    // '<td>'+( item.conductorAsignado ?? 'Sin conductor asignado' )+'</td>'+
-    // '<td>'+( item.metodoPago ?? 'Sin método de pago' )+'</td>'+
-    // '<td>'+( item.nota_rapida ?? 'Sin nota rápida' )+'</td>'+
-    // '<td>'+( item.unidad ?? 'Sin unidad' )+'</td>'+
-    
-    
-
-    // $("#verDetallesVehiculo").html(pedido.nombre_vehiculo.trim() ? pedido.nombre_vehiculo.trim() : 'Sin asignar');
-    // $("#verDetallesZona").html(pedido.zona);
-    // $("#verDetallesUsuarioMonitor").html(pedido.usuario_monitor.trim() ? pedido.usuario_monitor.trim() : 'Sin asignar');
-    // $("#verDetallesDireccionw").html(pedido.direccion);
+    $("#verDetallesVehiculo").html(pedido.vehiculo ? pedido.vehiculo.trim() : 'Sin asignar');
+    $("#verDetallesZona").html(pedido.zone ? pedido.zone : 'Sin asignar');
+    $("#verDetallesUsuarioMonitor").html(pedido.monitor ? pedido.monitor.trim() : 'Sin asignar');
+    $("#verDetallesDireccion2").html($('#direccionCliente').children(':selected').text());
     // $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
-    // $("#verDetallesFechaPedido").html(dateFormatFromDate(pedido.fecha_solicitud, '5'));
-    // $("#verDetallesFechaNotificacion").html(pedido.fecha_notificacion ? dateFormatFromDate(pedido.fecha_notificacion, '5') + " - " + pedido.hora_notificacion : 'Sin asignar');
+    $("#verDetallesFechaPrometida").html(pedido.cierrePrevisto ? pedido.cierrePrevisto : 'Sin asignar');
+    $("#verDetallesFechaPedido").html(pedido.fecha ? pedido.fecha : 'Sin asignar');
+    // $("#verDetallesFechaPedido").html(pedido.fecha ? dateFormatFromDate(pedido.fecha, '5') : 'Sin asignar');
+    $("#verDetallesFechaNotificacion").html(pedido.fechaNotificacion ? pedido.fechaNotificacion : 'Sin asignar');// Usar el método de Alexis para ver la hora
+    $("#verDetallesAgenteAtiende").html(pedido.representanteVentas ? pedido.representanteVentas : userName);
+    $("#verDetallesConductorAsignado").html(pedido.conductorAsignado ? pedido.conductorAsignado : 'Sin asignar');
+    $("#verDetallesRuta").html(pedido.rutaAsignada ? pedido.rutaAsignada : 'Sin asignar');
+    
+    $("#verDetallesTiempoNotificacion")
+    .html(pedido.horaNoti ? 
+        getRestTime(dateFormatFromString(pedido.fechaNotificacion+(pedido.horaNoti ? " "+pedido.horaNoti : ''), "2")) 
+        : 'Sin asignar'
+    );
+
     // $("#verDetallesTipoProducto").html("");
     // vrTiposServicios.forEach(element => {
     //     if(pedido.servicio == element.id) {
@@ -779,7 +845,6 @@ function verDetalles($this) {
     //     $("#verDetallesTipoProducto").html("Desconocido");
     // }
     // $("#verDetallesContrato").html(pedido.contrato ? pedido.contrato : 'Sin contrato');
-    // $("#verDetallesAgenteAtiende").html(pedido.usuario_pedido_solicitud);
     // $("#verDetallesTiempoNotificacion").html(pedido.fecha_hora_notificacion ? getRestTime(dateFormatFromString(pedido.fecha_notificacion+(pedido.hora_notificacion ? " "+pedido.hora_notificacion : ''), "1")) : 'Sin asignar');
     // $("#verDetallesObservaciones").html(pedido.observaciones ? pedido.observaciones : 'Sin observaciones');
     $("#formVerDetallesPedidos").modal("show");
@@ -788,11 +853,12 @@ function verDetalles($this) {
 // Abre el modal para cancelar el pedido
 function cancelarPedido($this) {
     let pedido = $($this).closest("tr").data("item");
-    $("#cancelarOppPedido").html(pedido.no_pedido ? " - " + pedido.no_pedido : '');
-    // $('#cancelarOppObservaciones').val('').trigger('change');
 
-    // $('#cancelarOppObservaciones').val(null);
+    $('#cancelarOppMotivo').val('');
+    $("#cancelarOppObservaciones").val('');
+    // $('#cancelarOppMotivo').val('').trigger('change');
     $("#cancelarOppModal").data("item", pedido);
+    $("span#cancelarOppPedido").html(pedido.id_Transaccion ? " - " + pedido.id_Transaccion : '');
     $("#cancelarOppModal").modal("show");
 }
 
@@ -804,7 +870,6 @@ function setAjax(settings) {
             url: settings.url,
             method: settings.method,
             data: settings.data ?? null,
-            // data: JSON.stringify(data),
             contentType: 'application/json',
             dataType: 'json',
             success: function (response) {

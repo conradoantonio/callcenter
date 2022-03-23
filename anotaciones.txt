@@ -16,3 +16,16 @@ Puntos que faltan:
 - Modificar a dos puntos decimales el total (Ya)
 - Que el total sea el editable en lugar del valor (estacionarios) (Ya)
 - Cuando se busque un cliente, y en la lista de productos hay alguno, preguntar en un sweetalert si desea continuar (Ya)
+
+- Revisar el formato de impresión de las fechas
+- 
+
+- Si el cliente tiene todo el saldo disponible en su crédito, colocar en verde
+- Si el cliente rebasa el saldo disponible, que no lo deje hacer el pedido
+1 = Porcentaje
+2 = Lineal
+
+Al elegir una dirección de tipo cilindro, al querer hacer un pedido, preseleccionar el artículo que coincida con el especificado anteriormente.
+
+Al momento de crear el servicio de SGC carburación, deberá crearse con el usuario de público en general, ya en el momento de la preliquidación, se setea ese dato. 
+El dato de método de pago se creará con el que envíe SGC carburación, pero en preliquidación se cambiará manualmente ese dato.

@@ -512,6 +512,10 @@
             overflow: auto;
         }
 
+        div#filtros{
+            background-color: rgb(225, 225, 225);
+        }
+
         #historic-data {
             overflow: auto;
             height: calc(100vh - 449px);
@@ -1084,56 +1088,64 @@
                 <div class="modal-body">
                     <div class="content-gen">
                         <div class="row p-3">
-                          <div class="col-3 title">Servicio</div>
-                          <div id="verDetallesServicio" class="col-9 resp"></div>
+                            <div class="col-3 title">Servicio</div>
+                            <div id="verDetallesServicio" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Vehículo</div>
-                          <div id="verDetallesVehiculo" class="col-9 resp"></div>
+                            <div class="col-3 title">Vehículo</div>
+                            <div id="verDetallesVehiculo" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Zona</div>
-                          <div id="verDetallesZona" class="col-9 resp"></div>
+                            <div class="col-3 title">Conductor asignado</div>
+                            <div id="verDetallesConductorAsignado" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Usuario Monitor</div>
-                          <div id="verDetallesUsuarioMonitor" class="col-9 resp"></div>
+                            <div class="col-3 title">Ruta</div>
+                            <div id="verDetallesRuta" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Direccíon</div>
-                          <div id="verDetallesDireccion2" class="col-9 resp"></div>
+                            <div class="col-3 title">Zona</div>
+                            <div id="verDetallesZona" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Fecha Prometida</div>
-                          <div id="verDetallesFechaPrometida" class="col-9 resp"></div>
+                            <div class="col-3 title">Usuario Monitor</div>
+                            <div id="verDetallesUsuarioMonitor" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Fecha Pedido</div>
-                          <div id="verDetallesFechaPedido" class="col-9 resp"></div>
+                            <div class="col-3 title">Direccíon</div>
+                            <div id="verDetallesDireccion2" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Fecha Notificación</div>
-                          <div id="verDetallesFechaNotificacion" class="col-9 resp"></div>
+                            <div class="col-3 title">Fecha Prometida</div>
+                            <div id="verDetallesFechaPrometida" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Tipo Producto</div>
-                          <div id="verDetallesTipoProducto" class="col-9 resp"></div>
+                            <div class="col-3 title">Fecha Pedido</div>
+                            <div id="verDetallesFechaPedido" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Contrato</div>
-                          <div id="verDetallesContrato" class="col-9 resp"></div>
+                            <div class="col-3 title">Fecha Notificación</div>
+                            <div id="verDetallesFechaNotificacion" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Agente atiende</div>
-                          <div id="verDetallesAgenteAtiende" class="col-9 resp"></div>
+                            <div class="col-3 title">Tipo Producto</div>
+                            <div id="verDetallesTipoProducto" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Contrato</div>
+                            <div id="verDetallesContrato" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Agente atiende</div>
+                            <div id="verDetallesAgenteAtiende" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3 align-items-end">
-                          <div class="col-3 title">Tiempo de notificación</div>
-                          <div id="verDetallesTiempoNotificacion" class="col-9 resp"></div>
+                            <div class="col-3 title">Tiempo de notificación</div>
+                            <div id="verDetallesTiempoNotificacion" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                          <div class="col-3 title">Observaciones</div>
-                          <div id="verDetallesObservaciones" class="col-9 resp"></div>
+                            <div class="col-3 title">Observaciones</div>
+                            <div id="verDetallesObservaciones" class="col-9 resp"></div>
                         </div>
                     </div>
                 </div>
@@ -1144,7 +1156,7 @@
         </div>
     </div>
 
-    <div id="cancelarOppModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titlecancelarOppModalModal" aria-hidden="true">
+    <div id="cancelarOppModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titlecancelarOppModalModal" data-item="" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
@@ -1166,6 +1178,106 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
                     <button id="guardarCancelarOpp" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="alianzaClienteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleAlianzaComercialModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc text-center">
+                    <h5 class="modal-title" id="titleAlianzaComercialModal">Alianza comercial</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table-gen table-gen-blue text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th>Valores</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="alianza alianza-no-contrato">
+                                        <td class="ion-text-center sticky-col fw-bold">No. Contrato</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                    <tr class="alianza alianza-fecha-alta">
+                                        <td class="ion-text-center sticky-col fw-bold">Fecha alta</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                    <tr class="alianza alianza-fecha-inicio">
+                                        <td class="ion-text-center sticky-col fw-bold">Fecha inicio</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                    <tr class="alianza alianza-limite-credito">
+                                        <td class="ion-text-center sticky-col fw-bold">Liimite de Credito</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                    <tr class="alianza alianza-dias-credito">
+                                        <td class="ion-text-center sticky-col fw-bold">Días de crédito</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                    <tr class="alianza alianza-saldo-disponible">
+                                        <td class="ion-text-center sticky-col fw-bold">Saldo Disponible</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                    <tr class="alianza alianza-dias-vencidos">
+                                        <td class="ion-text-center sticky-col fw-bold">Días vencidos</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                    <tr class="alianza alianza-monto-adeudo">
+                                        <td class="ion-text-center sticky-col fw-bold">Monto del adeudo</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="descuentoClienteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleDescuentoCliente" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc text-center">
+                    <h5 class="modal-title" id="titleDescuentoCliente">Descuento aplicado</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table-gen table-gen-blue text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th>Valores</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="descuento descuento-tipo">
+                                        <td class="ion-text-center sticky-col fw-bold">Tipo</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                    <tr class="descuento descuento-cantidad">
+                                        <td class="ion-text-center sticky-col fw-bold">Valor</td>
+                                        <td class="ion-text-center sticky-col"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -1200,14 +1312,17 @@
                 <div class="row align-items-center pb-2">
                     <div class="col p-0">
                     </div>
-                    <div class="col-auto pl-0 badgesClientes" id="badgeContrato">
-                        <span class="badge bg-danger-cc ft-12">Contrato</span>
+                    <div class="col-auto pl-0 badgesClientes d-none" id="badgeAlianza">
+                        <span class="badge bg-danger-cc ft-12 show-alianza">Contrato</span>
                     </div>
-                    <div class="col-auto pl-0 badgesClientes" id="badgeActivo">
+                    <div class="col-auto pl-0 badgesClientes d-none" id="badgeActivo">
                         <span class="badge bg-success-cc ft-12">Activo</span>
                     </div>
-                    <div class="col-auto pl-0 badgesClientes" id="badgeInactivo">
+                    <div class="col-auto pl-0 badgesClientes d-none" id="badgeInactivo">
                         <span class="badge bg-danger-cc ft-12">Inactivo</span>
+                    </div>
+                    <div class="col-auto pl-0 badgesClientes d-none" id="badgeDescuento">
+                        <span class="badge ft-12">Tiene descuento</span>
                     </div>
                     <div class="col-auto pl-0 badgesClientes" id="badgePendientes">
                         <span class="badge bg-danger-cc ft-12">Tienen pedido(s) pendiente(s)</span>
@@ -1311,7 +1426,31 @@
                         <label class="fw-bold" id="rutaCliente">Sin ruta</label>
                     </div>
                 </div>
+
+                <div id="filtros" class="row d-none" style="margin-top: 10px;">
+                    <div class="col-auto pb-2">
+                        <div class="content-input">
+                            <label>Rango Fecha de la Solicitud</label><br>
+                            <div class="row align-items-center content-range-date" style="width: 390px;">
+                                <div class="col pr-0">
+                                    <div class="row align-items-center">
+                                        <div class="col-6 pr-0">
+                                            <input id="filterFechaSolicitudIni" onchange="getServicios(this)" type="date" class="form-ptg range-date date-ini">
+                                        </div>
+                                        <div class="col-6 px-1">
+                                            <input id="filterFechaSolicitudFin" onchange="getServicios(this)" type="date" class="form-ptg range-date date-fin">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <button id="limpiarFilterFechaSolicitud" type="button" class="btn bg-secondary-cc btn-clean-date"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <div id="historic-data">
                 <table class="table-gen table-gen-blue">
                     <thead>
@@ -1326,35 +1465,43 @@
                             <th style="min-width: 40px; z-index: 51; left: 80px;" class="text-center sticky-col">
                                 <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                             </th>
-                            <th style="min-width: 95px" class="text-center" style="z-index: 51;">Fecha Solicitud</th>
-                            <th style="min-width: 95px" class="text-center" style="z-index: 51;">Fecha Comprometida</th>
-                            <th style="min-width: 95px" class="text-center" style="z-index: 51;">Hora Visita</th>
-                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Número de Documento</th>
-                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Número de Caso</th>
-                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Asunto</th>
-                            <th style="min-width: 155px" class="text-center" style="z-index: 51;">Nombre del Cliente</th>
-                            <th style="min-width: 155px" class="text-center" style="z-index: 51;">Telefono</th>
-                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Agente Call Center</th>
-                            <th style="min-width: 135px" class="text-center" style="z-index: 51;">Monitor</th>
-                            <th style="min-width: 265px" class="text-center" style="z-index: 51;">Estado</th>
-                            <th style="min-width: 265px" class="text-center" style="z-index: 51;">Prioridad</th>
-                            <th style="min-width: 125px" class="text-center" style="z-index: 51;">Motivo Cancelación</th>
-                            <th style="min-width: 130px" class="text-center" style="z-index: 51;">Cierre Previsto</th>
-                            <th style="min-width: 150px" class="text-center" style="z-index: 51;">Hora Cierre</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Origen Servicio</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Tipo Servicio</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Articulo</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Fecha Notificacion</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Tipo Transaccion</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Nota</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Tecnico / Conductor Asignado</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Método Pago</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Nota Rapida</th>
-                            <th style="min-width: 355px" class="text-center" style="z-index: 51;">Unidad</th>
+                            <th style="z-index: 51;" class="text-center">Fecha creación</th>
+                            <th style="z-index: 51;" class="text-center">Fecha prometida</th>
+                            <th style="z-index: 51;" class="text-center">Tipo Servicio</th>
+                            <th style="z-index: 51;" class="text-center">Número de documento</th>
+                            <th style="z-index: 51;" class="text-center">Asunto</th>
+                            <th style="z-index: 51;" class="text-center">Fecha visita</th>
+                            <th style="z-index: 51;" class="text-center">Hora visita</th>
+                            <th style="z-index: 51;" class="text-center">Estado</th>
+                            <th style="z-index: 51;" class="text-center">Prioridad</th>
+                            <!-- <th style="min-width: 95px; z-index: 51;" class="text-center">Fecha Solicitud</th>
+                            <th style="min-width: 95px; z-index: 51;" class="text-center">Fecha Comprometida</th>
+                            <th style="min-width: 95px; z-index: 51;" class="text-center">Hora Visita</th>
+                            <th style="min-width: 135px; z-index: 51;" class="text-center">Número de Documento</th>
+                            <th style="min-width: 135px; z-index: 51;" class="text-center">Número de Caso</th>
+                            <th style="min-width: 135px; z-index: 51;" class="text-center">Asunto</th>
+                            <th style="min-width: 155px; z-index: 51;" class="text-center">Nombre del Cliente</th>
+                            <th style="min-width: 155px; z-index: 51;" class="text-center">Telefono</th>
+                            <th style="min-width: 135px; z-index: 51;" class="text-center">Agente Call Center</th>
+                            <th style="min-width: 135px; z-index: 51;" class="text-center">Monitor</th>
+                            <th style="min-width: 265px; z-index: 51;" class="text-center">Estado</th>
+                            <th style="min-width: 265px; z-index: 51;" class="text-center">Prioridad</th>
+                            <th style="min-width: 125px; z-index: 51;" class="text-center">Motivo Cancelación</th>
+                            <th style="min-width: 130px; z-index: 51;" class="text-center">Cierre Previsto</th>
+                            <th style="min-width: 150px; z-index: 51;" class="text-center">Hora Cierre</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Origen Servicio</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Tipo Servicio</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Articulo</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Fecha Notificacion</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Tipo Transaccion</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Nota</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Tecnico / Conductor Asignado</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Método Pago</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Nota Rapida</th>
+                            <th style="min-width: 355px; z-index: 51;" class="text-center">Unidad</th> -->
                         </tr>
                     </thead>
-
-                    <tbody style="text-align: center;" *ngIf="!isLoadingPedidos">
+                    <tbody style="text-align: center;">
 
                     </tbody>
                 </table>
@@ -1696,7 +1843,7 @@
                 </div>
 
             </div>
-            <div id="content-avisos">
+            <div id="content-avisos" class="">
                 <table class="table-gen table-gen-blue">
                     <thead>
                         <tr>
@@ -2039,6 +2186,7 @@
         userSubsidiary = '${ds.userSubsidiary}';
         urlPlantas = '${ds.getPlantas}';
         urlCrearOp = '${ds.createOPP}';
+        urlActualizarOpp = '${ds.putOpp}';
         urlObtenerPedidos = '${ds.getOPP}';
         urlObtenerCliente = '${ds.getCustomer}';
         urlObtenerZona = '${ds.getColoniaZona}';
@@ -2053,14 +2201,21 @@
         urlGetConceptosCasos = '${ds.getLisConceptosCasos}';
         urlGuardarNotaMensaje = '${ds.postNoteandMessage}';
         urlGetListaCancelacion = '${ds.getListCancellReason}';
+        urlGetEstadosOpp = '${ds.getListStatusOpp}';
         
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
         // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
         urlGetPlaces = '${ds.getCities}';
         conceptoFugasQuejasArr = [];
+        estadosOppArr = [];
         customerGlobal = null;
         direccionDefault = null;
+        
+        $('div#historic-data table').DataTable({
+            "order": []
+            //DataTable Options
+        });
 
         
         $('#cancelarOppMotivo').select({
@@ -2108,6 +2263,14 @@
             $(".form-search .fa-xmark").click(function () {
                 $(this).addClass('d-none');
                 $(this).parent().find("input").val('');
+            });
+            
+            $("#badgeAlianza").click(function() {
+                $("#alianzaClienteModal").modal("show");
+            });
+
+            $("#badgeDescuento").click(function() {
+                $("#descuentoClienteModal").modal("show");
             });
 
             // $("#agregarDirecciones").click(function() {
@@ -2376,7 +2539,11 @@
     <!-- Archivo de javascript de Conrado y Christian -->
     <script
         src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=109001&c=5298967_SB1&h=Or0iEXdlb60UL8oLPvgtGx5TuAIlxkg2nuDOrQMRopQkqPaU&_xt=.js"></script>
-
+    
+    <!-- Archivo para las funciones de cálculo y formateo de fecha y hora -->
+    <script
+        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=111208&c=5298967_SB1&h=ZUhaS9BkKGbYxVAnFddioklTYZyx4jcQ_f3qGIHJF0g_dERT&_xt=.js"></script>
+        
     <!-- Archivo para las llamadas de estados, ciudades, colonias y zonas -->
     <script
         src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108999&c=5298967_SB1&h=KZ9uTCp4Xl91myJAOPLkubFLt7ehqts8lXAzCSzs3ieW7k6Y&_xt=.js"></script>

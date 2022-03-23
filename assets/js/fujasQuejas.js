@@ -92,7 +92,7 @@ $('#guardarFugaQueja').on('click', function () {
         "priority" : $('#prioridadFugaQueja').val(),
         "concepto" : $('#conceptoFugaQueja').val(),
         // "quicknote" : "Nota rápida",
-        "custevent_ptg_fecha_visita" : $('#fechaVisitaFugaQueja').val(),
+        "custevent_ptg_fecha_visita" : dateFormatFromDate($('#fechaVisitaFugaQueja').val(), '5'),
         "id_oportuniti" : $('#asociarServicioFugaQueja').val(),
         "custevent_ptg_relacionar_caso_existente" : $('#asociarCasoFugaQueja').val(),
         "custevent_ptg_horario_preferido" : formatTime( $('#horarioPreferidoFugaQueja').val() ),
