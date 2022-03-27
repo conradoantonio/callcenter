@@ -1,42 +1,93 @@
+$(function() {
+    $('.select-search-customer').select2({
+        ajax: {
+            url: urlGetSelectCustomer,
+            delay: 450,
+            method: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: function (params) {
+                let queryParameters = {
+                    filtro: params.term,
+                    idPlanta : $('select#plantas').val(),
+                }
+
+                return JSON.stringify(queryParameters);
+            },
+            processResults: function (response) {
+                return {
+                    results: $.map(response.data, function(obj) {
+                        return { id: obj.id, text: obj.text };
+                    })
+                };
+            },
+        },
+        placeholder: 'Buscar por nombre, id, teléfono...',
+        language: "es"
+    });
+});
+
+// Se podrá solicitar la información de un cliente al seleccionar una opción del listado de resultados
+$('.select-search-customer').on("select2:select", function (e) { 
+    let clienteId = $(this).val();
+    console.log('Este es el valor seleccionado', clienteId);
+    let tieneProductos = $('#sinProductos').hasClass('d-none');
+    if ( tieneProductos ) {// Tiene productos agregados
+        swal({
+            title: 'Tiene un pedido en curso, ¿Está seguro de continuar con la búsqueda de un cliente nuevo?',
+            icon: 'warning',
+            buttons:["Cancelar", "Aceptar"],
+            dangerMode: true,
+        }).then((accept) => {
+            if ( accept ) {
+                searchCustomer( clienteId );
+            }
+        }).catch(swal.noop);
+    } else {
+        searchCustomer( clienteId );
+    }
+    $('select.select-search-customer').val(null).trigger("change");
+});
+
 // Se inyecta la información del usuario logueado
 $('span.user-name').text(userName);
 $('span#role').text(userRole);
 
-// Evento que dispara la búsqueda de un cliente
-$('input#buscarCliente').on('keypress',function(e) {
-    if( e.which == 13 ) {
-        let buscar = $(this).val();
-        let tieneProductos = $('#sinProductos').hasClass('d-none');
-        if ( tieneProductos ) {// Tiene productos agregados
-            swal({
-                title: 'Tiene un pedido en curso, ¿Está seguro de continuar con la búsqueda de un cliente nuevo?',
-                icon: 'warning',
-                buttons:["Cancelar", "Aceptar"],
-                dangerMode: true,
-            }).then((accept) => {
-                if ( accept ) {
-                    searchCustomer( buscar );
-                }
-            }).catch(swal.noop);
-        } else {
-            searchCustomer( buscar );
-        }
-    }
-});
+// Evento que dispara la búsqueda de un cliente (Obsoleto)
+// $('input#buscarCliente').on('keypress',function(e) {
+//     if( e.which == 13 ) {
+//         let buscar = $(this).val();
+//         let tieneProductos = $('#sinProductos').hasClass('d-none');
+//         if ( tieneProductos ) {// Tiene productos agregados
+//             swal({
+//                 title: 'Tiene un pedido en curso, ¿Está seguro de continuar con la búsqueda de un cliente nuevo?',
+//                 icon: 'warning',
+//                 buttons:["Cancelar", "Aceptar"],
+//                 dangerMode: true,
+//             }).then((accept) => {
+//                 if ( accept ) {
+//                     searchCustomer( buscar );
+//                 }
+//             }).catch(swal.noop);
+//         } else {
+//             searchCustomer( buscar );
+//         }
+//     }
+// });
 
 // Función para filtrar clientes por un texto
-function searchCustomer(search) {
+function searchCustomer(clienteId) {
     loadMsg('Espere un momento...');
 
     clearCustomerInfo();
 
     let dataSearchCustomer = {
-        "phone"  : search,
-        "planta" : $("select#plantas").val(),
+        "internalId" : clienteId,
+        // "planta"     : $("select#plantas").val(),
     };
 
     let settings = {
-        url    : urlObtenerCliente,
+        url    : urlObtenerClientePorId,
         method : 'POST',
         data   : JSON.stringify(dataSearchCustomer),
     }
@@ -46,7 +97,7 @@ function searchCustomer(search) {
         // console.log('Cliente encontrado', response);
         customerGlobal = response.data[0];
         setCustomerInfo(response.data[0]);
-        $('#agregarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', false);
+        $('#agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', false);
     }).catch((error) => {
         infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
         // Limpia los campos de cliente
@@ -141,7 +192,7 @@ function setAlianzaComercial(customer) {
         $('.alianza-no-contrato, .alianza-fecha-inicio, .alianza-limite-credito, .alianza-dias-credito, .alianza-saldo-disponible, .alianza-dias-vencidos, .alianza-monto-adeudo').removeClass('d-none')
         $('.alianza-fecha-alta').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaAlta ? infoComercial.fechaAlta : 'Sin asignar');
         $('.alianza-no-contrato').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
-        $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaInicio ? infoComercial.fechaInicio : 'Sin asignar');
+        $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(customer.fechaContrato ? customer.fechaContrato : 'Sin asignar');
         $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? infoComercial.limiteCredito : 'Sin asignar');
         $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
         $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? infoComercial.saldoDisponible : 'Sin asignar');
@@ -152,7 +203,7 @@ function setAlianzaComercial(customer) {
         $('#badgeAlianza').removeClass('d-none');
         $('.alianza-fecha-inicio, .alianza-limite-credito, .alianza-dias-credito, .alianza-saldo-disponible, .alianza-dias-vencidos, .alianza-monto-adeudo').removeClass('d-none')
         $('.alianza-fecha-alta').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaAlta ? infoComercial.fechaAlta : 'Sin asignar');
-        $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaInicio ? infoComercial.fechaInicio : 'Sin asignar');
+        $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(customer.fechaContrato ? customer.fechaContrato : 'Sin asignar');
         $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? infoComercial.limiteCredito : 'Sin asignar');
         $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
         $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? infoComercial.saldoDisponible : 'Sin asignar');
@@ -541,9 +592,9 @@ function getCasosOportunidades() {
     }
 
     // Se remueven registros previos
-    let table = $('div#historic-data table').DataTable();
+    // let table = $('div#historic-data table').DataTable();
     
-    table.destroy();
+    // table.destroy();
     $('div#historic-data table.table-gen tbody').children('tr').remove();
  
     $('select#asociarServicioFugaQueja, select#asociarCasoFugaQueja').children('option').remove();
@@ -590,8 +641,8 @@ function setCasosOportunidades( data ) {
                 );
 
                 // Hay pendientes
-                if ( oportunidades[key] ) {
-
+                if ( [2,1,6,4].includes(parseInt(oportunidades[key].estadoId)) ) {
+                    pendientes.push(oportunidades[key]);
                 }
 
                 $('select#asociarServicioFugaQueja').append('<option value="'+oportunidades[key].id_Transaccion+'"> No. documento: '+oportunidades[key].numeroDocumento+' - Fecha: '+oportunidades[key].fecha+'</option>');
@@ -603,28 +654,51 @@ function setCasosOportunidades( data ) {
     }
 
     // Enlista el número de documento de la oportunidad
-    if ( badgePendientes.length ) {
+    if ( pendientes.length ) {
+        $('#badgePendientes').removeClass('d-none');
+        $('table.opp-pendientes').children('tbody').children('tr').remove();
 
+        for (let x = 0; x < pendientes.length; x++) {
+            $('table.opp-pendientes tbody').append(
+                '<tr>'+
+                    '<td class="ion-text-center">'+pendientes[x].fecha+'</td>'+
+                    '<td class="ion-text-center">'+pendientes[x].cierrePrevisto+'</td>'+
+                    '<td class="ion-text-center">'+pendientes[x].numeroDocumento+'</td>'+
+                    '<td class="ion-text-center">'+( pendientes[x].conductorAsignado ? pendientes[x].conductorAsignado : 'Sin asignar' )+'</td>'+
+                '</tr>'
+            );
+        }
     }
 
     // Vuelve a mostrar la tabla
-    $('div#historic-data table').DataTable();
+    $('div#historic-data table').fancyTable({
+        sortColumn:0,
+        pagination: true,
+        perPage: 10,
+        searchable:false,
+        sortable: false
+    });
+    // $('div#historic-data table').DataTable();
     $('div#historic-data').fadeIn('slow');
 }
 
 // Método para llenar la tabla de casos y oportunidades
 function setTrOppCases(item, type = 'casos') {
-     
+    // Se necesita modificar el z-index de los th
+    // $("#tablePedidos thead tr th").css('z-index', (item.length + 1));
+    // $($("#tablePedidos thead tr th")[0]).css('z-index', (item.length + 2));
+    // $($("#tablePedidos thead tr th")[1]).css('z-index', (item.length + 2));
+    // $($("#tablePedidos thead tr th")[2]).css('z-index', (item.length + 2));
     let tr = 
-    '<tr data-item='+"'"+JSON.stringify(item)+"'"+'>'+
-        '<td class="text-center sticky-col" style="z-index: 50;">'+
-            '<div class="btn-group dropend vertical-center">'+
+    '<tr class='+type+' data-item='+"'"+JSON.stringify(item)+"'"+'>'+
+        '<td class="text-center sticky-col" style="z-index: 300;">'+
+            '<div class="btn-group dropend vertical-center drop-options-'+item.id_Transaccion+' d-none '+type+'">'+
                 '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                 '<ul class="dropdown-menu">'+
-                    '<li onclick="verDetalles(this)" class="px-2 py-1 c-pointer" style="font-size: 16px">'+
+                    '<li onclick="verDetalles(this)" class="'+type+' px-2 py-1 c-pointer" style="font-size: 16px">'+
                         '<i class="fa-solid fa-eye color-primary"></i> Ver detalles'+
                     '</li>'+
-                    '<li onclick="cancelarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px">'+
+                    '<li onclick="cancelarPedido(this)" class="'+type+' px-2 py-1 c-pointer" style="font-size: 16px">'+
                         '<i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio'+
                     '</li>'+
                 '</ul>'+
@@ -633,7 +707,7 @@ function setTrOppCases(item, type = 'casos') {
         '</td>'+
         '<td>'+
             '<div class="text-center">'+
-                '<input class="form-check-input" type="checkbox" value="" id="'+item.id_Transaccion+'">'+
+                '<input class="form-check-input check-opp-caso '+type+'" type="checkbox" value="" id="'+item.id_Transaccion+'">'+
             '</div>'+
         '</td>'+
         '<td><button class="btn btn-danger"></button></td>'+
@@ -677,7 +751,7 @@ function setTrOppCases(item, type = 'casos') {
 // Método para limpiar la data del cliente cuando falla una búsqueda
 function clearCustomerInfo () {
     // Inhabilita el botón de agregar dirección
-    $('#agregarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', true);
+    $('#agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', true);
 
     // Se reinician los labels
     $('#idCliente').text('0');
@@ -822,47 +896,122 @@ function confirmMsg(type, title, callback) {
 
 // Método para ver el detalle de los casos y/o oportunidades
 function verDetalles($this) {
+    $('.campos-casos, .campos-oportunidad').addClass('d-none');
+    $('table.table-notas tbody').children('tr').remove();
     let pedido = $($this).closest("tr").data("item");
     console.log(pedido);
 
+    // Datos generales del modal
     $("#verDetallesCliente").html(customerGlobal.id + " - " + customerGlobal.nombreCompleto);
     $("#verDetallesTipoServicio").html(customerGlobal.typeCustomer.trim());
     $("#verDetallesTelefono").html(customerGlobal.telefono.trim());
-    $("#verDetallesServicio").html(pedido.id_Transaccion);
-    $("#verDetallesDireccion").html(pedido.rutaAsignada ? pedido.rutaAsignada : 'Sin asignar');
-
-    $("#verDetallesVehiculo").html(pedido.vehiculo ? pedido.vehiculo.trim() : 'Sin asignar');
-    $("#verDetallesZona").html(pedido.zone ? pedido.zone : 'Sin asignar');
-    $("#verDetallesUsuarioMonitor").html(pedido.monitor ? pedido.monitor.trim() : 'Sin asignar');
-    $("#verDetallesDireccion2").html($('#direccionCliente').children(':selected').text());
-    // $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
-    $("#verDetallesFechaPrometida").html(pedido.cierrePrevisto ? pedido.cierrePrevisto : 'Sin asignar');
-    $("#verDetallesFechaPedido").html(pedido.fecha ? pedido.fecha : 'Sin asignar');
-    // $("#verDetallesFechaPedido").html(pedido.fecha ? dateFormatFromDate(pedido.fecha, '5') : 'Sin asignar');
-    $("#verDetallesFechaNotificacion").html(pedido.fechaNotificacion ? pedido.fechaNotificacion : 'Sin asignar');// Usar el método de Alexis para ver la hora
-    $("#verDetallesAgenteAtiende").html(pedido.representanteVentas ? pedido.representanteVentas : userName);
-    $("#verDetallesConductorAsignado").html(pedido.conductorAsignado ? pedido.conductorAsignado : 'Sin asignar');
-    $("#verDetallesRuta").html(pedido.rutaAsignada ? pedido.rutaAsignada : 'Sin asignar');
     
-    $("#verDetallesTiempoNotificacion")
-    .html(pedido.horaNoti ? 
-        getRestTime(dateFormatFromString(pedido.fechaNotificacion+(pedido.horaNoti ? " "+pedido.horaNoti : ''), "2")) 
-        : 'Sin asignar'
-    );
+    if ( $($this).hasClass('oportunidades') ) {
 
-    // $("#verDetallesTipoProducto").html("");
-    // vrTiposServicios.forEach(element => {
-    //     if(pedido.servicio == element.id) {
-    //         $("#verDetallesTipoProducto").html(element.nombre);
-    //     }
-    // });
-    // if($("#verDetallesTipoProducto").html().trim() == "") {
-    //     $("#verDetallesTipoProducto").html("Desconocido");
-    // }
-    // $("#verDetallesContrato").html(pedido.contrato ? pedido.contrato : 'Sin contrato');
-    // $("#verDetallesTiempoNotificacion").html(pedido.fecha_hora_notificacion ? getRestTime(dateFormatFromString(pedido.fecha_notificacion+(pedido.hora_notificacion ? " "+pedido.hora_notificacion : ''), "1")) : 'Sin asignar');
-    // $("#verDetallesObservaciones").html(pedido.observaciones ? pedido.observaciones : 'Sin observaciones');
+        $("#verDetallesServicio").html(pedido.numeroDocumento);
+        $("#verDetallesDireccion").html(pedido.rutaAsignada ? pedido.rutaAsignada : 'Sin asignar');
+    
+        $("#verDetallesVehiculo").html(pedido.vehiculo ? pedido.vehiculo.trim() : 'Sin asignar');
+        $("#verDetallesZona").html(pedido.zone ? pedido.zone : 'Sin asignar');
+        $("#verDetallesUsuarioMonitor").html(pedido.monitor ? pedido.monitor.trim() : 'Sin asignar');
+        $("#verDetallesDireccion2").html($('#direccionCliente').children(':selected').text());
+        // $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
+        $("#verDetallesFechaPrometida").html(pedido.cierrePrevisto ? pedido.cierrePrevisto : 'Sin asignar');
+        $("#verDetallesFechaPedido").html(pedido.fecha ? pedido.fecha : 'Sin asignar');
+        // $("#verDetallesFechaPedido").html(pedido.fecha ? dateFormatFromDate(pedido.fecha, '5') : 'Sin asignar');
+        $("#verDetallesFechaNotificacion").html(pedido.fechaNotificacion ? pedido.fechaNotificacion : 'Sin asignar');// Usar el método de Alexis para ver la hora
+        $("#verDetallesAgenteAtiende").html(pedido.representanteVentas ? pedido.representanteVentas : userName);
+        $("#verDetallesConductorAsignado").html(pedido.conductorAsignado ? pedido.conductorAsignado : 'Sin asignar');
+        $("#verDetallesRuta").html(pedido.rutaAsignada ? pedido.rutaAsignada : 'Sin asignar');
+        $("#verDetallesTipoProducto").html(pedido.tipoServicio ? pedido.tipoServicio : 'N/A');
+        $("#verDetallesObservaciones").html(pedido.nota ? pedido.nota : 'Sin asignar');
+        
+        $("#verDetallesTiempoNotificacion")
+        .html(pedido.horaNoti ? 
+            getRestTime(dateFormatFromString(pedido.fechaNotificacion+(pedido.horaNoti ? " "+pedido.horaNoti : ''), "2")) 
+            : 'Sin asignar'
+        );
+
+        $('.campos-oportunidad').removeClass('d-none');
+
+        // $("#verDetallesTipoProducto").html("");
+        // vrTiposServicios.forEach(element => {
+        //     if(pedido.servicio == element.id) {
+        //         $("#verDetallesTipoProducto").html(element.nombre);
+        //     }
+        // });
+
+        getMsgNotes(pedido, 'oportunidades');
+
+    } else if ( $($this).hasClass('casos') ) {
+
+        $("#verDetallesServicio").html(pedido.numeroCaso);
+
+        $(".casos-tipo").html(pedido.asunto ? pedido.asunto.trim() : 'Sin asignar');
+        $(".casos-concepto").html(pedido.conceptoCaso ? pedido.conceptoCaso : 'Sin asignar');
+        $(".casos-fecha-visita").html(pedido.fecha_visita ? pedido.fecha_visita : 'Sin asignar');
+        $(".casos-horario-preferido").html(pedido.hora_visita ? pedido.hora_visita : 'Sin asignar');
+        $(".casos-articulo").html(pedido.articulo ? pedido.articulo : 'Sin asignar');
+        $(".casos-prioridad").html(pedido.prioridad ? pedido.prioridad : 'Sin asignar');
+        $(".casos-email").html(pedido.email ? pedido.email : 'Sin asignar');
+        $(".casos-telefono").html(pedido.telefono ? pedido.telefono : userName);
+        $(".casos-servicio-asociado").html(pedido.oppName ? pedido.oppName : 'Sin asignar');
+        $(".casos-caso-asociado").html(pedido.casoAsociado ? pedido.casoAsociado : 'Sin asignar');
+        $(".casos-descripcion").html(pedido.tipoServicio ? pedido.tipoServicio : 'N/A');
+        // $(".casos-notas-adicionales").html(pedido.nota ? pedido.nota : 'Sin asignar');
+        
+        $('.campos-casos').removeClass('d-none');
+
+        getMsgNotes(pedido, 'casos');
+    }
+
     $("#formVerDetallesPedidos").modal("show");
+}
+
+// Obtienes los mensajes/notas de un pedido o caso
+function getMsgNotes(pedido, tipo) {
+    let url  = null;
+    let data = null;
+
+    if ( tipo == 'casos' ) {
+        url = urlGetMessageandNotes;
+        data = { case : pedido.id_Transaccion };
+    } else {
+        url = urlGetNoteOpp;
+        data = { opp : pedido.id_Transaccion };
+    }
+
+    let settings = {
+        url    : url,
+        method : 'POST',
+        data   : JSON.stringify(data)
+    }
+
+    setAjax(settings).then((response) => {
+        // console.log(response);
+        mensajeData = response.messageData;
+        noteData = response.noteData;
+        if ( tipo == 'casos' ) {
+            $(".casos-notas-adicionales").html(mensajeData && mensajeData[0] ? mensajeData[0].message : 'Sin asignar');
+        }
+
+        for ( var key in noteData ) {
+            if ( noteData.hasOwnProperty( key ) ) {
+                console.log('Nota', noteData[key]);
+    
+                $('table.table-notas tbody').append(
+                    '<tr class="notas-opp-caso">'+
+                        '<td class="ion-text-center sticky-col fw-bold">'+noteData[key].author+'</td>'+
+                        '<td class="ion-text-center sticky-col fw-bold">'+noteData[key].date+'</td>'+
+                        '<td class="ion-text-center sticky-col fw-bold">'+noteData[key].note+'</td>'+
+                    '</tr>'
+                );
+            }
+        }
+       
+    }).catch((error) => {
+        console.log(error);
+    });
 }
 
 // Abre el modal para cancelar el pedido

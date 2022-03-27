@@ -35,6 +35,18 @@ $(document).ready(function () {
 
     savePedido();
 });
+
+$('body').delegate('input.check-opp-caso','change', function() {
+    $('div[class*="drop-options"]').addClass('d-none');
+    if( this.checked ) {
+        $('.check-opp-caso').prop('checked', false);
+        $(this).prop('checked', true);
+        $('.drop-options-'+this.id).removeClass('d-none');
+        // console.log('está chequeado');
+    } else {
+        // console.log('no está chequeado');
+    }
+});
 //#endregion
 
 $( "input#litrosFormProductos, input#cantidadFormProductos, input#totalFormProductos" ).on('change keyup paste', function(e) {
@@ -70,15 +82,6 @@ $('select#productoFormProductos').on('change', function(e) {
 $("#agregarProducto").click(function () {
     let direccion = $('select#direccionCliente').children('option:selected').data('address');
 
-    $('.cilindroFormProductos').addClass('d-none');
-    $('.estacionarioFormProductos').addClass('d-none');
-
-    $("#envaseFormProductos").prop("checked", false);
-    $("#cantidadFormProductos, #litrosFormProductos, #valorFormProductos, #totalFormProductos").val(0);
-    $("#productoFormProductos").val("");
-    $(".opt-pro-pedido-cilindro, .opt-pro-pedido-estacionario").prop("disabled", false);
-    $("#totalFormProductos").prop('readonly', true);
-
     if ( direccion ) {
         if ( direccion.typeServiceId == 1 ) {// Cilindro
             $("#productoFormProductos").val("cilindro");
@@ -105,6 +108,70 @@ $("#agregarProducto").click(function () {
     }
 
     $("#envaseFormProductos").prop("checked", false);
+    $('#formProductosModal').modal('show');
+});
+
+// Edita un producto agregado en la lista del pedido
+$('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() {
+    let button   = $(this);
+    let prices   = $('#zonaPrecioCliente').text().replace('$', '');
+    let artObj   = button.parent().parent().data('item');
+    let total    = 0;
+    let subtotal = 0;
+    // let direccion = $('select#direccionCliente').children('option:selected').data('address');
+    
+    if ( button.hasClass('edit-producto-cil') ) {// Producto cilindro
+
+        $("#productoFormProductos").val("cilindro");
+        $("#totalFormProductos").prop('readonly', true);
+        $(".cilindroFormProductos").removeClass("d-none");
+        $(".estacionarioFormProductos").addClass("d-none");
+
+        subtotal = parseFloat( Number(artObj.capacity) *  Number(artObj.quantity) * Number(prices)).toFixed(2);
+        total    = parseFloat( Number(subtotal) * 1.16 ).toFixed(2);
+
+        $('#capacidadFormProductos, #pedidoProductoId').val(artObj.article);
+        $('#cantidadFormProductos').val(artObj.quantity);
+        $('#valorFormProductos').val(subtotal);
+        $('#totalFormProductos').val(total);
+
+    } else if ( button.hasClass('edit-producto-est') ) {// Producto estacionario
+
+        $("#productoFormProductos").val("estacionario");
+        $("#totalFormProductos").attr('readonly', false);
+        $(".estacionarioFormProductos").removeClass("d-none");
+        $(".cilindroFormProductos").addClass("d-none");
+
+        subtotal = parseFloat( Number(artObj.capacity) * Number(prices) ).toFixed(2);
+        total    = parseFloat( Number(subtotal) * 1.16 ).toFixed(2);
+
+        $("#pedidoProductoId").val( artObj.article );// Este input indicará que se trata de un edit
+        $("#litrosFormProductos").val( artObj.capacity );
+        $("#valorFormProductos").val( subtotal );
+        $("#totalFormProductos").val( total );
+    
+    }
+
+    // Se validan los option disponibles si es que algún producto ya fue registrado
+    if (! $('table.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {// Ya se agregó gas LP
+        $(".opt-pro-pedido-cilindro").attr("disabled", true);
+    } else if (! $('table.productosCilindroPedido').parent().parent().hasClass('d-none') ) {// Ya se agregó un cilindro
+        $(".opt-pro-pedido-estacionario").attr("disabled", true);
+    } else {
+        // $(".opt-pro-pedido-cilindro, .opt-pro-pedido-estacionario").attr("disabled", false);
+    }
+    // if ( direccion ) {
+    //     if ( direccion.typeServiceId == 1 ) {// Cilindro
+           
+    //     } else if ( direccion.typeServiceId == 2 ) {// Estacionario
+            
+    //     } else if ( direccion.typeServiceId == 4 ) {// Ambos
+            
+    //     }
+    // }
+
+
+    // $("#envaseFormProductos").prop("checked", false);
     $('#formProductosModal').modal('show');
 });
 
@@ -210,6 +277,7 @@ async function onClickAddProducto() {
     btnAddArticles.on('click', function () {
         let tipoProducto = $('#productoFormProductos').val();
         let canContinue = false;
+        let productoId  = $('#pedidoProductoId').val();
         let defaultProMsg = $('#sinProductos');
         let prices = $('#zonaPrecioCliente').text().replace('$', '');
 
@@ -258,16 +326,27 @@ async function onClickAddProducto() {
             
             if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado
 
-                let firstItem         = searchTr.data('item');
-                let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(2);
-                firstItem['quantity'] = parseInt( Number(firstItem['quantity']) + Number(articulo['quantity']));
-
-                total = parseFloat(Number(total) + Number(firstTotal)).toFixed(2);
-                searchTr.data('item', firstItem);
-                searchTr.children('td').siblings("td:nth-child(2)").text(firstItem['quantity']);
-                searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
-                console.log(firstItem);
+                if ( productoId ) {// Si es una edición, se reemplazará todo el contenido
+                    searchTr.data('item', articulo);
+                    // searchTr.data('item-id', articulo.article);
+                    searchTr.children('td').siblings("td:nth-child(1)").text(artSel && artSel.nombre ? artSel.nombre : 'Sin nombre asignado');
+                    searchTr.children('td').siblings("td:nth-child(2)").text(articulo['quantity']);
+                    searchTr.children('td').siblings("td:nth-child(3)").text(capacidad+' kg');
+                    searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
+                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                    // searchTr.children('td').siblings("td:nth-child(4)").children('button.delete-producto-cil').data('item-id', articulo.article);
+                } else {
+                    let firstItem         = searchTr.data('item');
+                    let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(2);
+                    firstItem['quantity'] = parseInt( Number(firstItem['quantity']) + Number(articulo['quantity']));
+    
+                    total = parseFloat(Number(total) + Number(firstTotal)).toFixed(2);
+                    searchTr.data('item', firstItem);
+                    searchTr.children('td').siblings("td:nth-child(2)").text(firstItem['quantity']);
+                    searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
+                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                    console.log(firstItem);
+                }
                 
             } else {
 
@@ -305,16 +384,25 @@ async function onClickAddProducto() {
             };
 
             if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado
-                let firstItem         = searchTr.data('item');
-                let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(2);
-                firstItem['capacity'] = firstItem['capacity'] + articulo['capacity'];
+                
+                if ( productoId ) {// Si es una edición, se reemplazará todo el contenido
+                    searchTr.data('item', articulo);
+                    searchTr.children('td').siblings("td:nth-child(2)").text(articulo['capacity']);
+                    searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
+                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                } else {// Se suma el consumo del cliente
+                    let firstItem         = searchTr.data('item');
+                    let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(2);
+                    firstItem['capacity'] = firstItem['capacity'] + articulo['capacity'];
+    
+                    total = parseFloat(Number(total) + Number(firstTotal)).toFixed(2);
+                    searchTr.data('item', firstItem);
+                    searchTr.children('td').siblings("td:nth-child(2)").text(firstItem['capacity']);
+                    searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
+                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                    console.log(firstItem);
+                }
 
-                total = parseFloat(Number(total) + Number(firstTotal)).toFixed(2);
-                searchTr.data('item', firstItem);
-                searchTr.children('td').siblings("td:nth-child(2)").text(firstItem['capacity']);
-                searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
-                console.log(firstItem);
             } else {// Se llena la información del item
                 
                 $(".productosEstacionarioPedido tbody").append(

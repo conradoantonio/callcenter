@@ -98,7 +98,7 @@ $('#guardarFugaQueja').on('click', function () {
         "custevent_ptg_horario_preferido" : formatTime( $('#horarioPreferidoFugaQueja').val() ),
         // "anio" : "2022",
         "custevent_ptg_direccion_para_casos" : $('#direccionCliente').children(':selected').text(),
-        "description" : $('#descripcionCasoFugaQueja')
+        "description" : $('#descripcionCasoFugaQueja').val()
     }
 
     casos.push(tmp);

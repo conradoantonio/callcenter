@@ -558,6 +558,18 @@
             max-height: calc(100vh - 205px);
             overflow: auto;
         }
+
+        /* #historic-data > table.table-gen > tfoot {
+            position: fixed;
+            width: fit-content;
+            margin: auto;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        } */
+        #historic-data > table.table-gen > tfoot {
+            text-align: center!important;
+        }
         
     </style>
 </head>
@@ -621,6 +633,14 @@
                         <div class="col-12">
                             <div class="alert alert-info" role="alert">
                                 El monto mínimo a vender es de 60 litros.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 d-nones">
+                            <div class="content-input content-input-primary">
+                                <label>Articulo ID</label>
+                                <input id="pedidoProductoId" type="text" class="form-ptg form-ptg-primary">
                             </div>
                         </div>
                     </div>
@@ -1086,7 +1106,7 @@
                     </div>
                 </div>
                 <div class="modal-body">
-                    <div class="content-gen">
+                    <div class="content-gen campos-oportunidad d-none">
                         <div class="row p-3">
                             <div class="col-3 title">Servicio</div>
                             <div id="verDetallesServicio" class="col-9 resp"></div>
@@ -1132,10 +1152,6 @@
                             <div id="verDetallesTipoProducto" class="col-9 resp"></div>
                         </div>
                         <div class="row p-3">
-                            <div class="col-3 title">Contrato</div>
-                            <div id="verDetallesContrato" class="col-9 resp"></div>
-                        </div>
-                        <div class="row p-3">
                             <div class="col-3 title">Agente atiende</div>
                             <div id="verDetallesAgenteAtiende" class="col-9 resp"></div>
                         </div>
@@ -1147,6 +1163,78 @@
                             <div class="col-3 title">Observaciones</div>
                             <div id="verDetallesObservaciones" class="col-9 resp"></div>
                         </div>
+                    </div>
+                    <div class="content-gen campos-casos d-none">
+                        <div class="row p-3">
+                            <div class="col-3 title">Tipo</div>
+                            <div class="col-9 resp casos-tipo"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Concepto</div>
+                            <div class="col-9 resp casos-concepto"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Fecha visita</div>
+                            <div class="col-9 resp casos-fecha-visita"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">horario preferido</div>
+                            <div class="col-9 resp casos-horario-preferido"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Artículo</div>
+                            <div class="col-9 resp casos-articulo"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Prioridad</div>
+                            <div class="col-9 resp casos-prioridad"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Email</div>
+                            <div class="col-9 resp casos-email"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Teléfono</div>
+                            <div class="col-9 resp casos-telefono"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Servicio asociado</div>
+                            <div class="col-9 resp casos-servicio-asociado"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Caso asociado</div>
+                            <div class="col-9 resp casos-caso-asociado"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Descripción del caso</div>
+                            <div class="col-9 resp casos-descripcion"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Notas adicionales</div>
+                            <div class="col-9 resp casos-notas-adicionales"></div>
+                        </div>
+                    </div>
+                    <div class="row p-3">
+                        <row class="col-12">
+                            <table class="table-gen table-gen-blue text-center table-notas">
+                                <thead>
+                                    <tr>
+                                        <th>Autor</th>
+                                        <th>Fecha</th>
+                                        <th>Contenido</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="notas-opp-caso">
+                                        <td class="ion-text-center sticky-col fw-bold">Alexis</td>
+                                        <td class="ion-text-center sticky-col">25/3/2022 1:12 PM</td>
+                                        <td class="ion-text-center sticky-col">Nota 1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </row>
+                        <!-- <div class="col-3 title">Notas adicionales</div>
+                        <div class="col-9 resp oportunidad-notas-adicionales"></div> -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1283,6 +1371,44 @@
         </div>
     </div>
 
+    <div id="oportunidadesPendientesModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleDescuentoCliente" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc text-center">
+                    <h5 class="modal-title" id="titleDescuentoCliente">Pedidos pendientes</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table-gen table-gen-blue text-center opp-pendientes">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha creación</th>
+                                        <th>Cierre previsto</th>
+                                        <th>Número documento</th>
+                                        <th>Conductor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- <tr>
+                                        <td class="ion-text-center"></td>
+                                        <td class="ion-text-center"></td>
+                                        <td class="ion-text-center"></td>
+                                        <td class="ion-text-center"></td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="home-view" class="row w-100 m-0">
         <div class="col-6 h-100 p-0" style="overflow: hidden; position: relative;">
             <div class="btn-expand" style="z-index: 2;">
@@ -1293,12 +1419,13 @@
             <div id="clientes-data" class="p-3">
                 <div class="row align-items-center pb-2">
                     <div class="col pr-0">
-                        <div class="form-search">
+                        <select class="form-control select-search-customer" style="width: 100%;"></select>
+                        <!-- <div class="form-search">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input id="buscarCliente" type="text" class="form-ptg"
                                 placeholder="Teléfono, nombre(s), correo electrónico o colonia">
                             <i class="fa-solid fa-xmark d-none"></i>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-auto pr-0">
                         <button id="agregarCliente" type="button" class="btn bg-secondary-cc"><i
@@ -1451,19 +1578,19 @@
                 </div>
             </div>
 
-            <div id="historic-data">
+            <div id="historic-data" class="p-3" style="padding-top: 0px!important;">
                 <table class="table-gen table-gen-blue">
                     <thead>
                         <tr>
                             <th style="min-width: 40px; z-index: 51; left: 0px;" class="text-center sticky-col">
-                                <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
-                                <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                <!-- <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
+                                <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div> -->
                             </th>
                             <th style="min-width: 40px; z-index: 51; left: 40px;" class="text-center sticky-col">
-                                <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                <!-- <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div> -->
                             </th>
                             <th style="min-width: 40px; z-index: 51; left: 80px;" class="text-center sticky-col">
-                                <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                <!-- <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div> -->
                             </th>
                             <th style="z-index: 51;" class="text-center">Fecha creación</th>
                             <th style="z-index: 51;" class="text-center">Fecha prometida</th>
@@ -2146,18 +2273,15 @@
     <!-- <script src="assets/libs/jquery.easing/jquery.easing.min.js"></script> -->
 
     <!-- Datatablets -->
-    <script src="https://themesbrand.com/skote/layouts/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script
-        src="https://themesbrand.com/skote/layouts/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <!-- <script src="https://themesbrand.com/skote/layouts/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script> -->
 
     <!-- Datepicker -->
-    <script
-        src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
     <script src="https://themesbrand.com/skote/layouts/assets/libs/@chenfengyuan/datepicker/datepicker.min.js"></script>
 
     <!-- Timepicker -->
-    <script
-        src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
 
     <!-- Extra -->
     <script src="https://themesbrand.com/skote/layouts/assets/libs/metismenu/metisMenu.min.js"></script>
@@ -2178,6 +2302,9 @@
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+    <!-- FancyTable -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery.fancytable/dist/fancyTable.min.js"></script>
+
     <!-- Funciones generales -->
     <script type="text/javascript">
         userId = '${ds.userId}';
@@ -2189,6 +2316,7 @@
         urlActualizarOpp = '${ds.putOpp}';
         urlObtenerPedidos = '${ds.getOPP}';
         urlObtenerCliente = '${ds.getCustomer}';
+        urlObtenerClientePorId = '${ds.getCustomerV2}';
         urlObtenerZona = '${ds.getColoniaZona}';
         urlObtenerZonas = '${ds.getZone}';
         urlGuardarCliente = '${ds.postCustomer}';
@@ -2202,6 +2330,11 @@
         urlGuardarNotaMensaje = '${ds.postNoteandMessage}';
         urlGetListaCancelacion = '${ds.getListCancellReason}';
         urlGetEstadosOpp = '${ds.getListStatusOpp}';
+        urlGetSelectCustomer = '${ds.getSelectCustomer}';
+        urlGetMessageandNotes = '${ds.getMessageandNotes}';
+        urlGetMessageOpp = '${ds.getMessageOpp}';
+        urlGetNoteOpp = '${ds.getNoteOpp}';
+        urlGetItemsOpp = '${ds.getItemsOpp}';
         
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
@@ -2213,10 +2346,10 @@
         customerGlobal = null;
         direccionDefault = null;
         
-        $('div#historic-data table').DataTable({
-            "order": []
-            //DataTable Options
-        });
+        // $('div#historic-data table').DataTable({
+        //     "order": []
+        //     //DataTable Options
+        // });
 
         
         $('#cancelarOppMotivo').select({
@@ -2247,6 +2380,18 @@
             $('#folioAutorizacionPedido').parent().parent().addClass('d-none');
         });
 
+        // Limpia los campos del modal para agregar producto
+        $('body').delegate('div#formProductosModal', 'hidden.bs.modal', function () {
+            $('.cilindroFormProductos').addClass('d-none');
+            $('.estacionarioFormProductos').addClass('d-none');
+
+            $("#envaseFormProductos").prop("checked", false);
+            $("#cantidadFormProductos, #litrosFormProductos, #valorFormProductos, #totalFormProductos").val(0);
+            $("#productoFormProductos, #pedidoProductoId").val("");
+            $(".opt-pro-pedido-cilindro, .opt-pro-pedido-estacionario").prop("disabled", false);
+            $("#totalFormProductos").prop('readonly', true);
+        });
+
         function initComponents() {
             let today = moment().endOf('day');
             $('#fechaPrometidaPedido').val(today.format('YYYY-MM-DD').toString());
@@ -2272,6 +2417,10 @@
 
             $("#badgeDescuento").click(function() {
                 $("#descuentoClienteModal").modal("show");
+            });
+
+            $("#badgePendientes").click(function() {
+                $("#oportunidadesPendientesModal").modal("show");
             });
 
             // $("#agregarDirecciones").click(function() {
