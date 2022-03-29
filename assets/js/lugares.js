@@ -4,6 +4,91 @@ $("#agregarDirecciones, #agregarDireccion").click(function() {
     getStates();
 });
 
+// Prellena los datos de una dirección en el modal
+$("#editarDireccion").click(function() {
+    let direccion = $('#direccionCliente').children(':selected').data('address');
+    $("#tipoAccionDireccion").val('guardar');
+    let periodo = '';
+    if ( direccion ) {
+        $('#internalIdDireccion').val(direccion.idAdress);
+        $('#cpDireccion').val(direccion.zip);
+        $('#calleDireccion').val(direccion.nameStreet);
+        $('#exteriorDireccion').val(direccion.numExterno);
+        $('#interiorDireccion').val(direccion.numInterno);
+        $('#entre1Direccion').val(direccion.entreCalle);
+        $('#entre2Direccion').val(direccion.entreYCalle);
+        $('#tipoServicioFormCliente').val(direccion.typeServiceId);
+
+        $('#entreFormCliente').val(formatTimeToPicker(direccion.ptg_entre_addr));
+        $('#lasFormCliente').val(formatTimeToPicker(direccion.ptg_y_addr));
+        $('#rutaDireccion').data('ruta-obj', direccion.dataZoneRoute);
+        $('#indicacionesFormCliente').val(direccion.commentsAddr);
+
+        // Valida el tipo de servicio y los datos mostrados en la ruta
+        // En caso de ser ambos, el item 1 se considera como cilindro y el item 2 como estacionario
+        // Sí sólo es o cilindro o estacionario, se tomará el item1 para definir sus datos
+        if ( direccion.typeServiceId == "1" ) {// Cilindro
+            $('.art-fre-est').addClass('d-none');
+            $('.art-fre-cil').removeClass('d-none');
+            $('#articuloFrecuenteCilFormCliente').val(direccion.item1Id);
+            $('#inputCapacidadCilTipoServicio').val(direccion.item1Capacidad);
+        } else if ( direccion.typeServiceId == "2" ) {// Estacionario
+            $('.art-fre-cil').addClass('d-none');
+            $('.art-fre-est').removeClass('d-none');
+            $('#inputCapacidadEstTipoServicio').val(direccion.item1Capacidad);
+        } else if ( direccion.typeServiceId == "4" ) {// Ambos
+            $('.art-fre-est, .art-fre-cil').removeClass('d-none');
+            $('#articuloFrecuenteCilFormCliente').val(direccion.item1Id);
+            $('#inputCapacidadCilTipoServicio').val(direccion.item1Capacidad);
+            $('#inputCapacidadEstTipoServicio').val(direccion.item2Capacidad);
+        } else {
+            $('.art-fre-est, .art-fre-cil').addClass('d-none');
+        }
+
+        // Campos de frecuencia
+        if ( direccion.periodo == "Dia" ) {
+            periodo = 1;
+        } else if ( direccion.periodo == "Semanal" ) {
+            periodo = 2;
+        } else if ( direccion.periodo == "Mensual" ) {
+            periodo = 3;
+        }
+        $('#cadaFormCliente').val(direccion.frecuencia)
+        $('#frecuenciaFormCliente').val(periodo);
+
+        // Días de la semana
+        $('#lunesFormCliente').prop('checked', direccion.isLunes ? true : false);
+        $('#martesFormCliente').prop('checked', direccion.isMartes ? true : false);
+        $('#miercolesFormCliente').prop('checked', direccion.isMiercoles ? true : false);
+        $('#juevesFormCliente').prop('checked', direccion.isJueves ? true : false);
+        $('#viernesFormCliente').prop('checked', direccion.isViernes ? true : false);
+        $('#sabadoFormCliente').prop('checked', direccion.isSabado ? true : false);
+        $('#domingoFormCliente').prop('checked', direccion.isDomingo ? true : false);
+        
+        // Falta código para mostrar ciertos campos cuando se define el tipo de acción
+        if ( direccion.dataZoneRoute ) {
+            setRouteData(direccion.dataZoneRoute);
+        } else {
+            $("input#rutaDireccion, input#zonaVentaDireccion, input#rutaColoniaIdDireccion, input#rutaIdDireccion, input#rutaId2Direccion").val('');
+        }
+
+        // Tipo de acción
+        if ( direccion.typeContact == "1" ) {// Teléfono
+            $("input#tipoAccionFormClient1").prop('checked', true);
+            $(".tipo-aviso-programado").addClass('d-none');
+        } else if ( direccion.typeContact == "2" ) {// Aviso
+            $("input#tipoAccionFormClient2").prop('checked', true);
+            $(".tipo-aviso-programado").removeClass('d-none');
+        } else if ( direccion.typeContact == "4" ) {// Programado
+            $("input#tipoAccionFormClient3").prop('checked', true);
+            $(".tipo-aviso-programado").removeClass('d-none');
+        }
+    } 
+    $("#formDireccionesModal").modal("show");
+    // Este código de obtener estados se removerá cuando esta lista se encuentre sincronizado con netsuite
+    getStates();
+});
+
 // Cuando el select de estados cambie, manda a llamar la petición de obtener ciudades
 $('select#estadoDireccion').on('change', function(e) {
     // let val = $( "select#estadoDireccion option:selected" ).text();

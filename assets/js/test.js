@@ -30,7 +30,6 @@ $(function() {
 // Se podrá solicitar la información de un cliente al seleccionar una opción del listado de resultados
 $('.select-search-customer').on("select2:select", function (e) { 
     let clienteId = $(this).val();
-    console.log('Este es el valor seleccionado', clienteId);
     let tieneProductos = $('#sinProductos').hasClass('d-none');
     if ( tieneProductos ) {// Tiene productos agregados
         swal({
@@ -97,7 +96,7 @@ function searchCustomer(clienteId) {
         // console.log('Cliente encontrado', response);
         customerGlobal = response.data[0];
         setCustomerInfo(response.data[0]);
-        $('#agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', false);
+        $('#editarCliente, #agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', false);
     }).catch((error) => {
         infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
         // Limpia los campos de cliente
@@ -751,7 +750,7 @@ function setTrOppCases(item, type = 'casos') {
 // Método para limpiar la data del cliente cuando falla una búsqueda
 function clearCustomerInfo () {
     // Inhabilita el botón de agregar dirección
-    $('#agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', true);
+    $('#editarCliente, #agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', true);
 
     // Se reinician los labels
     $('#idCliente').text('0');
@@ -1024,6 +1023,30 @@ function cancelarPedido($this) {
     $("#cancelarOppModal").data("item", pedido);
     $("span#cancelarOppPedido").html(pedido.id_Transaccion ? " - " + pedido.id_Transaccion : '');
     $("#cancelarOppModal").modal("show");
+}
+
+// Formatea la hora de netsuite para ser compatible con el timepicker del formulario
+function formatTimeToPicker (value, format = 'HH:mm') {
+    if ( value ) {
+        let medioDia = value.split(" ");
+        let horaInicio = value.split(":");
+
+        // Se le suma 12 horas por el formato de 24 hrs
+        if ( medioDia[1].toUpperCase() == 'PM' ) {
+            horas = new Number(horaInicio[0]) + 12;
+        } else {
+            horas = horaInicio[0];
+        }
+
+        let customDate = new Date();
+        customDate.setHours(horas);
+        customDate.setMinutes(horaInicio[1].split(" ")[0]);
+
+        return moment(customDate).format(format);
+        // $('#desdePedido').val(horaInicioStr);
+    }
+
+    return '';
 }
 
 // Call a global ajax method

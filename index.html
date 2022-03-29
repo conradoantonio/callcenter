@@ -637,7 +637,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 d-nones">
+                        <div class="col-12 d-none">
                             <div class="content-input content-input-primary">
                                 <label>Articulo ID</label>
                                 <input id="pedidoProductoId" type="text" class="form-ptg form-ptg-primary">
@@ -775,8 +775,14 @@
                 </div>
                 <div class="modal-body">
                     <!-- Se agregó este campo para diferenciar la funcionalidad que tendrá el modal -->
-                    <div class="row pb-2 d-none">
-                        <div class="col-12">
+                    <div class="row pb-2">
+                        <div class="col-12 d-none">
+                            <div class="content-input content-input-primary">
+                                <label>Internal ID*</label>
+                                <input class="form-ptg form-ptg-primary" id="internalIdDireccion" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12 d-none">
                             <div class="content-input content-input-primary">
                                 <label>Tipo*</label>
                                 <input class="form-ptg form-ptg-primary" id="tipoAccionDireccion" readonly>
@@ -957,8 +963,8 @@
                         <div class="col-auto align-self-center">
                             <div class="form-check check-ptg">
                                 <input class="form-check-input form-ptg-primary" value="2" type="radio"
-                                    name="tipoAccionFormCliente" id="tipoAccionFormClient1">
-                                <label class="form-check-label color-primary" for="tipoAccionFormCliente1">
+                                    name="tipoAccionFormCliente" id="tipoAccionFormClient2">
+                                <label class="form-check-label color-primary" for="tipoAccionFormCliente2">
                                     Aviso
                                 </label>
                             </div>
@@ -966,8 +972,8 @@
                         <div class="col-auto align-self-center">
                             <div class="form-check check-ptg">
                                 <input class="form-check-input form-ptg-primary" value="4" type="radio"
-                                    name="tipoAccionFormCliente" id="tipoAccionFormClient1">
-                                <label class="form-check-label color-primary" for="tipoAccionFormCliente1">
+                                    name="tipoAccionFormCliente" id="tipoAccionFormClient3">
+                                <label class="form-check-label color-primary" for="tipoAccionFormCliente3">
                                     Programar
                                 </label>
                             </div>
@@ -1428,12 +1434,10 @@
                         </div> -->
                     </div>
                     <div class="col-auto pr-0">
-                        <button id="agregarCliente" type="button" class="btn bg-secondary-cc"><i
-                                class="fa-solid fa-user-plus"></i> Agregar</button>
+                        <button id="agregarCliente" type="button" class="btn bg-secondary-cc"><i class="fa-solid fa-user-plus"></i> Agregar</button>
                     </div>
                     <div class="col-auto">
-                        <button id="editarCliente" type="button" class="btn bg-secondary-cc"><i
-                                class="fa-solid fa-user-pen"></i> Editar</button>
+                        <button id="editarCliente" type="button" disabled class="btn bg-secondary-cc"><i class="fa-solid fa-user-pen"></i> Editar</button>
                     </div>
                 </div>
                 <div class="row align-items-center pb-2">
@@ -1493,7 +1497,7 @@
                                 class="fa-solid fa-plus"></i></button>
                     </div>
                     <div class="col-auto">
-                        <button id="editarDireccion" type="button" class="btn bg-secondary-cc"><i
+                        <button id="editarDireccion" disabled type="button" class="btn bg-secondary-cc"><i
                                 class="fa-solid fa-pen-to-square"></i></button>
                     </div>
                 </div>
@@ -1554,18 +1558,24 @@
                     </div>
                 </div>
 
-                <div id="filtros" class="row d-none" style="margin-top: 10px;">
+                <div id="filtros" class="row d-nones" style="margin-top: 10px;">
                     <div class="col-auto pb-2">
                         <div class="content-input">
                             <label>Rango Fecha de la Solicitud</label><br>
                             <div class="row align-items-center content-range-date" style="width: 390px;">
-                                <div class="col pr-0">
+                                <div class="col-12 pr-0">
                                     <div class="row align-items-center">
                                         <div class="col-6 pr-0">
                                             <input id="filterFechaSolicitudIni" onchange="getServicios(this)" type="date" class="form-ptg range-date date-ini">
                                         </div>
                                         <div class="col-6 px-1">
                                             <input id="filterFechaSolicitudFin" onchange="getServicios(this)" type="date" class="form-ptg range-date date-fin">
+                                        </div>
+                                        <div class="col-6 pr-0">
+                                            <select id="origenPedido" class="form-ptg form-ptg-primary">
+                                                <option value="0">Seleccione un estado</option>
+                                            </select>
+                                            <!-- <input id="filterFechaSolicitudIni" onchange="getServicios(this)" type="date" class="form-ptg range-date date-ini"> -->
                                         </div>
                                     </div>
                                 </div>
@@ -2014,10 +2024,10 @@
                     <div class="col-auto title-tab">
                         <i class="fa-solid fa-angle-right"></i>
                     </div>
-                    <div onclick="next('domicilio')" class="col-auto title-tab" data-tab="domicilio">
+                    <div onclick="next('domicilio')" class="col-auto title-tab domicilio-tab" data-tab="domicilio">
                         Domicilio
                     </div>
-                    <div class="col-auto title-tab">
+                    <div class="col-auto title-tab domicilio-tab">
                         <i class="fa-solid fa-angle-right"></i>
                     </div>
                 </div>
@@ -2115,6 +2125,12 @@
                             <div class="card mt-4">
                                 <div class="card-body">
                                     <div class="row pb-2">
+                                        <div class="col-12 d-none">
+                                            <div class="content-input">
+                                                <label>ID interno*</label>
+                                                <input id="idInternoFormCliente" placeholder="ID interno" type="text" class="form-ptg">
+                                            </div>
+                                        </div>
                                         <div class="col-5">
                                             <div class="content-input">
                                                 <label>Nombre*</label>
@@ -2122,7 +2138,14 @@
                                                     class="form-ptg">
                                             </div>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-5">
+                                            <div class="content-input">
+                                                <label>Apellido(s)*</label>
+                                                <input id="apellidosFormCliente" placeholder="Nombre" type="text"
+                                                    class="form-ptg">
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col">
                                             <div class="content-input">
                                                 <label>Apellido paterno*</label>
                                                 <input id="apellidoPaternoFormCliente" placeholder="Apellido paterno"
@@ -2135,7 +2158,7 @@
                                                 <input id="apellidoMaternoFormCliente" placeholder="Apellido materno"
                                                     type="text" class="form-ptg">
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="col d-none">
                                             <div class="content-input">
                                                 <label>RFC*</label>
@@ -2188,12 +2211,13 @@
                                     <div class="row mt-3">
                                         <div class="col"></div>
                                         <div class="col-auto">
-                                            <button onclick="next('inicio')" type="button"
-                                                class="btn bg-dark-cc">Anterior</button>
+                                            <button onclick="next('inicio')" type="button" class="btn bg-dark-cc next-to-inicio">Anterior</button>
                                         </div>
                                         <div class="col-auto">
-                                            <button onclick="next('domicilio')" type="button"
-                                                class="btn bg-dark-cc">Siguiente</button>
+                                            <button onclick="next('domicilio')" type="button" class="btn bg-dark-cc next-to-domicilio">Siguiente</button>
+                                        </div>
+                                        <div class="col-auto guardar-cliente-edit d-none">
+                                            <button type="button" id="guardarCliente" class="btn bg-dark-cc">Guardar</button>
                                         </div>
                                         <div class="col"></div>
                                     </div>
@@ -2485,15 +2509,6 @@
 
             });
 
-            $("#agregarCliente").click(function () {
-                $("#home-view, #btnMenu").addClass("d-none");
-                $("#form-client-view, #btnBack").removeClass("d-none");
-                $("#btnBack").data("back", "home-view");
-                $("#btnBack").data("current", "form-client-view");
-                $("#btnBack").data("title-back", "Call Center");
-                $("#header-title").html("Alta de cliente");
-            });
-
             $("input[name=tipoRegimen]").change(function () {
                 if ($("input[name=tipoRegimen]:checked").val() == "domestico") {
                     $("#giroNegocioFormCliente").parent().addClass('d-none');
@@ -2547,7 +2562,7 @@
                 }
             } else if (tab == "domicilio") {
                 if (!$("#nombreFormCliente").val().trim() ||
-                    !$("#apellidoPaternoFormCliente").val().trim() ||
+                    !$("#apellidosFormCliente").val().trim() ||
                     ($("input[name=requiereFactura]:checked").val() == "si" && !$("#rfcFormCliente").val().trim()) ||
                     !$("#correoFormCliente").val().trim() ||
                     !$("#telefonoPrincipalFormCliente").val().trim()) {

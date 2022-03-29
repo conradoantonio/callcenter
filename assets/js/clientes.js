@@ -31,6 +31,70 @@ $('select#direccionCliente').on('change', function(e) {
     }
 });
 
+// Setea el formulario de cliente para guardar uno nuevo
+$("#agregarCliente").click(function () {
+    clearCustomerForm();
+    next('inicio');
+    $("div.domicilio-tab").removeClass('d-none');
+    $("div.guardar-cliente-edit").addClass('d-none');
+    $("button.next-to-domicilio").parent().removeClass('d-none');// Se muestra el botón de siguiente para visualizar la vista de domicilio
+    
+
+    $("#home-view, #btnMenu").addClass("d-none");
+    $("#form-client-view, #btnBack").removeClass("d-none");
+    $("#btnBack").data("back", "home-view");
+    $("#btnBack").data("current", "form-client-view");
+    $("#btnBack").data("title-back", "Call Center");
+    $("#header-title").html("Alta de cliente");
+});
+
+// Configura el formulario de edición del cliente
+$("#editarCliente").click(function () {
+    clearCustomerForm();
+    next('inicio');
+    $("#home-view, #btnMenu").addClass("d-none");
+    $("#form-client-view, #btnBack").removeClass("d-none");
+    $("#btnBack").data("back", "home-view");
+    $("#btnBack").data("current", "form-client-view");
+    $("#btnBack").data("title-back", "Call Center");
+    $("#header-title").html("Edición de cliente");
+
+    $("div.domicilio-tab").addClass('d-none');
+    $("div.guardar-cliente-edit").removeClass('d-none');
+    $("button.next-to-domicilio").parent().addClass('d-none');// Se remueve el botón de siguiente para visualizar la vista de domicilio
+
+    // Este input definirá si es una edición por el id interno del cliente
+    $('#idInternoFormCliente').val(customerGlobal.id);
+
+    // Se prellenan los inputs del form
+    if ( customerGlobal.typeCustomer == "Doméstico" ) {
+        $("input#tipoRegimen1").prop('checked', true);
+    } else if ( customerGlobal.typeCustomer == "Comercial" ) {
+        $('#giroNegocioFormCliente').parent().removeClass('d-none');
+        $("input#tipoRegime2").prop('checked', true);
+    } else if ( customerGlobal.typeCustomer == "Industrial" ) {
+        $('#giroNegocioFormCliente').parent().removeClass('d-none');
+        $("input#tipoRegime3").prop('checked', true);
+    }
+
+    if ( customerGlobal.giroCustomerId ) {
+        $('#giroNegocioFormCliente').val(customerGlobal.giroCustomerId);
+    }
+
+    if ( customerGlobal.rfc ) {
+        $("input#requiereFactura1").prop('checked', true);
+        $('#rfcFormCliente').val(customerGlobal.rfc);
+    }
+
+    // Se setean los demás campos de forma natural
+    $('#nombreFormCliente').val(customerGlobal.primerNombre);
+    $('#apellidosFormCliente').val(customerGlobal.apellidos);
+    $('#correoFormCliente').val(customerGlobal.email);
+    $('#telefonoPrincipalFormCliente').val(customerGlobal.telefono);
+    $('#telefonoAlternoFormCliente').val(customerGlobal.telefonoAlt);
+    $('#correoAlternativoFormCliente').val(customerGlobal.emailAlt);
+    $('#observacionesFormCliente').val(customerGlobal.notasCustomer);
+});
 
 // Valida una dirección a guardar
 $("button#guardarDireccion").click( function() {
@@ -102,17 +166,88 @@ function validateAddressFields() {
             )
 
             $('div#formDireccionesModal').modal('hide');
-        } else if( tipoAccion == 'guardar' ) {
-            let dataToSend = {
-                id : customerGlobal.id,
-                bodyFields : {
-                    'custentity_ptg_indicaciones_cliente' : customerGlobal?.notasCustomer
-                },
-                bodyAddress : [address.obj]
-            }
+        } else if( tipoAccion == 'guardar' ) {// Envía una dirección a guardar o actualizar
+            let idAddress = $('#internalIdDireccion').val();
+            let dataToSend = null;
 
+            if ( idAddress ) {// Se actualiza la dirección
+                let updateAddress = {}
+
+                address.obj['stateName'] ? updateAddress['custrecord_ptg_estado'] = address.obj['stateName'] : '';
+                address.obj['ruta'] ? updateAddress['custrecord_ptg_colonia_ruta'] = address.obj['ruta'] : '';
+                address.obj['idRoute'] ? updateAddress['custrecord_ptg_ruta_asignada'] = address.obj['idRoute'] : '';
+                address.obj['idRoute2'] ? updateAddress['custrecord_ptg_ruta_asignada2'] = address.obj['idRoute2'] : '';
+                address.obj['colonia'] ? updateAddress['custrecord_ptg_nombre_colonia'] = address.obj['colonia'] : '';
+                address.obj['lunes'] ? updateAddress['custrecord_ptg_lunes'] = address.obj['lunes'] : '';
+                address.obj['stateName'] ? updateAddress['custrecord_ptg_estado'] = address.obj['stateName'] : '';
+                address.obj['ruta'] ? updateAddress['custrecord_ptg_colonia_ruta'] = address.obj['ruta'] : '';
+                address.obj['idRoute'] ? updateAddress['custrecord_ptg_ruta_asignada'] = address.obj['idRoute'] : '';
+                address.obj['idRoute2'] ? updateAddress['custrecord_ptg_ruta_asignada2'] = address.obj['idRoute2'] : '';
+                address.obj['colonia'] ? updateAddress['custrecord_ptg_nombre_colonia'] = address.obj['colonia'] : '';
+                address.obj['lunes'] ? updateAddress['custrecord_ptg_lunes'] = address.obj['lunes'] : '';
+                address.obj['martes'] ? updateAddress['custrecord_ptg_martes'] = address.obj['martes'] : '';
+                address.obj['miercoles'] ? updateAddress['custrecord_ptg_miercoles'] = address.obj['miercoles'] : '';
+                address.obj['jueves'] ? updateAddress['custrecord_ptg_jueves'] = address.obj['jueves'] : '';
+                address.obj['viernes'] ? updateAddress['custrecord_ptg_viernes'] = address.obj['viernes'] : '';
+                address.obj['sabado'] ? updateAddress['custrecord_ptg_sabado'] = address.obj['sabado'] : '';
+                address.obj['domingo'] ? updateAddress['custrecord_ptg_domingo'] = address.obj['domingo'] : '';
+                address.obj['cada'] ? updateAddress['custrecord_ptg_cada'] = address.obj['cada'] : '';
+                address.obj['frecuencia'] ? updateAddress['custrecord_ptg_periodo_contacto'] = address.obj['frecuencia'] : '';
+                address.obj['entre_las'] ? updateAddress['custrecord_ptg_entre_las'] = address.obj['entre_las'] : '';
+                address.obj['y_las'] ? updateAddress['custrecord_ptg_y_las'] = address.obj['y_las'] : '';
+                address.obj['typeContact'] ? updateAddress['custrecord_ptg_tipo_contacto'] = address.obj['typeContact'] : '';
+                address.obj['typeService'] ? updateAddress['custrecord_ptg_tipo_servicio'] = address.obj['typeService'] : '';
+                address.obj['frequencyItem'] ? updateAddress['custrecord_ptg_articulo_frecuente'] = address.obj['frequencyItem'] : '';
+                address.obj['capacidad'] ? updateAddress['custrecord_ptg_capacidad_art'] = address.obj['capacidad'] : '';
+                address.obj['frequencyItem2'] ? updateAddress['custrecord_ptg_articulo_frecuente2'] = address.obj['frequencyItem2'] : '';
+                address.obj['capacidad2'] ? updateAddress['custrecord_ptg_capacidad_can_articulo_2'] = address.obj['capacidad2'] : '';
+                address.obj['street_aux1'] ? updateAddress['custrecord_ptg_entrecalle_'] = address.obj['street_aux1'] : '';
+                address.obj['street_aux2'] ? updateAddress['custrecord_ptg_y_entre_'] = address.obj['street_aux2'] : '';
+                address.obj['nameStreet'] ? updateAddress['custrecord_ptg_street'] = address.obj['nameStreet'] : '';
+                address.obj['numExterno'] ? updateAddress['custrecord_ptg_exterior_number'] = address.obj['numExterno'] : '';
+                address.obj['numInterno'] ? updateAddress['custrecord_ptg_interior_number'] = address.obj['numInterno'] : '';
+                address.obj['commentsAddress'] ? updateAddress['custrecord_ptg_obesarvaciones_direccion_'] = address.obj['commentsAddress'] : '';
+
+                dataToSend = {
+                    "customers" : [
+                        {
+                            id : customerGlobal.id,
+                            bodyFields : {},
+                            bodyAddress : [
+                                {
+                                    id : idAddress,
+                                    addresses : updateAddress
+                                }
+                            ]
+                        }
+                    ] 
+                };
+            } else {// Se guarda
+                dataToSend = {
+                    id : customerGlobal.id,
+                    bodyFields : {
+                        'custentity_ptg_indicaciones_cliente' : customerGlobal?.notasCustomer
+                    },
+                    bodyAddress : [address.obj]
+                }
+    
+            }
+            
             loadMsg('Guardando dirección...');
-            saveAddress(dataToSend);
+            // saveAddress(dataToSend);
+            let settings = {
+                url      : urlGuardarCliente,
+                method   : 'PUT',
+                data     : JSON.stringify(dataToSend),
+            }
+            setAjax(settings).then((response) => {
+                infoMsg('success', 'Datos de dirección guardados exitósamente');
+                $('div.modal').modal('hide');
+                searchCustomer(customerGlobal.id);
+            }).catch((error) => {
+                infoMsg('error', 'Algo salió mal en la creación del registro');
+                console.log('Error en la consulta', error);
+            });
         }
         
     } else {
@@ -288,7 +423,7 @@ function saveCustomer() {
         //!$("#frecuenciaFormCliente").val().trim()                   ||
         //!$("#entreFormCliente").val().trim()                        ||
         //!$("#lasFormCliente").val().trim()                          ||
-        $('table.table-address tbody').find(".address").length == 0
+        ( !$("input#idInternoFormCliente").val() && $('table.table-address tbody').find(".address").length == 0 )
     ) {
         canContinue = false;
     } else {
@@ -296,11 +431,13 @@ function saveCustomer() {
     }
 
     if ( canContinue ) {
+        let idCliente       = $("input#idInternoFormCliente").val();
         let tipoRegimen     = $("input[name=tipoRegimen]:checked").val();
         let requiereFactura = $("input[name=requiereFactura]:checked").val();
         let businessType    = tipoRegimen != 'domestico' ? $('select#giroNegocioFormCliente').val() : "";
         // let middleName      = tipoRegimen != 'domestico' ? $('select#giroNegocioFormCliente').val() : "";
-        let lastName        = $('input#apellidoPaternoFormCliente').val()+' '+$('input#apellidoMaternoFormCliente').val();
+        let lastName        = $('input#apellidosFormCliente').val();
+        // let lastName        = $('input#apellidoPaternoFormCliente').val()+' '+$('input#apellidoMaternoFormCliente').val();
         let rfc             = requiereFactura == 'si' ? $('input#rfcFormCliente').val() : "";
         let email           = $("input#correoFormCliente").val();
         let emailAlt        = $("input#correoAlternativoFormCliente").val();
@@ -350,13 +487,68 @@ function saveCustomer() {
             telefonoAlt : $("input#telefonoAlternoFormCliente").val(),
             subsidiary : 25,// Seteado de forma estática
             regimenId : regimenId,
+            notaCliente : $('#observacionesFormCliente').val(),
             //typeService : typeService,
             address : listAddress
         }
         console.log(customer);
         // return;
         loadMsg('Guardando información...');
-        saveCustomerAjax(customer);
+        // Se envía la información del cliente por ajax
+        let dataToSend = null;
+        if ( idCliente ) {// Se actualiza
+
+            let customerEdit = {
+                firstname : customer['nombre'],
+                lastname : customer['lastName'],
+                custentity_ptg_giro_negocio : customer['businessType'],
+                custentity_mx_rfc : customer['rfc'],
+                email : customer['email'],
+                custentity_drt_sed_email_invoice : emailAlt,
+                // custentity_ptg_plantarelacionada_ : customer['planta'],
+                phone : customer['telefono'],
+                altphone : customer['telefonoAlt'],
+                // subsidiary : customer['subsidiary'],
+                custentity_ptg_tipodecliente_ : customer['regimenId'],
+                custentity_ptg_notas_cliente_ : customer['notaCliente']
+            }
+            dataToSend = {
+                "customers" : [
+                    {
+                        id : idCliente,
+                        bodyFields : customerEdit,
+                        bodyAddress : []
+                    }
+                ] 
+            };
+
+        } else {// Se crea uno nuevo
+            let arrayCustomers = [];
+            arrayCustomers.push(customer);
+    
+            dataToSend = {
+                "customers" : arrayCustomers,
+            };
+        
+        }
+        
+        let settings = {
+            url    : urlGuardarCliente,
+            method : idCliente ? 'PUT' : 'POST',
+            data   : JSON.stringify(dataToSend),
+        }
+    
+        setAjax(settings).then((response) => {
+            infoMsg('success', 'Registro guardado exitósamente');
+            searchCustomer(response.data[0]);
+            clearCustomerForm('create');
+            // let telefono = $('#telefonoPrincipalFormCliente').val();
+            // $( "input#buscarCliente" ).val(telefono);
+            // searchCustomer(telefono);
+        }).catch((error) => {
+            infoMsg('error', 'Algo salió mal en la creación del registro');
+            console.log('Error en la consulta', error);
+        });
     } else {
         if ( $('table.table-address tbody').find(".address").length == 0 ) {
             alert("Favor de colocar al menos una dirección");
@@ -367,43 +559,8 @@ function saveCustomer() {
     }
 }
 
-function saveCustomerAjax(customer) {
-    let arrayCustomers = [];
-    arrayCustomers.push(customer);
-
-    let dataCustomer = {
-        "customers" : arrayCustomers,
-    };
-
-    $.ajax({
-        url: urlGuardarCliente,
-        method: 'POST',
-        data: JSON.stringify(dataCustomer),
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function (data) {
-            console.log('Data: ', data);
-            
-            if ( data.success ) {
-                infoMsg('success', 'Cliente registrado exitósamente');
-                clearCustomerForm('create');
-            } else {
-                let msg = data.message;
-                swal.close();
-                infoMsg('error', 'Cliente no creado', msg ?? 'Revise que la información proporcionada sea la correcta');
-            }
-
-        }, error: function (xhr, status, error) {
-            infoMsg('error', 'Algo salió mal en la creación del registro')
-            console.log('Error en la consulta', xhr, status, error);
-        }
-    });
-}
-
 // Método para limpiar todos los campos del form de clientes
 function clearCustomerForm(type = 'create') {
-    let telefono = $('#telefonoPrincipalFormCliente').val();
-
     $('table.table-address tbody').children('tr').remove();
 
     $('table.table-address tbody').append(
@@ -432,6 +589,6 @@ function clearCustomerForm(type = 'create') {
 
     // Aquí empieza
     $( "#btnBack" ).trigger( "click" );
-    $( "input#buscarCliente" ).val(telefono);
-    searchCustomer(telefono);
+    $("button.next-to-domicilio").parent().addClass('d-none');// Se esconde el botón de siguiente para visualizar la vista de domiciliod
+    $("div.domicilio-tab").addClass('d-none');
 }
