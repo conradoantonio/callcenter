@@ -848,6 +848,118 @@ $("#guardarCancelarOpp").click(function () {
     }).catch(swal.noop);
 });
 
+// Código para filtrado del grid de servicios y oportunidades
+// Determina qué status se mostrarán acorde al tipo de caso seleccionado (Fuga/Queja)
+$('select#tipoServicioFiltro').on('change', function(e) {
+    let tipoServicio = $('#tipoServicioFiltro').val();
+    $('select#estadoSolicitudFiltro').children('option').remove();
+    $("select#estadoSolicitudFiltro").append('<option value="">Seleccione una opción</option>');
+    $(".filtro-tipo-producto-casos, .filtro-tipo-producto-opp").addClass('d-none');
+    // Se llenan los estatus acorde al tipo de servicio requerido
+    if ( tipoServicio == 1 || tipoServicio == 2 ) {// Sólo fugas o quejas
+        for (var i = 0; i < statusCasesArr.length; i++) {
+            $("select#estadoSolicitudFiltro").append('<option value='+statusCasesArr[i].id+'>'+statusCasesArr[i].nombre+'</option>');
+        }
+        $(".filtro-tipo-producto-casos").removeClass('d-none');
+    } else if( tipoServicio == 3 ) {// Oportunidades
+        for (var x = 0; x < estadosOppArr.length; x++) {
+            $("select#estadoSolicitudFiltro").append('<option value='+estadosOppArr[x].id+'>'+estadosOppArr[x].nombre+'</option>');
+        }
+        $(".filtro-tipo-producto-opp").removeClass('d-none');
+    }
+});
+
+$('.filtrar-historico').on('click', function(e) {
+    filtrarHistorico();
+});
+
+// Limpia los filtros de la búsqueda
+function limpiarFiltrosBusqueda() {
+    $('div#filtros').find('select.form-ptg').each(function( index ) {
+        $( this ).val($(this).children("option:first").val());
+    });
+    setSelectEstatusOpp(estadosOppArr);
+    $('#filtros').find('input.form-ptg').val('');
+    $(".filtro-tipo-producto-casos").addClass('d-none');
+    $(".filtro-tipo-producto-opp").removeClass('d-none');
+}
+
+// Filtra acorde a los parámetros proporcionados por el cliente
+function filtrarHistorico() {
+    let fechaPrometida1 = $("#filtroFechaAtencionIni").val() ? dateFormatFromDate( $("#filtroFechaAtencionIni").val(), '5' ) : '';
+    let fechaPrometida2 = $("#filtroFechaAtencionFin").val() ? dateFormatFromDate( $("#filtroFechaAtencionFin").val(), '5' ) : '';
+    let fechaCierre1    = $("#filtroFechaSolicitudIni").val() ? dateFormatFromDate( $("#filtroFechaSolicitudIni").val(), '5' ) : '';
+    let fechaCierre2    = $("#filtroFechaSolicitudFin").val() ? dateFormatFromDate( $("#filtroFechaSolicitudFin").val(), '5' ) : '';
+    let status          = $("#estadoSolicitudFiltro").val();
+    let productoCaso    = $("#filtroTipoProductoCaso").val();
+    let productoOpp     = $("#filtroTipoProductoOpp").val();
+    let tipoServicio    = $('#tipoServicioFiltro').val();
+    let tipoNombre      = '';
+    let url             = '';
+    let dataToSend      = { id : customerGlobal.id };
+    
+    fechaPrometida1 ? dataToSend['fechaPrometida1'] = fechaPrometida1 : '';
+    fechaPrometida2 ? dataToSend['fechaPrometida2'] = fechaPrometida2 : '';
+    fechaCierre1 ? dataToSend['fechaCierre1'] = fechaCierre1 : '';
+    fechaCierre2 ? dataToSend['fechaCierre2'] = fechaCierre2 : '';
+    
+    if ( tipoServicio == 3 ) {// Oportunidades
+        tipoNombre = 'oportunidades';
+        url = urlGetOppV2;
+        status ? dataToSend['status_oportunidad'] = status : '';
+        productoOpp ? dataToSend['tipo_producto'] = productoOpp : '';
+
+    } else {// Fugas o quejas
+        tipoNombre = 'casos';
+        url = urlGetFugaQuejasV2;
+        dataToSend['tipo_servicio'] = tipoServicio;
+        status ? dataToSend['estado'] = status : '';
+        productoCaso ? dataToSend['itemId'] = productoCaso : '';
+    };
+
+    let settings = {
+        url    : url,
+        method : 'POST',
+        data   : JSON.stringify(dataToSend)
+    }
+
+    loadMsg('Espere un momento...');
+
+    // Se remueve la información acerca
+    // setCasosOportunidades(JSON.parse(response.data));
+    
+    setAjax(settings).then((response) => {
+        let items = response.data;
+        $('div#historic-data table.table-gen tbody').children('tr').remove();
+        $('div#historic-data').fadeOut();
+        if ( items.length ) {
+            // numero de documento, fecha
+            for ( var key in items ) {
+                if ( items.hasOwnProperty( key ) ) {
+                    $('div#historic-data table.table-gen tbody').append(
+                        setTrOppCases( items[key], tipoNombre )
+                    );
+                }
+            }
+        } else {
+            // console.warn('No hay casos por cargar');
+        }
+        $('div#historic-data table').fancyTable({
+            sortColumn:0,
+            pagination: true,
+            perPage: 10,
+            searchable:false,
+            sortable: false
+        });
+        $('div#historic-data').fadeIn('slow');
+        swal.close();
+        console.log(response);
+    }).catch((error) => {
+        swal.close();
+        console.log(error);
+    });
+}
+
 // funcion para generar las peticiones
 function requests(url, method, data) {
     // Generamos el AJAX dinamico para las peticiones relacionadas con peddos

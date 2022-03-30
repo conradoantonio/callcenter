@@ -96,7 +96,7 @@ function searchCustomer(clienteId) {
         // console.log('Cliente encontrado', response);
         customerGlobal = response.data[0];
         setCustomerInfo(response.data[0]);
-        $('#editarCliente, #agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', false);
+        $('#filtrarHistorico, #editarCliente, #agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', false);
     }).catch((error) => {
         infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
         // Limpia los campos de cliente
@@ -364,6 +364,7 @@ function getListaStatusOpp() {
 
     setAjax(settings).then((response) => {
         estadosOppArr = response.data;
+        setSelectEstatusOpp(estadosOppArr);
     }).catch((error) => {
         console.log(error);
     });
@@ -500,7 +501,7 @@ function setSelectArticulos(items) {
                 }
 
                 if ( [1,2].includes(Number(items[key].tipo_articulo)) ) {
-                    $("select#articuloFugaQueja").append( articulo );
+                    $("select#articuloFugaQueja, select#filtroTipoProductoCaso").append( articulo );
                 }
             }
         }
@@ -556,6 +557,24 @@ function setSelectBusinessType(items) {
         }
     } else {
         console.warn('No hay registros por cargar');
+    }
+}
+
+// Método para llenar el select de los estatus de la oportunidad
+function setSelectEstatusOpp(items) {
+    if ( items.length ) {
+        $('select#estadoSolicitudFiltro').children('option').remove();
+        $("select#estadoSolicitudFiltro").append('<option value="">Seleccione una opción</option>');
+
+        for ( var key in items ) {
+            if ( items.hasOwnProperty( key ) ) {
+                $("select#estadoSolicitudFiltro").append(
+                    '<option value='+items[key].id+'>'+items[key].nombre+'</option>'
+                );
+            }
+        }
+    } else {
+        console.warn('No hay plantas por cargar');
     }
 }
 
@@ -750,7 +769,7 @@ function setTrOppCases(item, type = 'casos') {
 // Método para limpiar la data del cliente cuando falla una búsqueda
 function clearCustomerInfo () {
     // Inhabilita el botón de agregar dirección
-    $('#editarCliente, #agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', true);
+    $('#filtrarHistorico, #editarCliente, #agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', true);
 
     // Se reinician los labels
     $('#idCliente').text('0');

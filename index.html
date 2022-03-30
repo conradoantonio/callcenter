@@ -570,6 +570,12 @@
         #historic-data > table.table-gen > tfoot {
             text-align: center!important;
         }
+
+        /* Css para los resultados de búsqueda de un cliente en el select2 */
+        li.select2-results__option{
+            border-top: solid;
+            border-width: 2px;
+        }
         
     </style>
 </head>
@@ -1558,33 +1564,116 @@
                     </div>
                 </div>
 
-                <div id="filtros" class="row d-nones" style="margin-top: 10px;">
-                    <div class="col-auto pb-2">
+                <div id="filtros" class="row" style="margin-top: 10px;">
+                    <div class="col-3 pb-2">
                         <div class="content-input">
-                            <label>Rango Fecha de la Solicitud</label><br>
-                            <div class="row align-items-center content-range-date" style="width: 390px;">
-                                <div class="col-12 pr-0">
+                            <label>Tipo de servicio</label><br>
+                            <div class="row align-items-center content-range-date">
+                                <div class="pr-0">
                                     <div class="row align-items-center">
-                                        <div class="col-6 pr-0">
-                                            <input id="filterFechaSolicitudIni" onchange="getServicios(this)" type="date" class="form-ptg range-date date-ini">
-                                        </div>
-                                        <div class="col-6 px-1">
-                                            <input id="filterFechaSolicitudFin" onchange="getServicios(this)" type="date" class="form-ptg range-date date-fin">
-                                        </div>
-                                        <div class="col-6 pr-0">
-                                            <select id="origenPedido" class="form-ptg form-ptg-primary">
-                                                <option value="0">Seleccione un estado</option>
+                                        <div class="col-12">
+                                            <select id="tipoServicioFiltro" class="form-ptg form-ptg-primary">
+                                                <!-- <option value="">Seleccione una opción</option> -->
+                                                <option value="3">Pedido</option>
+                                                <option value="1">Fuga</option>
+                                                <option value="2">Queja</option>
                                             </select>
-                                            <!-- <input id="filterFechaSolicitudIni" onchange="getServicios(this)" type="date" class="form-ptg range-date date-ini"> -->
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-auto">
-                                    <button id="limpiarFilterFechaSolicitud" type="button" class="btn bg-secondary-cc btn-clean-date"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </div>                    
                         </div>
                     </div>
+                    <div class="col-3 pb-2">
+                        <div class="content-input">
+                            <label>Estado del servicio</label><br>
+                            <div class="row align-items-center content-range-date">
+                                <div class="pr-0">
+                                    <div class="row align-items-center">
+                                        <div class="col-12">
+                                            <select id="estadoSolicitudFiltro" class="form-ptg form-ptg-primary">
+                                                <option value="">Seleccione una opción</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                    <div class="col-6 pb-2">
+                        <div class="content-input">
+                            <label>Rango Fecha de la Solicitud</label><br>
+                            <div class="row align-items-center content-range-date">
+                                <div class="pr-0">
+                                    <div class="row align-items-center">
+                                        <div class="col-6">
+                                            <input id="filtroFechaSolicitudIni" type="date" class="form-ptg range-date date-ini">
+                                        </div>
+                                        <div class="col-6">
+                                            <input id="filtroFechaSolicitudFin" type="date" class="form-ptg range-date date-fin">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                    <!-- Row -->
+                    <div class="col-3 pb-2 filtro-tipo-producto-casos d-none">
+                        <div class="content-input">
+                            <label>Tipo de producto</label><br>
+                            <div class="row align-items-center content-range-date">
+                                <div class="pr-0">
+                                    <div class="row align-items-center">
+                                        <div class="col-12">
+                                            <select id="filtroTipoProductoCaso" class="form-ptg form-ptg-primary">
+                                                <option value="">Seleccione una opción</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                    <div class="col-3 pb-2 filtro-tipo-producto-opp">
+                        <div class="content-input">
+                            <label>Tipo de producto</label><br>
+                            <div class="row align-items-center content-range-date">
+                                <div class="pr-0">
+                                    <div class="row align-items-center">
+                                        <div class="col-12">
+                                            <select id="filtroTipoProductoOpp" class="form-ptg form-ptg-primary">
+                                                <option value="">Seleccione una opción</option>
+                                                <option value="1">Cilindro</option>
+                                                <option value="2">Estacionario</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                    <div class="col-6 pb-2">
+                        <div class="content-input">
+                            <label>Rango Fecha de atención</label><br>
+                            <div class="row align-items-center content-range-date">
+                                <div class="pr-0">
+                                    <div class="row align-items-center">
+                                        <div class="col-6">
+                                            <input id="filtroFechaAtencionIni" type="date" class="form-ptg range-date date-ini">
+                                        </div>
+                                        <div class="col-6">
+                                            <input id="filtroFechaAtencionFin" type="date" class="form-ptg range-date date-fin">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                    <div class="col-12 pb-2 text-center">
+                        <button id="filtrarHistorico" type="button" disabled class="btn bg-secondary-cc filtrar-historico">Filtrar</button>
+                        <button id="borrarFiltroHistorico" type="button" onclick="limpiarFiltrosBusqueda()" class="btn bg-secondary-cc borrar-filtro-historico">Limpiar filtros</button>
+                    </div>
+                    
                 </div>
             </div>
 
@@ -2359,6 +2448,8 @@
         urlGetMessageOpp = '${ds.getMessageOpp}';
         urlGetNoteOpp = '${ds.getNoteOpp}';
         urlGetItemsOpp = '${ds.getItemsOpp}';
+        urlGetOppV2 = '${ds.getOppV2}';
+        urlGetFugaQuejasV2 = '${ds.getFugaQuejasV2}';
         
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
@@ -2367,6 +2458,7 @@
         conceptoFugasQuejasArr = [];
         estadosOppArr = [];
         articulosArr = [];
+        statusCasesArr = [{id:1, nombre: 'No iniciado'}, {id:2, nombre: 'En curso'}, {id:3, nombre: 'Escalado'}, {id:4, nombre: 'Reabierto'}, {id:5, nombre: 'Cerrado'}];
         customerGlobal = null;
         direccionDefault = null;
         
