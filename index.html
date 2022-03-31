@@ -760,13 +760,61 @@
                     <h5 class="modal-title" id="titleNotasAdicionalesModal">Agregar nota</h5>
                 </div>
                 <div class="modal-body">
-                    <textarea id="notaAdicional" rows="3" placeholder="Nota..."
-                        class="form-ptg form-ptg-primary"></textarea>
+                    <textarea id="notaAdicional" rows="3" placeholder="Nota..." class="form-ptg form-ptg-primary"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                         aria-label="Close">Cancelar</button>
                     <button id="guardarNotaAdicional" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="formVerNotasAdicionalesModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleVerNotasAdicionalesModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleNotasAdicionalesModal">Notas adicionales</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row p-3 notas-detalle">
+                        <div class="col-12">
+                            <table class="table-gen table-gen-blue text-center table-notas">
+                                <thead>
+                                    <tr>
+                                        <th>Autor</th>
+                                        <th>Fecha</th>
+                                        <th>Contenido</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row p-3">
+                        <div class="col-12 d-none">
+                            <div class="content-input content-input-primary d-nones">
+                                <label>Internal ID*</label>
+                                <input class="form-ptg form-ptg-primary" id="internalIdServicio" data-item="" readonly>
+                            </div>
+                            <div class="content-input content-input-primary d-nones">
+                                <label>Tipo servicio*</label>
+                                <input class="form-ptg form-ptg-primary" name="tipo_servicio" data-item="" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <label>Nueva nota*</label>
+                                <textarea id="nuevaNotaAdicional" rows="3" placeholder="Nota..." class="form-ptg form-ptg-primary"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+                    <button id="guardarNuevaNotaAdicional" type="button" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>
@@ -2485,6 +2533,12 @@
 
             $('#rutaDireccion').data('ruta-obj', null);
             $('.art-fre-est, .art-fre-cil').addClass('d-none');
+        });
+
+        // Limpia el modal de agregar detalles adicionales
+        $('body').delegate('div#formVerNotasAdicionalesModal', 'hidden.bs.modal', function () {
+            $(this).find('.form-ptg').val('');
+            $('.notas-detalle').children('table.table-notas tbody').children('tr').remove();
         });
 
         // Limpia los campos del modal método de pago

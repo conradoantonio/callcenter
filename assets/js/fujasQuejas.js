@@ -52,6 +52,11 @@ function setselectConceptosCasos(items) {
 
 getConceptosCasos();
 
+// Guarda una nueva nota
+$('#guardarNuevaNotaAdicional').on('click', function () {
+    agregarNotas();
+});
+
 // Guarda la información de un pedido
 $('#guardarFugaQueja').on('click', function () {
     
@@ -116,7 +121,9 @@ $('#guardarFugaQueja').on('click', function () {
         console.log('Pedido creado exitósamente', response);
         casos = [];
         if ( notas.length ) {// Contiene notas por dar de alta
-            saveNotas(notas, response.data[0], 'caso');
+            setTimeout( function() {
+                saveNotas(notas, response.data[0], 'caso');
+            }, '2000');
         }
         clearFugasQuejasForm();
     }).catch((error) => {
@@ -130,7 +137,8 @@ $('#guardarFugaQueja').on('click', function () {
 // Guarda las notas de un caso u opotunidad
 function saveNotas(notas, idRelacionado, tipoTransaccion) {
     let notasArr = [];
-    let mensaje = tipoTransaccion == 'caso' ? 'nota' : 'mensaje';
+    let mensaje = 'nota';
+    // let mensaje = ( tipoTransaccion == 'caso' ? 'nota' : 'mensaje' );
 
     for ( var i = 0; i < notas.length; i++ ) {
 
@@ -153,9 +161,39 @@ function saveNotas(notas, idRelacionado, tipoTransaccion) {
     
     setAjax(settings).then((response) => {
         console.log(response);
+        swal.close();
+        $('div.modal').modal("hide");
     }).catch((error) => {
         console.log('Notas no registradas', error);
     });
+}
+
+// Se abre el modal para ver las notas adicionales
+function verNotasAdicionales($this) {
+    let tipoServicio = $($this).hasClass('casos') ? 'caso' : 'oportunidad';
+    $('table.table-notas tbody').children('tr').remove();
+    let pedido = $($this).closest("tr").data("item");
+    $("#formVerNotasAdicionalesModal").modal("show");
+    $('#internalIdServicio').val(pedido.id_Transaccion);
+    $('#internalIdServicio').data('item', pedido);
+    $('[name=tipo_servicio]').val(tipoServicio);
+    console.log(tipoServicio);
+    
+    // Dibuja la tabla de notas del pedido
+    getMsgNotes(pedido, tipoServicio);
+}
+
+// Agrega una nueva nota
+function agregarNotas() {
+    let notas = [];
+    // let pedido = $('#internalIdServicio').data('item');
+    let tipoServicio = $('[name=tipo_servicio]').val();
+    let idTransaccion = $('#internalIdServicio').val();
+    let texto = $( '#nuevaNotaAdicional' ).val();
+    
+    notas.push(texto);
+    loadMsg('Guardando información');
+    saveNotas(notas, idTransaccion, tipoServicio);
 }
 
 // Método para limpiar la data del cliente cuando falla una búsqueda

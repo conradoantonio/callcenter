@@ -719,6 +719,9 @@ function setTrOppCases(item, type = 'casos') {
                     '<li onclick="cancelarPedido(this)" class="'+type+' px-2 py-1 c-pointer" style="font-size: 16px">'+
                         '<i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio'+
                     '</li>'+
+                    '<li onclick="verNotasAdicionales(this)" class="'+type+' px-2 py-1 c-pointer" style="font-size: 16px">'+
+                        '<i class="fa-solid fa-list color-primary"></i> Ver comentarios'+
+                    '</li>'+
                 '</ul>'+
             '</div>'+
             // '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
@@ -959,7 +962,7 @@ function verDetalles($this) {
         //     }
         // });
 
-        getMsgNotes(pedido, 'oportunidades');
+        getMsgNotes(pedido, 'oportunidad');
 
     } else if ( $($this).hasClass('casos') ) {
 
@@ -980,7 +983,7 @@ function verDetalles($this) {
         
         $('.campos-casos').removeClass('d-none');
 
-        getMsgNotes(pedido, 'casos');
+        getMsgNotes(pedido, 'caso');
     }
 
     $("#formVerDetallesPedidos").modal("show");
@@ -991,7 +994,7 @@ function getMsgNotes(pedido, tipo) {
     let url  = null;
     let data = null;
 
-    if ( tipo == 'casos' ) {
+    if ( tipo == 'caso' ) {
         url = urlGetMessageandNotes;
         data = { case : pedido.id_Transaccion };
     } else {
@@ -1008,23 +1011,34 @@ function getMsgNotes(pedido, tipo) {
     setAjax(settings).then((response) => {
         // console.log(response);
         mensajeData = response.messageData;
-        noteData = response.noteData;
-        if ( tipo == 'casos' ) {
+        noteData = [];
+        if ( tipo == 'caso' ) {// Casos
+            noteData = response.noteData;
             $(".casos-notas-adicionales").html(mensajeData && mensajeData[0] ? mensajeData[0].message : 'Sin asignar');
+        } else {// Oportunidades
+            noteData = response.data;
         }
 
-        for ( var key in noteData ) {
-            if ( noteData.hasOwnProperty( key ) ) {
-                console.log('Nota', noteData[key]);
-    
-                $('table.table-notas tbody').append(
-                    '<tr class="notas-opp-caso">'+
-                        '<td class="ion-text-center sticky-col fw-bold">'+noteData[key].author+'</td>'+
-                        '<td class="ion-text-center sticky-col fw-bold">'+noteData[key].date+'</td>'+
-                        '<td class="ion-text-center sticky-col fw-bold">'+noteData[key].note+'</td>'+
-                    '</tr>'
-                );
+        if( noteData.length ) {// Tiene más de una nota
+            for ( var key in noteData ) {
+                if ( noteData.hasOwnProperty( key ) ) {
+                    console.log('Nota', noteData[key]);
+        
+                    $('table.table-notas tbody').append(
+                        '<tr class="notas-opp-caso">'+
+                            '<td class="ion-text-center sticky-col fw-bold">'+noteData[key].author+'</td>'+
+                            '<td class="ion-text-center sticky-col fw-bold">'+noteData[key].date+'</td>'+
+                            '<td class="ion-text-center sticky-col fw-bold">'+noteData[key].note+'</td>'+
+                        '</tr>'
+                    );
+                }
             }
+        } else {
+            $('table.table-notas tbody').append(
+                '<tr class="notas-opp-caso">'+
+                    '<td class="text-center" colspan="3">Sin notas adicionales</td>'+
+                '</tr>'
+            );
         }
        
     }).catch((error) => {
