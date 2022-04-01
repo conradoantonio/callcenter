@@ -13,6 +13,28 @@ $("#agregarDirecciones, #agregarDireccion").click( function() {
     }
 });
 
+// Si el clienge requiere factura, se mostrarán esos campos en el form de cliente
+$('input[name=requiereFactura]').on('change', function(e) {
+    let val = $("input[name=requiereFactura]:checked").val();
+    if ( val == "si" ) {// Se muestran los datos exclusivos de factura
+        $(".dato-facturacion").removeClass("d-none");
+    } else {// Se ocultan los campos de factura
+        $(".dato-facturacion").addClass("d-none");
+    }
+});
+
+// Si el cliente es de régimen moral, muestra el campo para la razón social, caso contrario, se muestran los de régimen físico (Doméstico)
+$('input[name=tipoRegimen]').on('change', function(e) {
+    let val = $("input[name=tipoRegimen]:checked").val()
+    if ( val == "domestico" ) {// Se muestran los datos de régimen físico
+        $(".dato-regimen-fisico").removeClass("d-none");
+        $(".dato-regimen-moral").addClass("d-none");
+    } else if( val == "comercial" || val == "industrial" ) {// Se muestran los campos de régimen moral
+        $(".dato-regimen-moral").removeClass("d-none");
+        $(".dato-regimen-fisico").addClass("d-none");
+    }
+});
+
 // Cuando el select de estados cambie, manda a llamar la petición de obtener ciudades
 $('select#direccionCliente').on('change', function(e) {
     let direccion = $( this ).children('option:selected').data('address');
@@ -69,12 +91,20 @@ $("#editarCliente").click(function () {
     // Se prellenan los inputs del form
     if ( customerGlobal.typeCustomer == "Doméstico" ) {
         $("input#tipoRegimen1").prop('checked', true);
+        $(".dato-regimen-fisico").removeClass("d-none");
+        $(".dato-regimen-moral").addClass("d-none");
     } else if ( customerGlobal.typeCustomer == "Comercial" ) {
-        $('#giroNegocioFormCliente').parent().removeClass('d-none');
         $("input#tipoRegime2").prop('checked', true);
     } else if ( customerGlobal.typeCustomer == "Industrial" ) {
-        $('#giroNegocioFormCliente').parent().removeClass('d-none');
         $("input#tipoRegime3").prop('checked', true);
+    }
+
+    // Si es comercial o industrial
+    if ( customerGlobal.typeCustomer == "Comercial" || customerGlobal.typeCustomer == "Industrial" ) {
+        $('#nombreRazonSocialFormCliente').val(customerGlobal.nombreCompleto);
+        $('#giroNegocioFormCliente').parent().removeClass('d-none');
+        $(".dato-regimen-fisico").addClass("d-none");
+        $(".dato-regimen-moral").removeClass("d-none");
     }
 
     if ( customerGlobal.giroCustomerId ) {
@@ -83,12 +113,19 @@ $("#editarCliente").click(function () {
 
     if ( customerGlobal.rfc ) {
         $("input#requiereFactura1").prop('checked', true);
+        $(".dato-facturacion").removeClass("d-none");
         $('#rfcFormCliente').val(customerGlobal.rfc);
+        // $('#usoCfdiFormCliente').val(customerGlobal.usoCfdiFormCliente);
+        $('#usoCfdiFormCliente').val(3);
+        
+    } else {
+        $(".dato-facturacion").addClass("d-none");
     }
 
     // Se setean los demás campos de forma natural
     $('#nombreFormCliente').val(customerGlobal.primerNombre);
     $('#apellidosFormCliente').val(customerGlobal.apellidos);
+    
     $('#correoFormCliente').val(customerGlobal.email);
     $('#telefonoPrincipalFormCliente').val(customerGlobal.telefono);
     $('#telefonoAlternoFormCliente').val(customerGlobal.telefonoAlt);
@@ -141,6 +178,7 @@ function validateAddressFields() {
 
     if( canContinue ) {
 
+        // Devuelve un objeto formateado con la información de la dirección a guardar en netsuite
         let address = getAddressOnList();
 
         // Enlista las direcciones en  una tabla dinámica
@@ -173,6 +211,7 @@ function validateAddressFields() {
             if ( idAddress ) {// Se actualiza la dirección
                 let updateAddress = {}
 
+                address.obj['domFacturacion'] ? updateAddress['defaultbilling'] = address.obj['domFacturacion'] : '';
                 address.obj['stateName'] ? updateAddress['custrecord_ptg_estado'] = address.obj['stateName'] : '';
                 address.obj['ruta'] ? updateAddress['custrecord_ptg_colonia_ruta'] = address.obj['ruta'] : '';
                 address.obj['idRoute'] ? updateAddress['custrecord_ptg_ruta_asignada'] = address.obj['idRoute'] : '';
@@ -320,6 +359,7 @@ function getAddressOnList() {
     let addressObj = {
         principal       : $('table.table-address tbody').find(".address").length == 0 ? true : false,
         stateName       : $("#estadoDireccion").val().trim(),
+        domFacturacion  : $('#domFacturacionDireccion').is(':checked'),
         city            : $("#municipioDireccion").val().trim(),
         zip             : $("#cpDireccion").val().trim(),
         nameStreet      : $("#calleDireccion").val().trim(),
@@ -418,12 +458,14 @@ function saveAddress(dataToSend) {
 // Guarda la información de un cliente en Netsuite
 function saveCustomer() {
     let canContinue = false;
+    let tipoRegimen     = $("input[name=tipoRegimen]:checked").val();
+    let requiereFactura = $("input[name=requiereFactura]:checked").val();
+
     if(
-        //!$("#cadaFormCliente").val().trim()                         ||
-        //!$("#frecuenciaFormCliente").val().trim()                   ||
-        //!$("#entreFormCliente").val().trim()                        ||
-        //!$("#lasFormCliente").val().trim()                          ||
-        ( !$("input#idInternoFormCliente").val() && $('table.table-address tbody').find(".address").length == 0 )
+        ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val() || !$("#apellidosFormCliente").val() ) ) || //Debe tener nombre y apellido si es doméstico
+        ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val() ) ) || //Debe tener el nombre de la razón social
+        ( requiereFactura == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) ) || // Si requiere factura, debe incluir RFC, correo de facturación y el uso de CFDI
+        ( !$("input#idInternoFormCliente").val() && $('table.table-address tbody').find(".address").length == 0 ) // Si es un registro nuevo, debe almacenar al menos una dirección
     ) {
         canContinue = false;
     } else {
@@ -431,19 +473,18 @@ function saveCustomer() {
     }
 
     if ( canContinue ) {
-        let idCliente       = $("input#idInternoFormCliente").val();
-        let tipoRegimen     = $("input[name=tipoRegimen]:checked").val();
-        let requiereFactura = $("input[name=requiereFactura]:checked").val();
-        let businessType    = tipoRegimen != 'domestico' ? $('select#giroNegocioFormCliente').val() : "";
+        let idCliente    = $("input#idInternoFormCliente").val();
+        let businessType = tipoRegimen != 'domestico' ? $('select#giroNegocioFormCliente').val() : "";
+        let businessName = $('#nombreRazonSocialFormCliente').val();
+        let cfdi         =  $('#usoCfdiFormCliente').val();
         // let middleName      = tipoRegimen != 'domestico' ? $('select#giroNegocioFormCliente').val() : "";
-        let lastName        = $('input#apellidosFormCliente').val();
-        // let lastName        = $('input#apellidoPaternoFormCliente').val()+' '+$('input#apellidoMaternoFormCliente').val();
-        let rfc             = requiereFactura == 'si' ? $('input#rfcFormCliente').val() : "";
-        let email           = $("input#correoFormCliente").val();
-        let emailAlt        = $("input#correoAlternativoFormCliente").val();
-        //let service         = $("select#tipoServicioFormCliente").val();
-        //let typeService     = null;
-        let regimenId       = null;
+        let lastName     = $('input#apellidosFormCliente').val().trim();
+        let rfc          = requiereFactura == 'si' ? $('input#rfcFormCliente').val() : "";
+        let email        = $("input#correoFormCliente").val();
+        let emailAlt     = $("input#correoAlternativoFormCliente").val();
+        // let service      = $("select#tipoServicioFormCliente").val();
+        // let typeService  = null;
+        let regimenId    = null;
 
         if( tipoRegimen == 'industrial'){ regimenId = 1; }
         else if( tipoRegimen == 'domestico'){ regimenId = 3; }
@@ -459,7 +500,7 @@ function saveCustomer() {
         for (let x = 0; x < $('table.table-address tbody').find(".address").length; x++) {
             let element = $($('table.table-address tbody').find(".address")[x]);
             let address = element.data('address');
-            if(address.principal) {
+            if( address.principal ) {
                 address.tag = "00";
             } else {
                 address.tag = "0"+count;
@@ -473,7 +514,9 @@ function saveCustomer() {
             nombre : $('input#nombreFormCliente').val(),
             middleName : '',
             businessType : businessType,
-            lastName : lastName.trim(),
+            lastName : lastName,
+            businessName: businessName,
+            cfdi: cfdi,
             rfc : rfc,
             regimeType : regimenId != 3 ? false : true,
             // regimeType : tipoRegimen,
@@ -550,7 +593,7 @@ function saveCustomer() {
             console.log('Error en la consulta', error);
         });
     } else {
-        if ( $('table.table-address tbody').find(".address").length == 0 ) {
+        if ( !$("input#idInternoFormCliente").val() && $('table.table-address tbody').find(".address").length == 0 ) {
             alert("Favor de colocar al menos una dirección");
 
         } else {
@@ -569,6 +612,10 @@ function clearCustomerForm(type = 'create') {
         '</tr>'
     );
 
+    $(".dato-facturacion").addClass("d-none");
+    $(".dato-regimen-moral").addClass("d-none");
+    $(".dato-regimen-fisico").removeClass("d-none");
+
     // Limpia los textarea e inputs de todo el form
     $('#form-client-view').find('input.form-ptg[type="text"], input.form-ptg[type="time"], input.form-ptg[type="number"], textarea.form-ptg').val('');
 
@@ -578,7 +625,7 @@ function clearCustomerForm(type = 'create') {
     $("select#giroNegocioFormCliente").parent().addClass('d-none');
 
     // Tab contacto
-    $("input#rfcFormCliente").parent().addClass('d-none');
+    $("input#rfcFormCliente").parent().parent().addClass('d-none');
     $('#tab-client-contacto').find('select.form-ptg').each(function( index ) {
         $( this ).val($(this).children("option:first").val());
     });

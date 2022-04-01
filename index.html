@@ -576,6 +576,10 @@
             border-top: solid;
             border-width: 2px;
         }
+
+        .form-check-input {
+            border: solid 2px #355da7;
+        }
         
     </style>
 </head>
@@ -867,10 +871,17 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <div class="content-input content-input-primary">
                                 <label>C.P.*</label>
                                 <input class="form-ptg form-ptg-primary" id="cpDireccion" readonly>
+                            </div>
+                        </div>
+                        <div class="col-3 text-center">
+                            <div class="content-input content-input-primary">
+                                <label>Facturación</label>
+                                <br>
+                                <input id="domFacturacionDireccion" type="checkbox" class="form-check-input form-ptg" style="width: auto;">
                             </div>
                         </div>
                     </div>
@@ -2268,80 +2279,73 @@
                                                 <input id="idInternoFormCliente" placeholder="ID interno" type="text" class="form-ptg">
                                             </div>
                                         </div>
-                                        <div class="col-5">
+                                        <div class="col-6 dato-regimen-moral d-none">
+                                            <div class="content-input">
+                                                <label>Nombre razón social*</label>
+                                                <input id="nombreRazonSocialFormCliente" placeholder="Razón social" type="text" class="form-ptg">
+                                            </div>
+                                        </div>
+                                        <div class="col-3 dato-regimen-fisico d-none">
                                             <div class="content-input">
                                                 <label>Nombre*</label>
-                                                <input id="nombreFormCliente" placeholder="Nombre" type="text"
-                                                    class="form-ptg">
+                                                <input id="nombreFormCliente" placeholder="Nombre" type="text" class="form-ptg">
                                             </div>
                                         </div>
-                                        <div class="col-5">
+                                        <div class="col-3 dato-regimen-fisico d-none">
                                             <div class="content-input">
                                                 <label>Apellido(s)*</label>
-                                                <input id="apellidosFormCliente" placeholder="Nombre" type="text"
-                                                    class="form-ptg">
+                                                <input id="apellidosFormCliente" placeholder="Apellido" type="text" class="form-ptg">
                                             </div>
                                         </div>
-                                        <!-- <div class="col">
-                                            <div class="content-input">
-                                                <label>Apellido paterno*</label>
-                                                <input id="apellidoPaternoFormCliente" placeholder="Apellido paterno"
-                                                    type="text" class="form-ptg">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="content-input">
-                                                <label>Apellido materno</label>
-                                                <input id="apellidoMaternoFormCliente" placeholder="Apellido materno"
-                                                    type="text" class="form-ptg">
-                                            </div>
-                                        </div> -->
-                                        <div class="col d-none">
+                                        <div class="col-3 dato-facturacion d-none">
                                             <div class="content-input">
                                                 <label>RFC*</label>
-                                                <input id="rfcFormCliente" placeholder="RFC" type="text"
-                                                    class="form-ptg">
+                                                <input id="rfcFormCliente" placeholder="RFC" type="text" class="form-ptg">
+                                            </div>
+                                        </div>
+                                        <div class="col-3 dato-facturacion d-none">
+                                            <div class="content-input">
+                                                <label>Uso de CFDI*</label>
+                                                <select id="usoCfdiFormCliente" class="form-ptg form-ptg-primary">
+                                                    <option value="">Seleccione una opción</option>
+                                                    <option value="3">G03 - Expenses in General</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row pb-2">
-                                        <div class="col-5">
+                                        <div class="col-3">
                                             <div class="content-input">
                                                 <label>Correo electrónico*</label>
-                                                <input id="correoFormCliente" placeholder="email@example.com"
-                                                    type="text" class="form-ptg">
+                                                <input id="correoFormCliente" placeholder="email@example.com" type="text" class="form-ptg">
                                             </div>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-3">
                                             <div class="content-input">
                                                 <label>Teléfono principal*</label>
-                                                <input id="telefonoPrincipalFormCliente" placeholder="555 9636 6699"
-                                                    type="text" class="form-ptg">
+                                                <input id="telefonoPrincipalFormCliente" placeholder="555 9636 6699" type="text" class="form-ptg">
                                             </div>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-3">
                                             <div class="content-input">
                                                 <label>Teléfono alterno</label>
-                                                <input id="telefonoAlternoFormCliente" placeholder="555 9636 6699"
-                                                    type="text" class="form-ptg">
+                                                <input id="telefonoAlternoFormCliente" placeholder="555 9636 6699" type="text" class="form-ptg">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row pb-2">
-                                        <div class="col-5">
+                                    <div class="row pb-2 dato-facturacion d-none">
+                                        <div class="col-3">
                                             <div class="content-input">
-                                                <label>Correo alternativo</label>
-                                                <input id="correoAlternativoFormCliente" placeholder="email@example.com"
-                                                    type="text" class="form-ptg">
+                                                <label>Correo de facturación*</label>
+                                                <input id="correoAlternativoFormCliente" placeholder="email@example.com" type="text" class="form-ptg">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row pb-2">
-                                        <div class="col-8">
+                                        <div class="col-12">
                                             <div class="content-input">
                                                 <label>Observaciones</label>
-                                                <textarea id="observacionesFormCliente" placeholder="Observaciones..."
-                                                    class="form-ptg"></textarea>
+                                                <textarea id="observacionesFormCliente" placeholder="Observaciones..." class="form-ptg"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -2531,6 +2535,8 @@
                 $( this ).val($(this).children("option:first").val());
             });
 
+            // $('#domFacturacionDireccion').parent().parent().addClass('d-none');
+
             $('#rutaDireccion').data('ruta-obj', null);
             $('.art-fre-est, .art-fre-cil').addClass('d-none');
         });
@@ -2694,12 +2700,14 @@
 
         function next(tab) {
             let next = true;
+            let tipoRegimen     = $("input[name=tipoRegimen]:checked").val();
+            let requiereFactura = $("input[name=requiereFactura]:checked").val();
             if (tab == 'contacto') {
-                if ($("input[name=requiereFactura]:checked").val() == "si") {
-                    $("#rfcFormCliente").parent().parent().removeClass("d-none");
-                } else {
-                    $("#rfcFormCliente").parent().parent().addClass("d-none");
-                }
+                // if ($("input[name=requiereFactura]:checked").val() == "si") {
+                //     $("#rfcFormCliente").parent().parent().removeClass("d-none");
+                // } else {
+                //     $("#rfcFormCliente").parent().parent().addClass("d-none");
+                // }
 
                 if (($("input[name=tipoRegimen]:checked").val() == "comercial" || $("input[name=tipoRegimen]:checked").val() == "industrial")) {
                     if (!$("#giroNegocioFormCliente").val()) {
@@ -2707,13 +2715,20 @@
                     }
                 }
             } else if (tab == "domicilio") {
-                if (!$("#nombreFormCliente").val().trim() ||
-                    !$("#apellidosFormCliente").val().trim() ||
-                    ($("input[name=requiereFactura]:checked").val() == "si" && !$("#rfcFormCliente").val().trim()) ||
-                    !$("#correoFormCliente").val().trim() ||
-                    !$("#telefonoPrincipalFormCliente").val().trim()) {
+                if ( 
+                    ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val() || !$("#apellidosFormCliente").val() ) ) || //Debe tener nombre y apellido si es doméstico
+                    ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val() ) ) || //Debe tener el nombre de la razón social
+                    ( requiereFactura == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) )
+                ) {
                     next = false;
                 }
+                // if (!$("#nombreFormCliente").val().trim() ||
+                //     !$("#apellidosFormCliente").val().trim() ||
+                //     ($("input[name=requiereFactura]:checked").val() == "si" && !$("#rfcFormCliente").val().trim()) ||
+                //     !$("#correoFormCliente").val().trim() ||
+                //     !$("#telefonoPrincipalFormCliente").val().trim()) {
+                //     next = false;
+                // }
             }
 
             if (!next) {

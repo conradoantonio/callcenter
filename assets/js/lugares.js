@@ -10,6 +10,12 @@ $("#editarDireccion").click(function() {
     $("#tipoAccionDireccion").val('guardar');
     let periodo = '';
     if ( direccion ) {
+        if ( direccion.defaultBilling ) {// Dirección de facturación
+            // $('#domFacturacionDireccion').parent().parent().removeClass('d-none');
+            $('#domFacturacionDireccion').prop('checked', true);
+        }
+        
+        $('#internalIdDireccion').val(direccion.idAdress);
         $('#internalIdDireccion').val(direccion.idAdress);
         $('#cpDireccion').val(direccion.zip);
         $('#calleDireccion').val(direccion.nameStreet);

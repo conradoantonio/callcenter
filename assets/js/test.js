@@ -52,28 +52,6 @@ $('.select-search-customer').on("select2:select", function (e) {
 $('span.user-name').text(userName);
 $('span#role').text(userRole);
 
-// Evento que dispara la búsqueda de un cliente (Obsoleto)
-// $('input#buscarCliente').on('keypress',function(e) {
-//     if( e.which == 13 ) {
-//         let buscar = $(this).val();
-//         let tieneProductos = $('#sinProductos').hasClass('d-none');
-//         if ( tieneProductos ) {// Tiene productos agregados
-//             swal({
-//                 title: 'Tiene un pedido en curso, ¿Está seguro de continuar con la búsqueda de un cliente nuevo?',
-//                 icon: 'warning',
-//                 buttons:["Cancelar", "Aceptar"],
-//                 dangerMode: true,
-//             }).then((accept) => {
-//                 if ( accept ) {
-//                     searchCustomer( buscar );
-//                 }
-//             }).catch(swal.noop);
-//         } else {
-//             searchCustomer( buscar );
-//         }
-//     }
-// });
-
 // Función para filtrar clientes por un texto
 function searchCustomer(clienteId) {
     loadMsg('Espere un momento...');
@@ -346,11 +324,12 @@ function setDir(direccion) {
     let str = '';
 
     str += direccion.nameStreet;
-    direccion.numExterno ? str+= ' #'+direccion.numExterno : '';
-    direccion.colonia    ? str+= ', Col. '+direccion.colonia : '';
-    direccion.stateName  ? str+= ', '+direccion.stateName : '';
-    direccion.city       ? str+= ', '+direccion.city : '';
-    direccion.zip        ? str+= ', C.P. '+direccion.zip : '';
+    direccion.numExterno      ? str+= ' #'+direccion.numExterno : '';
+    direccion.colonia         ? str+= ', Col. '+direccion.colonia : '';
+    direccion.stateName       ? str+= ', '+direccion.stateName : '';
+    direccion.city            ? str+= ', '+direccion.city : '';
+    direccion.zip             ? str+= ', C.P. '+direccion.zip : '';
+    direccion.defaultBilling  ? str+= ', Facturación' : '';
 
     return str;
 }
