@@ -115,8 +115,7 @@ $("#editarCliente").click(function () {
         $("input#requiereFactura1").prop('checked', true);
         $(".dato-facturacion").removeClass("d-none");
         $('#rfcFormCliente').val(customerGlobal.rfc);
-        // $('#usoCfdiFormCliente').val(customerGlobal.usoCfdiFormCliente);
-        $('#usoCfdiFormCliente').val(3);
+        $('#usoCfdiFormCliente').val(customerGlobal.cdfiId);
         
     } else {
         $(".dato-facturacion").addClass("d-none");
@@ -546,6 +545,8 @@ function saveCustomer() {
                 lastname : customer['lastName'],
                 custentity_ptg_giro_negocio : customer['businessType'],
                 custentity_mx_rfc : customer['rfc'],
+                custentity_disa_uso_de_cfdi_ : customer['cfdi'],
+                companyname : customer['businessName'],
                 email : customer['email'],
                 custentity_drt_sed_email_invoice : emailAlt,
                 // custentity_ptg_plantarelacionada_ : customer['planta'],

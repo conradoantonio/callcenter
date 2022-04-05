@@ -1285,8 +1285,54 @@
                             <div class="col-9 resp casos-notas-adicionales"></div>
                         </div>
                     </div>
+                    <div class="row p-3 campos-art d-none">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-desgloce-art">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Desgloce de servicios</th>
+                                            <th scope="col" class="text-center">Cantidad/Litros</th>
+                                            <th scope="col" class="text-center">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2" style="text-align: right; font-weight: bold;">Total</td>
+                                            <td colspan="1" class="text-center total-pedido-detalle"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row p-3 campos-metodos-pago d-none">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-desgloce-metodos-pago">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Método</th>
+                                            <th scope="col" class="text-center">Folio</th>
+                                            <th scope="col" style="text-align: right;" class="">Monto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2" style="text-align: right; font-weight: bold;">Total</td>
+                                            <td colspan="1" style="text-align: right;" class="total-metodos-pago-detalle"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row p-3">
-                        <row class="col-12">
+                        <div class="col-12">
                             <table class="table-gen table-gen-blue text-center table-notas">
                                 <thead>
                                     <tr>
@@ -1303,9 +1349,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </row>
-                        <!-- <div class="col-3 title">Notas adicionales</div>
-                        <div class="col-9 resp oportunidad-notas-adicionales"></div> -->
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1750,6 +1794,7 @@
                             <th style="min-width: 40px; z-index: 51; left: 80px;" class="text-center sticky-col">
                                 <!-- <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div> -->
                             </th>
+                            <th style="z-index: 51;" class="text-center">ID del servicio</th>
                             <th style="z-index: 51;" class="text-center">Fecha creación</th>
                             <th style="z-index: 51;" class="text-center">Fecha prometida</th>
                             <th style="z-index: 51;" class="text-center">Tipo Servicio</th>
@@ -1781,7 +1826,6 @@
                             <th style="min-width: 355px; z-index: 51;" class="text-center">Tipo Transaccion</th>
                             <th style="min-width: 355px; z-index: 51;" class="text-center">Nota</th>
                             <th style="min-width: 355px; z-index: 51;" class="text-center">Tecnico / Conductor Asignado</th>
-                            <th style="min-width: 355px; z-index: 51;" class="text-center">Método Pago</th>
                             <th style="min-width: 355px; z-index: 51;" class="text-center">Nota Rapida</th>
                             <th style="min-width: 355px; z-index: 51;" class="text-center">Unidad</th> -->
                         </tr>
@@ -1886,6 +1930,10 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
+                                                <td colspan="4" style="text-align: right; font-weight: bold;">Descuento</td>
+                                                <td colspan="1" class="text-center descuento" data-descuento="">$0 mxn</td>
+                                            </tr>
+                                            <tr>
                                                 <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
                                                 <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
                                             </tr>
@@ -1900,7 +1948,7 @@
                                             <tr>
                                                 <th scope="col">Producto</th>
                                                 <th scope="col" class="text-center">Litros</th>
-                                                <th scope="col" class="text-center">Monto</th>
+                                                <th scope="col" class="text-center">Cantidad</th>
                                                 <th scope="col" class="text-center">Total</th>
                                                 <th scope="col" class="text-center">Acciones</th>
                                             </tr>
@@ -1918,6 +1966,10 @@
                                             </tr>
                                         </tbody>
                                         <tfoot>
+                                            <tr>
+                                                <td colspan="4" style="text-align: right; font-weight: bold;">Descuento</td>
+                                                <td colspan="1" class="text-center descuento" data-descuento="">$0 mxn</td>
+                                            </tr>
                                             <tr>
                                                 <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
                                                 <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
@@ -1953,7 +2005,7 @@
                                             <tr>
                                                 <th scope="col">Método</th>
                                                 <th scope="col" class="text-center">Folio</th>
-                                                <th scope="col" class="text-center">Monto</th>
+                                                <th scope="col" class="text-center">Cantidad</th>
                                                 <th scope="col" class="text-center">Acciones</th>
                                             </tr>
                                         </thead>
@@ -2508,6 +2560,7 @@
         // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
         urlGetPlaces = '${ds.getCities}';
         conceptoFugasQuejasArr = [];
+        metodosPago = [];
         estadosOppArr = [];
         articulosArr = [];
         statusCasesArr = [{id:1, nombre: 'No iniciado'}, {id:2, nombre: 'En curso'}, {id:3, nombre: 'Escalado'}, {id:4, nombre: 'Reabierto'}, {id:5, nombre: 'Cerrado'}];

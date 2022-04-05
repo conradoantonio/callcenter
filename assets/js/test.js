@@ -494,6 +494,7 @@ function setSelectArticulos(items) {
 function setSelectMetodosPago(items) {
     $('select#metodoPagoPedido').children('option').remove();
     if ( items.length ) {
+        metodosPago = items;
         $("select#metodoPagoPedido").append('<option value="">Seleccione una opción</option>')
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
@@ -711,6 +712,7 @@ function setTrOppCases(item, type = 'casos') {
             '</div>'+
         '</td>'+
         '<td><button class="btn btn-danger"></button></td>'+
+        '<td>'+( item.id_Transaccion ?? 'Sin ID de servicio')+'</td>'+//Fecha creación
         '<td>'+( item.fecha ?? 'Sin fecha')+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin fecha prometida' ) : 'Sin fecha prometida' )+'</td>'+// Fecha prometida
         '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
@@ -740,7 +742,6 @@ function setTrOppCases(item, type = 'casos') {
         // '<td>'+( item.tipoTransaccion ?? 'Sin tipo transacción' )+'</td>'+
         // '<td>'+( item.nota ?? 'Sin nota' )+'</td>'+
         // '<td>'+( item.conductorAsignado ?? 'Sin conductor asignado' )+'</td>'+
-        // '<td>'+( item.metodoPago ?? 'Sin método de pago' )+'</td>'+
         // '<td>'+( item.nota_rapida ?? 'Sin nota rápida' )+'</td>'+
         // '<td>'+( item.unidad ?? 'Sin unidad' )+'</td>'+
     '</tr>';
@@ -896,8 +897,11 @@ function confirmMsg(type, title, callback) {
 
 // Método para ver el detalle de los casos y/o oportunidades
 function verDetalles($this) {
-    $('.campos-casos, .campos-oportunidad').addClass('d-none');
+    $('.campos-casos, .campos-oportunidad, .campos-art, .campos-metodos-pago').addClass('d-none');
     $('table.table-notas tbody').children('tr').remove();
+    $('table.table-desgloce-art tbody').children('tr').remove();
+    $('table.table-desgloce-metodos-pago tbody').children('tr').remove();
+    
     let pedido = $($this).closest("tr").data("item");
     console.log(pedido);
 
@@ -940,8 +944,9 @@ function verDetalles($this) {
         //         $("#verDetallesTipoProducto").html(element.nombre);
         //     }
         // });
-
+        setMetodosPago(pedido, 'oportunidad');
         getMsgNotes(pedido, 'oportunidad');
+        getItemPedido(pedido, 'oportunidad');
 
     } else if ( $($this).hasClass('casos') ) {
 
@@ -963,6 +968,7 @@ function verDetalles($this) {
         $('.campos-casos').removeClass('d-none');
 
         getMsgNotes(pedido, 'caso');
+        getItemPedido(pedido, 'caso');
     }
 
     $("#formVerDetallesPedidos").modal("show");
@@ -1023,6 +1029,99 @@ function getMsgNotes(pedido, tipo) {
     }).catch((error) => {
         console.log(error);
     });
+}
+
+// Obtiene el artículo asociado a una oportunidad
+function getItemPedido(pedido, tipo) {
+    let url  = null;
+    let data = null;
+
+    if ( tipo == 'caso' ) {
+        url = urlGetItemsOpp;
+        data = { case : pedido.id_Transaccion };
+    } else {
+        url = urlGetItemsOpp;
+        data = { opp : pedido.id_Transaccion };
+    }
+
+    let settings = {
+        url    : url,
+        method : 'POST',
+        data   : JSON.stringify(data)
+    }
+
+    setAjax(settings).then((response) => {
+        let items = response.data;
+        let totalFinal = 0;
+
+        if ( items.length ) {
+            for ( var key in items ) {
+                let cantidad = 0;
+                let total = Number(items[key].amount);
+                let tax = 0;
+
+                if( ["4088"].includes( items[key].itemId ) ) { // Es gas LP
+                    cantidad = Number(items[key].quantity);
+                    tax = Number(items[key].taxAmount);
+                }
+                else if ( ["4528"].includes( items[key].itemId ) ) { // Es un item de descuento
+                    cantidad = 1;
+                } else { // Se trata de un producto de cilindro
+                    cantidad = parseFloat(Number(items[key].capacidad) * Number(items[key].quantity)).toFixed(0);
+                    tax = Number(items[key].taxAmount);
+                }
+
+                totalFinal += ( total + tax );
+                
+                $('table.table-desgloce-art tbody').append(
+                    '<tr>'+
+                        '<td class="">'+items[key].item+'</td>'+
+                        '<td class="text-center">'+cantidad+'</td>'+
+                        '<td class="text-center">$'+( total + tax )+'</td>'+
+                    '</tr>'
+                )
+            }
+
+            $('table.table-desgloce-art tfoot').find('.total-pedido-detalle').text('$'+totalFinal);
+
+            $('.campos-art').removeClass('d-none');
+        }
+
+        console.log(response);
+       
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+// Enlista los métodos de pago de un pedido
+function setMetodosPago(pedido, tipo) {
+    let obj = JSON.parse(pedido.objMetodosPago);
+    let totalFinal = 0;
+    let items = obj.pago ?? [];
+
+    if ( items.length ) {
+        for ( var key in items ) {
+            let monto = Number(items[key].monto);
+            totalFinal += monto;
+
+            let metodo = metodosPago.find( metodo => metodo.id === items[key].tipo_pago );
+            
+            $('table.table-desgloce-metodos-pago tbody').append(
+                '<tr>'+
+                    '<td class="">'+( metodo ? metodo.method : 'N/A' )+'</td>'+
+                    '<td class="text-center">'+( items[key].folio ? items[key].folio : 'N/A' ) +'</td>'+
+                    '<td style="text-align: right;">$'+parseFloat(monto).toFixed(2)+'</td>'+
+                '</tr>'
+            )
+        }
+
+        $('table.table-desgloce-metodos-pago tfoot').find('.total-metodos-pago-detalle').text('$'+totalFinal);
+
+        $('.campos-metodos-pago').removeClass('d-none');
+    }
+
+    console.log(obj);
 }
 
 // Abre el modal para cancelar el pedido

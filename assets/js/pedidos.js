@@ -540,14 +540,21 @@ async function savePedido() {
     btnGuardarPedido.on('click', function () {
 
         let totalPedido = 0;
+        let descuento = 0;
         let totalMetodosPago = 0;
+        let tablaProd = null;
 
         // Calcula el total del pedido basándose en los productos agregados al listado
         if (! $('.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {// Estacionario
-            totalPedido = $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
+            tablaProd = $('.productosEstacionarioPedido');
+            // totalPedido = $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
         } else if (! $('.productosCilindroPedido').parent().parent().hasClass('d-none') ) {// Cilindro
-            totalPedido = $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
+            tablaProd = $('.productosCilindroPedido');
+            // totalPedido = $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
         }
+
+        totalPedido = tablaProd.children('tfoot').find('td.total').data('total');
+        descuento = tablaProd.children('tfoot').find('td.descuento').data('descuento');
 
         // Calcula el total de método de pago basándose en los especificados en la lista
         if (! $('.productosMetodoPago').parent().parent().hasClass('d-none') ) {// Contiene métodos
@@ -586,6 +593,15 @@ async function savePedido() {
             });
         }
 
+        // Tiene descuento
+        if ( descuento ) {
+            articulosArr.push({
+                "tipo"      : 4,
+                "precio"    : descuento * -1,
+                "article"   : 4528// ID de artículo de descuento
+            });
+        }
+
         // Agrega la lista de métodos de pago
         $('table.productosMetodoPago > tbody  > tr.metodo-item').each(function() {
             pagosArr.push( $( this ).data('metodo') );
@@ -603,6 +619,7 @@ async function savePedido() {
             "status"        : 11,
             "zona_precio"   : 2,//Este es el Id de la zona
             "customer"      : $('#idCliente').text(),
+            "closeDate"     : dateFormatFromDate($('#fechaPrometidaPedido').val(), '5'),
             "idAddressShip" : $('#direccionCliente').val(),
             "statusOpp"     : statusOpp,
             "operario"      : userId,
@@ -617,12 +634,10 @@ async function savePedido() {
             "folio"         : "",
             "tipo"          : typeService,
             "items"         : articulosArr,
-            "pago"          : pagosArr,
+            "pago"          : {pago:pagosArr},
         }
 
         opportunities.push(tmp);
-
-        // console.log('Guardar pedido', { opportunities: opportunities });
 
         let settings = {
             url    : urlCrearPedido,
@@ -725,14 +740,38 @@ function validarTablaMetodosPago(table) {
 
 // Calcula el total de los productos
 function setTotalPedido(table) {
-    let total = parseFloat(0).toFixed(2);
-
+    let total           = parseFloat(0).toFixed(2);
+    let totalDescontado = parseFloat(0).toFixed(2);
+    let totalLitros     = parseFloat(0).toFixed(2);
+    let descuento       = Number( parseFloat(customerGlobal.descuento ?? 0).toFixed(2) );
+    // console.log(descuento);
     table.children('tbody').children('tr.product-item').each(function() {
-        // let articulo = $( this ).data('item');
+        let articulo = $( this ).data('item');
+        if ( articulo.tipo == '1' ) { // Cilindro
+            totalLitros = Number(totalLitros) + Number( parseFloat(articulo.capacity * articulo.quantity).toFixed(2) );
+        } else if  ( articulo.tipo == '2' ) { // Estacionario
+            totalLitros = Number(totalLitros) + Number( parseFloat(articulo.capacity).toFixed(2) );
+        }
         let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(4)").data('total')).toFixed(2);
         total = parseFloat( Number(total) + Number(subtotal) ).toFixed(2);
     });
 
+    console.log(totalLitros,totalDescontado);
+    // Validación para especificar el descuento natural
+    if ( customerGlobal?.tipoDescuento == '1' ) { // Porcentaje
+        descuento = Number( parseFloat( descuento / 100 ).toFixed(2) );
+        totalDescontado = Number( parseFloat( descuento * total ).toFixed(2) );
+    } else if ( customerGlobal?.tipoDescuento == '2' ) { // Neto
+        totalDescontado = Number( parseFloat( totalLitros * descuento ).toFixed(2) );
+    }
+
+    total = parseFloat( Number(total) - Number(totalDescontado) ).toFixed(2);
+    
+    // Se asigna el descuento
+    table.children('tfoot').find('td.descuento').data('descuento', totalDescontado);
+    table.children('tfoot').find('td.descuento').text('$'+totalDescontado+' mxn');
+
+    // Se asigna el total
     table.children('tfoot').find('td.total').data('total', total);
     table.children('tfoot').find('td.total').text('$'+total+' mxn');
 }
