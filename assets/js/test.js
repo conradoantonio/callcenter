@@ -15,7 +15,7 @@ $(function() {
                 return JSON.stringify(queryParameters);
             },
             processResults: function (response) {
-                if(response.data.length > 0) {
+                /* if(response.data.length > 0) {
                     response.data.forEach(element => {
                         element.dateCreated2 = dateFormatFromString(element.dateCreated, "2");
                     });
@@ -23,7 +23,7 @@ $(function() {
                     if($("#filtClients").val() == "descendente") {
                         response.data.reverse();
                     }
-                }
+                } */
                 return {                     
                     results: $.map(response.data, function(obj) {
                         return { id: obj.id, text: obj.text };
@@ -679,11 +679,11 @@ function setCasosOportunidades( data ) {
 
     // Vuelve a mostrar la tabla
     $('div#historic-data table').fancyTable({
-        sortColumn:0,
+        sortColumn:4,
         pagination: true,
         perPage: 10,
         searchable:false,
-        sortable: false
+        sortable: true
     });
     // $('div#historic-data table').DataTable();
     $('div#historic-data').fadeIn('slow');
@@ -722,7 +722,7 @@ function setTrOppCases(item, type = 'casos') {
         '</td>'+
         '<td><button class="btn btn-danger"></button></td>'+
         '<td>'+( item.id_Transaccion ?? 'Sin ID de servicio')+'</td>'+//Fecha creación
-        '<td>'+( item.fecha ?? 'Sin fecha')+'</td>'+//Fecha creación
+        '<td>'+(  type == "casos" ? dateFormatFromDate(item.fechaCreacion.split(" ")[0], '5')  : dateFormatFromDate(item.fecha, '5') )+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin fecha prometida' ) : 'Sin fecha prometida' )+'</td>'+// Fecha prometida
         '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
         '<td>'+( type == "casos" ? ( item.numeroCaso ?? 'Sin asignar' ) : ( item.numeroDocumento ?? 'Sin asignar' ) )+'</td>'+// Numero de documento u caso

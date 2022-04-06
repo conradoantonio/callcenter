@@ -325,6 +325,14 @@
             color: #ffffff;
         }
 
+        .table-gen-blue th[aria-sort="ascending"] .sortArrow {
+            border-top: 0.4em solid white !important;
+        }
+
+        .table-gen-blue th[aria-sort="descending"] .sortArrow {
+            border-bottom: 0.4em solid white !important;
+        }
+
         .table-gen-blue tbody tr:nth-of-type(odd) td {
             background-color: #ffffff;
         }
@@ -1542,12 +1550,12 @@
                             <i class="fa-solid fa-xmark d-none"></i>
                         </div> -->
                     </div>
-                    <div class="col-auto pr-0">
+                    <!--<div class="col-auto pr-0">
                         <select id="filtClients" class="form-ptg">
                             <option value="ascendente">Ascendente</option>
                             <option value="descendente">Descendente</option>
                         </select>
-                    </div>
+                    </div>-->
                     <div class="col-auto pr-0">
                         <button id="agregarCliente" type="button" class="btn bg-secondary-cc"><i class="fa-solid fa-user-plus"></i> Agregar</button>
                     </div>
