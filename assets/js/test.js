@@ -15,7 +15,16 @@ $(function() {
                 return JSON.stringify(queryParameters);
             },
             processResults: function (response) {
-                return {
+                if(response.data.length > 0) {
+                    response.data.forEach(element => {
+                        element.dateCreated2 = dateFormatFromString(element.dateCreated, "2");
+                    });
+                    response.data.sort(dynamicSort("dateCreated2"));
+                    if($("#filtClients").val() == "descendente") {
+                        response.data.reverse();
+                    }
+                }
+                return {                     
                     results: $.map(response.data, function(obj) {
                         return { id: obj.id, text: obj.text };
                     })
