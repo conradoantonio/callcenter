@@ -160,18 +160,7 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
     } else {
         // $(".opt-pro-pedido-cilindro, .opt-pro-pedido-estacionario").attr("disabled", false);
     }
-    // if ( direccion ) {
-    //     if ( direccion.typeServiceId == 1 ) {// Cilindro
-           
-    //     } else if ( direccion.typeServiceId == 2 ) {// Estacionario
-            
-    //     } else if ( direccion.typeServiceId == 4 ) {// Ambos
-            
-    //     }
-    // }
 
-
-    // $("#envaseFormProductos").prop("checked", false);
     $('#formProductosModal').modal('show');
 });
 
@@ -539,38 +528,38 @@ function onChangeValue(element) {
 async function savePedido() {
     btnGuardarPedido.on('click', function () {
 
-        let totalPedido = 0;
-        let descuento = 0;
+        let totalPedido      = 0;
+        let totalConCredito  = 0;
+        let descuento        = 0;
         let totalMetodosPago = 0;
-        let tablaProd = null;
+        let tablaProd        = null;
+        let canContinue      = true;
+        let articulosArr     = [];
+        let pagosArr         = [];
+        let saldoDisponible  = Number(customerGlobal?.objInfoComercial?.saldoDisponible);
+        saldoDisponible      = isNaN(saldoDisponible) ? 0 : saldoDisponible;
 
-        // Calcula el total del pedido basándose en los productos agregados al listado
-        if (! $('.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {// Estacionario
+        // Define cuál tabla de productos es la que se usará para calcular totales y descuentos
+        if (! $('.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) { // Estacionario
             tablaProd = $('.productosEstacionarioPedido');
-            // totalPedido = $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
-        } else if (! $('.productosCilindroPedido').parent().parent().hasClass('d-none') ) {// Cilindro
+        } else if (! $('.productosCilindroPedido').parent().parent().hasClass('d-none') ) { // Cilindro
             tablaProd = $('.productosCilindroPedido');
-            // totalPedido = $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
         }
 
         totalPedido = tablaProd.children('tfoot').find('td.total').data('total');
-        descuento = tablaProd.children('tfoot').find('td.descuento').data('descuento');
+        descuento   = tablaProd.children('tfoot').find('td.descuento').data('descuento');
 
         // Calcula el total de método de pago basándose en los especificados en la lista
         if (! $('.productosMetodoPago').parent().parent().hasClass('d-none') ) {// Contiene métodos
             totalMetodosPago = $('.productosMetodoPago').children('tfoot').find('td.total').data('total');
         }
-        
-        let canContinue = false;
+
+        // Si no se indicó una fecha prometida o el total del pedido es distinto al total de métodos de pago, no permite crear el pedido
         if( !$("#fechaPrometidaPedido").val().trim() || ( totalPedido != totalMetodosPago ) ) {
             canContinue = false;
-        } else {
-            canContinue = true;
         }
 
         if (! canContinue ) {
-            $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
-            $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
             if ( totalPedido != totalMetodosPago ) {
                 alert("El total a pagar debe ser igual al total de productos enlistados");
             } else {
@@ -578,19 +567,35 @@ async function savePedido() {
             }
             return; 
         }
-
-        let articulosArr = [];
-        let pagosArr     = [];
-
+        
         // Agrega la lista de artículos
-        if (! $('table.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {
-            $('table.productosEstacionarioPedido > tbody  > tr.product-item').each(function() {
-                articulosArr.push( $( this ).data('item') );
-            });
-        } else if (! $('table.productosCilindroPedido').parent().parent().hasClass('d-none') ) {
-            $('table.productosCilindroPedido > tbody  > tr.product-item').each(function() {
-                articulosArr.push( $( this ).data('item') );
-            });
+        tablaProd.children('tbody').children('tr.product-item').each(function(e) {
+            articulosArr.push( $(this).data('item') );
+        });
+
+        // Agrega la lista de métodos de pago
+        $('table.productosMetodoPago > tbody  > tr.metodo-item').each(function() {
+            let metodoObj = $(this).data('metodo');
+
+            if ( metodoObj.tipo_pago == '9' ) {// El método de pago es crédito
+                totalConCredito = parseFloat( Number(metodoObj.monto) ).toFixed(2);
+            }
+            pagosArr.push( $( this ).data('metodo') );
+        });
+
+        // Si el cliente tiene saldo a favor y seleccionó como método de pago el crédito,
+        // se validará si el monto a pagar con crédito es igual o menor al límite del saldo a favor, 
+        // para permitir la venta, de lo contrario no se procesa
+        if ( totalConCredito > 0 ) {
+            if ( totalConCredito > saldoDisponible ) { // El total a pagar con crédito excede el saldo disponible actual del cliente
+                canContinue = false;
+            }
+        } 
+
+        // No permite coninuar cuando no tenga saldo suficiente
+        if (! canContinue ) {
+            alert("El total del pedido excede el saldo disponible");
+            return;
         }
 
         // Tiene descuento
@@ -601,13 +606,6 @@ async function savePedido() {
                 "article"   : 4528// ID de artículo de descuento
             });
         }
-
-        // Agrega la lista de métodos de pago
-        $('table.productosMetodoPago > tbody  > tr.metodo-item').each(function() {
-            pagosArr.push( $( this ).data('metodo') );
-        });
-
-        console.log(articulosArr);
 
         let direccionSel = $('#direccionCliente').children(':selected').data('address');
         let typeService  = '';
@@ -921,6 +919,7 @@ function limpiarFiltrosBusqueda() {
     $('#filtros').find('input.form-ptg').val('');
     $(".filtro-tipo-producto-casos").addClass('d-none');
     $(".filtro-tipo-producto-opp").removeClass('d-none');
+    getCasosOportunidades();
 }
 
 // Filtra acorde a los parámetros proporcionados por el cliente

@@ -599,9 +599,6 @@ function getCasosOportunidades() {
     }
 
     // Se remueven registros previos
-    // let table = $('div#historic-data table').DataTable();
-    
-    // table.destroy();
     $('div#historic-data table.table-gen tbody').children('tr').remove();
  
     $('select#asociarServicioFugaQueja, select#asociarCasoFugaQueja').children('option').remove();
@@ -722,7 +719,7 @@ function setTrOppCases(item, type = 'casos') {
         '</td>'+
         '<td><button class="btn btn-danger"></button></td>'+
         '<td>'+( item.id_Transaccion ?? 'Sin ID de servicio')+'</td>'+//Fecha creación
-        '<td>'+(  type == "casos" ? dateFormatFromDate(item.fechaCreacion.split(" ")[0], '5')  : dateFormatFromDate(item.fecha, '5') )+'</td>'+//Fecha creación
+        '<td>'+( type == "casos" ? dateFormatFromDate(item.fechaCreacion.split(" ")[0], '5')  : dateFormatFromDate(item.fecha, '5') )+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin fecha prometida' ) : 'Sin fecha prometida' )+'</td>'+// Fecha prometida
         '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
         '<td>'+( type == "casos" ? ( item.numeroCaso ?? 'Sin asignar' ) : ( item.numeroDocumento ?? 'Sin asignar' ) )+'</td>'+// Numero de documento u caso
@@ -906,10 +903,11 @@ function confirmMsg(type, title, callback) {
 
 // Método para ver el detalle de los casos y/o oportunidades
 function verDetalles($this) {
-    $('.campos-casos, .campos-oportunidad, .campos-art, .campos-metodos-pago').addClass('d-none');
+    $('.campos-casos, .campos-oportunidad, .campos-art, .campos-metodos-pago, .casos-imagenes').addClass('d-none');
     $('table.table-notas tbody').children('tr').remove();
     $('table.table-desgloce-art tbody').children('tr').remove();
     $('table.table-desgloce-metodos-pago tbody').children('tr').remove();
+    $('.casos-imagenes').children().remove();
     
     let pedido = $($this).closest("tr").data("item");
     console.log(pedido);
@@ -977,7 +975,7 @@ function verDetalles($this) {
         $('.campos-casos').removeClass('d-none');
 
         getMsgNotes(pedido, 'caso');
-        getItemPedido(pedido, 'caso');
+        // getItemPedido(pedido, 'caso');
     }
 
     $("#formVerDetallesPedidos").modal("show");
@@ -1004,9 +1002,11 @@ function getMsgNotes(pedido, tipo) {
 
     setAjax(settings).then((response) => {
         // console.log(response);
+        let imgs = [];
         mensajeData = response.messageData;
         noteData = [];
         if ( tipo == 'caso' ) {// Casos
+            imgs = response.imgData;
             noteData = response.noteData;
             $(".casos-notas-adicionales").html(mensajeData && mensajeData[0] ? mensajeData[0].message : 'Sin asignar');
         } else {// Oportunidades
@@ -1033,6 +1033,20 @@ function getMsgNotes(pedido, tipo) {
                     '<td class="text-center" colspan="3">Sin notas adicionales</td>'+
                 '</tr>'
             );
+        }
+
+        // Tiene fotos por mostrar
+        if( imgs.length ) {// Tiene más de una nota
+            for ( var key in imgs ) {
+                if ( imgs.hasOwnProperty( key ) ) {
+                    $('.casos-imagenes').append(
+                        '<div class="col-6">'+
+                            '<img class="img-thumbnail evidencia-img" alt="'+imgs[key].name+'" src="'+imgs[key].url+'">'+
+                        '</div>'
+                    );
+                }
+            }
+            $('.casos-imagenes').removeClass('d-none');
         }
        
     }).catch((error) => {
