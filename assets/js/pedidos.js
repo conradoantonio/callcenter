@@ -924,28 +924,29 @@ function limpiarFiltrosBusqueda() {
 
 // Filtra acorde a los parámetros proporcionados por el cliente
 function filtrarHistorico() {
-    let fechaPrometida1 = $("#filtroFechaAtencionIni").val() ? dateFormatFromDate( $("#filtroFechaAtencionIni").val(), '5' ) : '';
-    let fechaPrometida2 = $("#filtroFechaAtencionFin").val() ? dateFormatFromDate( $("#filtroFechaAtencionFin").val(), '5' ) : '';
-    let fechaCierre1    = $("#filtroFechaSolicitudIni").val() ? dateFormatFromDate( $("#filtroFechaSolicitudIni").val(), '5' ) : '';
-    let fechaCierre2    = $("#filtroFechaSolicitudFin").val() ? dateFormatFromDate( $("#filtroFechaSolicitudFin").val(), '5' ) : '';
-    let status          = $("#estadoSolicitudFiltro").val();
-    let productoCaso    = $("#filtroTipoProductoCaso").val();
-    let productoOpp     = $("#filtroTipoProductoOpp").val();
-    let tipoServicio    = $('#tipoServicioFiltro').val();
-    let tipoNombre      = '';
-    let url             = '';
-    let dataToSend      = { id : customerGlobal.id };
+    let fechaAtencionIni  = $("#filtroFechaAtencionIni").val() ? dateFormatFromDate( $("#filtroFechaAtencionIni").val(), '5' ) : '';
+    let fechaAtencionFin  = $("#filtroFechaAtencionFin").val() ? dateFormatFromDate( $("#filtroFechaAtencionFin").val(), '5' ) : '';
+    let fechaSolicitudIni = $("#filtroFechaSolicitudIni").val() ? dateFormatFromDate( $("#filtroFechaSolicitudIni").val(), '5' ) : '';
+    let fechaSolicitudFin = $("#filtroFechaSolicitudFin").val() ? dateFormatFromDate( $("#filtroFechaSolicitudFin").val(), '5' ) : '';
+    let status            = $("#estadoSolicitudFiltro").val();
+    let productoCaso      = $("#filtroTipoProductoCaso").val();
+    let productoOpp       = $("#filtroTipoProductoOpp").val();
+    let tipoServicio      = $('#tipoServicioFiltro').val();
+    let tipoNombre        = '';
+    let url               = '';
+    let dataToSend        = { id : customerGlobal.id };
     
-    fechaPrometida1 ? dataToSend['fechaPrometida1'] = fechaPrometida1 : '';
-    fechaPrometida2 ? dataToSend['fechaPrometida2'] = fechaPrometida2 : '';
-    fechaCierre1 ? dataToSend['fechaCierre1'] = fechaCierre1 : '';
-    fechaCierre2 ? dataToSend['fechaCierre2'] = fechaCierre2 : '';
+    // Filtro de solicitud de fecha
+    fechaSolicitudIni ? dataToSend['fechaPrometida1'] = fechaSolicitudIni : '';
+    fechaSolicitudFin ? dataToSend['fechaPrometida2'] = fechaSolicitudFin : '';
     
     if ( tipoServicio == 3 ) {// Oportunidades
         tipoNombre = 'oportunidades';
         url = urlGetOppV2;
         status ? dataToSend['status_oportunidad'] = status : '';
         productoOpp ? dataToSend['tipo_producto'] = productoOpp : '';
+        fechaAtencionIni ? dataToSend['fechaCierre1'] = fechaAtencionIni : '';
+        fechaAtencionFin ? dataToSend['fechaCierre2'] = fechaAtencionFin : '';
 
     } else {// Fugas o quejas
         tipoNombre = 'casos';
@@ -953,8 +954,11 @@ function filtrarHistorico() {
         dataToSend['tipo_servicio'] = tipoServicio;
         status ? dataToSend['estado'] = status : '';
         productoCaso ? dataToSend['itemId'] = productoCaso : '';
+        fechaAtencionIni ? dataToSend['fechaVisita1'] = fechaAtencionIni : '';
+        fechaAtencionFin ? dataToSend['fechaVisita2'] = fechaAtencionFin : '';
     };
 
+    console.log('Data:', dataToSend);
     let settings = {
         url    : url,
         method : 'POST',
@@ -975,7 +979,7 @@ function filtrarHistorico() {
             for ( var key in items ) {
                 if ( items.hasOwnProperty( key ) ) {
                     $('div#historic-data table.table-gen tbody').append(
-                        setTrOppCases( items[key], tipoNombre )
+                        setTrOppCases( items[key], tipoNombre, items.length, key )
                     );
                 }
             }

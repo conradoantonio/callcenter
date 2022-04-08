@@ -618,15 +618,20 @@ function setCasosOportunidades( data ) {
     let casos         = data.casos;
     let oportunidades = data.oportunidades;
     let pendientes    = [];
+    let totalRows     = data.casos.length + data.oportunidades.length;
     console.log('Casos', casos);
     console.log('Oportunidades', oportunidades);
+
+    $("div#historic-data table thead tr th").css('z-index', (totalRows + 1));
+    $($("div#historic-data table thead tr th")[0]).css('z-index', (totalRows + 2));
+
     // Checa casos
     if ( casos.length ) {
         // numero de documento, fecha
         for ( var key in casos ) {
             if ( casos.hasOwnProperty( key ) ) {
                 $('div#historic-data table.table-gen tbody').append(
-                    setTrOppCases( casos[key], 'casos' )
+                    setTrOppCases( casos[key], 'casos', casos.length, key )
                 );
 
                 $('select#asociarCasoFugaQueja').append('<option value="'+casos[key].id_Transaccion+'">No. caso: '+casos[key].numeroCaso+' - Fecha visita: '+casos[key].fecha_visita+'</option>');
@@ -641,7 +646,7 @@ function setCasosOportunidades( data ) {
         for ( var key in oportunidades ) {
             if ( oportunidades.hasOwnProperty( key ) ) {
                 $('div#historic-data table.table-gen tbody').append(
-                    setTrOppCases( oportunidades[key], 'oportunidades' )
+                    setTrOppCases( oportunidades[key], 'oportunidades', oportunidades.length, key )
                 );
 
                 // Hay pendientes
@@ -687,7 +692,7 @@ function setCasosOportunidades( data ) {
 }
 
 // Método para llenar la tabla de casos y oportunidades
-function setTrOppCases(item, type = 'casos') {
+function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
     // Se necesita modificar el z-index de los th
     // $("#tablePedidos thead tr th").css('z-index', (item.length + 1));
     // $($("#tablePedidos thead tr th")[0]).css('z-index', (item.length + 2));
@@ -695,7 +700,7 @@ function setTrOppCases(item, type = 'casos') {
     // $($("#tablePedidos thead tr th")[2]).css('z-index', (item.length + 2));
     let tr = 
     '<tr class='+type+' data-item='+"'"+JSON.stringify(item)+"'"+'>'+
-        '<td class="text-center sticky-col" style="z-index: 300;">'+
+        '<td class="text-center sticky-col" style="z-index: '+(numItems - posicion + 1)+';">'+  
             '<div class="btn-group dropend vertical-center drop-options-'+item.id_Transaccion+' d-none '+type+'">'+
                 '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                 '<ul class="dropdown-menu">'+
