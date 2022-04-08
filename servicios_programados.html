@@ -1,0 +1,1309 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Avisos y llamadas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Dashboard" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <meta name="keywords" content="Dashboard, clientes, pedidos, potogas">
+    <!-- App favicon -->
+    <link rel="shortcut icon"
+        href="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108997&c=5298967_SB1&h=MqKO6RyzbmQKiMqwc6-9rA2wJSTQZ0yi96oPgnj9KQwozioR&_xt=.ico">
+
+    <!-- Select 2 -->
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/select2/css/select2.min.css" rel="stylesheet"
+        type="text/css" />
+
+    <!-- Datepicker -->
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css"
+        rel="stylesheet" type="text/css">
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/@chenfengyuan/datepicker/datepicker.min.css"
+        rel="stylesheet">
+
+    <!-- Timepicker -->
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-timepicker/css/bootstrap-timepicker.min.css"
+        rel="stylesheet" type="text/css">
+
+    <!-- DataTables -->
+    <link href="https://themesbrand.com/skote/layouts/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css"
+        rel="stylesheet" type="text/css" />
+    <!-- <link href="./assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="./assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />    -->
+
+    <!-- <link rel="stylesheet" href="./assets/libs/@chenfengyuan/datepicker/datepicker.min.css"> -->
+
+    <!-- Bootstrap Css -->
+    <link href="https://themesbrand.com/skote/layouts/assets/css/bootstrap.min.css" id="bootstrap-style"
+        rel="stylesheet" type="text/css" />
+    <!-- Select 2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Icons Css -->
+    <!-- <link href="https://themesbrand.com/skote/layouts/assets/css/icons.min.css" rel="stylesheet" type="text/css" /> -->
+    <!-- App Css-->
+    <link href="https://themesbrand.com/skote/layouts/assets/css/app.min.css" id="app-style" rel="stylesheet"
+        type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        html,
+        body {
+            font-family: "Roboto", "Helvetica Neue", sans-serif !important;
+        }
+
+        .pl-0 {
+            padding-left: 0;
+        }
+
+        .pr-0 {
+            padding-right: 0;
+        }
+
+        .btn-flat {
+            border-radius: 0;
+        }
+
+        .btn-header {
+            width: 51px;
+            height: 56px;
+        }
+
+        .bg-primary-cc {
+            background-color: #355da7;
+            color: #ffffff;
+        }
+
+        button.bg-primary-cc:hover {
+            background-color: #456aae;
+            color: #ffffff;
+        }
+
+        .bg-secondary-cc {
+            background-color: #e7792b;
+            color: #ffffff;
+        }
+
+        button.bg-secondary-cc:hover {
+            background-color: #e98640;
+            color: #ffffff;
+        }
+
+        .bg-success-cc {
+            background-color: #2dd36f;
+            color: #ffffff;
+        }
+
+        button.bg-success-cc:hover {
+            background-color: #42d77d;
+            color: #ffffff;
+        }
+
+        .bg-warning-cc {
+            background-color: #ffc409;
+            color: #ffffff;
+        }
+
+        button.bg-warning-cc:hover {
+            background-color: #ffca22;
+            color: #ffffff;
+        }
+
+        .bg-dark-cc {
+            background-color: #222428;
+            color: #ffffff;
+        }
+
+        button.bg-dark-cc:hover {
+            background-color: #222428;
+            color: #ffffff;
+        }
+
+        .bg-danger-cc {
+            background-color: #eb445a;
+            color: #ffffff;
+        }
+
+        button.bg-danger-cc:hover {
+            background-color: #ed576b;
+            color: #ffffff;
+        }
+
+        #header-title {
+            font-size: 28px;
+        }
+
+        .ft-12 {
+            font-size: 12px;
+        }
+
+        .ft-16 {
+            font-size: 16px;
+        }
+
+        .bg-white {
+            background-color: #ffffff;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 0 25px;
+            height: 30px;
+            font-size: 16px;
+            line-height: 30px;
+            border-radius: 25px;
+            opacity: 0.8;
+            cursor: pointer;
+        }
+
+        .chip.bg-primary-cc {
+            background-color: rgba(231, 121, 43, 0.08)
+        }
+
+        .chip img {
+            float: left;
+            margin: 0 10px 0 -25px;
+            height: 25px;
+            width: 25px;
+            margin-top: 2.5px;
+            border-radius: 50%;
+        }
+
+        .w-100 {
+            width: 100%;
+        }
+
+        .h-100 {
+            height: calc(100vh - 56px);
+        }
+
+        .form-ptg {
+            font-size: 16px;
+            border: solid 2px #9d9b99;
+            border-radius: 9px;
+            padding-left: 9px;
+            color: #737373;
+            padding-right: 9px;
+            width: 100%;
+            padding-top: 9px;
+            padding-bottom: 9px;
+        }
+
+        select.form-ptg {
+            padding-top: 11.5px;
+            padding-bottom: 11.5px;
+        }
+
+        .form-ptg-primary {
+            border: solid 2px #355da7;
+            color: #355da7;
+        }
+
+        .content-input-primary .form-ptg-primary[type="date"]::-webkit-calendar-picker-indicator {
+            background: url(https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108994&c=5298967_SB1&h=TZdf2C4l2Y6fG6GOHYfluLN8kg0dvo3J-bUwrhd1rbdlhL_3) center/80% no-repeat;
+            cursor: pointer;
+        }
+
+        .content-input-primary .form-ptg-primary[type="time"]::-webkit-calendar-picker-indicator {
+            background: url(https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=109002&c=5298967_SB1&h=8T8_xbgLaXGq57So_VQ-KoCwOPoyvxXLL-O9cpcfxC44F6Do) center/80% no-repeat;
+            cursor: pointer;
+        }
+
+        .form-search {
+            width: 100%;
+            position: relative;
+        }
+
+        .p-rel {
+            position: relative;
+        }
+
+        .form-search .form-ptg {
+            padding-left: 45px;
+            padding-right: 45px;
+        }
+        
+
+        .form-search .fa-magnifying-glass {
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            height: 20px;
+            font-size: 20px;
+            cursor: text;
+        }
+
+        .form-search .fa-xmark {
+            position: absolute;
+            right: 15px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            height: 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .vertical-center {
+            margin: auto;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            height: fit-content;
+            width: fit-content;
+        }
+
+        label {
+            margin: 0;
+        }
+
+        .fw-bold {
+            font-weight: bold;
+        }
+
+        .content-tabs {
+            background-color: rgb(225, 225, 225);
+            ;
+        }
+
+        .content-tabs .tab {
+            padding: 7px 20px;
+            margin: 0px 0;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: #ffffff;
+            border-radius: 10px 0;
+            color: #355da7;
+        }
+
+        .modal-header .modal-title {
+            color: #ffffff;
+        }
+
+        .content-input label {
+            color: #737373;
+            margin-bottom: 5px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .content-input-primary label {
+            color: #355da7;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .color-primary {
+            color: #355da7;
+        }
+
+        .ft-18 {
+            font-size: 18px;
+        }
+
+        .invisible {
+            visibility: hidden;
+        }
+
+        .ft-24 {
+            font-size: 24px;
+        }
+
+        .table-gen {
+            min-width: 100%;
+        }
+
+        .table-gen .sticky-col {
+            position: -webkit-sticky;
+            position: sticky;
+            left: 0px;
+        }
+
+        .table-gen thead tr th {
+            position: sticky;
+            top: 0;
+        }
+
+        .table-gen thead tr th,
+        .table-gen tbody tr td {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .table-gen-blue thead tr th {
+            background: #355da7;
+            color: #ffffff;
+        }
+
+        .table-gen-blue tbody tr:nth-of-type(odd) td {
+            background-color: #ffffff;
+        }
+
+        .table-gen-blue tbody tr:nth-of-type(even) td {
+            background-color: rgb(225, 225, 225);
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .btn-expand {
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            right: -30px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+        }
+
+        .btn-expand-down {
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+
+        .btn-expand .btn,
+        .btn-expand-down .btn {
+            width: 100%;
+            height: 100%;
+            background: #e7792b;
+            border-radius: 100px;
+            cursor: pointer;
+            box-shadow: 5px 2px 20px 6px rgb(0 0 0);
+            position: relative;
+        }
+
+        .btn-expand-down .btn {
+            z-index: 2;
+            position: relative;
+        }
+
+        .btn-expand .btn:hover,
+        .btn-expand-down .btn:hover {
+            background: #e98640;
+        }
+
+        .btn-expand .btn i {
+            position: absolute;
+            left: 0;
+            right: 15px;
+            bottom: 0;
+            top: 0;
+            margin: auto;
+            height: 22px;
+            font-size: 22px;
+            color: #ffffff;
+        }
+
+        .btn-expand-down .btn i {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            right: 0;
+            left: 0;
+            margin: auto;
+            font-size: 22px;
+            color: #ffffff;
+        }
+
+        .title-tab {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d4d4d4;
+        }
+
+        .title-tab.active {
+            cursor: pointer;
+            color: #000000;
+        }
+
+        .c-pointer {
+            cursor: pointer;
+        }
+
+        .card {
+            box-shadow: rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .title-ptg {
+            font-size: 24px;
+        }
+
+        .check-ptg {
+            font-size: 20px;
+        }
+
+        /* no global ccs */
+        #filters-data {
+            background-color: rgb(225, 225, 225);
+            position: relative;
+        }
+        #content-filters {
+            background-color: rgb(225, 225, 225);
+            height: 155px;
+            overflow: auto;
+            position: relative;
+        }
+
+        #content-casos {
+            width: 100%;
+            overflow: auto;
+            background-color: white;
+            height: calc(100vh - 337px);
+            position: relative;
+        }
+
+        #content-casos.no-expand {
+            height: calc(100vh - 130px);
+        }
+
+        #historic-data {
+            overflow: auto;
+            height: calc(100vh - 449px);
+        }
+
+        #content-forms {
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        .tabs-content {
+            height: calc(100vh - 326px);
+            overflow: auto;
+            background-color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .tabs-content.no-expand {
+            height: calc(100vh - 122px);
+        }
+
+        #content-forms.no-expand .tabs-content {
+            height: calc(100vh - 324px);
+        }
+
+        #content-avisos {
+            height: calc(100vh - (100vh - 290px) - 56px);
+        }
+
+        .content-input .select2 {
+            font-size: 16px;
+            border: solid 2px #9d9b99;
+            border-radius: 9px;
+            padding-left: 9px;
+            color: #737373;
+            padding-bottom: 9px;
+            padding: 2px 9px;
+            background: white;
+            width: 100% !important;
+        }
+
+        .content-input.content-input-primary .select2 {
+            border: solid 2px #355da7;
+            color: #355da7;
+        }
+
+        .content-input .select2 .select2-selection {
+            border: 0;
+        }
+
+        .content-input .select2 .select2-selection .select2-selection__rendered {
+            padding-left: 0;
+        }
+
+        .content-gen {
+            border-radius: 20px;
+            background-color: #efefef;
+        }
+
+        .content-gen .title {
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .content-gen .resp {
+            color: #000000;
+            border-bottom: 1px solid #000000;
+        }
+
+        .dropdown-menu {
+            width: 180px;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .border-bottom-primary {
+            border-bottom: solid 2px #355da7;
+        }
+
+        input:disabled, textarea:disabled, select:disabled {
+            background-color: #c9c9c9;
+            cursor: not-allowed;
+        }
+
+        .tab {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            background-color:rgb(182, 182, 182);
+            border: 2px solid rgb(182, 182, 182);
+            padding-left: 15px;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            cursor: unset;
+            background-color: var(--color-primary);
+        }
+
+        .tab:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        .tab:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        tfoot {
+            position: fixed;
+            width: fit-content;
+            margin: auto;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        tfoot.expand {
+            right: 50%;
+        }
+    </style>
+</head>
+
+<body data-topbar="dark" data-spy="scroll" data-offset="175" style="overflow: hidden;">
+    <header class="bg-primary-cc">
+        <div class="row align-items-center w-100">
+            <div class="col-auto pr-0">
+                <button id="btnMenu" type="button" class="btn bg-primary-cc btn-flat btn-header"><i
+                        class="fa-solid fa-bars"></i></button>
+                <button id="btnBack" type="button" class="btn bg-primary-cc btn-flat btn-header d-none"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+            </div>
+            <div class="col-auto p-0">
+                <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108998&c=5298967_SB1&h=58fXy2zvwjIT_OA9h721BFfwCFF1pYHerADEgGg1wbWxKFPt"
+                    alt="" height="56">
+            </div>
+            <div id="header-title" class="col">
+                Avisos y llamadas
+            </div>
+            <div class="col-auto p-0">
+                <div class="row align-items-center">
+                    <div class="col-auto pr-0 ft-16" id="today">
+                    </div>
+                    <div class="col-auto pr-0 ft-16">
+                        <strong>ROL: </strong><span id="role"></span>
+                    </div>
+                    <div class="col-auto pr-0 ft-16">
+                        <strong>PLANTA: </strong>
+                    </div>
+                    <div class="col-auto pr-0 ft-16">
+                        <select id="plantas" type="date" style="
+                            width: 190px; 
+                            height: 30px; 
+                            background: #ffffff; 
+                            border-width: 1px; 
+                            border-color: #808080; 
+                            color: #000;">
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <div class="chip bg-primary-cc">
+                            <img
+                                src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108996&c=5298967_SB1&h=64w8opEXTYUI8Zk4V_YCr91jyFiSRorKvI31OBBt0vD9Su8V">
+                            <span class="user-name"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+    
+    <div id="home-view" class="w-100 m-0">
+        <div id="filters-data" class="p-3">
+            <div class="btn-expand-down">
+                <div class="p-rel btn">
+                    <i class="fa-solid fa-caret-up"></i>
+                </div>
+            </div>
+            <div id="content-filters" class="row">
+                <div class="col-auto pb-2 ">
+                    <div class="content-input" style="min-width: 380px;">
+                        <label>Ruta</label><br>
+                        <select id="filterRuta" onchange="getServicios(this)" class="form-ptg">
+                            
+                        </select>
+                    </div>
+                </div>
+                <div class="col-auto pb-2 ">
+                    <div class="content-input" style="min-width: 300px;">
+                        <label>Colonia</label><br>
+                        <select id="filterZona" onchange="getServicios(this)" class="form-ptg">
+                            
+                        </select>
+                    </div>
+                </div>
+                <div class="col-auto pb-2 ">
+                    <div class="content-input">
+                        <label>Tipo de Producto</label><br>
+                        <select id="filterTipoProducto" onchange="setSelectRutas(true);" class="form-ptg" style="width: 180px;">
+                        </select>
+                    </div>
+                </div>     
+                <div class="col-auto pb-2 ">
+                    <div class="content-input">
+                        <label>Próxima llamada</label><br>
+                        <input id="filterProximaLlamada" onchange="getServicios(this)" type="date" class="form-ptg"/>
+                    </div>
+                </div>        
+            </div>
+        </div>
+        <div id="content-data">
+        </div>
+    </div>
+
+    <!-- END layout-wrapper -->
+
+    <!-- JAVASCRIPT -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/jquery/jquery.min.js"></script>
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="assets/libs/simplebar/simplebar.min.js"></script> -->
+    <!-- <script src="assets/libs/jquery.easing/jquery.easing.min.js"></script> -->
+
+    <!-- Datatablets -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script
+        src="https://themesbrand.com/skote/layouts/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Datepicker -->
+    <script
+        src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/@chenfengyuan/datepicker/datepicker.min.js"></script>
+
+    <!-- Timepicker -->
+    <script
+        src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script
+        src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+    <!-- Extra -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/metismenu/metisMenu.min.js"></script>
+    <!-- <script src="https://themesbrand.com/skote/layouts/assets/libs/simplebar/simplebar.min.js"></script> -->
+    <script src="https://themesbrand.com/skote/layouts/assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- <script src="assets/js/app.js"></script> -->
+    <script src="https://themesbrand.com/skote/layouts/assets/js/app.js"></script>
+
+    <!-- Sweet alert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!-- Moment js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+        integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- FancyTable -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery.fancytable/dist/fancyTable.min.js"></script>
+
+    <!-- Funciones generales -->
+    <script type="text/javascript">
+        userName = '${ds.userName}';
+        userRole = '${ds.userRole}';
+        urlPlantas = '${ds.getPlantas}';
+        urlRutas = '${ds.getListRoutes}';
+        urlStatusOp = '${ds.getListStatusOpp}';
+        urlTiposServicios = '${ds.getListTypeServices}';
+        urlGetZone = '${ds.getZone}';
+        urlGetListTypeContact = '${ds.getListTypeContact}';
+        urlGetOpp = '${ds.getOppMonitor}';
+        statusOP = [];
+        countServices = 0;
+
+        // Se inyecta la información del usuario logueado
+        $('.user-name').text(userName);
+        $('#role').text(userRole);
+        $("#filterProximaLlamada").val(dateFormatFromDate(new Date(), "2"));
+
+        // Call a global ajax method
+        function setAjax(settings) {
+            // Generamos el AJAX dinamico para las peticiones relacionadas con peddos
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: settings.url,
+                    method: settings.method,
+                    data: settings.data ?? null,
+                    // data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function (response) {
+                        if ( response.success ) {
+                            resolve(response);
+                        } else {
+                            reject(response);
+                            swal.close();
+                            msg = response.msg ? response.msg : 'La petición no devolvió datos';
+                            console.log('info', msg);
+                            // infoMsg('info', msg);
+                        }
+                    }, error: function (xhr, status, error) {
+                        console.error('mensaje de error');
+                        reject({ xhr: xhr, status: status, error: error });
+                    }
+                });
+            });
+        }
+
+        function dynamicSort(property) {
+            var sortOrder = 1;
+            if (property[0] === "-") {
+                sortOrder = -1;
+                property = property.substr(1);
+            }
+            return function (a, b) {
+                /* next line works with strings and numbers, 
+                * and you may want to customize it to your needs
+                */
+                var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                return result * sortOrder;
+            }
+        }
+
+        function dateFormatFromDate(date, format = "1") {
+            if (typeof date == "string") {
+                let aux = date;
+                if(aux.split("-").length > 1) {
+                    date = new Date(parseInt(aux.split("-")[0]), parseInt(aux.split("-")[1]) - 1, parseInt(aux.split("-")[2]));
+                } else {
+                    date = new Date(parseInt(aux.split("/")[2]), parseInt(aux.split("/")[1]) - 1, parseInt(aux.split("/")[0]));
+                }                
+            }
+
+            let day = date.getDate();
+            let month = date.getMonth();
+            let year = date.getFullYear();
+            let fecha = "";
+            let months = ["Enero", "Febrero", "Marzo", "Abrrl", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            if (format == "1") {
+                fecha = day + " de " + months[month] + " - " + timeFormatFromDate(date);
+            } else if (format == "2") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = year + "-" + month + "-" + day;
+            } else if (format == "3") {
+                fecha = day + "/" + month + "/" + year + " " + timeFormatFromDate(date);
+            } else if (format == "4") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = year + "-" + month + "-" + day + "T" + timeFormatFromDate(date, "2");
+            } else if (format == "5") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = day + "/" + month + "/" + year;
+            } else if (format == "6") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = day + "-" + month + "-" + year;
+            } else if (format == "7") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = day + "/" + month + "/" + year + " " + timeFormatFromDate(date);;
+            }
+
+            return fecha;
+        }
+
+        function timeFormatFromDate(date, format = "1") {
+            date = new Date(date);
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            let seconds = date.getSeconds();
+            let period = hours < 12 ? 'a.m.' : 'p.m.';
+            if (minutes < 10) {
+                minutes = "0" + minutes;
+            }
+            if (seconds < 10) {
+                seconds = "0" + seconds;
+            }
+            let hora = "";
+            if (format == "1") {
+                hours = (hours + 24) % 12 || 12;
+                if (hours < 10) {
+                    hours = "0" + hours;
+                }
+
+                hora = hours + ":" + minutes + " " + period;
+            } else if (format == "2") {
+                if (hours < 10) {
+                    hours = "0" + hours;
+                }
+
+                hora = hours + ":" + minutes;
+            } else if (format == "3") {
+                if (hours < 10) {
+                    hours = "0" + hours;
+                }
+
+                hora = hours + ":" + minutes + ":" + seconds;
+            }
+            return hora;
+        }
+
+        function loadMsg(msg = 'Espere un momento porfavor...') {
+    
+            let swalObj = {
+                title: msg,
+                buttons: false,
+                closeOnEsc: false,
+                closeOnClickOutside: false,
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML:"<i class='fa-solid fa-spinner fa-spin fa-2x'></i>"
+                    },
+                }
+            };
+
+            swal(swalObj).catch(swal.noop);
+
+        }
+
+        function getZonas() {
+            let dataZonas = {
+                "requestType" : 'getZonas'
+            };
+
+            let settings = {
+                url      : urlGetZone,
+                method   : 'GET',
+                data     : JSON.stringify(dataZonas),
+            }
+
+            $('#filterZona').children('option').remove();
+            $("#filterZona").append(
+                '<option value="0">Todas</option>'
+            );
+            setAjax(settings).then((response) => {
+                
+                if (response.success && response.data.length ) {
+                    for ( var key in response.data ) {
+                        if ( response.data.hasOwnProperty( key )) {
+                            $("#filterZona").append(
+                                '<option value="'+response.data[key].id+'">'+response.data[key].nombre+'</option>'
+                            );
+                        }
+                    }
+                    readyInit();
+                } else {
+                    console.warn('No hay zonas por cargar');
+                    readyInit();
+                }
+                $('#filterZona').select2({
+                    selectOnClose: true,
+                    placeholder: "Seleccione una zona",
+                    language: {
+                        "noResults": function(){
+                            return "Sin resultados encontrados";
+                        }
+                    }
+                });
+            }).catch((error) => {
+                $('#filterZona').select2({
+                    selectOnClose: true,
+                    placeholder: "Seleccione una zona",
+                    language: {
+                        "noResults": function(){
+                            return "Sin resultados encontrados";
+                        }
+                    }
+                });
+                console.log(error);
+                readyInit();
+            });
+        }
+
+        // Función para obtener las plantas
+        function getPlantas() {
+            let dataPlantas = {
+                "requestType" : 'getPlantas'
+            };
+
+            let settings = {
+                url      : urlPlantas,
+                method   : 'GET',
+                data     : JSON.stringify(dataPlantas),
+            }
+
+            setAjax(settings).then((response) => {
+                setSelectPlants((response.data));
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        // Método para llenar el select de plantas
+        function setSelectPlants(items) {
+            if ( items.length ) {
+                $('select#plantas').children('option').remove();
+                for ( var key in items ) {
+                    if ( items.hasOwnProperty( key ) ) {
+                        $("select#plantas").append(
+                            '<option value='+items[key].id+'>'+items[key].nombre+'</option>'
+                        );
+                    }
+                }
+                getRutas();
+            } else {
+                console.warn('No hay plantas por cargar');
+            }
+        }
+
+        function getStatusOportunidad() {
+            let settings = {
+                url      : urlStatusOp,
+                method   : 'GET'
+            }
+
+            setAjax(settings).then((response) => {
+                setSelectStatusOp((response.data));
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        vrStatus = [];
+        // Método para llenar el select de los estado de la oportunidad
+        function setSelectStatusOp(items) {
+            vrStatus = [];
+            if ( items.length ) {
+                $('#filterEstadoSolicitud').children('option').remove();
+                for ( var key in items ) {
+                    vrStatus.push(items[key]);
+                    if ( items.hasOwnProperty( key )) {
+                        $("#filterEstadoSolicitud").append(
+                            '<option value="'+items[key].id+'">'+items[key].nombre+'</option>'
+                        );
+                    }
+                }
+                readyInit();
+            } else {
+                console.warn('No hay estados de solicitud por cargar');
+                readyInit();
+            }
+        }
+
+        function getRutas(getPedidos = false) {
+            if(getPedidos) {
+                loadMsg();
+            }
+            let settings = {
+                url      : urlRutas,
+                method   : 'POST',
+                data: JSON.stringify({
+                    namePlanta : $("#plantas option:selected").text()
+                })
+            }
+
+            setAjax(settings).then((response) => {
+                if(response.success) {
+                    rutasCilindros = response.rutaCilindro;
+                    rutasEstacionarios = response.rutaEstacionario;
+                    setSelectRutas(getPedidos);
+                }        
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        $(".btn-expand-down").click(function () {
+            if ($(this).find("i").hasClass('fa-caret-down')) {
+                $(this).find(".btn").html('<i class="fa-solid fa-caret-up"></i>');
+                $("#content-filters").removeClass("d-none");
+                $("#content-casos").removeClass("no-expand");
+                $(".tabs-content").removeClass("no-expand");
+            } else {
+                $(this).find(".btn").html('<i class="fa-solid fa-caret-down"></i>');
+                $("#content-filters").addClass("d-none");
+                $("#content-casos").addClass("no-expand");
+                $(".tabs-content").addClass("no-expand");
+            }
+        });
+
+        function setSelectRutas(getPedidos = false) {
+            $('#filterRuta').parent().parent().removeClass("d-none");
+            $('#filterRuta').children('option').remove();    
+            if ( rutasCilindros.length || rutasEstacionarios.length) {        
+                if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "1") {
+                    rutasCilindros.forEach(element => {
+                        $("#filterRuta").append(
+                            '<option value="'+element.internalId+'">'+element.name+'</option>'
+                        );
+                    });
+                }
+                if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "2") {
+                    rutasEstacionarios.forEach(element => {
+                        $("#filterRuta").append(
+                            '<option value="'+element.internalId+'">'+element.name+'</option>'
+                        );
+                    });
+                }
+                if($("#filterTipoProducto").val() == "3") {
+                    $('#filterRuta').parent().parent().addClass("d-none");
+                }
+                $('#filterRuta').select2({
+                    selectOnClose: true,
+                    placeholder: "Seleccione una opción",
+                    language: {
+                        "noResults": function(){
+                            return "Sin resultados encontrados";
+                        }
+                    }
+                });
+                if(getPedidos) {
+                    getServicios(this);
+                }        
+                readyInit();
+            } else {
+                console.warn('No hay rutas por cargar');
+                readyInit();
+            }
+        }
+
+        $("#plantas").change(function() {
+            getRutas(true);
+        });
+
+        // Función para obtener los tipos de servicios
+        function getTiposServicios() {
+            let settings = {
+                url      : urlTiposServicios,
+                method   : 'GET'
+            }
+
+            setAjax(settings).then((response) => {
+                setSelectTiposServicios((response.data));
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+        vrTiposServicios = [];
+        // Método para llenar el select de los estado de la oportunidad
+        function setSelectTiposServicios(items) {
+            vrTiposServicios = [];
+            if ( items.length ) {
+                $('#filterTipoProducto').children('option').remove();
+                for ( var key in items ) {
+                    vrTiposServicios.push(items[key]);
+                    if ( items.hasOwnProperty( key ) && items[key].id != "3" && items[key].id != "4") {
+                        $("#filterTipoProducto").append(
+                            '<option value="'+items[key].id+'">'+items[key].nombre+'</option>'
+                        );
+                    }
+                }
+                readyInit();
+            } else {
+                console.warn('No hay estados de solicitud por cargar');
+                readyInit();
+            }
+        }
+
+        function getFiltPedidos() {
+            let filt = {};
+
+            if($("#filterRuta").val()) {
+                filt.ruta = $("#filterRuta").val();
+            }
+
+            filt.tipo_producto = parseInt($("#filterTipoProducto").val());
+
+            vrStatus.forEach(element => {
+                if(element.nombre.toLowerCase() == "por confirmar") {
+                    filt.status_oportunidad = element.id;
+                }
+            });
+
+            filt.fechaPrometida1 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
+            filt.fechaPrometida2 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
+
+            return filt;
+        }
+
+        function getServicios() {
+            let settings = {
+                url      : urlGetOpp,
+                method   : 'POST',
+                data: JSON.stringify(getFiltPedidos())
+            }
+            if(!swal.getState().isOpen) {
+                loadMsg();
+            }
+            
+            $("#tablePedidos tbody").children("tr").remove();
+            setAjax(settings).then((response) => {   
+                console.log(response);     
+                if(response.success) {
+                    response.data = removeDuplicates(response.data, 'no_pedido');
+                    if(response.data.length == 0) {
+                        $("#tablePedidos tbody").append('<tr><td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                        initTable("tablePedidos");
+                    }
+                    response.data.forEach((pedido, position) => {
+                        if(pedido.fecha_prometida) {
+                            pedido.fecha_hora_prometida = dateFormatFromString(pedido.fecha_prometida, "2");
+                            pedido.fecha_prometida = dateFormatFromDate(new Date(pedido.fecha_prometida.split("/")[2], parseInt(pedido.fecha_prometida.split("/")[1]) - 1, pedido.fecha_prometida.split("/")[0]), "2");
+                        }
+                
+                        if(pedido.fecha_solicitud) {
+                            pedido.fecha_solicitud = dateFormatFromDate(new Date(pedido.fecha_solicitud.split("/")[2], parseInt(pedido.fecha_solicitud.split("/")[1]) - 1, pedido.fecha_solicitud.split("/")[0]), "2");
+                        }
+                                    
+                        if(pedido.fecha_notificacion) {
+                            pedido.fecha_hora_notificacion = dateFormatFromString(pedido.fecha_notificacion+(pedido.hora_notificacion ? " "+pedido.hora_notificacion : ''), "2");
+                            pedido.fecha_notificacion = dateFormatFromDate(new Date(pedido.fecha_notificacion.split("/")[2], parseInt(pedido.fecha_notificacion.split("/")[1]) - 1, pedido.fecha_notificacion.split("/")[0]), "2");
+                        }
+                        vrStatus.forEach(element2 => {
+                            if(element2.id == pedido.status_id) {
+                                pedido.estado = element2.nombre;
+                            }
+                        });
+                        if(pedido.desde) {
+                            pedido.desde = getTimeFromString(pedido.desde);
+                        }
+                        if(pedido.hasta) {
+                            pedido.hasta = getTimeFromString(pedido.hasta);
+                        }
+                    });
+                    response.data.sort(dynamicSort("fecha_hora_prometida"));
+                    response.data = orderOrders(response.data);
+                    $("#tablePedidos thead tr th").css('z-index', "3");
+                    $($("#tablePedidos thead tr th")[0]).css('z-index', "4");
+                    $($("#tablePedidos thead tr th")[1]).css('z-index', "4");
+                    $($("#tablePedidos thead tr th")[2]).css('z-index', "4");
+                    response.data.forEach((pedido, position) => {
+                        let trAux = '<tr data-item='+"'"+JSON.stringify(pedido)+"'"+'>'+
+                                        '<td class="text-center sticky-col">'+  
+                                            '<div class="btn-group dropend vertical-center">'+                                            
+                                                '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
+                                                '<ul class="dropdown-menu">'+
+                                                    '<li onclick="verDetalles(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-eye color-primary"></i> Ver detalles</li>'+
+                                                    '<li onclick="gestionarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-gears color-primary"></i> Gestionar servicio</li>'+
+                                                    ((pedido.servicio == "1" || pedido.servicio == "2") ? '<li onclick="asignarViaje(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-route color-primary"></i> Asignar viaje(ruta)</li>' : '')+
+                                                    '<li onclick="notificarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-bell color-primary"></i> Notificar servicio</li>'+
+                                                    '<li onclick="seguimientoPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
+                                                    '<li onclick="cancelarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio</li>'+
+                                                '</ul>'+
+                                            '</div>'+
+                                            '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+                                        '</td>'+
+                                        '<td style="left: 40px;"class="text-center sticky-col">'+
+                                            '<button class="btn" style="cursor: default; background: '+pedido.status_color+';"></button>'+
+                                        //(pedido.status_color ? '<i class="'+(pedido.outline ? 'fa-regular' : 'fa-solid')+' fa-square vertical-center" style="color: '+pedido.status_color+';"></i>': '')+
+                                            '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+                                        '</td>'+
+                                        '<td style="left: 80px;"class="text-center sticky-col">'+
+                                            '<input type="checkbox" class="form-check-input form-ptg vertical-center" ' + (pedido.segunda_llamada ? 'checked' : '') + ' disabled style="width: fit-content;">'+
+                                            '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+                                        '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.no_pedido + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.id_cliente + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.tipo_cliente ? pedido.tipo_cliente : 'Sin tipo de cliente') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + dateFormatFromDate(pedido.fecha_solicitud, '5') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + dateFormatFromDate(pedido.fecha_prometida, '5') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.estado + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.nombre_cliente ? pedido.nombre_cliente : 'Sin nombre de cliente') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.telefono ? pedido.telefono : 'Sin teléfono') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.zona ? pedido.zona : 'Sin zona') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? pedido.contrato.trim() : 'Sin contrato') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.nombre_vehiculo.trim() ? pedido.nombre_vehiculo.trim() : 'Sin asignar') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.colonia ? pedido.colonia : 'Sin colonia') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.direccion ? pedido.direccion : 'Sin dirección') + '</td>'+
+                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.observaciones ? pedido.observaciones : 'Sin observaciones') + '</td>'+
+                                    '</tr>';
+                        $("#tablePedidos tbody").append(trAux);
+
+                        if(response.data.length == (position + 1)) {
+                            initTable("tablePedidos");
+                        }
+                    });
+                    swal.close();
+                } else {
+                    $("#tablePedidos tbody").append('<tr><td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                    swal.close();
+                }
+            }).catch((error) => {
+                console.log(error);
+                $("#tablePedidos tbody").append('<tr><td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                swal.close();
+            });
+        }
+
+        function readyInit() {
+            let totalServices = 4;
+            countServices += 1;
+            if(countServices == totalServices) {
+                getServicios();
+            }
+        }
+
+        loadMsg();
+        getPlantas();
+        getTiposServicios();
+        getStatusOportunidad();
+        getZonas();
+    </script>
+
+</body>
+
+</html>

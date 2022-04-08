@@ -3,14 +3,14 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Dashboard</title>
+    <title>Monitor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Dashboard" name="description" />
     <meta content="Themesbrand" name="author" />
     <meta name="keywords" content="Dashboard, clientes, pedidos, potogas">
     <!-- App favicon -->
     <link rel="shortcut icon"
-        href="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48001&c=5298967_SB1&h=lt7iN1fvAB0TWW1SHidBq6N_3m3bl0qC4RsJ5XXe7D4YCdMx&_xt=.ico">
+        href="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108997&c=5298967_SB1&h=MqKO6RyzbmQKiMqwc6-9rA2wJSTQZ0yi96oPgnj9KQwozioR&_xt=.ico">
 
     <!-- Select 2 -->
     <link href="https://themesbrand.com/skote/layouts/assets/libs/select2/css/select2.min.css" rel="stylesheet"
@@ -37,6 +37,8 @@
     <!-- Bootstrap Css -->
     <link href="https://themesbrand.com/skote/layouts/assets/css/bootstrap.min.css" id="bootstrap-style"
         rel="stylesheet" type="text/css" />
+    <!-- Select 2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Icons Css -->
     <!-- <link href="https://themesbrand.com/skote/layouts/assets/css/icons.min.css" rel="stylesheet" type="text/css" /> -->
     <!-- App Css-->
@@ -199,17 +201,21 @@
         }
 
         .content-input-primary .form-ptg-primary[type="date"]::-webkit-calendar-picker-indicator {
-            background: url(https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47999&c=5298967_SB1&h=ap_ChgXBZcGtXt-0cCUgtiAdcQ0GwlDOUwRUbTSXJOVGLBvm) center/80% no-repeat;
+            background: url(https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108994&c=5298967_SB1&h=TZdf2C4l2Y6fG6GOHYfluLN8kg0dvo3J-bUwrhd1rbdlhL_3) center/80% no-repeat;
             cursor: pointer;
         }
 
         .content-input-primary .form-ptg-primary[type="time"]::-webkit-calendar-picker-indicator {
-            background: url(https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47998&c=5298967_SB1&h=dTMS58AOq5BNJEv4o7eqLopFTUHTH_RE_0AeE6ronFdNxfIX) center/80% no-repeat;
+            background: url(https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=109002&c=5298967_SB1&h=8T8_xbgLaXGq57So_VQ-KoCwOPoyvxXLL-O9cpcfxC44F6Do) center/80% no-repeat;
             cursor: pointer;
         }
 
         .form-search {
             width: 100%;
+            position: relative;
+        }
+
+        .p-rel {
             position: relative;
         }
 
@@ -239,6 +245,17 @@
             height: 20px;
             font-size: 20px;
             cursor: pointer;
+        }
+
+        .vertical-center {
+            margin: auto;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            height: fit-content;
+            width: fit-content;
         }
 
         label {
@@ -333,10 +350,6 @@
             background-color: rgb(225, 225, 225);
         }
 
-        .ion-text-center {
-            text-align: center;
-        }
-
         .text-right {
             text-align: right;
         }
@@ -416,6 +429,10 @@
             color: #000000;
         }
 
+        .c-pointer {
+            cursor: pointer;
+        }
+
         .card {
             box-shadow: rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
         }
@@ -448,12 +465,12 @@
             width: 100%;
             overflow: auto;
             background-color: white;
-            height: calc(100vh - 292px);
+            height: calc(100vh - 337px);
             position: relative;
         }
 
         #content-casos.no-expand {
-            height: calc(100vh - 85px);
+            height: calc(100vh - 130px);
         }
 
         #historic-data {
@@ -484,6 +501,75 @@
         #content-avisos {
             height: calc(100vh - (100vh - 290px) - 56px);
         }
+
+        .content-input .select2 {
+            font-size: 16px;
+            border: solid 2px #9d9b99;
+            border-radius: 9px;
+            padding-left: 9px;
+            color: #737373;
+            padding-bottom: 9px;
+            padding: 2px 9px;
+            background: white;
+            width: 100% !important;
+        }
+
+        .content-input.content-input-primary .select2 {
+            border: solid 2px #355da7;
+            color: #355da7;
+        }
+
+        .content-input .select2 .select2-selection {
+            border: 0;
+        }
+
+        .content-input .select2 .select2-selection .select2-selection__rendered {
+            padding-left: 0;
+        }
+
+        .content-gen {
+            border-radius: 20px;
+            background-color: #efefef;
+        }
+
+        .content-gen .title {
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .content-gen .resp {
+            color: #000000;
+            border-bottom: 1px solid #000000;
+        }
+
+        .dropdown-menu {
+            width: 180px;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .border-bottom-primary {
+            border-bottom: solid 2px #355da7;
+        }
+
+        input:disabled, textarea:disabled, select:disabled {
+            background-color: #c9c9c9;
+            cursor: not-allowed;
+        }
+
+        #tablePedidos tfoot, #tableCasos tfoot {
+            position: fixed;
+            width: fit-content;
+            margin: auto;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        #tablePedidos tfoot.expand, #tableCasos tfoot.expand {
+            right: 50%;
+        }
     </style>
 </head>
 
@@ -497,7 +583,7 @@
                         class="fa-solid fa-arrow-left"></i></button>
             </div>
             <div class="col-auto p-0">
-                <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47997&c=5298967_SB1&h=XCM9Qw8SSpqCq4FqTkuyuCCRBX28-Dd5A_4ngS6j8NK6r23B"
+                <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108998&c=5298967_SB1&h=58fXy2zvwjIT_OA9h721BFfwCFF1pYHerADEgGg1wbWxKFPt"
                     alt="" height="56">
             </div>
             <div id="header-title" class="col">
@@ -508,7 +594,7 @@
                     <div class="col-auto pr-0 ft-16" id="today">
                     </div>
                     <div class="col-auto pr-0 ft-16">
-                        <strong>ROL: </strong><span id="role">Prueba</span>
+                        <strong>ROL: </strong><span id="role"></span>
                     </div>
                     <div class="col-auto pr-0 ft-16">
                         <strong>PLANTA: </strong>
@@ -521,15 +607,13 @@
                             border-width: 1px; 
                             border-color: #808080; 
                             color: #000;">
-                            <option value="p1">PLANTA CARDENAS</option>
-                            <option value="p2">PLANTA CEDRAL</option>
                         </select>
                     </div>
                     <div class="col-auto">
                         <div class="chip bg-primary-cc">
                             <img
-                                src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=47996&c=5298967_SB1&h=w9FU3tphwpeGh2U7tj_dTBfRy_QKLEEecSPE2ID7uFJinYd8">
-                            <span class="user-name">Alexis Chiw</span>
+                                src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108996&c=5298967_SB1&h=64w8opEXTYUI8Zk4V_YCr91jyFiSRorKvI31OBBt0vD9Su8V">
+                            <span class="user-name"></span>
                         </div>
                     </div>
                 </div>
@@ -537,84 +621,6 @@
             </div>
         </div>
     </header>
-
-    <div id="formProductosModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleProductoModal"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 400px;">
-            <div class="modal-content " style="border: 0">
-                <div class="modal-header bg-primary-cc">
-                    <h5 class="modal-title" id="titleProductoModal">Agregar producto</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row pb-2">
-                        <div class="col-6">
-                            <div class="content-input content-input-primary">
-                                <label>Producto</label>
-                                <select id="productoFormProductos" class="form-ptg form-ptg-primary">
-                                    <option value="cilindro">Cilindro</option>
-                                    <option value="estacionario">Estacionario</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-6 cilindroFormProductos">
-                            <div class="content-input content-input-primary">
-                                <label>Envase</label>
-                                <input id="envaseFormProductos" type="checkbox" class="form-ptg form-ptg-primary">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row pb-2 cilindroFormProductos">
-                        <div class="col-6">
-                            <div class="content-input content-input-primary">
-                                <label>Capacidad</label>
-                                <select id="capacidadFormProductos" class="form-ptg form-ptg-primary">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="content-input content-input-primary">
-                                <label>Cantidad</label>
-                                <input id="cantidadFormProductos" type="number" class="form-ptg form-ptg-primary">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row pb-2 estacionarioFormProductos d-none">
-                        <div class="col-6">
-                            <div class="content-input content-input-primary">
-                                <label>Litros</label>
-                                <input id="litrosFormProductos" type="number" class="form-ptg form-ptg-primary">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="content-input content-input-primary">
-                                <label>Monto</label>
-                                <input id="montoFormProductos" type="number" class="form-ptg form-ptg-primary">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row pb-2">
-                        <div class="col-6">
-                            <div class="content-input content-input-primary">
-                                <label>Valor</label>
-                                <input id="valorFormProductos" type="number" readonly class="form-ptg form-ptg-primary">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="content-input content-input-primary">
-                                <label>Total</label>
-                                <input id="totalFormProductos" type="number" readonly class="form-ptg form-ptg-primary">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        aria-label="Close">Cancelar</button>
-                    <button id="guardarProductosForm" type="button" class="btn btn-primary">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div id="formNotasAdicionalesModal" class="modal fade" tabindex="-1" role="dialog"
         aria-labelledby="titleNotasAdicionalesModal" aria-hidden="true">
@@ -624,6 +630,7 @@
                     <h5 class="modal-title" id="titleNotasAdicionalesModal">Agregar nota</h5>
                 </div>
                 <div class="modal-body">
+                    <input type="hidden" id="typeNota"/>
                     <textarea id="notaAdicional" rows="3" placeholder="Nota..."
                         class="form-ptg form-ptg-primary"></textarea>
                 </div>
@@ -632,6 +639,162 @@
                         aria-label="Close">Cancelar</button>
                     <button id="guardarNotaAdicional" type="button" class="btn btn-primary">Guardar</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="asignarViajeModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titleAsignarViajeModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleAsignarViajeModal">Asignar viaje al servicio: <span id="asignarViajePedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="content-input content-input-primary">
+                        <label>Viaje*</label><br>
+                        <select id="asignarViajeRuta" class="form-ptg form-ptg-primary">
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cerrar</button>
+                    <button id="guardarAsignarViaje" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cancelarOppModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titlecancelarOppModalModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titlecancelarOppModalModal">Cancelar servicio<span id="cancelarOppPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="content-input content-input-primary">
+                        <label>Motivo de Cancelacion*</label><br>
+                        <select id="cancelarOppMotivo" class="form-ptg form-ptg-primary">
+                        </select>
+                    </div>
+                    <div class="content-input content-input-primary mt-3">
+                        <label>Observaciones*</label><br>
+                        <textarea rows="3" id="cancelarOppObservaciones" class="form-ptg form-ptg-primary">
+                        </textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cerrar</button>
+                    <button id="guardarCancelarOpp" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="seguimientoModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titleseguimientoModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleseguimientoModal">Seguimiento servicio - <span id="seguimientoPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="content-input content-input-primary">
+                        <label>Comentario*</label><br>
+                        <textarea rows="3" id="cancelarOppComentario" class="form-ptg form-ptg-primary">
+                        </textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cerrar</button>
+                    <button id="guardarSeguimiento" type="button" class="btn btn-primary">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="formVerDetallesPedidos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleerDetallesPedidosModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=110815&c=5298967_SB1&h=he-4rJolZ3J7WidhKv2oNWSuYY-s45IhArkF-ivqlvB7sd_A"
+                            alt="" width="120">
+                        </div>
+                        <div class="col text-center">
+                            <label class="fw-bold" style="font-size: 22px;" id="verDetallesCliente"></label><br>
+                            <label class="fw-bold" style="font-size: 18px;" id="verDetallesTelefono"></label><br>
+                            <label class="fw-bold" style="font-size: 16px;" id="verDetallesDireccion"></label><br>
+                            <label class="fw-bold" style="font-size: 16px;">Tipo: <span id="verDetallesTipoServicio"></span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="content-gen">
+                        <div class="row p-3">
+                          <div class="col-3 title">Servicio</div>
+                          <div id="verDetallesServicio" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Vehículo</div>
+                          <div id="verDetallesVehiculo" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Zona</div>
+                          <div id="verDetallesZona" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Usuario Monitor</div>
+                          <div id="verDetallesUsuarioMonitor" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Direccíon</div>
+                          <div id="verDetallesDireccion2" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Fecha Prometida</div>
+                          <div id="verDetallesFechaPrometida" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Fecha Pedido</div>
+                          <div id="verDetallesFechaPedido" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Fecha Notificación</div>
+                          <div id="verDetallesFechaNotificacion" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Tipo Producto</div>
+                          <div id="verDetallesTipoProducto" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Contrato</div>
+                          <div id="verDetallesContrato" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Agente atiende</div>
+                          <div id="verDetallesAgenteAtiende" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3 align-items-end">
+                          <div class="col-3 title">Tiempo de notificación</div>
+                          <div id="verDetallesTiempoNotificacion" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Observaciones</div>
+                          <div id="verDetallesObservaciones" class="col-9 resp"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cancelar</button>
+                    <button id="guardarNotaAdicional" type="button" class="btn btn-primary">Guardar</button>
+                </div>-->
             </div>
         </div>
     </div>
@@ -647,10 +810,10 @@
                 <div class="col-auto pb-2">
                     <div class="content-input">
                         <label>Tipo de servicio</label><br>
-                        <select id="filterTipoServicio" class="form-ptg" style="width: 200px;">
-                            <option value="pedidos">Pedidos</option>
-                            <option value="queja">Queja</option>
+                        <select id="filterTipoServicio" class="form-ptg" onchange="getServicios(this)" style="width: 200px;">
+                            <option value="pedidos">Pedidos</option>                            
                             <option value="fuga">Fuga</option>
+                            <option value="queja">Queja</option>
                         </select>
                     </div>
                 </div>
@@ -661,10 +824,10 @@
                             <div class="col pr-0">
                                 <div class="row align-items-center">
                                     <div class="col-6 pr-0">
-                                        <input id="filterFechaSolicitudIni" type="date" class="form-ptg range-date date-ini">
+                                        <input id="filterFechaSolicitudIni" onchange="getServicios(this)" type="date" class="form-ptg range-date date-ini">
                                     </div>
                                     <div class="col-6 px-1">
-                                        <input id="filterFechaSolicitudFin" type="date" class="form-ptg range-date date-fin">
+                                        <input id="filterFechaSolicitudFin" onchange="getServicios(this)" type="date" class="form-ptg range-date date-fin">
                                     </div>
                                 </div>
                             </div>
@@ -681,10 +844,10 @@
                             <div class="col pr-0">
                                 <div class="row align-items-center">
                                     <div class="col-6 pr-0">
-                                        <input id="filterFechaPrometidaIni" type="date" class="form-ptg range-date date-ini">
+                                        <input id="filterFechaPrometidaIni" onchange="getServicios(this)" type="date" class="form-ptg range-date date-ini">
                                     </div>
                                     <div class="col-6 px-1">
-                                        <input id="filterFechaPrometidaFin" type="date" class="form-ptg range-date date-fin">
+                                        <input id="filterFechaPrometidaFin" onchange="getServicios(this)" type="date" class="form-ptg range-date date-fin">
                                     </div>
                                 </div>
                             </div>
@@ -697,7 +860,7 @@
                 <div class="col-auto pb-2 tipo-pedido">
                     <div class="content-input">
                         <label>Estado de la Solicitud</label><br>
-                        <select id="filterEstadoSolicitud" class="form-ptg" style="width: 230px;">
+                        <select id="filterEstadoSolicitud" onchange="getServicios(this)" class="form-ptg" style="width: 230px;">
                             
                         </select>
                     </div>
@@ -705,7 +868,7 @@
                 <div class="col-auto pb-2 tipo-caso d-none">
                     <div class="content-input">
                         <label>Estado de la Solicitud</label><br>
-                        <select id="filterEstadoCaso" class="form-ptg" style="width: 230px;">
+                        <select id="filterEstadoCaso" onchange="getServicios(this)" class="form-ptg" style="width: 230px;">
                             <option value="0">Todos</option>
                             <option value="1">No iniciado</option>
                             <option value="2">En curso</option>
@@ -718,17 +881,17 @@
                 <div class="col-auto pb-2 tipo-caso d-none">
                     <div class="content-input">
                         <label>Prioridad</label><br>
-                        <select id="filterPrioridad" class="form-ptg" style="width: 150px;">
-                            <option value="1">Alta</option>
-                            <option value="2">Media</option>
-                            <option value="3">Baja</option>
+                        <select id="filterPrioridad" onchange="getServicios(this)" class="form-ptg" style="width: 150px;">
+                            <option value="1">Alto</option>
+                            <option value="2">Medio</option>
+                            <option value="3">Bajo</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-auto pb-2 tipo-pedido">
                     <div class="content-input">
                         <label>Ruta</label><br>
-                        <select id="filterRuta" class="form-ptg" style="width: 120px;">
+                        <select id="filterRuta" onchange="getServicios(this)" class="form-ptg" style="width: 120px;">
                             
                         </select>
                     </div>
@@ -736,35 +899,31 @@
                 <div class="col-auto pb-2 tipo-pedido">
                     <div class="content-input">
                         <label>Cantidad</label><br>
-                        <select id="filterCantidad" class="form-ptg" style="width: 100px;">
+                        <select id="filterCantidad" onchange="getServicios(this)" class="form-ptg" style="width: 100px;">
                             <option value="10">10</option>
                             <option value="20">20</option>
                             <option value="30">30</option>
-                            <option value="Todos">Todos</option>
+                            <option value="0">Todos</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-auto pb-2 tipo-pedido">
                     <div class="content-input">
                         <label>Tipo de Producto</label><br>
-                        <select id="filterTipoProducto" class="form-ptg" style="width: 180px;">
-                            <option value="todos">Todos</option>
-                            <option value="estacionario">Estacionario</option>
-                            <option value="cilindro">Cilindro</option>
-                            <option value="carburacion">Carburación</option>
+                        <select id="filterTipoProducto" onchange="setSelectRutas(true);" class="form-ptg" style="width: 180px;">
                         </select>
                     </div>
                 </div>
                 <div class="col-auto pb-2 tipo-pedido">
-                    <div class="content-input">
+                    <div class="content-input text-center">
                         <label>Programado</label><br>
-                        <input id="filterProgramado" type="checkbox" class="form-ptg">
+                        <input id="filterProgramado" onchange="getServicios(this)" type="checkbox" class="form-check-input form-ptg" style="width: auto;">
                     </div>
                 </div>
                 <div class="col-auto pb-2 tipo-pedido">
-                    <div class="content-input">
+                    <div class="content-input text-center">
                         <label>Segunda Llamada</label><br>
-                        <input id="filterSegundaLlamada" type="checkbox" class="form-ptg">
+                        <input id="filterSegundaLlamada" onchange="getServicios(this)" type="checkbox" class="form-check-input form-ptg" style="width: auto;">
                     </div>
                 </div>
                 <div class="col-auto pb-2">
@@ -772,81 +931,107 @@
                         <div class="col-auto">
                             <div class="content-input">
                                 <label>Datos Cliente</label><br>
-                                <select id="filterDatosCliente" class="form-ptg" style="width: 170px;">
-                                    <option value="name">Nombre</option>
+                                <select id="filterDatosCliente" onchange="getServicios(this)" class="form-ptg" style="width: 170px;">
+                                    <option value="address">Dirección</option>
                                     <option value="phone">Teléfono</option>
-                                    <option value="email">Correo electrónico</option>
+                                    <option value="name">Nombre</option>                                    
+                                    <option value="email">Correo electrónico</option>                                    
                                 </select>
                             </div>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-auto d-none">
                             <div class="content-input">
                                 <label>&nbsp;</label><br>
                                 <div class="form-search" style="width: 350px;">
                                     <i class="fa-solid fa-magnifying-glass"></i>
-                                    <input id="filterBuscarCliente" type="text" class="form-ptg" placeholder="Buscar...">
+                                    <input id="filterBuscarCliente" type="text" onkeyup="getServiciosDelay(this)" class="form-ptg" placeholder="Buscar...">
                                     <i class="fa-solid fa-xmark d-none"></i>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-auto">
+                            <div class="content-input" style="width: 250px;">
+                                <label>Calle</label><br>
+                                <input id="filterBuscarCalle" onkeyup="getServiciosDelay(this)" type="text" class="form-ptg">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="content-input" style="width: 150px;">
+                                <label>Núm. Ext</label><br>
+                                <input id="filterBuscarExt" onkeyup="getServiciosDelay(this)" type="text" class="form-ptg">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="content-input " style="width: 150px;">
+                                <label>Núm. Int</label><br>
+                                <input id="filterBuscarInt" onkeyup="getServiciosDelay(this)" type="text" class="form-ptg">
+                            </div>
+                        </div>                        
                     </div>
                 </div>
             </div>
         </div>
         <div id="content-data">
             <div class="row m-0" style="width: 100vw;">
-                <div class="col-12 p-0"  style="z-index: 2; position: relative;">
+                <div class="col-12 p-0" style="z-index: 2; position: relative; height: fit-content;">                    
                     <div class="btn-expand" style="z-index: 2;">
                         <div class="p-rel btn">
                             <i class="fa-solid fa-caret-left"></i>
                         </div>
                     </div>
-                    <div id="content-casos">                        
+                    <div id="content-casos">     
                         <table id="tablePedidos" class="table-gen table-gen-blue tipo-pedido">
                             <thead>
                                 <tr>
-                                    <th style="min-width: 40px; z-index: 1; left: 0;" class="ion-text-center sticky-col">
-                                        <i class="fa-solid fa-arrow-rotate-right"></i>
+                                    <th style="min-width: 40px; z-index: 1; left: 0;" class="text-center sticky-col">
+                                        <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
                                         <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
-                                    <th style="min-width: 40px; z-index: 1; left: 40px;" class="ion-text-center sticky-col">
+                                    <th style="min-width: 40px; z-index: 1; left: 40px;" class="text-center sticky-col">
                                         <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
-                                    <th style="min-width: 40px; z-index: 1; left: 80px;" class="ion-text-center sticky-col">
+                                    <th style="min-width: 40px; z-index: 1; left: 80px;" class="text-center sticky-col">
                                       <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
-                                    <th style="min-width: 110px" class="ion-text-center">No. Servicio</th>
-                                    <th style="min-width: 95px" class="ion-text-center">Id Cliente</th>
-                                    <th style="min-width: 135px" class="ion-text-center">Tipo Cliente</th>
-                                    <th style="min-width: 155px" class="ion-text-center">Fecha Solicitud</th>
-                                    <th style="min-width: 135px" class="ion-text-center">Estado</th>
-                                    <th style="min-width: 265px" class="ion-text-center">Nombre Cliente</th>
-                                    <th style="min-width: 125px" class="ion-text-center">Teléfono</th>
-                                    <th style="min-width: 130px" class="ion-text-center">Zona</th>
-                                    <th style="min-width: 150px" class="ion-text-center">Contrato</th>
-                                    <th style="min-width: 150px" class="ion-text-center">Vehículo</th>
-                                    <th style="min-width: 355px" class="ion-text-center">Dirección</th>                            
+                                    <th style="min-width: 110px" class="text-center">No. Servicio</th>
+                                    <th style="min-width: 95px" class="text-center">Id Cliente</th>
+                                    <th style="min-width: 135px" class="text-center">Tipo Cliente</th>
+                                    <th style="min-width: 155px" class="text-center">Fecha Solicitud</th>
+                                    <th style="min-width: 155px" class="text-center">Fecha Prometida</th>
+                                    <th style="min-width: 135px" class="text-center">Estado</th>
+                                    <th style="min-width: 265px" class="text-center">Nombre Cliente</th>
+                                    <th style="min-width: 125px" class="text-center">Teléfono</th>
+                                    <th style="min-width: 130px" class="text-center">Zona</th>
+                                    <th style="min-width: 150px" class="text-center">Contrato</th>
+                                    <th style="min-width: 150px" class="text-center">Vehículo</th>
+                                    <th style="min-width: 200px" class="text-center">Colonia</th>
+                                    <th style="min-width: 355px" class="text-center">Direcciones</th>
+                                    <th style="min-width: 300px" class="text-center">Observaciones</th>
                                 </tr>
                             </thead>
-                            <tbody >                     
+                            <tbody>   
+                                <tr>
+                                    <td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td>
+                                </tr>                  
                             </tbody>
                         </table>
                         <table id="tableCasos" class="table-gen table-gen-blue d-none tipo-caso">
                             <thead>
                                 <tr>
-                                    <th style="min-width: 40px; z-index: 1; left: 0;" class="ion-text-center sticky-col">
-                                        <i class="fa-solid fa-arrow-rotate-right"></i>
+                                    <th style="min-width: 40px; z-index: 1; left: 0;" class="text-center sticky-col">
+                                        <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
                                         <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
-                                    <th style="min-width: 110px" class="ion-text-center">No. Caso</th>
-                                    <th style="min-width: 95px" class="ion-text-center">Id Cliente</th>
-                                    <th style="min-width: 135px" class="ion-text-center">Tipo de Servicio</th>
-                                    <th style="min-width: 135px" class="ion-text-center">Estado</th>
-                                    <th style="min-width: 155px" class="ion-text-center">Fecha Solicitud</th>
-                                    <th style="min-width: 135px" class="ion-text-center">Prioridad</th>
-                                    <th style="min-width: 265px" class="ion-text-center">Nombre Cliente</th>
-                                    <th style="min-width: 125px" class="ion-text-center">Teléfono</th>
-                                    <th style="min-width: 355px" class="ion-text-center">Dirección</th>                            
+                                    <th style="min-width: 110px" class="text-center">No. Caso</th>
+                                    <th style="min-width: 95px" class="text-center">Id Cliente</th>
+                                    <th style="min-width: 135px" class="text-center">Tipo de Servicio</th>
+                                    <th style="min-width: 135px" class="text-center">Estado</th>
+                                    <th style="min-width: 155px" class="text-center">Fecha Solicitud</th>
+                                    <th style="min-width: 135px" class="text-center">Prioridad</th>
+                                    <th style="min-width: 205px" class="text-center">Concepto</th>
+                                    <th style="min-width: 265px" class="text-center">Nombre Cliente</th>
+                                    <th style="min-width: 125px" class="text-center">Teléfono</th>
+                                    <th style="min-width: 355px" class="text-center">Dirección</th>                            
                                 </tr>
                             </thead>
                             <tbody>                      
@@ -854,7 +1039,7 @@
                         </table>
                     </div>                                       
                 </div>
-                <div class="col-6 p-0" style="z-index: 3;">
+                <div class="col-6 p-0 d-none" style="z-index: 3;">
                     <div id="content-forms">
                         <div class="row content-tabs">
                             <div class="col-auto p-0">
@@ -867,39 +1052,51 @@
                         </div>
                     </div>
                     <div id="tab-datos-servicio" class="p-2 tabs-content">
-                        <div id="data-pedidos" class="tipo-pedido">
+                        <div id="sinSeleccionCaso" class="p-rel" style="height: 110px;">
+                            <div class="vertical-center">
+                                Seleccione un servicio a gestionar
+                            </div>
+                        </div>
+                        <div id="data-pedidos" class="d-none">
+                            <div class="row align-items-center">
+                                <div class="col"></div>
+                                <div class="col-auto text-center">
+                                    <label class="fw-bold color-primary" style="font-size: 22px;" id="dataPedidosCliente"></label><br>
+                                    <label class="fw-bold color-primary" style="font-size: 18px;" id="dataPedidosTelefono"></label><br>
+                                    <label class="fw-bold color-primary" style="font-size: 16px;" id="dataPedidosDireccion"></label>
+                                </div>
+                                <div class="col"></div>
+                            </div>
                             <div class="row pb-2">
                                 <div class="col">
                                     <label class="color-primary"><strong>No. Servicio: </strong><span id="noPedido"></span></label>
                                 </div>
-                            </div>
-                            <div class="row pb-2">
-                                <div class="col">
-                                    <label class="color-primary"><strong>Cliente: </strong><span id="clientePedido"></span></label>
+                                <div class="col-auto">
+                                    <label class="color-primary"><strong>Fecha solicitud: </strong><span id="fechaSolicitudPedido"></span></label>
                                 </div>
                             </div>
                             <div class="row pb-2">
                                 <div class="col-4">
                                     <div class="content-input content-input-primary">
-                                        <label>Fecha prometida</label>
+                                        <label>Fecha prometida*</label>
                                         <input id="fechaPrometidaPedido" type="date" class="form-ptg form-ptg-primary">
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="content-input content-input-primary">
-                                        <label>Desde</label>
+                                        <label>Desde*</label>
                                         <input id="desdePedido" type="time" class="form-ptg form-ptg-primary">
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="content-input content-input-primary">
-                                        <label>Hasta</label>
+                                        <label>Hasta*</label>
                                         <input id="hastaPedido" type="time" class="form-ptg form-ptg-primary">
                                     </div>
                                 </div>
                             </div>
                             <div class="row pb-2">
-                                <div class="col-4">
+                                <div class="col-2">
                                 </div>  
                                 <div class="col-4">
                                     <div class="content-input content-input-primary">
@@ -907,95 +1104,94 @@
                                         <input id="zonaVentaPedido" readonly type="text" class="form-ptg form-ptg-primary">
                                     </div>
                                 </div>
+                                <div class="col-4">
+                                    <div class="content-input content-input-primary">
+                                        <label>Viaje(ruta)*</label>
+                                        <select id="viajeVentaPedido" readonly type="text" class="form-ptg form-ptg-primary"></select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row pb-2 align-items-center">
                                 <div class="col">
                                     <label class="color-primary ft-18">Lista de pedido</label>
                                 </div>
-                                <div class="col-auto">
-                                    <button id="agregarProducto" type="button" class="btn bg-secondary-cc"><i
-                                            class="fa-solid fa-plus"></i> Agregar producto</button>
-                                </div>
                             </div>
-                            <div id="sinProductos" style="position: relative; min-height: 90px;">
-                                <div
-                                    style="text-align: center; position: absolute; top: 0; bottom: 0; right: 0; left: 0; font-size: 15px; margin: auto; height: 25px;">
-                                    <label class="color-primary">Sin productos en el pedido.</label>
-                                </div>
-                            </div>
-                            <div id="productosCilindroPedido" class="d-none pb-2">
-                                <div class="row bg-primary-cc ft-16 pt-3 pb-1">
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                Producto
-                                            </div>
-                                            <div class="col-2">
-                                                Cantidad
-                                            </div>
-                                            <div class="col-3">
-                                                Capacidad
-                                            </div>
-                                            <div class="col-2">
-                                                Valor
-                                            </div>
-                                            <div class="col-2">
-                                                Envase
-                                            </div>
+                            <div class="row">
+                                <div class="card-body">
+                                    <div class="col-12 d-none">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped productosCilindroPedido">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Producto</th>
+                                                        <th scope="col" class="text-center">Cantidad</th>
+                                                        <th scope="col" class="text-center">Capacidad</th>
+                                                        <th scope="col" class="text-center">Valor</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
+                                                        <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
                                     </div>
-                                    <div class="col-auto">
-                                        <i class="fa-solid fa-ellipsis-vertical ft-24 invisible"></i>
-                                    </div>
-                                </div>
-                                <div class="content">
-        
-                                </div>
-                            </div>
-                            <div id="productosEstacionarioPedido" class="d-none pb-2">
-                                <div class="row bg-primary-cc ft-16 pt-3 pb-1">
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="col-5">
-                                                Producto
-                                            </div>
-                                            <div class="col-3">
-                                                Litros
-                                            </div>
-                                            <div class="col-2">
-                                                Monto
-                                            </div>
-                                            <div class="col-2">
-                                                Total
-                                            </div>
+                                    <div class="col-12 d-none">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped productosEstacionarioPedido">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Producto</th>
+                                                        <th scope="col" class="text-center">Litros</th>
+                                                        <th scope="col" class="text-center">Cantidad</th>
+                                                        <th scope="col" class="text-center">Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
+                                                        <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
                                     </div>
-                                    <div class="col-auto">
-                                        <i class="fa-solid fa-ellipsis-vertical ft-24 invisible"></i>
-                                    </div>
-                                </div>
-                                <div class="content">
-        
                                 </div>
                             </div>
                             <div class="row pb-2 align-items-center">
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Método de pago</label>
-                                        <select id="metodoPagoPedido" class="form-ptg form-ptg-primary">
-                                        </select>
-                                    </div>
+                                <div class="col">
+                                    <label class="color-primary ft-18">Lista de métodos de pago</label>
                                 </div>
-                                <div class="col-3">
-                                    <div class="content-input content-input-primary d-none">
-                                        <label>Referencia</label>
-                                        <input id="referenciaPagoPedido" class="form-ptg form-ptg-primary"> </select>
-                                    </div>
-                                </div>
-                                <div class="col-5">
-                                    <div class="content-input content-input-primary d-none">
-                                        <label>Folio de autorización</label>
-                                        <input id="folioAutorizacionPedido" class="form-ptg form-ptg-primary"> </select>
+                            </div>
+                            <div class="row">
+                                <div class="card-body">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped productosMetodoPago">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Método</th>
+                                                        <th scope="col" class="text-center">Folio</th>
+                                                        <th scope="col" class="text-center">Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="2" style="text-align: right; font-weight: bold;">Total</td>
+                                                        <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1017,107 +1213,242 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="data-casos" class="tipo-caso d-none">
-                            <div class="row pb-2">
-                                <div class="col">
-                                    <label class="color-primary"><strong>No. Caso: </strong><span id="noCaso"></span></label>
+                        <div id="data-casos" class="d-none px-3">
+                            <div class="row align-items-center">
+                                <div class="col"></div>
+                                <div class="col-auto text-center">
+                                    <label class="fw-bold color-primary" style="font-size: 22px;" id="dataCasosCliente"></label><br>
+                                    <label class="fw-bold color-primary" style="font-size: 18px;" id="dataCasosTelefono"></label><br>
+                                    <label class="fw-bold color-primary" style="font-size: 16px;" id="dataCasosDireccion"></label><br>
+                                    <label class="fw-bold color-primary" style="font-size: 16px;">Tipo de caso: <span id="dataCasosTipoServicio"></span></label>
                                 </div>
-                                <div class="col text-right">
-                                    <label class="color-primary"><strong>Fecha reporte: </strong><span id="fechaCaso"></span></label>
-                                </div>
+                                <div class="col"></div>
                             </div>
-                            <div class="row pb-2">
-                                <div class="col">
-                                    <label class="color-primary"><strong>Cliente: </strong><span id="clienteCaso"></span></label>
-                                </div>
-                            </div>
-                            <div class="row pb-2">
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Tipo de caso</label>
-                                        <select id="tipoCasoFugaQueja" class="form-ptg form-ptg-primary">
-                                        </select>
+                            <div id="tipoCasoFuga">
+                                <div class="row pb-2 mt-3" style="font-size: 22px;">
+                                    <div class="col border-bottom-primary">
+                                        <label class="color-primary"><strong>Reporte</strong></label>
                                     </div>
                                 </div>
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Concepto</label>
-                                        <select id="conceptoFugaQueja" class="form-ptg form-ptg-primary">
-                                        </select>
+                                <div class="row pb-2" style="font-size: 16px;">
+                                    <div class="col">
+                                        <label class="color-primary"><strong>No. Caso: </strong><span id="noCaso"></span></label>
+                                    </div>
+                                    <div class="col text-right">
+                                        <label class="color-primary"><strong>Fecha reporte: </strong><span id="fechaCaso"></span></label>
+                                    </div>
+                                </div>                            
+                                <div class="row pb-2">
+                                    <div class="col-6">
+                                        <div class="content-input content-input-primary">
+                                            <label>Asociar servicio</label>
+                                            <select id="asociarServicioFugaQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="content-input content-input-primary">
+                                            <label>Asociar a otro caso</label>
+                                            <select id="asociarCasoFugaQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Fecha visita</label>
-                                        <input id="fechaVisitaFugaQueja" type="date" class="form-ptg form-ptg-primary">
+                                <div class="row pb-2 mt-3" style="font-size: 22px;">
+                                    <div class="col border-bottom-primary">
+                                        <label class="color-primary"><strong>Domicilio*</strong></label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row pb-2">
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Horario preferido</label>
-                                        <input id="horarioPreferidoFugaQueja" type="time" class="form-ptg form-ptg-primary">
+                                <div class="row pb-2">
+                                    <div class="col-8">
+                                        <div class="content-input content-input-primary">
+                                            <select id="direccionFugaQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Artículo</label>
-                                        <select id="articuloFugaQueja" class="form-ptg form-ptg-primary">
-                                        </select>
+                                <div class="row pb-2 mt-3" style="font-size: 22px;">
+                                    <div class="col border-bottom-primary">
+                                        <label class="color-primary"><strong>Detalle del caso</strong></label>
                                     </div>
                                 </div>
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Año</label>
-                                        <input id="anioFugaQueja" type="number" class="form-ptg form-ptg-primary">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row pb-2">
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Asociar permiso</label>
-                                        <select id="asociarServicioFugaQueja" class="form-ptg form-ptg-primary">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Asociar caso</label>
-                                        <select id="asociarCasoFugaQueja" class="form-ptg form-ptg-primary">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="content-input content-input-primary">
-                                        <label>Nota principal</label>
-                                        <input id="notaPrincipalFugaQueja" type="text" class="form-ptg form-ptg-primary">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row pb-2">
-                                <div class="col-4">
-                                    <div class="row ion-align-items-center">
-                                        <div class="col">
-                                            <div class="content-input content-input-primary">
-                                                <label>Notas adicionales</label>
+                                <div class="row pb-2">
+                                    <div class="col-6">
+                                        <div class="row ion-align-items-center">
+                                            <div class="col">
+                                                <div class="content-input content-input-primary">
+                                                    <label>Notas adicionales</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i id="notasAdicionalesFugaQueja" style="cursor: pointer; font-size: 20px;"
+                                                    class="fa-solid fa-plus color-primary"></i>
                                             </div>
                                         </div>
-                                        <div class="col-auto">
-                                            <i id="notasAdicionalesFugaQueja" style="cursor: pointer;"
-                                                class="fa-solid fa-plus color-primary"></i>
+                                        <table id="notasAdicionales" class="table-gen table-gen-blue">
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="content-input content-input-primary">
+                                            <label>Concepto*</label>
+                                            <select id="conceptoFugaQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
+                                        <div class="content-input content-input-primary mt-3">
+                                            <label>Prioridad*</label>
+                                            <select id="prioridadFugaQueja" class="form-ptg form-ptg-primary">
+                                                <option value="1">Alta</option>
+                                                <option value="2">Media</option>
+                                                <option value="3">Baja</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <table id="notasAdicionales" class="table-gen table-gen-blue">
-                                        <tbody>
-                                        </tbody>
-                                    </table>
                                 </div>
-                                <div class="col-8">
-                                    <div class="content-input content-input-primary">
-                                        <label>Descripción del cliente</label>
-                                        <input id="descripcionClienteFugaQueja" type="text" class="form-ptg form-ptg-primary">
+                                <div class="row pb-2 mt-3" style="font-size: 22px;">
+                                    <div class="col border-bottom-primary">
+                                        <label class="color-primary"><strong>Información del producto</strong></label>
+                                    </div>
+                                </div>
+                                <div class="row pb-2">
+                                    <div class="col-4">
+                                        <div class="content-input content-input-primary">
+                                            <label>Artículo*</label>
+                                            <select id="articuloFugaQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="content-input content-input-primary">
+                                            <label>Capacidad</label>
+                                            <input id="capacidadFugaQueja" type="number" class="form-ptg form-ptg-primary"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="content-input content-input-primary">
+                                            <label>Año</label>
+                                            <input id="anioFugaQueja" type="number" class="form-ptg form-ptg-primary"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row pb-2 mt-3" style="font-size: 22px;">
+                                    <div class="col border-bottom-primary">
+                                        <label class="color-primary"><strong>Programación visita</strong></label>
+                                    </div>
+                                </div>
+                                <div class="row pb-2">
+                                    <div class="col-4">
+                                        <div class="content-input content-input-primary">
+                                            <label>Fecha visita*</label>
+                                            <input id="fechaVisitaFugaQueja" type="date" class="form-ptg form-ptg-primary">
+                                        </div>
+                                        <div class="content-input content-input-primary mt-3">
+                                            <label>Horario preferido*</label>
+                                            <input id="horarioPreferidoFugaQueja" type="time" class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="content-input content-input-primary">
+                                            <label>Especificaciones</label>
+                                            <textarea id="especificacionesFugaQueja" disabled rows="3" placeholder="Especificaciones.." class="form-ptg form-ptg-primary"></textarea>
+                                        </div>
+                                        <div class="content-input content-input-primary mt-3">
+                                            <label>Asignar técnico*</label>
+                                            <select id="asignarTecnicoFugaQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tipoCasoQueja">
+                                <div class="row pb-2" style="font-size: 16px;">
+                                    <div class="col">
+                                        <label class="color-primary"><strong>No. Queja: </strong><span id="noQueja"></span></label>
+                                    </div>
+                                    <div class="col text-right">
+                                        <label class="color-primary"><strong>Fecha reporte: </strong><span id="fechaQueja"></span></label>
+                                    </div>
+                                </div>
+                                <div class="row pb-2">
+                                    <div class="col-6">
+                                        <div class="content-input content-input-primary">
+                                            <label>Concepto*</label>
+                                            <select id="conceptoQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
+                                        <div class="content-input content-input-primary mt-3">
+                                            <label>Asociar servicio</label>
+                                            <select id="asociarServicioQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
+                                        <div class="content-input content-input-primary mt-3">
+                                            <label>Asociar a otro caso</label>
+                                            <select id="asociarCasoQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row ion-align-items-center">
+                                            <div class="col">
+                                                <div class="content-input content-input-primary">
+                                                    <label>Notas adicionales</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i id="notasAdicionalesQueja" style="cursor: pointer; font-size: 20px;"
+                                                    class="fa-solid fa-plus color-primary"></i>
+                                            </div>
+                                        </div>
+                                        <table id="notasAdicionalesQueja" class="table-gen table-gen-blue">
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row pb-2 mt-3" style="font-size: 22px;">
+                                    <div class="col border-bottom-primary">
+                                        <label class="color-primary"><strong>Escalar caso</strong></label>
+                                    </div>
+                                </div>
+                                <div class="row pb-2">
+                                    <div class="col-4">
+                                        <div class="content-input content-input-primary">
+                                            <label>Responsable*</label>
+                                            <select id="responsableQueja" class="form-ptg form-ptg-primary">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">                                        
+                                        <div class="content-input content-input-primary">
+                                            <label>Prioridad*</label>
+                                            <select id="prioridadQueja" class="form-ptg form-ptg-primary">
+                                                <option value="1">Alta</option>
+                                                <option value="2">Media</option>
+                                                <option value="3">Baja</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="content-input content-input-primary">
+                                            <label>Estado</label><br>
+                                            <select id="estadoQueja" class="form-ptg form-ptg-primary">
+                                                <option value="1">No iniciado</option>
+                                                <option value="2">En curso</option>
+                                                <option value="3">Escalado</option>
+                                                <option value="4">Reabierto</option>
+                                                <option value="5">Cerrado</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>                                
+                                <div class="row pb-2">
+                                    <div class="col-8">
+                                        <div class="content-input content-input-primary">
+                                            <label>Justificación*</label>
+                                            <textarea id="justificacionQueja" disabled rows="3" placeholder="Justificación.." class="form-ptg form-ptg-primary"></textarea>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -1125,7 +1456,7 @@
                                 <div class="col">
                                 </div>
                                 <div class="col-auto">
-                                    <button id="guardarPedido" type="button" class="btn bg-secondary-cc"><i
+                                    <button id="guardarCaso" type="button" class="btn bg-secondary-cc"><i
                                             class="fa-solid fa-floppy-disk"></i> Guardar caso</button>
                                 </div>
                             </div>
@@ -1160,7 +1491,11 @@
     <!-- Timepicker -->
     <script
         src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+    <script
+        src="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
     <!-- Extra -->
     <script src="https://themesbrand.com/skote/layouts/assets/libs/metismenu/metisMenu.min.js"></script>
     <!-- <script src="https://themesbrand.com/skote/layouts/assets/libs/simplebar/simplebar.min.js"></script> -->
@@ -1177,27 +1512,44 @@
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <!-- FancyTable -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery.fancytable/dist/fancyTable.min.js"></script>
+
     <!-- Funciones generales -->
     <script type="text/javascript">
         userName = '${ds.userName}';
         userRole = '${ds.userRole}';
-        userSubsidiary =/* '${ds.userSubsidiary}' */ '16';
         urlPlantas = '${ds.getPlantas}';
-        urlCrearOp = '${ds.createOPP}';
-        urlObtenerPedidos = '${ds.getOPP}';
-        urlObtenerCliente = '${ds.getCustomer}';
-        urlObtenerZona = '${ds.getColoniaZona}';
-        urlObtenerZonas = '${ds.getZone}';
-        urlGuardarCliente = '${ds.postCustomer}';
+        urlStatusOp = '${ds.getListStatusOpp}';
+        urlRutas = '${ds.getListRoutes}';
+        urlTiposServicios = '${ds.getListTypeServices}';
+        urlGetOpp = '${ds.getOppMonitor}';
+        urlGetCasos = '${ds.getCasesMonitor}';
+        urPutOppMonitor = '${ds.putOppMonitor}';
+        urlGetListCancellReason = "${ds.getListCancellReason}";
+        urlPostNoteandMessage = "${ds.postNoteandMessage}";
+        urlObtenerPedidos = '${ds.getOpp}';
+        urlGetConceptosCasos = '${ds.getLisConceptosCasos}';
         urlObtenerArticulos = '${ds.getItems}';
-        // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
-        // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
-        // urlObtenerColonias = 'https://apisgratis.com/cp/cp/ciudad/?valor=SAN%20LUIS%20POTOSI';
-        urlGetPlaces = '${ds.getCities}';
-        customerGlobal = null;
-        listAddress = [];
+        urlPutCases = '${ds.putCases}';
+        urlGetMessageandNotes = '${ds.getMessageandNotes}';
+        urlGetListSuppEmp = '${ds.getListSuppEmp}';
+        urlGetItemsOpp = '${ds.getItemsOpp}';
+        urlGetMethodPayments = '${ds.getMethodPayments}';
+        urlGetListTravelNumber = '${ds.getListTravelNumber}';
+        conceptoFugasQuejasArr = [];
+        methodPayments = [];
+        deftEstacionarVal = "4088";
 
         function initComponents() {
+            $('body').delegate('.dropdown-toggle', 'show.bs.dropdown', function () {
+                $(this).closest("td").css("z-index", "2");
+            });
+
+            $('body').delegate('.dropdown-toggle', 'hidden.bs.dropdown', function () {
+                $(this).closest("td").css("z-index", "1");
+            });
+
             /* Inicia todos los form-search */
             $(".form-search .fa-magnifying-glass").click(function () {
                 $(this).parent().find("input").focus();
@@ -1212,6 +1564,7 @@
             $(".form-search .fa-xmark").click(function () {
                 $(this).addClass('d-none');
                 $(this).parent().find("input").val('');
+                $(this).parent().find("input").trigger('keyup');
             });
 
             $("#metodoPagoPedido").change(function () {
@@ -1222,29 +1575,6 @@
                     $("#referenciaPagoPedido").parent().addClass("d-none");
                     $("#folioAutorizacionPedido").parent().addClass("d-none");
                 }
-            });
-
-            $("#agregarProducto").click(function () {
-                $("#envaseFormProductos").prop("checked", false);
-                $("#capacidadFormProductos").val("");
-                $("#cantidadFormProductos").val("0");
-                $("#valorFormProductos").val("0");
-                $("#totalFormProductos").val("0");
-                $("#litrosFormProductos").val("0");
-                $("#montoFormProductos").val("0");
-                if (!$("#sinProductos").hasClass("d-none")) {
-                    $("#productoFormProductos").prop("disabled", false);
-                    $("#productoFormProductos").val("cilindro");
-                } else {
-                    $("#productoFormProductos").prop("disabled", true);
-                    if (!$("#productosCilindroPedido").hasClass("d-none")) {
-                        $("#productoFormProductos").val("cilindro");
-                    } else {
-                        $("#productoFormProductos").val("estacionario");
-                    }
-                }
-                $("#titleProductoModal").html("Agregar producto");
-                $('#formProductosModal').modal('show');
             });
 
             $("#productoFormProductos").change(function () {
@@ -1269,11 +1599,26 @@
                     $(this).find(".btn").html('<i class="fa-solid fa-caret-left"></i>');
                     $("#content-forms").parent().addClass("d-none");
                     $(this).parent().removeClass("col-6").addClass("col-12");
+                    $("#tablePedidos tfoot, #tableCasos tfoot").removeClass("expand");
                 } else {
                     $(this).find(".btn").html('<i class="fa-solid fa-caret-right"></i>');
                     $("#content-forms").parent().removeClass("d-none");
                     $(this).parent().removeClass("col-12").addClass("col-6");
+                    $("#tablePedidos tfoot, #tableCasos tfoot").addClass("expand");
                 }
+            });
+
+            $("#articuloFugaQueja").change(function() {
+                if($(this).val() != "4088") {
+                    $("#capacidadFugaQueja").closest(".col-4").addClass("d-none");
+                } else {
+                    $("#capacidadFugaQueja").closest(".col-4").removeClass("d-none");
+                }
+            });
+
+            $("#plantas").change(function() {
+                getRutas(true);
+                getListTravel();
             });
 
             $(".btn-expand-down").click(function () {
@@ -1291,22 +1636,56 @@
             });
 
             $("#notasAdicionalesFugaQueja").click(function () {
+                $("#typeNota").val("fuga");
                 $("#formNotasAdicionalesModal").modal("show");
                 $("#notaAdicional").val("");
             });
 
+            $("#notasAdicionalesQueja").click(function () {
+                $("#typeNota").val("queja");
+                $("#formNotasAdicionalesModal").modal("show");
+                $("#notaAdicional").val("");
+            });
+
+            $("#filterDatosCliente").change(function() {
+                if($(this).val() == 'address') {
+                    $("#filterBuscarCalle").closest(".col-auto").removeClass("d-none");
+                    $("#filterBuscarInt").closest(".col-auto").removeClass("d-none");
+                    $("#filterBuscarExt").closest(".col-auto").removeClass("d-none");
+                    $("#filterBuscarCliente").closest(".col-auto").addClass("d-none");
+                } else {
+                    $("#filterBuscarCalle").closest(".col-auto").addClass("d-none");
+                    $("#filterBuscarInt").closest(".col-auto").addClass("d-none");
+                    $("#filterBuscarExt").closest(".col-auto").addClass("d-none");
+                    $("#filterBuscarCliente").closest(".col-auto").removeClass("d-none");
+                }
+            });
+
             $("#guardarNotaAdicional").click(function () {
                 if ($("#notaAdicional").val().trim()) {
-                    $("#notasAdicionales tbody").append(
-                        '<tr class="notasAdicionalesItem">' +
-                        '<td class="p-2">' +
-                        $("#notaAdicional").val().trim() +
-                        '</td>' +
-                        '<td width="50" style="text-align: center;">' +
-                        '<i class="fa-solid fa-trash-can" style="cursor: pointer;" onclick="deleteNota(this)"></i>' +
-                        '</td>' +
-                        '</td>'
-                    );
+                    if($("#typeNota").val().trim().toLowerCase() == "fuga") {
+                        $("#notasAdicionales tbody").append(
+                            '<tr class="notasAdicionalesItem">' +
+                                '<td class="p-2">' +
+                                    $("#notaAdicional").val().trim() +
+                                '</td>' +
+                                '<td width="50" style="text-align: center;">' +
+                                    '<i class="fa-solid fa-trash-can" style="cursor: pointer;" onclick="deleteNota(this)"></i>' +
+                                '</td>' +
+                            '</tr>'
+                        );                      
+                    } else {
+                        $("#notasAdicionalesQueja tbody").append(
+                            '<tr class="notasAdicionalesItem">' +
+                                '<td class="p-2">' +
+                                    $("#notaAdicional").val().trim() +
+                                '</td>' +
+                                '<td width="50" style="text-align: center;">' +
+                                    '<i class="fa-solid fa-trash-can" style="cursor: pointer;" onclick="deleteNota(this)"></i>' +
+                                '</td>' +
+                            '</tr>'
+                        ); 
+                    }
                     $("#formNotasAdicionalesModal").modal("hide");
                 } else {
                     alert("Llena la nota.");
@@ -1315,6 +1694,8 @@
             });
 
             $("#filterTipoServicio").change(function() {
+                $("#sinSeleccionCaso").removeClass("d-none");
+                $("#data-pedidos, #data-casos").addClass("d-none");
                 if($(this).val() == "pedidos") {
                     $(".tipo-pedido").removeClass("d-none");
                     $(".tipo-caso").addClass("d-none");
@@ -1335,14 +1716,48 @@
             });
         }
 
+        function removeDuplicates(originalArray, prop) {
+            var newArray = [];
+            var lookupObject = {};
+
+            for (var i in originalArray) {
+            lookupObject[originalArray[i][prop]] = originalArray[i];
+            }
+
+            for (i in lookupObject) {
+            newArray.push(lookupObject[i]);
+            }
+            return newArray;
+        }
+
         function deleteNota(item) {
             $(item).parent().parent().remove();
+        }
+
+        function getRestTime(datetime, type = "1") {  
+            let hours = Math.abs(new Date().getTime() - datetime.getTime()) / 3600000,
+                days = 0;
+
+            if(type == "1") {
+                if(hours >= 24) {
+                    days = Math.floor(hours / 24);
+                    hours = hours - (days * 24);
+                }
+            
+                return (days > 0 ? days + (days > 1 ? ' días con ' : ' día con ') : '') + this.getTimeFromDecimal(hours);
+            } else {
+                return hours;
+            }    
         }
 
         function dateFormatFromDate(date, format = "1") {
             if (typeof date == "string") {
                 let aux = date;
-                date = new Date(parseInt(aux.split("-")[0]), parseInt(aux.split("-")[1]) - 1, parseInt(aux.split("-")[2]));
+                if(aux.split("-").length > 1) {
+                    date = new Date(parseInt(aux.split("-")[0]), parseInt(aux.split("-")[1]) - 1, parseInt(aux.split("-")[2]));
+                } else {
+                    date = new Date(parseInt(aux.split("/")[2]), parseInt(aux.split("/")[1]) - 1, parseInt(aux.split("/")[0]));
+                }                
             }
 
             let day = date.getDate();
@@ -1404,6 +1819,87 @@
             return fecha;
         }
 
+        function dynamicSort(property) {
+            var sortOrder = 1;
+            if (property[0] === "-") {
+                sortOrder = -1;
+                property = property.substr(1);
+            }
+            return function (a, b) {
+                /* next line works with strings and numbers, 
+                * and you may want to customize it to your needs
+                */
+                var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                return result * sortOrder;
+            }
+        }
+
+        function getTimeFromDecimal(decimalTimeString) {
+            var decimalTime = parseFloat(decimalTimeString);
+            decimalTime = decimalTime * 60 * 60;
+            var hours = Math.floor((decimalTime / (60 * 60)));
+            decimalTime = decimalTime - (hours * 60 * 60);
+            var minutes = Math.floor((decimalTime / 60));
+            decimalTime = decimalTime - (minutes * 60);
+
+
+            let auxHour = "";
+            auxHour += hours > 0 ? hours > 1 ? hours + ' horas' : ' hora' : '';
+
+            if(minutes > 0) {
+                if(auxHour != "") {
+                    auxHour += " y ";
+                }
+                auxHour += minutes > 0 ? minutes > 1 ? minutes + ' minutos' : minutes + ' minuto' : '';
+            }    
+            return auxHour ? auxHour : '0 minutos';
+        }
+
+        function dateFormatFromString(datetime, format = "1") {
+            if (format == "1") {
+                let date = datetime.split(" ")[0].split("-");
+                let time = [0, 0, 0]
+                if (datetime.split(" ").length > 1) {
+                    time = datetime.split(" ")[1].split(":");
+                    if (datetime.split(" ")[2] == "PM") {
+                        time[0] = parseInt(time[0]) + 12;
+                    }
+                }
+                
+                return new Date(date[0], parseInt(date[1]) - 1, date[2], time[0], time[1]);
+            } else if (format == "2") {
+                let date = datetime.split(" ")[0].split("/");
+                let time = [0, 0];
+                if (datetime.split(" ").length > 1) {
+                    time = datetime.split(" ")[1].split(":");
+                    if (datetime.split(" ")[2] == "PM") {
+                        time[0] = parseInt(time[0]) + 12;
+                    }
+                }
+                return new Date(date[2], parseInt(date[1]) - 1, date[0], time[0], time[1]);
+            }
+        }
+
+        function getTimeFromString(time) {
+            let aux = time.split(" "),
+            aux2 = aux[0].split(":");
+            if (aux.length > 1 && (aux[1].toLowerCase() == "pm" || aux[1].toLowerCase() == "p.m")) {
+                if(parseInt(aux2[0]) < 12) {
+                    aux2[0] = parseInt(aux2[0]) + 12;
+                }                
+            } else {
+                if(aux2[0].toString().length == 1) {
+                    aux2[0] = "0"+aux2[0].toString();
+                }
+                if(parseInt(aux2[0]) == 12) {
+                    aux2[0] = "00";
+                }
+            }
+
+            return aux2[0].toString() + ":" + aux2[1];
+
+        }
+
         function timeFormatFromDate(date, format = "1") {
             date = new Date(date);
             let hours = date.getHours();
@@ -1458,9 +1954,10 @@
         });
 
         function llenaCampos() {
-            $("#filterFechaPrometidaIni").val(dateFormatFromDate(removeDays(new Date(), "7"), "2"));            
+            $("#filterFechaPrometidaIni").val(dateFormatFromDate(removeDays(new Date(), "15"), "2"));            
             $("#filterFechaPrometidaFin").val(dateFormatFromDate(new Date(), "2"));
-            $("#filterFechaPrometidaIni").trigger("change");
+            $("#filterFechaPrometidaIni").prop("max", $("#filterFechaPrometidaFin").val());
+            $("#filterFechaPrometidaFin").prop("min", $("#filterFechaPrometidaIni").val());
             origins.forEach((element, i) => {
                 $("#origenPedido").append('<option value="' + element + '">' + element + '</option>');
             });
@@ -1475,27 +1972,16 @@
         function getToday() {
             let $this = this;
             $("#today").html(dateFormatFromDate(new Date(), "7"));
+            $("#fechaPrometidaPedido").prop("min", dateFormatFromDate(new Date(), "2"));
             setTimeout(function () {
                 $this.getToday();
             }, 1000);
         }
     </script>
 
-    <!-- Archivo de javascript de Conrado y Christian -->
+    <!-- Archivo de javascript de Alexis y Christian -->
     <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48000&c=5298967_SB1&h=NdnUdwRduXUwIZT7XVuERyzOKZbJ-_QPY03zg7xKZQRHX1wG&_xt=.js"></script>
-
-    <!-- Archivo para las llamadas de estados, ciudades, colonias y zonas -->
-    <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48157&c=5298967_SB1&h=Cxgu5tpk6-yXeCEIqFicKPDbhSY17i5nQ_hHUZoAhEP0TLyA&_xt=.js"></script>
-
-    <!-- Archivo para los métodos y funciones de clientes -->
-    <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48282&c=5298967_SB1&h=3R_nDdYVdb7OzqNvcpiI1XbKQXvZjlewuCa-Rp3UAlvw9BZ1&_xt=.js"></script>
-
-    <!-- Archivo para pedidos -->
-    <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=48294&c=5298967_SB1&h=e4yUeaRx4W4srxQQZvmnIjYsdUwv9zAzd_VYjVHZcssnXtwt&_xt=.js"></script>
+        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=110091&c=5298967_SB1&h=8kwskR5tl2kZ_pVnIo3V57lxp9-j7j7Srrj03Gz7Y7Ats0xv&_xt=.js"></script>
 </body>
 
 </html>
