@@ -652,10 +652,10 @@
                     <h5 class="modal-title" id="titleProductoModal">Agregar producto</h5>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
+                    <div class="row info-minimo-gas-lp d-none">
                         <div class="col-12">
                             <div class="alert alert-info" role="alert">
-                                El monto mínimo a vender es de 60 litros.
+                                El monto mínimo a vender es de $<span class="minimo-gas-lp"></span> mxn.
                             </div>
                         </div>
                     </div>
@@ -797,6 +797,15 @@
                 <div class="modal-body">
                     <div class="row p-3 notas-detalle">
                         <div class="col-12">
+                            <div class="text-center">
+                                <label style="font-weight: bold;" for="inputSegundaLlamada">Marcar segunda llamada</label>
+                                <br>
+                                <input class="form-check-input segunda-llamada" type="checkbox" value="" name="inputSegundaLlamada" id="inputSegundaLlamada">
+                            </div>
+                        </div>
+                        <div class="col-12 pt-3">
+                            <label style="font-weight: bold;">Lista de comentarios</label>
+                            <br>
                             <table class="table-gen table-gen-blue text-center table-notas">
                                 <thead>
                                     <tr>
@@ -832,6 +841,111 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
                     <button id="guardarNuevaNotaAdicional" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="formAgregarDescuentoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleAgregarDescuento" data-item="" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleAgregarDescuento">Agregar descuento/notas <span class="servicio-id"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row p-3 notas-detalle">
+                        <div class="row p-3 campos-art d-none">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-desgloce-art">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Desgloce de servicios</th>
+                                                <th scope="col" class="text-center">Cantidad/Litros</th>
+                                                <th scope="col" class="text-center">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="2" style="text-align: right; font-weight: bold;">Total</td>
+                                                <td colspan="1" class="text-center total-pedido-detalle"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row p-3 campos-metodos-pago d-none">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-desgloce-metodos-pago">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Método</th>
+                                                <th scope="col" class="text-center">Folio</th>
+                                                <th scope="col" style="text-align: right;" class="">Monto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="2" style="text-align: right; font-weight: bold;">Total</td>
+                                                <td colspan="1" style="text-align: right;" class="total-metodos-pago-detalle"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 pt-3">
+                            <label style="font-weight: bold;">Lista de comentarios</label>
+                            <br>
+                            <table class="table-gen table-gen-blue text-center table-notas">
+                                <thead>
+                                    <tr>
+                                        <th>Autor</th>
+                                        <th>Fecha</th>
+                                        <th>Contenido</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row p-3">
+                        <div class="col-12 d-none">
+                            <div class="content-input content-input-primary">
+                                <label>Internal ID*</label>
+                                <input class="form-ptg form-ptg-primary" id="internalIdServicio" data-item="" readonly>
+                            </div>
+                            <div class="content-input content-input-primary">
+                                <label>Tipo servicio*</label>
+                                <input class="form-ptg form-ptg-primary" name="tipo_servicio" data-item="" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <label>Nueva nota</label>
+                                <textarea id="nuevaNotaAdicional" rows="3" placeholder="Nota..." class="form-ptg form-ptg-primary nuevaNotaAdicional"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <label for="inputAgregarDescuento">Agregar descuento*</label>
+                                <br>
+                                
+                                <input name="inputAgregarDescuento" id="inputAgregarDescuento" placeholder="0.00" type="text" class="form-ptg form-ptg-primary" oninput="onlyNumbers(this.value, '#inputAgregarDescuento')">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+                    <button id="guardarDescuentoNota" type="button" onclick="guardarDescuentoNota()" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>
@@ -2633,6 +2747,7 @@
 
         // Limpia los campos del modal para agregar producto
         $('body').delegate('div#formProductosModal', 'hidden.bs.modal', function () {
+            $('.info-minimo-gas-lp').addClass('d-none');
             $('.cilindroFormProductos').addClass('d-none');
             $('.estacionarioFormProductos').addClass('d-none');
 
@@ -2644,13 +2759,13 @@
         });
 
         function initComponents() {
-            $('body').delegate('.dropdown-toggle', 'show.bs.dropdown', function () {
-                $(this).closest("td").css("z-index", "2");
-            });
+            // $('body').delegate('.dropdown-toggle', 'show.bs.dropdown', function () {
+            //     $(this).closest("td").css("z-index", "2");
+            // });
 
-            $('body').delegate('.dropdown-toggle', 'hidden.bs.dropdown', function () {
-                $(this).closest("td").css("z-index", "1");
-            });
+            // $('body').delegate('.dropdown-toggle', 'hidden.bs.dropdown', function () {
+            //     $(this).closest("td").css("z-index", "1");
+            // });
 
             let today = moment().endOf('day');
             $('#fechaPrometidaPedido').val(today.format('YYYY-MM-DD').toString());

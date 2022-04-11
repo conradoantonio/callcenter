@@ -463,7 +463,7 @@ function setSelectPlants(items) {
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
                 $("select#plantas").append(
-                    '<option value='+items[key].id+'>'+items[key].nombre+'</option>'
+                    '<option data-pedido-minimo="'+parseFloat(items[key].min).toFixed(2)+'" value='+items[key].id+'>'+items[key].nombre+'</option>'
                 );
             }
         }
@@ -713,6 +713,9 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
                     '<li onclick="verNotasAdicionales(this)" class="'+type+' px-2 py-1 c-pointer" style="font-size: 16px">'+
                         '<i class="fa-solid fa-list color-primary"></i> Ver comentarios'+
                     '</li>'+
+                    '<li onclick="verNotasAgregarDescuento(this)" class="'+(type) +' '+ (type == 'oportunidades' ? '' : 'd-none')+' px-2 py-1 c-pointer" style="font-size: 16px">'+
+                        '<i class="fa-solid fa-tag color-primary"></i> Agregar descuento'+
+                    '</li>'+
                 '</ul>'+
             '</div>'+
             // '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
@@ -733,28 +736,6 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
         '<td>'+( type == "casos" ? ( item.hora_visita ?? 'Sin asignar' ) : ( item.horaVisita ?? 'Sin asignar' ) )+'</td>'+// Hora visita
         '<td>'+( type == "casos" ? ( item.estatus ?? 'Sin asignar' ) : ( item.estado ?? 'Sin asignar' ) )+'</td>'+// Estado
         '<td>'+( type == "casos" ? ( item.prioridad ?? 'Sin asignar' ) : 'N/A' )+'</td>'+// Prioridad
-        // '<td>'+( item.hora_visita ?? 'Sin hora visita' )+'</td>'+
-        // '<td>'+( item.numeroDocumento ?? 'Sin número de documento' )+'</td>'+
-        // '<td>'+( item.numeroCaso ?? 'Sin número de caso' )+'</td>'+
-        // '<td>'+( item.asunto ?? 'Sin asunto' )+'</td>'+
-        // '<td>'+( item.nombreCliente ?? 'Sin nombre de cliente' )+'</td>'+
-        // '<td>'+( item.telefono ?? 'Sin teléfono' )+'</td>'+
-        // '<td>'+( item.representanteVentas ?? 'Sin agente' )+'</td>'+
-        // '<td>'+( item.monitor ?? 'Sin asignado' )+'</td>'+
-        // '<td>'+( item.estado ?? 'Sin estado' )+'</td>'+
-        // '<td>'+( item.prioridad ?? 'Sin prioridad' )+'</td>'+
-        // '<td>'+( item.motivoCancelacion ?? 'Sin motivo cancelación' )+'</td>'+
-        // '<td>'+( item.cierrePrevisto ?? 'Sin cierre previsto' )+'</td>'+
-        // '<td>'+( item.horaCierre ?? 'Sin hora cierre' )+'</td>'+
-        // '<td>'+( item.origenServicio ? item.origenServicio : 'Sin origen servicio' )+'</td>'+
-        // '<td>'+( item.tipoServicio ?? 'Sin tipo servicio' )+'</td>'+
-        // '<td>'+( item.articulo ?? 'Sin artículo' )+'</td>'+
-        // '<td>'+( item.fechaNotificacion ?? 'Sin fecha notificación' )+'</td>'+
-        // '<td>'+( item.tipoTransaccion ?? 'Sin tipo transacción' )+'</td>'+
-        // '<td>'+( item.nota ?? 'Sin nota' )+'</td>'+
-        // '<td>'+( item.conductorAsignado ?? 'Sin conductor asignado' )+'</td>'+
-        // '<td>'+( item.nota_rapida ?? 'Sin nota rápida' )+'</td>'+
-        // '<td>'+( item.unidad ?? 'Sin unidad' )+'</td>'+
     '</tr>';
 
     return tr;

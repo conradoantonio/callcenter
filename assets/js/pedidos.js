@@ -57,15 +57,17 @@ $('select#productoFormProductos, select#capacidadFormProductos').on('change', fu
     onChangeValue( $(this) );
 });
 
-// 
+// Valida la información mostrada en el modal del producto
 $('select#productoFormProductos').on('change', function(e) {
     let val = $(this).val();
+    $('.info-minimo-gas-lp').addClass('d-none');
     if ( val == "cilindro" ) {
         $("#totalFormProductos").prop('readonly', true);
         $(".cilindroFormProductos").removeClass("d-none");
         $(".estacionarioFormProductos").addClass("d-none");
         // $(".opt-pro-pedido-cilindro").attr("disabled", false);
     } else if ( val == "estacionario" ) {
+        $('.info-minimo-gas-lp').removeClass('d-none');
         $("#totalFormProductos").attr('readonly', false);
         $(".estacionarioFormProductos").removeClass("d-none");
         $(".cilindroFormProductos").addClass("d-none");
@@ -80,8 +82,9 @@ $('select#productoFormProductos').on('change', function(e) {
 
 // Valida la información que se mostrará en el modal
 $("#agregarProducto").click(function () {
-    let direccion = $('select#direccionCliente').children('option:selected').data('address');
-
+    let direccion   = $('select#direccionCliente').children('option:selected').data('address');
+    let minimoGasLp = Number($('select#plantas').children(':selected').data('pedido-minimo'));
+    
     if ( direccion ) {
         if ( direccion.typeServiceId == 1 ) {// Cilindro
             $("#productoFormProductos").val("cilindro");
@@ -89,6 +92,8 @@ $("#agregarProducto").click(function () {
             $(".cilindroFormProductos").removeClass("d-none");
             $(".estacionarioFormProductos").addClass("d-none");
         } else if ( direccion.typeServiceId == 2 ) {// Estacionario
+            $('.info-minimo-gas-lp').removeClass('d-none');
+            $('.minimo-gas-lp').text(minimoGasLp);
             $("#productoFormProductos").val("estacionario");
             $("#totalFormProductos").attr('readonly', false);
             $(".estacionarioFormProductos").removeClass("d-none");
@@ -204,6 +209,7 @@ $('#guardarMetodoPagoForm').on('click', function () {
     let canContinue = false;
     let conFolio    = ["8", "2", "5", "6"];
     let metodoId    = $("#metodoPagoPedido").val();
+    let metodoTxt   = $('#metodoPagoPedido').children(':selected').text();
     // let numMetodos  = $('table.productosMetodoPago tbody').children('tr.metodos').length;
 
     if(!metodoId || !$("#montoPagoPedido").val() ) {
@@ -226,9 +232,10 @@ $('#guardarMetodoPagoForm').on('click', function () {
     let folio        = $('#folioAutorizacionPedido').val().trim();
     let metodoNombre = $("#metodoPagoPedido").children(':selected').text();
     let metodoObj    = {
-        tipo_pago : metodoId,
-        monto     : total,
-        folio     : folio,
+        metodo_txt : metodoTxt,
+        tipo_pago  : metodoId,
+        monto      : total,
+        folio      : folio,
     };
 
     if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado y se edita el row
@@ -528,7 +535,9 @@ function onChangeValue(element) {
 async function savePedido() {
     btnGuardarPedido.on('click', function () {
 
+        let minimoGasLp      = Number($('select#plantas').children(':selected').data('pedido-minimo'));
         let totalPedido      = 0;
+        let tipoPedido       = null;
         let totalConCredito  = 0;
         let descuento        = 0;
         let totalMetodosPago = 0;
@@ -542,8 +551,15 @@ async function savePedido() {
         // Define cuál tabla de productos es la que se usará para calcular totales y descuentos
         if (! $('.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) { // Estacionario
             tablaProd = $('.productosEstacionarioPedido');
+            tipoPedido = 'estacionario';
         } else if (! $('.productosCilindroPedido').parent().parent().hasClass('d-none') ) { // Cilindro
             tablaProd = $('.productosCilindroPedido');
+            tipoPedido = 'cilindro';
+        }
+        
+        if (! tablaProd ) {// No hay productos seleccionados
+            alert('Agregue al menos un producto a la lista.'); 
+            return;
         }
 
         totalPedido = tablaProd.children('tfoot').find('td.total').data('total');
@@ -566,6 +582,12 @@ async function savePedido() {
                 alert("Favor de llenar todos los campos con *");
             }
             return; 
+        }
+
+        // Necesita verificarse el monto mínimo
+        if ( tipoPedido == 'estacionario' && minimoGasLp && ( ( Number(totalPedido) + Number(descuento)) < minimoGasLp ) ) {
+            alert("El monto mínimo para gas lp es de " + minimoGasLp );
+            return;
         }
         
         // Agrega la lista de artículos
@@ -799,7 +821,7 @@ function setTotalMetodoPago(table) {
     });
 
     table.children('tfoot').find('td.total').data('total', parseFloat(total).toFixed(2));
-    table.children('tfoot').find('td.total').text('$'+total+' mxn');
+    table.children('tfoot').find('td.total').text('$'+parseFloat(total).toFixed(2)+' mxn');
 }
 
 // Método que ejecuta la cancelación de un pedido
@@ -1000,6 +1022,97 @@ function filtrarHistorico() {
         swal.close();
         console.log(error);
     });
+}
+
+// Abre el modal para ver las notas y agregar un descuento si es que quiere
+function verNotasAgregarDescuento($this) {
+    let pedido = $($this).closest("tr").data("item");
+    
+    $("#formAgregarDescuentoModal").data("item", pedido);
+    $('.servicio-id').html(pedido.id_Transaccion ? " - " + pedido.id_Transaccion : '');
+    $('table.table-notas tbody').children('tr').remove();
+    $('table.table-desgloce-art tbody').children('tr').remove();
+    $('table.table-desgloce-metodos-pago tbody').children('tr').remove();
+    
+    setMetodosPago(pedido, 'oportunidad');
+    getMsgNotes(pedido, 'oportunidad');
+    getItemPedido(pedido, 'oportunidad');
+    $("#formAgregarDescuentoModal").modal("show");
+
+}
+
+// Valida si se agrega un descuento y/o nota al servicio
+function guardarDescuentoNota() {
+    let pedido      = $("div#formAgregarDescuentoModal").data("item");
+    let canContinue = false;
+    let nota        = $('#formAgregarDescuentoModal textarea.nuevaNotaAdicional').val();
+    let descuento   = $('#formAgregarDescuentoModal input[name=inputAgregarDescuento]').val();
+    nuevaNotaAdicional
+    if( !$("#inputAgregarDescuento").val() ) {
+        canContinue = false;
+    } else {
+        canContinue = true;
+    }
+
+    if (! canContinue ) { 
+        alert("Favor de llenar todos los campos con *");
+        return; 
+    }
+
+    let dataDescuento = {
+        "opportunitiesUpdate": [
+            {
+                "id": pedido.id_Transaccion,
+                "bodyFields": {},
+                "lines": [
+                    {
+                        'article'    : 4528,
+                        'rate'       : parseFloat( Number(descuento) * -1 ).toFixed(2),
+                        'isDiscount' : true,
+                    }
+                ]
+            }
+        ]
+    };
+
+    loadMsg();
+    let settings = {
+        url      : urlActualizarOpp,
+        method   : 'PUT',
+        data     : JSON.stringify(dataDescuento)
+    }
+    setAjax(settings).then((response) => {
+        swal.close();
+        console.log(response);                
+    }).catch((error) => {
+        swal.close();
+        console.log(error);
+    });
+
+    // Guarda una nota
+    if ( nota ) {
+        let newNota = [{ 
+            type: "nota", 
+            idRelacionado: pedido.id_Transaccion, 
+            titulo: userName + " (Nota de descuento)", 
+            nota: nota,
+            transaccion: "oportunidad"
+        }];
+
+        let settingsNota = {
+            url      : urlGuardarNotaMensaje,
+            method   : 'POST',
+            data: JSON.stringify({ informacion: newNota })
+        }
+        setAjax(settingsNota).then((response) => {
+            console.log('exito agregando la nota: ', response);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    $('#formAgregarDescuentoModal').modal('hide');
+
 }
 
 // funcion para generar las peticiones
