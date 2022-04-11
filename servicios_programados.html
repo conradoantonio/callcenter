@@ -582,7 +582,7 @@
             border-radius: 0 10px 10px 0;
         }
 
-        tfoot {
+        #tablePedidos tfoot, #tableCasos tfoot {
             position: fixed;
             width: fit-content;
             margin: auto;
@@ -590,7 +590,7 @@
             right: 0;
             bottom: 0;
         }
-        tfoot.expand {
+        #tablePedidos tfoot.expand, #tableCasos tfoot.expand {
             right: 50%;
         }
     </style>
@@ -644,7 +644,171 @@
             </div>
         </div>
     </header>
+
+    <div id="formVerDetallesPedidos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleerDetallesPedidosModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=110815&c=5298967_SB1&h=he-4rJolZ3J7WidhKv2oNWSuYY-s45IhArkF-ivqlvB7sd_A"
+                            alt="" width="120">
+                        </div>
+                        <div class="col text-center">
+                            <label class="fw-bold" style="font-size: 22px;" id="verDetallesCliente"></label><br>
+                            <label class="fw-bold" style="font-size: 18px;" id="verDetallesTelefono"></label><br>
+                            <label class="fw-bold" style="font-size: 16px;" id="verDetallesDireccion"></label><br>
+                            <label class="fw-bold" style="font-size: 16px;">Tipo: <span id="verDetallesTipoServicio"></span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="content-gen">
+                        <div class="row p-3">
+                          <div class="col-3 title">Servicio</div>
+                          <div id="verDetallesServicio" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Direccíon</div>
+                          <div id="verDetallesDireccion2" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Fecha Prometida</div>
+                          <div id="verDetallesFechaPrometida" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                          <div class="col-3 title">Tipo Producto</div>
+                          <div id="verDetallesTipoProducto" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Estado de seguimiento</div>
+                            <div id="verDetallesEstadoSeguimiento" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-3 title">Observaciones</div>
+                            <div id="verDetallesObservaciones" class="col-9 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="card-body p-0">
+                                        <div class="col-12 d-none">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped productosCilindroPedido m-0">
+                                                    <thead style="color: #000;">
+                                                        <tr>
+                                                            <th scope="col">Producto</th>
+                                                            <th scope="col" class="text-center">Cantidad</th>
+                                                            <th scope="col" class="text-center">Capacidad</th>
+                                                            <th scope="col" class="text-center">Valor</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
+                                                            <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 d-none">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped productosEstacionarioPedido">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Producto</th>
+                                                            <th scope="col" class="text-center">Litros</th>
+                                                            <th scope="col" class="text-center">Cantidad</th>
+                                                            <th scope="col" class="text-center">Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
+                                                            <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!--<div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cancelar</button>
+                    <button id="guardarNotaAdicional" type="button" class="btn btn-primary">Guardar</button>
+                </div>-->
+            </div>
+        </div>
+    </div>
     
+    <div id="formReprogramarModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titleReprogramarModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 300px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleReprogramarModal">Reprogramar servicio: <span id="reprogramarPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="content-input content-input-primary">
+                        <label>Fecha prometida*</label>
+                        <input id="fechaPrometidaReprogramar" type="date" class="form-ptg form-ptg-primary">
+                    </div>
+                    <div class="content-input content-input-primary">
+                        <label>Desde*</label>
+                        <input id="desdeReprogramar" type="time" class="form-ptg form-ptg-primary">
+                    </div>
+                    <div class="content-input content-input-primary">
+                        <label>Hasta*</label>
+                        <input id="hastaReprogramar" type="time" class="form-ptg form-ptg-primary">
+                    </div>
+                    <div class="content-input content-input-primary mt-3">
+                        <label>Comentario</label><br>
+                        <textarea rows="3" id="comentarioReprogramar" class="form-ptg form-ptg-primary"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cancelar</button>
+                    <button id="guardarReprogramar" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="formCambiarEstadoModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titleCambiarEstadoModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 400px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleCambiarEstadoModal">Cambiar estado del servicio: <span id="cambiarEstadoPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="content-input content-input-primary">
+                        <label>Motivo de Cancelacion*</label><br>
+                        <select id="cancelarOppMotivo" class="form-ptg form-ptg-primary">
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cancelar</button>
+                    <button id="guardarCambiarEstado" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="home-view" class="w-100 m-0">
         <div id="filters-data" class="p-3">
             <div class="btn-expand-down">
@@ -685,6 +849,36 @@
             </div>
         </div>
         <div id="content-data">
+            <div class="row m-0" style="width: 100vw;">
+                <div class="col-12 p-0" style="z-index: 2; position: relative; height: fit-content;">
+                    <div id="content-casos">     
+                        <table id="tablePedidos" class="table-gen table-gen-blue tipo-pedido">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 40px; z-index: 1; left: 0;" class="text-center sticky-col">
+                                        <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
+                                        <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                    </th>
+                                    <th style="min-width: 110px" class="text-center">No. Servicio</th>
+                                    <th style="min-width: 95px" class="text-center">Id Cliente</th>
+                                    <th style="min-width: 135px" class="text-center">Tipo seguimiento</th>
+                                    <th style="min-width: 155px" class="text-center">Fecha Prometida</th>
+                                    <th style="min-width: 265px" class="text-center">Nombre Cliente</th>
+                                    <th style="min-width: 125px" class="text-center">Teléfono</th>
+                                    <th style="min-width: 125px" class="text-center">Tipo de producto</th>
+                                    <th style="min-width: 355px" class="text-center">Dirección</th>
+                                    <th style="min-width: 300px" class="text-center">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>   
+                                <tr>
+                                    <td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td>
+                                </tr>                  
+                            </tbody>
+                        </table>
+                    </div>  
+                </div>
+            </div>
         </div>
     </div>
 
@@ -744,13 +938,25 @@
         urlGetZone = '${ds.getZone}';
         urlGetListTypeContact = '${ds.getListTypeContact}';
         urlGetOpp = '${ds.getOppMonitor}';
+        urlGetItemsOpp = '${ds.getItemsOpp}';
+        urPutOppMonitor = '${ds.putOppMonitor}';
+        urlPostNoteandMessage = "${ds.postNoteandMessage}";
         statusOP = [];
         countServices = 0;
+        deftEstacionarVal = "4088";
 
         // Se inyecta la información del usuario logueado
         $('.user-name').text(userName);
         $('#role').text(userRole);
         $("#filterProximaLlamada").val(dateFormatFromDate(new Date(), "2"));
+
+        $('body').delegate('.dropdown-toggle', 'show.bs.dropdown', function () {
+            $(this).closest("td").css("z-index", "2");
+        });
+
+        $('body').delegate('.dropdown-toggle', 'hidden.bs.dropdown', function () {
+            $(this).closest("td").css("z-index", "1");
+        });
 
         // Call a global ajax method
         function setAjax(settings) {
@@ -1163,7 +1369,11 @@
             let filt = {};
 
             if($("#filterRuta").val()) {
-                filt.ruta = $("#filterRuta").val();
+                //filt.ruta = $("#filterRuta").val();
+            }
+
+            if($("#filterZona").val() != "0") {
+                filt.colonia = "14" //$("#filterZona").val();
             }
 
             filt.tipo_producto = parseInt($("#filterTipoProducto").val());
@@ -1174,10 +1384,79 @@
                 }
             });
 
-            filt.fechaPrometida1 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
-            filt.fechaPrometida2 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
+            filt.fechaPrometida1 = "24/03/2022"//dateFormatFromDate($("#filterProximaLlamada").val(), "5");
+            filt.fechaPrometida2 = "24/03/2022"//dateFormatFromDate($("#filterProximaLlamada").val(), "5");
 
             return filt;
+        }
+
+        function removeDuplicates(originalArray, prop) {
+            var newArray = [];
+            var lookupObject = {};
+
+            for (var i in originalArray) {
+            lookupObject[originalArray[i][prop]] = originalArray[i];
+            }
+
+            for (i in lookupObject) {
+            newArray.push(lookupObject[i]);
+            }
+            return newArray;
+        }
+
+        function initTable(table) {
+            $("#"+table).fancyTable({
+                sortColumn:0,
+                pagination: true,
+                perPage: 10,
+                searchable:false,
+                sortable: false
+            });
+        }
+
+        function dateFormatFromString(datetime, format = "1") {
+            if (format == "1") {
+                let date = datetime.split(" ")[0].split("-");
+                let time = [0, 0, 0]
+                if (datetime.split(" ").length > 1) {
+                    time = datetime.split(" ")[1].split(":");
+                    if (datetime.split(" ")[2] == "PM") {
+                        time[0] = parseInt(time[0]) + 12;
+                    }
+                }
+                
+                return new Date(date[0], parseInt(date[1]) - 1, date[2], time[0], time[1]);
+            } else if (format == "2") {
+                let date = datetime.split(" ")[0].split("/");
+                let time = [0, 0];
+                if (datetime.split(" ").length > 1) {
+                    time = datetime.split(" ")[1].split(":");
+                    if (datetime.split(" ")[2] == "PM") {
+                        time[0] = parseInt(time[0]) + 12;
+                    }
+                }
+                return new Date(date[2], parseInt(date[1]) - 1, date[0], time[0], time[1]);
+            }
+        }
+
+        function getTimeFromString(time) {
+            let aux = time.split(" "),
+            aux2 = aux[0].split(":");
+            if (aux.length > 1 && (aux[1].toLowerCase() == "pm" || aux[1].toLowerCase() == "p.m")) {
+                if(parseInt(aux2[0]) < 12) {
+                    aux2[0] = parseInt(aux2[0]) + 12;
+                }                
+            } else {
+                if(aux2[0].toString().length == 1) {
+                    aux2[0] = "0"+aux2[0].toString();
+                }
+                if(parseInt(aux2[0]) == 12) {
+                    aux2[0] = "00";
+                }
+            }
+
+            return aux2[0].toString() + ":" + aux2[1];
+
         }
 
         function getServicios() {
@@ -1196,9 +1475,10 @@
                 if(response.success) {
                     response.data = removeDuplicates(response.data, 'no_pedido');
                     if(response.data.length == 0) {
-                        $("#tablePedidos tbody").append('<tr><td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                        $("#tablePedidos tbody").append('<tr><td colspan="10" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
                         initTable("tablePedidos");
                     }
+                    
                     response.data.forEach((pedido, position) => {
                         if(pedido.fecha_prometida) {
                             pedido.fecha_hora_prometida = dateFormatFromString(pedido.fecha_prometida, "2");
@@ -1225,52 +1505,42 @@
                             pedido.hasta = getTimeFromString(pedido.hasta);
                         }
                     });
-                    response.data.sort(dynamicSort("fecha_hora_prometida"));
-                    response.data = orderOrders(response.data);
+                    
                     $("#tablePedidos thead tr th").css('z-index', "3");
                     $($("#tablePedidos thead tr th")[0]).css('z-index', "4");
                     $($("#tablePedidos thead tr th")[1]).css('z-index', "4");
                     $($("#tablePedidos thead tr th")[2]).css('z-index', "4");
+                    
                     response.data.forEach((pedido, position) => {
+                        let tipoServicio = "";
+                        vrTiposServicios.forEach(element => {
+                            if(pedido.servicio == element.id) {
+                                tipoServicio = element.nombre;
+                            }
+                        });
                         let trAux = '<tr data-item='+"'"+JSON.stringify(pedido)+"'"+'>'+
                                         '<td class="text-center sticky-col">'+  
                                             '<div class="btn-group dropend vertical-center">'+                                            
                                                 '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
-                                                '<ul class="dropdown-menu">'+
+                                                '<ul class="dropdown-menu" style="width: max-content;">'+
                                                     '<li onclick="verDetalles(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-eye color-primary"></i> Ver detalles</li>'+
-                                                    '<li onclick="gestionarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-gears color-primary"></i> Gestionar servicio</li>'+
-                                                    ((pedido.servicio == "1" || pedido.servicio == "2") ? '<li onclick="asignarViaje(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-route color-primary"></i> Asignar viaje(ruta)</li>' : '')+
-                                                    '<li onclick="notificarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-bell color-primary"></i> Notificar servicio</li>'+
-                                                    '<li onclick="seguimientoPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
-                                                    '<li onclick="cancelarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio</li>'+
+                                                    '<li onclick="reprogramarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-regular fa-calendar-days color-primary"></i> Reprogramar servicio</li>'+
+                                                    '<li onclick="cambiarEstadoServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-arrows-rotate color-primary"></i> Cambiar estado</li>'+
                                                 '</ul>'+
                                             '</div>'+
                                             '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                         '</td>'+
-                                        '<td style="left: 40px;"class="text-center sticky-col">'+
-                                            '<button class="btn" style="cursor: default; background: '+pedido.status_color+';"></button>'+
-                                        //(pedido.status_color ? '<i class="'+(pedido.outline ? 'fa-regular' : 'fa-solid')+' fa-square vertical-center" style="color: '+pedido.status_color+';"></i>': '')+
-                                            '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
-                                        '</td>'+
-                                        '<td style="left: 80px;"class="text-center sticky-col">'+
-                                            '<input type="checkbox" class="form-check-input form-ptg vertical-center" ' + (pedido.segunda_llamada ? 'checked' : '') + ' disabled style="width: fit-content;">'+
-                                            '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
-                                        '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.no_pedido + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.id_cliente + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.tipo_cliente ? pedido.tipo_cliente : 'Sin tipo de cliente') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + dateFormatFromDate(pedido.fecha_solicitud, '5') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + dateFormatFromDate(pedido.fecha_prometida, '5') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.estado + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.nombre_cliente ? pedido.nombre_cliente : 'Sin nombre de cliente') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.telefono ? pedido.telefono : 'Sin teléfono') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.zona ? pedido.zona : 'Sin zona') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? pedido.contrato.trim() : 'Sin contrato') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.nombre_vehiculo.trim() ? pedido.nombre_vehiculo.trim() : 'Sin asignar') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.colonia ? pedido.colonia : 'Sin colonia') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.direccion ? pedido.direccion : 'Sin dirección') + '</td>'+
-                                        '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.observaciones ? pedido.observaciones : 'Sin observaciones') + '</td>'+
+                                        '<td class="text-center">' + pedido.no_pedido + '</td>'+
+                                        '<td class="text-center">' + pedido.id_cliente + '</td>'+
+                                        '<td class="text-center">Aviso</td>'+
+                                        '<td class="text-center">' + dateFormatFromDate(pedido.fecha_prometida, '5') + '</td>'+
+                                        '<td class="text-center">' + (pedido.nombre_cliente ? pedido.nombre_cliente : 'Sin nombre de cliente') + '</td>'+
+                                        '<td class="text-center">' + (pedido.telefono ? pedido.telefono : 'Sin teléfono') + '</td>'+
+                                        '<td class="text-center">' + tipoServicio + '</td>'+
+                                        '<td class="text-center">' + (pedido.direccion ? pedido.direccion : 'Sin dirección') + '</td>'+
+                                        '<td class="text-center">' + (pedido.observaciones ? pedido.observaciones : 'Sin observaciones') + '</td>'+
                                     '</tr>';
+                                    
                         $("#tablePedidos tbody").append(trAux);
 
                         if(response.data.length == (position + 1)) {
@@ -1279,14 +1549,262 @@
                     });
                     swal.close();
                 } else {
-                    $("#tablePedidos tbody").append('<tr><td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                    $("#tablePedidos tbody").append('<tr><td colspan="10" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
                     swal.close();
                 }
             }).catch((error) => {
                 console.log(error);
-                $("#tablePedidos tbody").append('<tr><td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                $("#tablePedidos tbody").append('<tr><td colspan="10" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
                 swal.close();
             });
+        }
+
+        function cambiarEstadoServicio($this) {
+            let servicio = $($this).closest("tr").data("item");
+            $("#cambiarEstadoPedido").html(servicio.no_pedido ? servicio.no_pedido : '');
+            $("#formCambiarEstadoModal").data("item", servicio);
+            $("#formReprogramarModal").modal("show");
+        }
+
+        function reprogramarServicio($this) {
+            let servicio = $($this).closest("tr").data("item");
+            $("#reprogramarPedido").html(servicio.no_pedido ? servicio.no_pedido : '');
+            $("#fechaPrometidaReprogramar").val(dateFormatFromDate(servicio.fecha_prometida, "2"));
+            $("#desdeReprogramar").val(servicio.desde ? getTimeFromString(servicio.desde) : null);
+            $("#hastaReprogramar").val(servicio.hasta ? getTimeFromString(servicio.hasta) : null);
+            $("#comentarioReprogramar").val("");
+            $("#formReprogramarModal").data("item", servicio);
+            $("#formReprogramarModal").modal("show");
+        }
+
+        $("#guardarReprogramar").click(function() {
+            let servicio = $("#formReprogramarModal").data("item");
+            if(!$("#fechaPrometidaReprogramar").val() ||
+            !$("#desdeReprogramar").val() ||
+            !$("#hastaReprogramar").val()) {
+                let aux = "<ul>";
+                if(!$("#fechaPrometidaReprogramar").val()) {
+                    aux += "<li>Fecha prometida</li>";
+                }
+                if(!$("#desdeReprogramar").val()) {
+                    aux += "<li>Desde</li>";
+                }
+                if(!$("#hastaReprogramar").val()) {
+                    aux += "<li>Hasta</li>";
+                }
+                aux += "</ul>";
+                infoMsg('warning', 'Campos requeridos:', aux);
+                return;
+            }
+            confirmMsg("warning", "¿Seguro que desea reprogramar el servicio?", function(resp) {
+                if(resp) {
+                    let dataSend = {
+                        "opportunitiesUpdate": [
+                            {
+                                "id": servicio.no_pedido,
+                                "bodyFields": {
+                                    "expectedclosedate": dateFormatFromDate($("#fechaPrometidaReprogramar").val(), "5"),
+                                    "custbody_ptg_entre_las": formatTime( $('#desdeReprogramar').val() ),
+                                    "custbody_ptg_y_las" : formatTime( $('#hastaReprogramar').val())
+                                },
+                                "lines": [
+                                    
+                                ]
+                            }
+                        ]
+                    };
+                    loadMsg();
+                    let settings = {
+                        url      : urPutOppMonitor,
+                        method   : 'PUT',
+                        data: JSON.stringify(dataSend)
+                    }
+                    setAjax(settings).then((response) => {
+                        if(response.success) {
+                            if($("#comentarioReprogramar").val().trim()) {
+                                let nota = [{ 
+                                    type: "nota", 
+                                    idRelacionado: servicio.no_pedido, 
+                                    titulo: "Reprogramación de servicio", 
+                                    nota: $("#comentarioReprogramar").val().trim(),
+                                    transaccion: "oportunidad"
+                                }];
+                                let settings2 = {
+                                    url      : urlPostNoteandMessage,
+                                    method   : 'POST',
+                                    data: JSON.stringify({ informacion: nota })
+                                }
+                                setAjax(settings2).then((response) => {
+                                    if(response.success) {
+                                        $("#formReprogramarModal").modal("hide");
+                                        swal.close();
+                                        infoMsg('success', '', "Servicio reprogramado de manera correcta", null, function(resp) {
+                                            getServicios();
+                                        }); 
+                                    }
+                                }).catch((error) => {
+                                    $("#formReprogramarModal").modal("hide");
+                                    swal.close();
+                                    infoMsg('success', '', "Servicio reprogramado de manera correcta", null, function(resp) {
+                                        getServicios();
+                                    }); 
+                                });
+                            } else {
+                                $("#formReprogramarModal").modal("hide");
+                                swal.close();
+                                infoMsg('success', '', "Servicio reprogramado de manera correcta", null, function(resp) {
+                                    getServicios();
+                                }); 
+                            }                                                         
+                        } else {
+                            swal.close();
+                            infoMsg('error', 'Error:', "Ocurrio un error al tratar de reprogramar el servicio");
+                        }            
+                    }).catch((error) => {
+                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de reprogramar el servicio");
+                        console.log(error);
+                        swal.close();
+                    });
+                }
+            });
+        });
+
+        function formatTime(value, format = 'hh:mm a') {
+            let hora = value.split(':');
+            let customDateTime = new Date();
+
+            if ( hora.length ) {
+
+                customDateTime.setHours(hora[0]);
+                customDateTime.setMinutes(hora[1]);
+
+                return moment(customDateTime).format(format);
+
+            } 
+
+            return '';
+        }
+
+        function confirmMsg(type, title, callback) {
+
+            let swalObj = {
+                title: title,
+                icon: type ?? 'info',
+                buttons:["Cancelar", "Aceptar"],
+                closeOnEsc: false,
+                closeOnClickOutside: false,
+            };
+
+            swal(swalObj).then((resp) => {
+                callback(resp);
+            }).catch(swal.noop);
+        }
+
+        function infoMsg(type, title, msg = '', timer = null, callback = null) {
+
+            let swalObj = {
+                title: title,
+                icon: type ?? 'info',
+                // buttons: false,
+                closeOnEsc: false,
+                closeOnClickOutside: false,
+                timer: timer,
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML:"<p class='text-response'>"+msg ?? "¡Cambios guardados exitosamente!"+"</p>"
+                    },
+                }
+            };
+
+            if(callback) {
+                swal(swalObj).then((resp) => {
+                    callback(resp);
+                }).catch(swal.noop);
+            } else {
+                swal(swalObj).catch(swal.noop);
+            }
+        }
+
+        function verDetalles($this) {
+            let pedido = $($this).closest("tr").data("item");
+            loadMsg();
+            console.log(pedido);
+            $("#verDetallesCliente").html(pedido.id_cliente + " - " + pedido.nombre_cliente);
+            $("#verDetallesTelefono").html(pedido.telefono.trim());
+            $("#verDetallesDireccion").html(pedido.direccion.trim());
+            $("#verDetallesTipoServicio").html(pedido.tipo_cliente.trim());
+
+            $("#verDetallesServicio").html(pedido.no_pedido);
+            $("#verDetallesDireccion2").html(pedido.direccion);
+            $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
+            $("#verDetallesTipoProducto").html("");
+            vrTiposServicios.forEach(element => {
+                if(pedido.servicio == element.id) {
+                    $("#verDetallesTipoProducto").html(element.nombre);
+                }
+            });
+            if($("#verDetallesTipoProducto").html().trim() == "") {
+                $("#verDetallesTipoProducto").html("Desconocido");
+            }
+            $("#verDetallesEstadoSeguimiento").html(pedido.estado);
+            $("#verDetallesObservaciones").html(pedido.observaciones ? pedido.observaciones : 'Sin observaciones');
+
+            let settings = {
+                url      : urlGetItemsOpp,
+                method   : 'POST',
+                data     : JSON.stringify({opp : pedido.no_pedido}),
+            }
+
+            setAjax(settings).then((response) => {
+                if(response.success) {
+                    $('.productosCilindroPedido, .productosEstacionarioPedido').parent().parent().addClass('d-none');
+                    $('.productosCilindroPedido tbody, .productosEstacionarioPedido tbody').children("tr").remove();
+                    var table = $('.productosCilindroPedido');
+                    response.data.forEach(element => {
+                        if(element.itemId == deftEstacionarVal) {
+                            table = $('.productosEstacionarioPedido');
+                        }
+                    });
+                    table.parent().parent().removeClass('d-none');
+                    let total = 0;
+                    response.data.forEach(articulo => {
+                        articulo.amount = articulo.amount ? parseFloat(articulo.amount) : 0;
+                        articulo.taxAmount = articulo.taxAmount ? parseFloat(articulo.taxAmount) : 0;
+                        if(table.hasClass('productosCilindroPedido')) {
+                            $(".productosCilindroPedido tbody").append(
+                                '<tr data-item-id='+articulo.itemId+' class="product-item" data-item=' + "'" + JSON.stringify(articulo) + "'" + '>' +
+                                    '<td class="text-center">'+articulo.item+'</td>'+
+                                    '<td class="text-center">'+articulo.quantity+'</td>'+
+                                    '<td class="text-center">'+articulo.capacidad+' kg</td>'+
+                                    '<td class="text-center" data-total='+(articulo.amount+articulo.taxAmount)+'>$'+(articulo.amount+articulo.taxAmount).toFixed(2)+' mxn</td>'+
+                                '</tr>'
+                            );
+                        } else {
+                            $(".productosEstacionarioPedido tbody").append(
+                                '<tr data-item-id='+articulo.itemId+' class="product-item" data-item=' + "'" + JSON.stringify(articulo) + "'" + '>' +
+                                    '<td>'+articulo.item+'</td>'+
+                                    '<td class="text-center">'+articulo.quantity+'</td>'+
+                                    '<td class="text-center">1</td>'+
+                                    '<td class="text-center" data-total='+(articulo.amount+articulo.taxAmount)+'>$'+(articulo.amount+articulo.taxAmount)+' mxn</td>'+
+                                '</tr>'
+                            );
+                        }
+                        
+                        total = total + (articulo.amount+articulo.taxAmount);
+                    });
+
+                    total = total.toFixed(2);
+                    table.children('tfoot').find('td.total').data('total', total);
+                    table.children('tfoot').find('td.total').text('$'+total+' mxn');            
+                }
+                $("#formVerDetallesPedidos").modal("show");
+                swal.close();
+            }).catch((error) => {
+                console.log(error);
+                swal.close();
+            });
+            
         }
 
         function readyInit() {

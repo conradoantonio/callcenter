@@ -837,8 +837,8 @@ function gestionarServicio($this) {
                 } else {
                     $(".productosEstacionarioPedido tbody").append(
                         '<tr data-item-id='+articulo.itemId+' class="product-item" data-item=' + "'" + JSON.stringify(articulo) + "'" + '>' +
-                            '<td>Gas LP</td>'+
-                            '<td class="text-center">'+articulo.item+'</td>'+
+                            '<td>'+articulo.item+'</td>'+
+                            '<td class="text-center">'+articulo.quantity+'</td>'+
                             '<td class="text-center">1</td>'+
                             '<td class="text-center" data-total='+(articulo.amount+articulo.taxAmount)+'>$'+(articulo.amount+articulo.taxAmount)+' mxn</td>'+
                         '</tr>'
