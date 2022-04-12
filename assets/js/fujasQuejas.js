@@ -59,7 +59,7 @@ $('#guardarNuevaNotaAdicional').on('click', function () {
 
 // Guarda la información de un pedido
 $('#guardarFugaQueja').on('click', function () {
-    
+    let zonaPrecio  = $('#zonaPrecioCliente').text().replace('$', '');
     let canContinue = false;
     if(
         !$("#tipoCasoFugaQueja").val()   ||
@@ -96,6 +96,7 @@ $('#guardarFugaQueja').on('click', function () {
         "status" : 1,
         "priority" : $('#prioridadFugaQueja').val(),
         "concepto" : $('#conceptoFugaQueja').val(),
+        "priceZone" : zonaPrecio,
         // "quicknote" : "Nota rápida",
         "custevent_ptg_fecha_visita" : dateFormatFromDate($('#fechaVisitaFugaQueja').val(), '5'),
         "id_oportuniti" : $('#asociarServicioFugaQueja').val(),

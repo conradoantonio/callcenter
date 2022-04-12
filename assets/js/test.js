@@ -165,6 +165,9 @@ function setCustomerInfo(customer) {
 
     // Setea la información del modal
     setAlianzaComercial(customer);
+
+    // Muestra los casos pendientes si es que existen
+    getPendingCases();
 }
 
 // Setea los datos dependiendo del tipo de alianza del cliente: contrato, crédito o contado
@@ -773,9 +776,13 @@ function clearCustomerInfo () {
     $('#emailFugaQueja, #telefonoFugaQueja').val('');
 
     // Se remueven los badge de información adicional del cliente
-    $('#badgeAlianza, #badgeDescuento, #badgeActivo, #badgeInactivo').addClass('d-none');
+    $('#badgeAlianza, #badgeDescuento, #badgeActivo, #badgeInactivo, #badgePendientes').addClass('d-none');
 
+    // Se oculta el select de casos pendientes
+    $('select#casoPedido').parent().parent().addClass('d-none');
+    $('select#casoPedido').children('option').remove();
     customerGlobal = null;
+    resurtidosPendientesCliente = null;
     resetProductList();
 }
 
@@ -1069,11 +1076,11 @@ function getItemPedido(pedido, tipo) {
                 let total = Number(items[key].amount);
                 let tax = 0;
 
-                if( ["4088"].includes( items[key].itemId ) ) { // Es gas LP
+                if( [articuloGasLp].includes( parseInt(items[key].itemId) ) ) { // Es gas LP
                     cantidad = Number(items[key].quantity);
                     tax = Number(items[key].taxAmount);
                 }
-                else if ( ["4528"].includes( items[key].itemId ) ) { // Es un item de descuento
+                else if ( [articuloDesc].includes( parseInt(items[key].itemId) ) ) { // Es un item de descuento
                     cantidad = 1;
                 } else { // Se trata de un producto de cilindro
                     cantidad = parseFloat(Number(items[key].capacidad) * Number(items[key].quantity)).toFixed(0);
@@ -1083,7 +1090,7 @@ function getItemPedido(pedido, tipo) {
                 totalFinal += ( total + tax );
                 
                 $('table.table-desgloce-art tbody').append(
-                    '<tr>'+
+                    '<tr class="'+( items[key].itemId == articuloDesc ? 'descuento' : '' )+'">'+
                         '<td class="">'+items[key].item+'</td>'+
                         '<td class="text-center">'+cantidad+'</td>'+
                         '<td class="text-center">$'+( total + tax )+'</td>'+

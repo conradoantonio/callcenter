@@ -298,7 +298,7 @@ async function onClickAddProducto() {
         // Se remueve el mensaje principal de que no hay productos
         defaultProMsg.addClass('d-none');
 
-        let itemId   = ( tipoProducto == 'cilindro' ? $( '#capacidadFormProductos' ).val() : 4088 );
+        let itemId   = ( tipoProducto == 'cilindro' ? $( '#capacidadFormProductos' ).val() : articuloGasLp );
         let searchTr = $('tr[data-item-id="'+itemId+'"]');
 
         // Se agrega el artículo a la tabla
@@ -376,7 +376,7 @@ async function onClickAddProducto() {
                 "tipo"      : 2,
                 "capacity"  : litros,
                 "quantity"  : 1,
-                "article"   : 4088// ID de GAS LP
+                "article"   : articuloGasLp// ID de GAS LP
             };
 
             if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado
@@ -625,18 +625,18 @@ async function savePedido() {
             articulosArr.push({
                 "tipo"      : 4,
                 "precio"    : descuento * -1,
-                "article"   : 4528// ID de artículo de descuento
+                "article"   : articuloDesc// ID de artículo de descuento
             });
         }
 
         let direccionSel = $('#direccionCliente').children(':selected').data('address');
         let typeService  = '';
-        let statusOpp    = 2;
+        let statusOpp    = 1;
         $('.productosCilindroPedido').is(':visible') ? typeService = 1 : '';
         $('.productosEstacionarioPedido').is(':visible') ? typeService = 2 : '';
 
         let tmp = {
-            "status"        : 11,
+            "status"        : 1,
             "zona_precio"   : 2,//Este es el Id de la zona
             "customer"      : $('#idCliente').text(),
             "closeDate"     : dateFormatFromDate($('#fechaPrometidaPedido').val(), '5'),
@@ -672,6 +672,7 @@ async function savePedido() {
             console.log('Pedido creado exitósamente', response);
             opportunities = [];
             clearFields();
+            getPendingCases();
         }).catch((error) => {
             opportunities = [];
             infoMsg('error', 'El pedido no ha sido creado', 'Verifique que la información sea correcta');
@@ -1022,97 +1023,6 @@ function filtrarHistorico() {
         swal.close();
         console.log(error);
     });
-}
-
-// Abre el modal para ver las notas y agregar un descuento si es que quiere
-function verNotasAgregarDescuento($this) {
-    let pedido = $($this).closest("tr").data("item");
-    
-    $("#formAgregarDescuentoModal").data("item", pedido);
-    $('.servicio-id').html(pedido.id_Transaccion ? " - " + pedido.id_Transaccion : '');
-    $('table.table-notas tbody').children('tr').remove();
-    $('table.table-desgloce-art tbody').children('tr').remove();
-    $('table.table-desgloce-metodos-pago tbody').children('tr').remove();
-    
-    setMetodosPago(pedido, 'oportunidad');
-    getMsgNotes(pedido, 'oportunidad');
-    getItemPedido(pedido, 'oportunidad');
-    $("#formAgregarDescuentoModal").modal("show");
-
-}
-
-// Valida si se agrega un descuento y/o nota al servicio
-function guardarDescuentoNota() {
-    let pedido      = $("div#formAgregarDescuentoModal").data("item");
-    let canContinue = false;
-    let nota        = $('#formAgregarDescuentoModal textarea.nuevaNotaAdicional').val();
-    let descuento   = $('#formAgregarDescuentoModal input[name=inputAgregarDescuento]').val();
-    nuevaNotaAdicional
-    if( !$("#inputAgregarDescuento").val() ) {
-        canContinue = false;
-    } else {
-        canContinue = true;
-    }
-
-    if (! canContinue ) { 
-        alert("Favor de llenar todos los campos con *");
-        return; 
-    }
-
-    let dataDescuento = {
-        "opportunitiesUpdate": [
-            {
-                "id": pedido.id_Transaccion,
-                "bodyFields": {},
-                "lines": [
-                    {
-                        'article'    : 4528,
-                        'rate'       : parseFloat( Number(descuento) * -1 ).toFixed(2),
-                        'isDiscount' : true,
-                    }
-                ]
-            }
-        ]
-    };
-
-    loadMsg();
-    let settings = {
-        url      : urlActualizarOpp,
-        method   : 'PUT',
-        data     : JSON.stringify(dataDescuento)
-    }
-    setAjax(settings).then((response) => {
-        swal.close();
-        console.log(response);                
-    }).catch((error) => {
-        swal.close();
-        console.log(error);
-    });
-
-    // Guarda una nota
-    if ( nota ) {
-        let newNota = [{ 
-            type: "nota", 
-            idRelacionado: pedido.id_Transaccion, 
-            titulo: userName + " (Nota de descuento)", 
-            nota: nota,
-            transaccion: "oportunidad"
-        }];
-
-        let settingsNota = {
-            url      : urlGuardarNotaMensaje,
-            method   : 'POST',
-            data: JSON.stringify({ informacion: newNota })
-        }
-        setAjax(settingsNota).then((response) => {
-            console.log('exito agregando la nota: ', response);
-        }).catch((error) => {
-            console.log(error);
-        });
-    }
-
-    $('#formAgregarDescuentoModal').modal('hide');
-
 }
 
 // funcion para generar las peticiones

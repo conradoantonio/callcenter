@@ -29,3 +29,6 @@ Al elegir una dirección de tipo cilindro, al querer hacer un pedido, preselecci
 
 Al momento de crear el servicio de SGC carburación, deberá crearse con el usuario de público en general, ya en el momento de la preliquidación, se setea ese dato. 
 El dato de método de pago se creará con el que envíe SGC carburación, pero en preliquidación se cambiará manualmente ese dato.
+
+// Terminar el flujo de segunda llamada
+// Implementar el reslet para los casos en el form de crear servicios
