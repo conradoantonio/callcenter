@@ -207,7 +207,7 @@ $("#metodoPagoPedido").change(function () {
 // Agrega un método de pago nuevo
 $('#guardarMetodoPagoForm').on('click', function () {
     let canContinue = false;
-    let conFolio    = ["8", "2", "5", "6"];
+    // let conFolio    = ["8", "2", "5", "6"];
     let metodoId    = $("#metodoPagoPedido").val();
     let metodoTxt   = $('#metodoPagoPedido').children(':selected').text();
     // let numMetodos  = $('table.productosMetodoPago tbody').children('tr.metodos').length;
@@ -223,14 +223,13 @@ $('#guardarMetodoPagoForm').on('click', function () {
         return; 
     }
 
-    let searchTr = $('table.productosMetodoPago > tbody > tr[data-metodo-id="'+metodoId+'"]');
+    // let searchTr = $('table.productosMetodoPago > tbody > tr[data-metodo-id="'+metodoId+'"]');
 
     $('#sinMetodosPago').addClass('d-none');
     $('.productosMetodoPago').parent().parent().removeClass('d-none');
 
     let total        = parseFloat($('#montoPagoPedido').val()).toFixed(2);
     let folio        = $('#folioAutorizacionPedido').val().trim();
-    let metodoNombre = $("#metodoPagoPedido").children(':selected').text();
     let metodoObj    = {
         metodo_txt : metodoTxt,
         tipo_pago  : metodoId,
@@ -238,28 +237,30 @@ $('#guardarMetodoPagoForm').on('click', function () {
         folio      : folio,
     };
 
-    if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado y se edita el row
+    agregarMetodoPago(metodoObj);
 
-        searchTr.data('metodo', metodoObj);
-        searchTr.children('td').siblings("td:nth-child(2)").text(folio ? folio : 'No aplica');
-        searchTr.children('td').siblings("td:nth-child(3)").data('total', total);
-        searchTr.children('td').siblings("td:nth-child(3)").text('$'+total+' mxn');
-        console.log(metodoObj);
-        
-    } else {// Se llena la información del item
-        
-        $(".productosMetodoPago tbody").append(
-            '<tr data-metodo-id='+metodoId+' class="metodo-item" data-metodo=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
-                '<td>'+metodoNombre+'</td>'+
-                '<td class="text-center">'+(folio ? folio : 'No aplica')+'</td>'+
-                '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
-                '<td class="text-center">'+
-                    '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPago" data-metodo-id='+metodoId+'> <i class="fa-solid fa-trash-can"></i> </button>'+
-                '</td>'+
-            '</tr>'
-        );
+    // if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado y se edita el row
 
-    }
+    //     searchTr.data('metodo', metodoObj);
+    //     searchTr.children('td').siblings("td:nth-child(2)").text(folio ? folio : 'No aplica');
+    //     searchTr.children('td').siblings("td:nth-child(3)").data('total', total);
+    //     searchTr.children('td').siblings("td:nth-child(3)").text('$'+total+' mxn');
+    //     console.log(metodoObj);
+        
+    // } else {// Se llena la información del item
+        
+    //     $(".productosMetodoPago tbody").append(
+    //         '<tr data-metodo-id='+metodoId+' class="metodo-item" data-metodo=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
+    //             '<td>'+metodoNombre+'</td>'+
+    //             '<td class="text-center">'+(folio ? folio : 'No aplica')+'</td>'+
+    //             '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+    //             '<td class="text-center">'+
+    //                 '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPago" data-metodo-id='+metodoId+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+    //             '</td>'+
+    //         '</tr>'
+    //     );
+
+    // }
    
     // Falta código para setear un total
     setTotalMetodoPago( $(".productosMetodoPago") );
@@ -542,6 +543,7 @@ async function savePedido() {
         let descuento        = 0;
         let totalMetodosPago = 0;
         let casoPedido       = $('select#casoPedido').val();
+        let notasCredito     = $('select#creditosCliente').val();
         let tablaProd        = null;
         let canContinue      = true;
         let articulosArr     = [];
@@ -664,6 +666,11 @@ async function savePedido() {
             tmp['case'] = casoPedido;
         }
 
+        // Seleccionó una o varias notas de crédito
+        if ( notasCredito.length > 0 ) {
+            tmp['cases'] = notasCredito;
+        }
+
         opportunities.push(tmp);
 
         let settings = {
@@ -680,6 +687,7 @@ async function savePedido() {
             opportunities = [];
             clearFields();
             getPendingCases();
+            getCasosOportunidades();
         }).catch((error) => {
             opportunities = [];
             infoMsg('error', 'El pedido no ha sido creado', 'Verifique que la información sea correcta');
@@ -705,6 +713,9 @@ async function clearFields() {
     // Remueve los métodos de pago
     $("table.productosMetodoPago").parent().parent().addClass("d-none");
     $("table.productosMetodoPago").children('tbody').children('tr').remove();
+
+    // Resetea el select de créditos del cliente
+    $('select#creditosCliente').val(null).trigger("change");
     // $("#productosCilindroPedido").find(".content").remove();
 }
 //#endregion
@@ -746,6 +757,34 @@ $('body').delegate('.delete-metodo-pago','click', function() {
         }
     }).catch(swal.noop);
 });
+
+// Agrega un método de pago a la tabla de métodos
+function agregarMetodoPago(metodoObj) {
+    let searchTr = $('table.productosMetodoPago > tbody > tr[data-metodo-id="'+metodoObj.tipo_pago+'"]');
+
+    if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado y se edita el row
+
+        searchTr.data('metodo', metodoObj);
+        searchTr.children('td').siblings("td:nth-child(2)").text(metodoObj.folio ? metodoObj.folio : 'No aplica');
+        searchTr.children('td').siblings("td:nth-child(3)").data('total', metodoObj.monto);
+        searchTr.children('td').siblings("td:nth-child(3)").text('$'+metodoObj.monto+' mxn');
+        console.log(metodoObj);
+        
+    } else {// Se llena la información del item
+        
+        $(".productosMetodoPago tbody").append(
+            '<tr data-metodo-id='+metodoObj.tipo_pago+' class="metodo-item" data-metodo=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
+                '<td>'+metodoObj.metodo_txt+'</td>'+
+                '<td class="text-center">'+(metodoObj.folio ? metodoObj.folio : 'No aplica')+'</td>'+
+                '<td class="text-center" data-total='+metodoObj.monto+'>$'+metodoObj.monto+' mxn</td>'+
+                '<td class="text-center">'+
+                    '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPago" data-metodo-id='+metodoObj.tipo_pago+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                '</td>'+
+            '</tr>'
+        );
+
+    }
+}
 
 // Valida la información mostrada en la lista de artículos
 function validarTablaProductos(table) {

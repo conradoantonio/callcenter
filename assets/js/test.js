@@ -171,6 +171,9 @@ function setCustomerInfo(customer) {
 
     // Muestra la lista de créditos del cliente
     getListCreditCustomer();
+
+    // Muestra la lista de créditos por aprobar, sólo debe ser visible por el usuario con rol supervisor
+    getListRmaCustomer();
 }
 
 // Setea los datos dependiendo del tipo de alianza del cliente: contrato, crédito o contado

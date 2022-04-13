@@ -38,6 +38,26 @@ function getListCreditCustomer() {
     });
 }
 
+// Función para obtener los créditos por aprobar, el único rol que debe hacer esta acción es el 
+function getListRmaCustomer() {
+    let settings = {
+        url    : urlGetListRMACustomer,
+        method : 'POST',
+        data   : JSON.stringify({ "customer" : customerGlobal?.id })
+    }
+
+    // Se remueven los pedidos pendientes del cliente
+    // $('select#creditosCliente').parent().parent().addClass('d-none');
+    $('#content-rma-list table tbody').children('tr').remove();
+
+    setAjax(settings).then((response) => {
+        console.log(response.data);
+        setRmaList((response.data));
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
 // Método para llenar el select de origen de servicio
 function setSelectPendingCases(items) {
     let select = $('select#casoPedido');
@@ -71,7 +91,7 @@ function setSelectCreditList(items) {
    
     if ( items.length ) {
         select.parent().parent().removeClass('d-none');
-        select.append('<option value="" disabled>Seleccione una opción</option>');
+        // select.append('<option value="" disabled>Seleccione una opción</option>');
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
                 select.append(
@@ -89,6 +109,30 @@ function setSelectCreditList(items) {
             //     }
             // }
         });
+    } else {
+        console.warn('No hay registros por cargar');
+    }
+}
+
+// Método para llenar la tabla de los rma del cliente
+function setRmaList(items) {
+    if ( items.length ) {
+        for ( var key in items ) {
+            if ( items.hasOwnProperty( key ) ) {
+                $('#content-rma-list table tbody').append(
+                    '<tr class="'+items[key].rmaId+'" data-item-id='+items[key].rmaId+' data-item='+"'"+JSON.stringify(items[key])+"'"+'>'+
+                        '<td class="text-center">'+items[key].rmaId+'</td>'+
+                        '<td class="text-center">'+items[key].customer+'</td>'+
+                        '<td class="text-center">'+items[key].numberRMA+'</td>'+
+                        '<td class="text-center">$'+(items[key].total)+' mxn</td>'+
+                        '<td class="text-center">'+items[key].status+'</td>'+
+                        '<td class="text-center">'+
+                            '<button class="btn btn-sm btn-info approve-item" data-table-ref="#content-rma-list table" data-item-id='+items[key].rmaId+'> <i class="fa-solid fa-square-check"></i> </button>'+
+                        '</td>'+
+                    '</tr>'
+                );
+            }
+        }
     } else {
         console.warn('No hay registros por cargar');
     }
@@ -259,3 +303,87 @@ function armarCasoPendiente (casoArt) {
 
     setTotalMetodoPago( $(".productosMetodoPago"), 'resurtido' );
 }
+
+// Evento que actualiza el método de pago acorde 
+$('#creditosCliente')
+.on("select2:select", function (e) { 
+    let itemsArr  = [];
+    let totalNota = Number(0.00);
+    let metodoItem = metodosPago.find( metodo => parseInt(metodo.id) === saldoAFavorEst );
+    
+    $(this).find(':selected').each( function(e) {
+        let nota = $(this).data('item');
+        console.log('Data Item: ', nota);
+        itemsArr.push(nota);
+        totalNota += Number(parseFloat(nota.total).toFixed(2));
+    });
+
+    $('#sinMetodosPago').addClass('d-none');
+    $('.productosMetodoPago').parent().parent().removeClass('d-none');
+
+    let metodoObj    = {
+        metodo_txt : metodoItem.method,
+        tipo_pago  : metodoItem.id,
+        monto      : totalNota,
+        folio      : '',
+    };
+
+    agregarMetodoPago(metodoObj);
+    setTotalMetodoPago( $(".productosMetodoPago") );
+}).on('select2:unselect', function(e) {
+    let itemsArr  = [];
+    let totalNota = Number(0.00);
+    let metodoItem = metodosPago.find( metodo => parseInt(metodo.id) === saldoAFavorEst );
+    
+    $(this).find(':selected').each( function(e) {
+        let nota = $(this).data('item');
+        console.log('Data Item: ', nota);
+        itemsArr.push(nota);
+        totalNota += Number(parseFloat(nota.total).toFixed(2));
+    });
+
+    $('#sinMetodosPago').addClass('d-none');
+    $('.productosMetodoPago').parent().parent().removeClass('d-none');
+
+    let metodoObj    = {
+        metodo_txt : metodoItem.method,
+        tipo_pago  : metodoItem.id,
+        monto      : totalNota,
+        folio      : '',
+    };
+
+    agregarMetodoPago(metodoObj);
+    setTotalMetodoPago( $(".productosMetodoPago") );
+});
+
+// Elimina un artículo de la tabla
+$('body').delegate('.approve-item','click', function() {
+    let item  = $(this).parent().parent().data('item');
+    let table = $(this).data('table-ref');
+    let id    = ( item && item.rmaId ? item.rmaId : 0 );
+
+    swal({
+        title: 'Se aprobará el registro con el ID '+id+', ¿Está seguro de continuar?',
+        icon: 'warning',
+        buttons:["Cancelar", "Aceptar"],
+        dangerMode: true,
+    }).then((accept) => {
+        if ( accept ) {
+            let settings = {
+                url    : urlApproveRMACustomer,
+                method : 'POST',
+                data   : JSON.stringify({ "rma" : id })
+            }
+            loadMsg('Enviando solicitud de aprobación...');
+            setAjax(settings).then((response) => {
+                infoMsg('success', 'RMA', 'Aprobación enviada exitósamente', 2000)
+                $(table).children('tbody').children('tr[data-item-id="'+id+'"]').remove();
+                getListCreditCustomer();
+                // console.log(response.data);
+            }).catch((error) => {
+                infoMsg('error', 'RMA', 'Algo salió mal con el envío de aprobación');
+                console.log(error);
+            });
+        }
+    }).catch(swal.noop);
+});
