@@ -15,7 +15,8 @@
     <!-- Select 2 -->
     <link href="https://themesbrand.com/skote/layouts/assets/libs/select2/css/select2.min.css" rel="stylesheet"
         type="text/css" />
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
     <!-- Datepicker -->
     <link href="https://themesbrand.com/skote/layouts/assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css"
         rel="stylesheet" type="text/css">
@@ -455,31 +456,6 @@
 
         #content-avisos {
             height: calc(100vh - (100vh - 290px) - 56px);
-        }
-
-        .content-input .select2 {
-            font-size: 16px;
-            border: solid 2px #9d9b99;
-            border-radius: 9px;
-            padding-left: 9px;
-            color: #737373;
-            padding-bottom: 9px;
-            padding: 2px 9px;
-            background: white;
-            width: 100% !important;
-        }
-
-        .content-input.content-input-primary .select2 {
-            border: solid 2px #355da7;
-            color: #355da7;
-        }
-
-        .content-input .select2 .select2-selection {
-            border: 0;
-        }
-
-        .content-input .select2 .select2-selection .select2-selection__rendered {
-            padding-left: 0;
         }
 
         .content-gen {
@@ -2011,10 +1987,17 @@
                         </div>
                     </div>
                     <div class="row pb-2">
-                        <div class="col-4 d-none">
+                        <div class="col-12 d-none">
                             <div class="content-input content-input-primary">
                                 <label>Resurtidos pendientes</label>
                                 <select id="casoPedido" class="form-ptg form-ptg-primary">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 d-none">
+                            <div class="content-input content-input-primary">
+                                <label>Créditos del cliente</label>
+                                <select id="creditosCliente" class="form-ptg form-ptg-primary" name="creditosCliente[]" style="width: 100%;" multiple="multiple">
                                 </select>
                             </div>
                         </div>
@@ -2089,8 +2072,8 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">Producto</th>
-                                                <th scope="col" class="text-center">Litros</th>
                                                 <th scope="col" class="text-center">Cantidad</th>
+                                                <th scope="col" class="text-center">Litros</th>
                                                 <th scope="col" class="text-center">Total</th>
                                                 <th scope="col" class="text-center">Acciones</th>
                                             </tr>
@@ -2697,6 +2680,8 @@
         urlGetOppV2 = '${ds.getOppV2}';
         urlGetFugaQuejasV2 = '${ds.getFugaQuejasV2}';
         urlGetListCaseReplacement = '${ds.getListCaseReplacement}';
+        urlGetListCreditMemoCustomer = '${ds.getListCreditMemoCustomer}';
+        urlGetListRMACustomer = '${ds.getListRMACustomer}';
         
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
@@ -2710,9 +2695,10 @@
         customerGlobal = null;
         direccionDefault = null;
         resurtidosPendientesCliente = [];
-        // Variables globales para artículos
+        // Variables globales para artículos y status
         articuloGasLp = 4088;
         articuloDesc  = 4528;
+        reposicionEst = 10;
         
         // $('div#historic-data table').DataTable({
         //     "order": []

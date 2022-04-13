@@ -383,7 +383,7 @@ async function onClickAddProducto() {
                 
                 if ( productoId ) {// Si es una edición, se reemplazará todo el contenido
                     searchTr.data('item', articulo);
-                    searchTr.children('td').siblings("td:nth-child(2)").text(articulo['capacity']);
+                    searchTr.children('td').siblings("td:nth-child(3)").text(articulo['capacity']);
                     searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
                     searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
                 } else {// Se suma el consumo del cliente
@@ -393,7 +393,7 @@ async function onClickAddProducto() {
     
                     total = parseFloat(Number(total) + Number(firstTotal)).toFixed(2);
                     searchTr.data('item', firstItem);
-                    searchTr.children('td').siblings("td:nth-child(2)").text(firstItem['capacity']);
+                    searchTr.children('td').siblings("td:nth-child(3)").text(firstItem['capacity']);
                     searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
                     searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
                     console.log(firstItem);
@@ -404,8 +404,8 @@ async function onClickAddProducto() {
                 $(".productosEstacionarioPedido tbody").append(
                     '<tr data-item-id='+articulo.article+' class="product-item" data-item=' + "'" + JSON.stringify(articulo) + "'" + '>' +
                         '<td>Gas LP</td>'+
-                        '<td class="text-center">'+$("#litrosFormProductos").val()+'</td>'+
                         '<td class="text-center">1</td>'+
+                        '<td class="text-center">'+$("#litrosFormProductos").val()+'</td>'+
                         '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
                         '<td class="text-center">'+
                             '<button class="btn btn-sm btn-info edit-producto-est"> <i class="fa fa-pen-to-square"></i> </button> '+
@@ -541,6 +541,7 @@ async function savePedido() {
         let totalConCredito  = 0;
         let descuento        = 0;
         let totalMetodosPago = 0;
+        let casoPedido       = $('select#casoPedido').val();
         let tablaProd        = null;
         let canContinue      = true;
         let articulosArr     = [];
@@ -636,7 +637,7 @@ async function savePedido() {
         $('.productosEstacionarioPedido').is(':visible') ? typeService = 2 : '';
 
         let tmp = {
-            "status"        : 1,
+            // "status"        : 1,
             "zona_precio"   : 2,//Este es el Id de la zona
             "customer"      : $('#idCliente').text(),
             "closeDate"     : dateFormatFromDate($('#fechaPrometidaPedido').val(), '5'),
@@ -644,6 +645,7 @@ async function savePedido() {
             "statusOpp"     : statusOpp,
             "operario"      : userId,
             "typeservice"   : typeService,
+            "cases"         : [],
             // "time"          : "12:00 pm",
             "turn"          : 1,
             "paymentMethod" : $('#metodoPagoPedido').val(),
@@ -655,6 +657,11 @@ async function savePedido() {
             "tipo"          : typeService,
             "items"         : articulosArr,
             "pago"          : {pago:pagosArr},
+        }
+
+        // Seleccionó un resurtido pendiente
+        if ( casoPedido ) {
+            tmp['case'] = casoPedido;
         }
 
         opportunities.push(tmp);
@@ -689,6 +696,7 @@ async function clearFields() {
 
     $("#sinProductos, #sinMetodosPago").removeClass("d-none");
     
+    // Remueve los productos agregados
     $("table.productosCilindroPedido").parent().parent().addClass("d-none");
     $("table.productosCilindroPedido").children('tbody').children('tr').remove();
     $("table.productosEstacionarioPedido").parent().parent().addClass("d-none");
@@ -760,7 +768,10 @@ function validarTablaMetodosPago(table) {
 }
 
 // Calcula el total de los productos
-function setTotalPedido(table) {
+// Parámetros: 
+// table: La tabla a realizar el cálculo de total de descuento
+// table: El tipo de desucento a enviar: nativo, resurtido (Cilindro), nota crédito(Gas LP) 
+function setTotalPedido(table, tipoDescuento = 'nativo') {
     let total           = parseFloat(0).toFixed(2);
     let totalDescontado = parseFloat(0).toFixed(2);
     let totalLitros     = parseFloat(0).toFixed(2);
@@ -777,13 +788,18 @@ function setTotalPedido(table) {
         total = parseFloat( Number(total) + Number(subtotal) ).toFixed(2);
     });
 
-    console.log(totalLitros,totalDescontado);
-    // Validación para especificar el descuento natural
-    if ( customerGlobal?.tipoDescuento == '1' ) { // Porcentaje
-        descuento = Number( parseFloat( descuento / 100 ).toFixed(2) );
-        totalDescontado = Number( parseFloat( descuento * total ).toFixed(2) );
-    } else if ( customerGlobal?.tipoDescuento == '2' ) { // Neto
-        totalDescontado = Number( parseFloat( totalLitros * descuento ).toFixed(2) );
+    if ( tipoDescuento == 'nativo' ) { // Validación para especificar el descuento natural que puede tener el cliente
+        if ( customerGlobal?.tipoDescuento == '1' ) { // Porcentaje
+            descuento = Number( parseFloat( descuento / 100 ).toFixed(2) );
+            totalDescontado = Number( parseFloat( descuento * total ).toFixed(2) );
+        } else if ( customerGlobal?.tipoDescuento == '2' ) { // Neto
+            totalDescontado = Number( parseFloat( totalLitros * descuento ).toFixed(2) );
+        }
+    } else if ( tipoDescuento == 'resurtido' ) {// Descuento por devolución de cilindro
+        totalDescontado = Number( parseFloat( total).toFixed(2)) ;
+        console.log('Tipo: ', tipoDescuento);
+    } else if ( tipoDescuento == 'nota' ) {// Descuento por nota de crédito asociado a Gas LP
+
     }
 
     total = parseFloat( Number(total) - Number(totalDescontado) ).toFixed(2);
@@ -812,14 +828,20 @@ function setTotalMetodosPago(table) {
 }
 
 // Calcula el total del método de pago
-function setTotalMetodoPago(table) {
+function setTotalMetodoPago(table, tipoDescuento = 'nativo') {
     let total = parseFloat(0).toFixed(2);
 
-    table.children('tbody').children('tr.metodo-item').each(function() {
-        // let articulo = $( this ).data('item');
-        let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(2);
-        total = Number(total) + Number(subtotal);
-    });
+    if ( tipoDescuento == 'nativo' ) { // Validación para especificar el descuento natural que puede tener el cliente
+        table.children('tbody').children('tr.metodo-item').each(function() {
+            // let articulo = $( this ).data('item');
+            let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(2);
+            total = Number(total) + Number(subtotal);
+        });
+    } else if ( tipoDescuento == 'resurtido' ) {// Descuento por devolución de cilindro
+        total = parseFloat(0).toFixed(2);
+    } else if ( tipoDescuento == 'nota' ) {// Descuento por nota de crédito asociado a Gas LP
+
+    }
 
     table.children('tfoot').find('td.total').data('total', parseFloat(total).toFixed(2));
     table.children('tfoot').find('td.total').text('$'+parseFloat(total).toFixed(2)+' mxn');

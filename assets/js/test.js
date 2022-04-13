@@ -168,6 +168,9 @@ function setCustomerInfo(customer) {
 
     // Muestra los casos pendientes si es que existen
     getPendingCases();
+
+    // Muestra la lista de créditos del cliente
+    getListCreditCustomer();
 }
 
 // Setea los datos dependiendo del tipo de alianza del cliente: contrato, crédito o contado
