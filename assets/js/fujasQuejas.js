@@ -60,6 +60,7 @@ $('#guardarNuevaNotaAdicional').on('click', function () {
 // Guarda la información de un pedido
 $('#guardarFugaQueja').on('click', function () {
     let zonaPrecio  = $('#zonaPrecioCliente').text().replace('$', '');
+    let addressObj  = $('#direccionCliente').children(':selected').data('address');
     let canContinue = false;
     if(
         !$("#tipoCasoFugaQueja").val()   ||
@@ -79,32 +80,32 @@ $('#guardarFugaQueja').on('click', function () {
 
     let casos = [];
     let notas = [];
-
     $('#notasAdicionales tbody').children('tr.notasAdicionalesItem').each(function( index ) {
         let texto = $( this ).children('td').siblings("td:nth-child(1)").text();
         notas.push(texto);
     });
 
     let tmp = {
-        "title": $('#tipoCasoFugaQueja').children(':selected').text(),
-        "company": $('#idCliente').text(),
-        "subsidiary": userSubsidiary,
-        "item": $('#articuloFugaQueja').val(),
-        "email": $('#emailFugaQueja').val(),
-        "category": $('#tipoCasoFugaQueja').val(),
-        "phone" : $('#telefonoFugaQueja').val(),
-        "status" : 1,
-        "priority" : $('#prioridadFugaQueja').val(),
-        "concepto" : $('#conceptoFugaQueja').val(),
-        "priceZone" : zonaPrecio,
-        // "quicknote" : "Nota rápida",
-        "custevent_ptg_fecha_visita" : dateFormatFromDate($('#fechaVisitaFugaQueja').val(), '5'),
+        "title"         : $('#tipoCasoFugaQueja').children(':selected').text(),
+        "company"       : $('#idCliente').text(),
+        "subsidiary"    : userSubsidiary,
+        "item"          : $('#articuloFugaQueja').val(),
+        "email"         : $('#emailFugaQueja').val(),
+        "category"      : $('#tipoCasoFugaQueja').val(),
+        "phone"         : $('#telefonoFugaQueja').val(),
+        "status"        : 1,
+        "priority"      : $('#prioridadFugaQueja').val(),
+        "concepto"      : $('#conceptoFugaQueja').val(),
+        "priceZone"     : zonaPrecio,
         "id_oportuniti" : $('#asociarServicioFugaQueja').val(),
-        "custevent_ptg_relacionar_caso_existente" : $('#asociarCasoFugaQueja').val(),
+        "custevent_ptg_fecha_visita" : dateFormatFromDate($('#fechaVisitaFugaQueja').val(), '5'),
         "custevent_ptg_horario_preferido" : formatTime( $('#horarioPreferidoFugaQueja').val() ),
-        // "anio" : "2022",
+        "custevent_ptg_relacionar_caso_existente" : $('#asociarCasoFugaQueja').val(),
         "custevent_ptg_direccion_para_casos" : $('#direccionCliente').children(':selected').text(),
-        "description" : $('#descripcionCasoFugaQueja').val()
+        "nameStreet"    : addressObj.nameStreet,
+        "nExterior"     : addressObj.numExterno,
+        "nInterior"     : addressObj.numInterno,
+        "description"   : $('#descripcionCasoFugaQueja').val()
     }
 
     casos.push(tmp);
@@ -172,20 +173,39 @@ function saveNotas(notas, idRelacionado, tipoTransaccion) {
 // Se abre el modal para ver las notas adicionales
 function verNotasAdicionales($this) {
     let tipoServicio = $($this).hasClass('casos') ? 'caso' : 'oportunidad';
-    $('table.table-notas tbody').children('tr').remove();
     let pedido = $($this).closest("tr").data("item");
-    $("#formVerNotasAdicionalesModal").modal("show");
+    
+    $("#inputSegundaLlamada").parent().parent().addClass('d-none');
+    $('table.table-notas tbody').children('tr').remove();
     $('#internalIdServicio').val(pedido.id_Transaccion);
     $('#internalIdServicio').data('item', pedido);
     $('[name=tipo_servicio]').val(tipoServicio);
-    console.log(tipoServicio);
     
+    // Si es una oportunidad, tiene permiso de gestionar una segunda llamada.
+    if ( tipoServicio == 'oportunidad' ) {
+        $("#inputSegundaLlamada").parent().parent().removeClass('d-none');
+        $("#inputSegundaLlamada").prop('checked', ( pedido.isSecondCall ? true : false ) );
+        $("#inputSegundaLlamada").prop('disabled', ( pedido.isSecondCall ? true : false ) );
+    }
+    
+    // Abre el modal
+    $("#formVerNotasAdicionalesModal").modal("show");
+
     // Dibuja la tabla de notas del pedido
     getMsgNotes(pedido, tipoServicio);
 }
 
 // Agrega una nueva nota
 function agregarNotas() {
+    let canContinue = true;
+    if (! $( '#nuevaNotaAdicional' ).val() ){
+        canContinue = false;
+    }
+
+    if (! canContinue ){
+        infoMsg('error', 'Error', 'Favor de llenar todos los campos con *');
+        return;
+    }
     let notas = [];
     // let pedido = $('#internalIdServicio').data('item');
     let tipoServicio = $('[name=tipo_servicio]').val();

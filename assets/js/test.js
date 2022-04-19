@@ -97,7 +97,7 @@ function setCustomerInfo(customer) {
     let direcciones = customer.addr;
     let zonaVenta = direccionDefault = null;
     
-    $('#badgeActivo, #badgeInactivo, #badgeDescuento, #badgePendientes').addClass('d-none');
+    $('.badgesClientes').addClass('d-none');
     $('#badgeDescuento').children('span.badge').removeClass('bg-danger-cc, bg-success-cc'); // Se le quita la clase success o danger
     
     $('#idCliente').text(customer.id);
@@ -343,6 +343,7 @@ function setDir(direccion) {
 
     str += direccion.nameStreet;
     direccion.numExterno      ? str+= ' #'+direccion.numExterno : '';
+    direccion.numInterno      ? str+= ' #'+direccion.numInterno : '';
     direccion.colonia         ? str+= ', Col. '+direccion.colonia : '';
     direccion.stateName       ? str+= ', '+direccion.stateName : '';
     direccion.city            ? str+= ', '+direccion.city : '';
@@ -780,9 +781,9 @@ function clearCustomerInfo () {
 
     // Se remueven los datos personalizados del cliente en quejas y figas
     $('#emailFugaQueja, #telefonoFugaQueja').val('');
-
+    
     // Se remueven los badge de información adicional del cliente
-    $('#badgeAlianza, #badgeDescuento, #badgeActivo, #badgeInactivo, #badgePendientes').addClass('d-none');
+    $('.badgesClientes').addClass('d-none');
 
     // Se oculta el select de casos pendientes
     $('select#casoPedido').parent().parent().addClass('d-none');
@@ -1015,7 +1016,6 @@ function getMsgNotes(pedido, tipo) {
         if( noteData.length ) {// Tiene más de una nota
             for ( var key in noteData ) {
                 if ( noteData.hasOwnProperty( key ) ) {
-                    console.log('Nota', noteData[key]);
         
                     $('table.table-notas tbody').append(
                         '<tr class="notas-opp-caso">'+

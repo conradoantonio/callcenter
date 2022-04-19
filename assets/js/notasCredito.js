@@ -7,6 +7,7 @@ function getPendingCases() {
     }
 
     // Se remueven los pedidos pendientes del cliente
+    $('table.resurtidos-pendientes tbody').children('tr').remove();
     $('select#casoPedido').parent().parent().addClass('d-none');
     $('select#casoPedido').children('option').remove();
 
@@ -48,7 +49,7 @@ function getListRmaCustomer() {
 
     // Se remueven los pedidos pendientes del cliente
     // $('select#creditosCliente').parent().parent().addClass('d-none');
-    $('#content-rma-list table tbody').children('tr').remove();
+    $('.content-rma-list table tbody').children('tr').remove();
 
     setAjax(settings).then((response) => {
         console.log(response.data);
@@ -64,15 +65,26 @@ function setSelectPendingCases(items) {
     let aux    = [];
    
     if ( items.length ) {
+        $('#badgeReposicionPendiente').removeClass('d-none');
         select.append('<option value="">Seleccione una opción</option>');
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
+                let itemText = 'NO. CASO: '+items[key].nCase+' - ITEM: '+items[key].item;
+                // Esta validación es para el select de resurtidos pendientes, ya que sólo deben mostrarse las pendientes de enviar
                 if ((! items[key].isComming) && items[key].itemId != articuloGasLp ) {
                     aux.push(items[key]);
                     select.append(
-                        '<option value='+items[key].id+' data-item=' + "'" + JSON.stringify(items[key]) + "'" + '>NO. CASO: '+items[key].nCase+' - ITEM: '+items[key].item+'</option>'
+                        '<option value='+items[key].id+' data-item=' + "'" + JSON.stringify(items[key]) + "'" + '>'+itemText+'</option>'
                     );
                 }
+                
+                // Modal con la lista de bonificaciones
+                $('table.resurtidos-pendientes tbody').append(
+                    '<tr>'+
+                        '<td class="text-center">'+itemText+'</td>'+
+                        '<td class="text-center">'+( items[key].isComming ? 'En camino' : 'Pendiente')+'</td>'+
+                    '</tr>'
+                );
             }
         }
 
@@ -117,9 +129,11 @@ function setSelectCreditList(items) {
 // Método para llenar la tabla de los rma del cliente
 function setRmaList(items) {
     if ( items.length ) {
+        $('#badgeRmaPendientes').removeClass('d-none');
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
-                $('#content-rma-list table tbody').append(
+                // Tabla para aprobar los modal
+                $('.content-rma-list table tbody').append(
                     '<tr class="'+items[key].rmaId+'" data-item-id='+items[key].rmaId+' data-item='+"'"+JSON.stringify(items[key])+"'"+'>'+
                         '<td class="text-center">'+items[key].rmaId+'</td>'+
                         '<td class="text-center">'+items[key].customer+'</td>'+
@@ -127,8 +141,17 @@ function setRmaList(items) {
                         '<td class="text-center">$'+(items[key].total)+' mxn</td>'+
                         '<td class="text-center">'+items[key].status+'</td>'+
                         '<td class="text-center">'+
-                            '<button class="btn btn-sm btn-info approve-item" data-table-ref="#content-rma-list table" data-item-id='+items[key].rmaId+'> <i class="fa-solid fa-square-check"></i> </button>'+
+                            '<button class="btn btn-sm btn-info approve-item" data-table-ref=".content-rma-list table" data-item-id='+items[key].rmaId+'> <i class="fa-solid fa-square-check"></i> </button>'+
                         '</td>'+
+                    '</tr>'
+                );
+                
+                // Modal con la lista de bonificaciones
+                $('table.saldo-a-favor tbody').append(
+                    '<tr>'+
+                        '<td class="text-center">'+items[key].numberRMA+'</td>'+
+                        '<td class="text-center">$'+(items[key].total)+' mxn</td>'+
+                        '<td class="text-center">'+items[key].status+'</td>'+
                     '</tr>'
                 );
             }

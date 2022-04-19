@@ -969,6 +969,52 @@ $("#guardarCancelarOpp").click(function () {
     }).catch(swal.noop);
 });
 
+// Envía una segunda llamada
+$("#inputSegundaLlamada").click(function () {
+    let idTransaccion = $('#internalIdServicio').val();
+
+    if( this.checked ) {
+        swal({
+            title: '¿Está seguro de marcar una segunda llamada?',
+            icon: 'warning',
+            buttons:["Cancelar", "Aceptar"],
+            dangerMode: true,
+        }).then((accept) => {
+            if ( accept ) {
+                let dataSend = {
+                    "opportunitiesUpdate": [
+                        {
+                            "id": idTransaccion,
+                            "bodyFields": {
+                                "custbody_ptg_segundas_llamadas": true,
+                            },
+                            "lines": [
+                                
+                            ]
+                        }
+                    ]
+                };
+                loadMsg();
+                let settings = {
+                    url      : urlActualizarOpp,
+                    method   : 'PUT',
+                    data     : JSON.stringify(dataSend)
+                }
+                setAjax(settings).then((response) => {
+                    swal.close();
+                    $("#inputSegundaLlamada").prop('disabled', true);
+                    getCasosOportunidades();
+                    console.log('Segunda llamada enviada exitósamente', response);
+                }).catch((error) => {
+                    console.log(error);
+                });
+            } else {
+                $("#inputSegundaLlamada").prop('checked', false);
+            }
+        }).catch(swal.noop);
+    }
+});
+
 // Código para filtrado del grid de servicios y oportunidades
 // Determina qué status se mostrarán acorde al tipo de caso seleccionado (Fuga/Queja)
 $('select#tipoServicioFiltro').on('change', function(e) {
