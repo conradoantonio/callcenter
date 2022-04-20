@@ -10,6 +10,8 @@ $("#editarDireccion").click(function() {
     $("#tipoAccionDireccion").val('guardar');
     let periodo = '';
     if ( direccion ) {
+        // Se ocultan los campos de frecuencia y posteriormente se decide si se muestran o no
+        $('.frecuencia-cada, .frecuencia-semana').addClass('d-none');
         if ( direccion.defaultBilling ) {// Dirección de facturación
             // $('#domFacturacionDireccion').parent().parent().removeClass('d-none');
             $('#domFacturacionDireccion').prop('checked', true);
@@ -52,13 +54,22 @@ $("#editarDireccion").click(function() {
         }
 
         // Campos de frecuencia
-        if ( direccion.periodo == "Dia" ) {
+        if ( direccion.periodo == "Día" ) {
             periodo = 1;
-        } else if ( direccion.periodo == "Semanal" ) {
+            $('.dias-semana').prop('disabled', true);
+            $('.dias-semana').prop('checked', true);
+        } else if ( direccion.periodo == "Semana" ) {
             periodo = 2;
-        } else if ( direccion.periodo == "Mensual" ) {
+            $('.dias-semana').prop('disabled', false);
+            $('.frecuencia-cada').removeClass('d-none');
+        } else if ( direccion.periodo == "Mes" ) {
             periodo = 3;
+            $('.dias-semana').prop('disabled', false);
+            $('.frecuencia-cada, .frecuencia-semana').removeClass('d-none');
+            $('#numeroSemana').val(parseInt(direccion.inThatWeek));
         }
+
+        $('#fechaInicioServicio').val(getMomentDateFormat(direccion.startDayService));
         $('#cadaFormCliente').val(direccion.frecuencia)
         $('#frecuenciaFormCliente').val(periodo);
 

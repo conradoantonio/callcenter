@@ -642,6 +642,7 @@ async function savePedido() {
             // "status"        : 1,
             "zona_precio"   : 2,//Este es el Id de la zona
             "customer"      : $('#idCliente').text(),
+            "plantaRelated" : $('#plantas').val(),
             "closeDate"     : dateFormatFromDate($('#fechaPrometidaPedido').val(), '5'),
             "idAddressShip" : $('#direccionCliente').val(),
             "statusOpp"     : statusOpp,

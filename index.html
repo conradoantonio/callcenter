@@ -570,6 +570,13 @@
             width: 220px;
             height: 220px;
         }
+
+        .datepicker {
+            z-index: 1600 !important; /* has to be larger than 1050 */
+        }
+        .datepicker-container{
+            z-index: 1600 !important; /* has to be larger than 1050 */
+        }
     </style>
 </head>
 
@@ -927,8 +934,7 @@
         </div>
     </div>
 
-    <div id="formDireccionesModal" class="modal fade" tabindex="-1" role="dialog"
-        aria-labelledby="titleNotasAdicionalesModal" aria-hidden="true">
+    <div id="formDireccionesModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleNotasAdicionalesModal" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 800px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
@@ -1153,21 +1159,45 @@
                             <div class="border-radius-primary p-2">
                                 <label class="title-ptg color-primary" style="font-size: 20px">Frecuencia*</label>
                                 <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <label class="title-ptg color-primary"
-                                            style="font-size: 16px;">Cada</label>
+                                    <!-- <div class="col-auto frecuencia-cada d-none">
+                                        <label class="title-ptg color-primary" style="font-size: 16px;">Cada</label>
                                     </div>
-                                    <div class="col-auto">
+                                    <div class="col-auto frecuencia-cada d-none">
                                         <div class="content-input content-input-primary" style="width: 90px;">
                                             <input id="cadaFormCliente" type="number" min="1" class="form-ptg form-ptg-primary">
                                         </div>
-                                    </div>
-                                    <div class="col">
+                                    </div> -->
+                                    <div class="col-6">
                                         <div class="content-input content-input-primary">
+                                            <label>Periodo*</label>
                                             <select id="frecuenciaFormCliente" class="form-ptg form-ptg-primary">
                                                 <option value="1">día(s)</option>
                                                 <option value="2">Semana(s)</option>
                                                 <option value="3">Mes(es)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 d-none frecuencia-cada">
+                                        <div class="content-input content-input-primary">
+                                            <label>Cada*</label>
+                                            <input id="cadaFormCliente" type="number" min="1" class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="content-input content-input-primary">
+                                            <label>Fecha de servicio*</label>
+                                            <input id="fechaInicioServicio" type="date" class="form-ptg form-ptg-primary">
+                                        </div>
+                                    </div>
+                                    <div class="col-6 frecuencia-semana d-none">
+                                        <div class="content-input content-input-primary">
+                                            <label>Semana*</label>
+                                            <select id="numeroSemana" class="form-ptg form-ptg-primary">
+                                                <option value="1">Primera semana</option>
+                                                <option value="2">Segunda semana</option>
+                                                <option value="3">Tercera semana</option>
+                                                <option value="4">Cuarta semana</option>
+                                                <option value="5">Última semana</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1196,67 +1226,65 @@
                                     <div class="col-auto">
                                         <div class="content-input content-input-primary">
                                             <label>L</label>
-                                            <input id="lunesFormCliente" type="checkbox"
-                                                class="form-ptg form-ptg-primary">
+                                            <input id="lunesFormCliente" type="checkbox" class="form-ptg form-ptg-primary dias-semana" disabled>
                                         </div>
                                     </div>
                                     <div class="col-auto">
                                         <div class="content-input content-input-primary">
                                             <label>M</label>
-                                            <input id="martesFormCliente" type="checkbox"
-                                                class="form-ptg form-ptg-primary">
+                                            <input id="martesFormCliente" type="checkbox" class="form-ptg form-ptg-primary dias-semana" disabled>
                                         </div>
                                     </div>
                                     <div class="col-auto">
                                         <div class="content-input content-input-primary">
                                             <label>M</label>
-                                            <input id="miercolesFormCliente" type="checkbox"
-                                                class="form-ptg form-ptg-primary">
+                                            <input id="miercolesFormCliente" type="checkbox" class="form-ptg form-ptg-primary dias-semana" disabled>
                                         </div>
                                     </div>
                                     <div class="col-auto">
                                         <div class="content-input content-input-primary">
                                             <label>J</label>
-                                            <input id="juevesFormCliente" type="checkbox"
-                                                class="form-ptg form-ptg-primary">
+                                            <input id="juevesFormCliente" type="checkbox" class="form-ptg form-ptg-primary dias-semana" disabled>
                                         </div>
                                     </div>
                                     <div class="col-auto">
                                         <div class="content-input content-input-primary">
                                             <label>V</label>
-                                            <input id="viernesFormCliente" type="checkbox"
-                                                class="form-ptg form-ptg-primary">
+                                            <input id="viernesFormCliente" type="checkbox" class="form-ptg form-ptg-primary dias-semana" disabled>
                                         </div>
                                     </div>
                                     <div class="col-auto">
                                         <div class="content-input content-input-primary">
                                             <label>S</label>
-                                            <input id="sabadoFormCliente" type="checkbox"
-                                                class="form-ptg form-ptg-primary">
+                                            <input id="sabadoFormCliente" type="checkbox" class="form-ptg form-ptg-primary dias-semana" disabled>
                                         </div>
                                     </div>
                                     <div class="col-auto">
                                         <div class="content-input content-input-primary">
                                             <label>D</label>
-                                            <input id="domingoFormCliente" type="checkbox"
-                                                class="form-ptg form-ptg-primary">
+                                            <input id="domingoFormCliente" type="checkbox" class="form-ptg form-ptg-primary dias-semana" disabled>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="content-input content-input-primary">
-                                <label>Observaciones</label>
-                                <textarea placeholder="observaciones" id="indicacionesFormCliente" rows="3"
-                                    class="form-ptg form-ptg-primary"></textarea>
+                        <div class="col-6">
+                            <div class="border-radius-primary p-2">
+                                <label class="title-ptg color-primary" style="font-size: 20px">Notas</label>
+                                <div class="row align-items-center">
+                                    <div class="col-12">
+                                        <div class="content-input content-input-primary">
+                                            <label>Observaciones</label>
+                                            <textarea placeholder="" id="indicacionesFormCliente" rows="3" class="form-ptg form-ptg-primary"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        aria-label="Close">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
                     <button id="guardarDireccion" type="button" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
@@ -1705,12 +1733,6 @@
                 <div class="row align-items-center pb-2">
                     <div class="col pr-0">
                         <select class="form-control select-search-customer" style="width: 100%;"></select>
-                        <!-- <div class="form-search">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input id="buscarCliente" type="text" class="form-ptg"
-                                placeholder="Teléfono, nombre(s), correo electrónico o colonia">
-                            <i class="fa-solid fa-xmark d-none"></i>
-                        </div> -->
                     </div>
                     <!--<div class="col-auto pr-0">
                         <select id="filtClients" class="form-ptg">
@@ -1781,12 +1803,10 @@
                     </div>
 
                     <div class="col-auto pr-0">
-                        <button id="agregarDireccion" disabled type="button" class="btn bg-secondary-cc"><i
-                                class="fa-solid fa-plus"></i></button>
+                        <button id="agregarDireccion" disabled type="button" class="btn bg-secondary-cc"><i class="fa-solid fa-plus"></i></button>
                     </div>
                     <div class="col-auto">
-                        <button id="editarDireccion" disabled type="button" class="btn bg-secondary-cc"><i
-                                class="fa-solid fa-pen-to-square"></i></button>
+                        <button id="editarDireccion" disabled type="button" class="btn bg-secondary-cc"><i class="fa-solid fa-pen-to-square"></i></button>
                     </div>
                 </div>
                 <div class="row align-items-center ft-16 pb-2">
@@ -2233,8 +2253,7 @@
                         <div class="col">
                         </div>
                         <div class="col-auto">
-                            <button id="guardarPedido" type="button" disabled class="btn bg-secondary-cc"><i
-                                    class="fa-solid fa-floppy-disk"></i> Guardar pedido</button>
+                            <button id="guardarPedido" type="button" disabled class="btn bg-secondary-cc"><i class="fa-solid fa-floppy-disk"></i> Guardar pedido</button>
                         </div>
                     </div>
                 </div>
@@ -2653,12 +2672,10 @@
                                     <div class="row mt-3">
                                         <div class="col"></div>
                                         <div class="col-auto">
-                                            <button onclick="next('contacto')" type="button"
-                                                class="btn bg-dark-cc">Anterior</button>
+                                            <button onclick="next('contacto')" type="button" class="btn bg-dark-cc">Anterior</button>
                                         </div>
                                         <div class="col-auto">
-                                            <button type="button" id="guardarCliente"
-                                                class="btn bg-dark-cc">Guardar</button>
+                                            <button type="button" id="guardarCliente" class="btn bg-dark-cc">Guardar</button>
                                         </div>
                                         <div class="col"></div>
                                     </div>
@@ -2782,16 +2799,19 @@
 
         // Limpia los campos del modal direcciones al cerrarse
         $('body').delegate('div#formDireccionesModal', 'hidden.bs.modal', function () {
+            // Modificar este también
             $(this).find('.form-ptg').val('');
             $(this).find('.form-ptg').prop('checked', false);
+            $(this).find('.dias-semana').prop('checked', true);
+
             $(this).find('select.form-ptg').each(function( index ) {
                 $( this ).val($(this).children("option:first").val());
             });
 
-            // $('#domFacturacionDireccion').parent().parent().addClass('d-none');
+            $('.dias-semana').prop('disabled', true);
 
             $('#rutaDireccion').data('ruta-obj', null);
-            $('.art-fre-est, .art-fre-cil').addClass('d-none');
+            $('.art-fre-est, .art-fre-cil, .frecuencia-cada, .frecuencia-semana').addClass('d-none');
         });
 
         // Limpia el modal de agregar detalles adicionales
@@ -2869,20 +2889,12 @@
                 $("#resurtidosPendientesModal").modal("show");
             });
 
-            // $("#agregarDirecciones").click(function() {
-            //     $("#formDireccionesModal").modal("show")
-            // });
-
             $(".content-tabs .tab").click(function () {
                 $(".tab").removeClass('active');
                 $(".tabs-content").addClass("d-none");
                 $(this).addClass('active');
                 $("#tab-" + $(this).data("tab")).removeClass("d-none");
             });
-
-            // $("#agregarDireccion").click(function() {
-            //     $("#formDireccionesModal").modal("show")
-            // });
 
             $(".btn-expand").click(function () {
                 if ($(this).find("i").hasClass('fa-caret-right')) {
@@ -2940,6 +2952,7 @@
             });
 
             $("input[name=tipoAccionFormCliente]").change(function () {
+                // Modificar este código
                 if ($("input[name=tipoAccionFormCliente]:checked").val() == "1") {
                     $(".tipo-aviso-programado").addClass('d-none');
                 } else {
@@ -3133,32 +3146,28 @@
     </script>
 
     <!-- Archivo de javascript de Conrado y Christian -->
-    <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=109001&c=5298967_SB1&h=Or0iEXdlb60UL8oLPvgtGx5TuAIlxkg2nuDOrQMRopQkqPaU&_xt=.js"></script>
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=109001&c=5298967_SB1&h=Or0iEXdlb60UL8oLPvgtGx5TuAIlxkg2nuDOrQMRopQkqPaU&_xt=.js"></script>
     
     <!-- Archivo para las funciones de cálculo y formateo de fecha y hora -->
-    <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=111208&c=5298967_SB1&h=ZUhaS9BkKGbYxVAnFddioklTYZyx4jcQ_f3qGIHJF0g_dERT&_xt=.js"></script>
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=111208&c=5298967_SB1&h=ZUhaS9BkKGbYxVAnFddioklTYZyx4jcQ_f3qGIHJF0g_dERT&_xt=.js"></script>
         
     <!-- Archivo para las llamadas de estados, ciudades, colonias y zonas -->
-    <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108999&c=5298967_SB1&h=KZ9uTCp4Xl91myJAOPLkubFLt7ehqts8lXAzCSzs3ieW7k6Y&_xt=.js"></script>
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108999&c=5298967_SB1&h=KZ9uTCp4Xl91myJAOPLkubFLt7ehqts8lXAzCSzs3ieW7k6Y&_xt=.js"></script>
 
     <!-- Archivo para los métodos y funciones de clientes -->
-    <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108995&c=5298967_SB1&h=RfBDkO2lz8EiWYp5XhwzHm24ZauvlQ9jiDi1AlxEcJo29QV9&_xt=.js"></script>
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108995&c=5298967_SB1&h=RfBDkO2lz8EiWYp5XhwzHm24ZauvlQ9jiDi1AlxEcJo29QV9&_xt=.js"></script>
+
+    <!-- Archivo para métodos de direcciones -->
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=119803&c=5298967_SB1&h=ZIoKFUWQ0eYZlsAIaGv--FPFGqPpQTie5J9apAuWp2NHNC8g&_xt=.js"></script>
 
     <!-- Archivo para pedidos -->
-    <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=109000&c=5298967_SB1&h=_rK1v0syyFwEdnlT3PbUjW5_ThyZEB_9slMy6Pb7GHH1gWHr&_xt=.js"></script>
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=109000&c=5298967_SB1&h=_rK1v0syyFwEdnlT3PbUjW5_ThyZEB_9slMy6Pb7GHH1gWHr&_xt=.js"></script>
 
     <!-- Archivo para fugas y quejas -->
-    <script
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=110690&c=5298967_SB1&h=AIoFrYKLxwKcvOcS_8ecyxWzz45hkzkB9ckr7PwpOrRdA7dq&_xt=.js"></script>
+    <script src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=110690&c=5298967_SB1&h=AIoFrYKLxwKcvOcS_8ecyxWzz45hkzkB9ckr7PwpOrRdA7dq&_xt=.js"></script>
 
     <!-- Notas de crédito -->
-    <script 
-        src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=116096&c=5298967_SB1&h=GcnlKk2xWGWknWb09Rfu5jAImZIg5DxDaUNDQh1aClx9qXpt&_xt=.js" ></script>
+    <script  src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=116096&c=5298967_SB1&h=GcnlKk2xWGWknWb09Rfu5jAImZIg5DxDaUNDQh1aClx9qXpt&_xt=.js" ></script>
 </body>
 
 </html>

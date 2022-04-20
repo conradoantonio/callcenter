@@ -9,8 +9,6 @@ Cuando se cambie el valor del select de plantas, se debe limpiar todo el registr
 
 Puntos que faltan:
 - Agregar el producto de envase cuando el check "envase" sea clickeado
-- Agregar funcionalidad de editar el producto para el pedido
-- Configurar el mínimo de venta de litros acorde a la planta seleccionada
 - Configurar el máximo de venta de litros acorde a la dirección seleccionada
 - Cuando se cambie el valor del select de plantas, limpiar todos los formularios (Ya)
 - Modificar a dos puntos decimales el total (Ya)
@@ -30,5 +28,11 @@ Al elegir una dirección de tipo cilindro, al querer hacer un pedido, preselecci
 Al momento de crear el servicio de SGC carburación, deberá crearse con el usuario de público en general, ya en el momento de la preliquidación, se setea ese dato. 
 El dato de método de pago se creará con el que envíe SGC carburación, pero en preliquidación se cambiará manualmente ese dato.
 
-// Terminar el flujo de segunda llamada
-// Implementar el reslet para los casos en el form de crear servicios
+// Esto es de DAMSA
+Manejar los siguientes filtros:
+Empresa, Sucursal, Departamento, Puesto, Hoja, Empleado
+
+Hojas contienen claves (Cada registro tiene una clave)
+El puesto también se encuentra en la otra fuente.
+
+Incluir una validación donde se verifique el total del txt con el total de cada registro del txt
