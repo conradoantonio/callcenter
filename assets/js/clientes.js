@@ -14,7 +14,17 @@ $("#agregarDirecciones, #agregarDireccion").click( function() {
     }
 });
 
-// Si el clienge requiere factura, se mostrarán esos campos en el form de cliente
+// Si el cliente requiere factura, se mostrarán esos campos en el form de cliente
+$('input[name=requiereContrato]').on('change', function(e) {
+    let val = $("input[name=requiereContrato]:checked").val();
+    if ( val == "si" ) {// Se muestran los datos exclusivos de factura
+        $(".dato-contrato").removeClass("d-none");
+    } else {// Se ocultan los campos de factura
+        $(".dato-contrato").addClass("d-none");
+    }
+});
+
+// Si el cliente requiere factura, se mostrarán esos campos en el form de cliente
 $('input[name=requiereFactura]').on('change', function(e) {
     let val = $("input[name=requiereFactura]:checked").val();
     if ( val == "si" ) {// Se muestran los datos exclusivos de factura
@@ -122,6 +132,8 @@ $("#editarCliente").click(function () {
         $(".dato-facturacion").addClass("d-none");
     }
 
+    // Falta código para prellenar los campos de contrato
+
     // Se setean los demás campos de forma natural
     $('#nombreFormCliente').val(customerGlobal.primerNombre);
     $('#apellidosFormCliente').val(customerGlobal.apellidos);
@@ -177,14 +189,16 @@ $('body').delegate('.delete-address', 'click', function () {
 
 // Guarda la información de un cliente en Netsuite
 function saveCustomer() {
-    let canContinue = false;
-    let tipoRegimen     = $("input[name=tipoRegimen]:checked").val();
-    let requiereFactura = $("input[name=requiereFactura]:checked").val();
+    let canContinue      = false;
+    let tipoRegimen      = $("input[name=tipoRegimen]:checked").val();
+    let requiereFactura  = $("input[name=requiereFactura]:checked").val();
+    let requiereContrato = $("input[name=requiereContrato]:checked").val();
 
     if(
         ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val() || !$("#apellidosFormCliente").val() ) ) || //Debe tener nombre y apellido si es doméstico
         ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val() ) ) || //Debe tener el nombre de la razón social
-        ( requiereFactura == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) ) || // Si requiere factura, debe incluir RFC, correo de facturación y el uso de CFDI
+        ( requiereFactura  == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) ) || // Si requiere factura, debe incluir RFC, correo de facturación y el uso de CFDI
+        ( requiereContrato == 'si' && ( !$("#numeroContratoCliente").val() || !$("#fechaInicioContratoCliente").val() || !$("#usoContratoCliente").val() ) ) || // Si requiere contrato, debe numero de contrato, fecha de inicio de contrato y el uso de contrato
         ( !$("input#idInternoFormCliente").val() && $('table.table-address tbody').find(".address").length == 0 ) // Si es un registro nuevo, debe almacenar al menos una dirección
     ) {
         canContinue = false;
@@ -339,11 +353,13 @@ function clearCustomerForm(type = 'create') {
     $(".dato-regimen-fisico").removeClass("d-none");
 
     // Limpia los textarea e inputs de todo el form
-    $('#form-client-view').find('input.form-ptg[type="text"], input.form-ptg[type="time"], input.form-ptg[type="number"], textarea.form-ptg').val('');
+    $('#form-client-view').find('input.form-ptg[type="text"], input.form-ptg[type="time"], input.form-ptg[type="number"], input.form-ptg[type="date"], textarea.form-ptg').val('');
 
     // Tab inicio
     $("input#tipoRegimen1").prop('checked', true);
     $("input#requiereFactura2").prop('checked', true);
+    $("input#requiereContrato2").prop('checked', true);
+    $('.dato-contrato').addClass('d-none');
     $("select#giroNegocioFormCliente").parent().addClass('d-none');
 
     // Tab contacto

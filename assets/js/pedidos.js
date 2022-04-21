@@ -548,6 +548,7 @@ async function savePedido() {
         let canContinue      = true;
         let articulosArr     = [];
         let pagosArr         = [];
+        let time             = moment().format('h:mm a');
         let saldoDisponible  = Number(customerGlobal?.objInfoComercial?.saldoDisponible);
         saldoDisponible      = isNaN(saldoDisponible) ? 0 : saldoDisponible;
 
@@ -649,7 +650,7 @@ async function savePedido() {
             "operario"      : userId,
             "typeservice"   : typeService,
             "cases"         : [],
-            // "time"          : "12:00 pm",
+            "time"          : time,
             "turn"          : 1,
             "paymentMethod" : $('#metodoPagoPedido').val(),
             "origen"        : $('#idCliente').val(),

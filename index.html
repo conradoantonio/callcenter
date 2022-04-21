@@ -2447,7 +2447,7 @@
                         <div class="card mt-4">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-6 text-center">
+                                    <div class="col text-center">
                                         <div class="card" style="height: 100%;">
                                             <div class="card-body">
                                                 <label class="title-ptg mb-3">¿Tipo de cliente?</label>
@@ -2482,7 +2482,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-6 text-center">
+                                    <div class="col text-center">
                                         <div class="card" style="height: 100%;">
                                             <div class="card-body">
                                                 <label class="title-ptg mb-3">¿Requiere factura?</label>
@@ -2490,18 +2490,33 @@
                                                     <div class="col"></div>
                                                     <div class="col-auto">
                                                         <div class="form-check check-ptg">
-                                                            <input class="form-check-input" value="si" type="radio"
-                                                                name="requiereFactura" id="requiereFactura1">
-                                                            <label class="form-check-label" for="requiereFactura1">
-                                                                Si
-                                                            </label>
+                                                            <input class="form-check-input" value="si" type="radio" name="requiereFactura" id="requiereFactura1">
+                                                            <label class="form-check-label" for="requiereFactura1">Si</label>
                                                         </div>
                                                         <div class="form-check check-ptg">
-                                                            <input class="form-check-input" value="no" type="radio"
-                                                                name="requiereFactura" id="requiereFactura2" checked>
-                                                            <label class="form-check-label" for="requiereFactura2">
-                                                                No
-                                                            </label>
+                                                            <input class="form-check-input" value="no" type="radio" name="requiereFactura" id="requiereFactura2" checked>
+                                                            <label class="form-check-label" for="requiereFactura2">No</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col text-center campos-contrato d-none">
+                                        <div class="card" style="height: 100%;">
+                                            <div class="card-body">
+                                                <label class="title-ptg mb-3">Generar contrato</label>
+                                                <div class="row">
+                                                    <div class="col"></div>
+                                                    <div class="col-auto">
+                                                        <div class="form-check check-ptg">
+                                                            <input class="form-check-input" value="si" type="radio" name="requiereContrato" id="requiereContrato1">
+                                                            <label class="form-check-label" for="requiereContrato1">Si</label>
+                                                        </div>
+                                                        <div class="form-check check-ptg">
+                                                            <input class="form-check-input" value="no" type="radio" name="requiereContrato" id="requiereContrato2" checked>
+                                                            <label class="form-check-label" for="requiereContrato2">No</label>
                                                         </div>
                                                     </div>
                                                     <div class="col"></div>
@@ -2609,6 +2624,26 @@
                                                 <textarea id="observacionesFormCliente" placeholder="Observaciones..." class="form-ptg"></textarea>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row pb-2 campos-contrato d-none">
+                                        <div class="col-4 dato-contrato d-none">
+                                            <div class="content-input">
+                                                <label>Número contrato*</label>
+                                                <input id="numeroContratoCliente" placeholder="No. Contrato" type="text" class="form-ptg">
+                                            </div>
+                                        </div>
+                                        <div class="col-4 dato-contrato d-none">
+                                            <div class="content-input">
+                                                <label>Fecha inicio de contrato*</label>
+                                                <input id="fechaInicioContratoCliente" type="date" class="form-ptg">
+                                            </div>
+                                        </div>
+                                        <div class="col-4 dato-contrato d-none">
+                                            <div class="content-input">
+                                                <label>Uso de contrato*</label>
+                                                <input id="usoContratoCliente" placeholder="Uso de contrato" type="text" class="form-ptg">
+                                            </div>
+                                        </div>                                        
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col"></div>
@@ -2983,8 +3018,9 @@
 
         function next(tab) {
             let next = true;
-            let tipoRegimen     = $("input[name=tipoRegimen]:checked").val();
-            let requiereFactura = $("input[name=requiereFactura]:checked").val();
+            let tipoRegimen      = $("input[name=tipoRegimen]:checked").val();
+            let requiereFactura  = $("input[name=requiereFactura]:checked").val();
+            let requiereContrato = $("input[name=requiereContrato]:checked").val();
             if (tab == 'contacto') {
                 // if ($("input[name=requiereFactura]:checked").val() == "si") {
                 //     $("#rfcFormCliente").parent().parent().removeClass("d-none");
@@ -3001,7 +3037,8 @@
                 if ( 
                     ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val() || !$("#apellidosFormCliente").val() ) ) || //Debe tener nombre y apellido si es doméstico
                     ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val() ) ) || //Debe tener el nombre de la razón social
-                    ( requiereFactura == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) )
+                    ( requiereFactura  == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) ) ||
+                    ( requiereContrato == 'si' && ( !$("#numeroContratoCliente").val() || !$("#fechaInicioContratoCliente").val() || !$("#usoContratoCliente").val() ) ) // Si requiere contrato, debe numero de contrato, fecha de inicio de contrato y el uso de contrato
                 ) {
                     next = false;
                 }

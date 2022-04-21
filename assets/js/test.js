@@ -61,6 +61,16 @@ $('.select-search-customer').on("select2:select", function (e) {
 $('span.user-name').text(userName);
 $('span#role').text(userRole);
 
+// Si el rol es distinto a administrador HEB, se eliminan los campos
+if ( userRole != 'administrator' ) {
+    console.log(userRole);
+    $('.campos-contrato').addClass('d-none');
+    // $('.campos-contrato').remove();
+} else {
+    console.log(userRole);
+    $('.campos-contrato').removeClass('d-none');
+}
+
 // Función para filtrar clientes por un texto
 function searchCustomer(clienteId) {
     loadMsg('Espere un momento...');
