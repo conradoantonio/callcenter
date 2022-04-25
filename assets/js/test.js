@@ -644,8 +644,10 @@ function setCasosOportunidades( data ) {
     console.log('Casos', casos);
     console.log('Oportunidades', oportunidades);
 
-    $("div#historic-data table thead tr th").css('z-index', (totalRows + 1));
-    $($("div#historic-data table thead tr th")[0]).css('z-index', (totalRows + 2));
+    $("div#historic-data table thead tr th").css('z-index', "3");
+    $($("div#historic-data table thead tr th")[0]).css('z-index', "4");
+    $($("div#historic-data table thead tr th")[1]).css('z-index', "4");
+    $($("div#historic-data table thead tr th")[2]).css('z-index', "4");
 
     // Checa casos
     if ( casos.length ) {
@@ -709,6 +711,11 @@ function setCasosOportunidades( data ) {
         searchable:false,
         sortable: true
     });
+    if ($(".btn-expand").find("i").hasClass('fa-caret-right')) {
+        $("tfoot").addClass("expand");
+    } else {
+        $("tfoot").removeClass("expand");
+    }
     // $('div#historic-data table').DataTable();
     $('div#historic-data').fadeIn('slow');
 }
@@ -716,14 +723,9 @@ function setCasosOportunidades( data ) {
 // Método para llenar la tabla de casos y oportunidades
 function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
     // Se necesita modificar el z-index de los th
-    // $("#tablePedidos thead tr th").css('z-index', (item.length + 1));
-    // $($("#tablePedidos thead tr th")[0]).css('z-index', (item.length + 2));
-    // $($("#tablePedidos thead tr th")[1]).css('z-index', (item.length + 2));
-    // $($("#tablePedidos thead tr th")[2]).css('z-index', (item.length + 2));
     let tr = 
     '<tr class='+type+' data-item='+"'"+JSON.stringify(item)+"'"+'>'+
-        '<td class="text-center">'+  
-        // '<td class="text-center sticky-col" style="z-index: '+(numItems - posicion + 1)+';">'+  
+        '<td class="text-center sticky-col">'+  
             '<div class="btn-group dropend vertical-center drop-options-'+item.id_Transaccion+' d-none '+type+'">'+
                 '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                 '<ul class="dropdown-menu">'+
@@ -741,14 +743,13 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
                     '</li>'+
                 '</ul>'+
             '</div>'+
-            // '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
         '</td>'+
-        '<td class="text-center sticky-col">'+
+        '<td style="left: 40px;" class="text-center sticky-col">'+
             '<div class="text-center">'+
                 '<input class="form-check-input check-opp-caso '+type+'" type="checkbox" value="" id="'+item.id_Transaccion+'">'+
             '</div>'+
         '</td>'+
-        '<td><button class="btn btn-danger"></button></td>'+
+        '<td style="left: 80px;" class="sticky-col"><button class="btn btn-danger"></button></td>'+
         '<td>'+( item.id_Transaccion ?? 'Sin ID de servicio')+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? dateFormatFromDate(item.fechaCreacion.split(" ")[0], '5')  : dateFormatFromDate(item.fecha, '5') )+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin fecha prometida' ) : 'Sin fecha prometida' )+'</td>'+// Fecha prometida
