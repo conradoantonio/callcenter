@@ -170,19 +170,21 @@ $('body').delegate('.check-entrega', 'click', function () {
 });
 
 $('body').delegate('.delete-address', 'click', function () {
+    let button = $(this);
     confirmMsg("warning", "¿Seguro que desea eliminar la dirección?", function(resp) {
-        if(resp) {
-            let address = $(this).closest('.address').data('address');
-            if(address.principal && $('table.table-address tbody').find(".address").length > 1) {
-                $(this).closest('.address').remove();
-                let element = $($('table.table-address tbody').find(".address")[0]);
-                let addressAux = element.data('address');
-                addressAux.principal = true;
-                element.data('address', address);
-                element.find('.check-entrega').parent().html('<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>');
-            } else {
-                $(this).closest('.address').remove();
-            }
+        if( resp ) {
+            let address = button.closest('.address').data('address');
+            button.parent().parent().remove();
+            // if(address.principal && $('table.table-address tbody').find(".address").length > 1) {
+            //     $(this).closest('.address').remove();
+            //     let element = $($('table.table-address tbody').find(".address")[0]);
+            //     let addressAux = element.data('address');
+            //     addressAux.principal = true;
+            //     element.data('address', address);
+            //     element.find('.check-entrega').parent().html('<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>');
+            // } else {
+            //     $(this).closest('.address').remove();
+            // }
         }
     })
 });
@@ -198,7 +200,7 @@ function saveCustomer() {
         ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val() || !$("#apellidosFormCliente").val() ) ) || //Debe tener nombre y apellido si es doméstico
         ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val() ) ) || //Debe tener el nombre de la razón social
         ( requiereFactura  == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) ) || // Si requiere factura, debe incluir RFC, correo de facturación y el uso de CFDI
-        ( requiereContrato == 'si' && ( !$("#numeroContratoCliente").val() || !$("#fechaInicioContratoCliente").val() || !$("#usoContratoCliente").val() ) ) || // Si requiere contrato, debe numero de contrato, fecha de inicio de contrato y el uso de contrato
+        ( requiereContrato == 'si' && ( !$("#fechaInicioContratoCliente").val() ) ) || // Si requiere contrato debe contener fecha de inicio de contrato
         ( !$("input#idInternoFormCliente").val() && $('table.table-address tbody').find(".address").length == 0 ) // Si es un registro nuevo, debe almacenar al menos una dirección
     ) {
         canContinue = false;
@@ -254,6 +256,8 @@ function saveCustomer() {
             rfc : rfc,
             regimeType : regimenId != 3 ? false : true,
             // regimeType : tipoRegimen,
+            isContract : requiereContrato == 'si' ? true : false,
+            contractDate : requiereContrato == 'si' ? dateFormatFromDate($('#fechaInicioContratoCliente').val(), '5') : false,
             email : email,
             emails : {
                 principal : email,

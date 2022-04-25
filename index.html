@@ -2628,8 +2628,8 @@
                                     <div class="row pb-2 campos-contrato d-none">
                                         <div class="col-4 dato-contrato d-none">
                                             <div class="content-input">
-                                                <label>Número contrato*</label>
-                                                <input id="numeroContratoCliente" placeholder="No. Contrato" type="text" class="form-ptg">
+                                                <label>Número contrato</label>
+                                                <input id="numeroContratoCliente" placeholder="Generado automáticamente" disabled type="text" class="form-ptg">
                                             </div>
                                         </div>
                                         <div class="col-4 dato-contrato d-none">
@@ -2637,13 +2637,7 @@
                                                 <label>Fecha inicio de contrato*</label>
                                                 <input id="fechaInicioContratoCliente" type="date" class="form-ptg">
                                             </div>
-                                        </div>
-                                        <div class="col-4 dato-contrato d-none">
-                                            <div class="content-input">
-                                                <label>Uso de contrato*</label>
-                                                <input id="usoContratoCliente" placeholder="Uso de contrato" type="text" class="form-ptg">
-                                            </div>
-                                        </div>                                        
+                                        </div>                                   
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col"></div>
@@ -2687,7 +2681,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Dirección</th>
-                                                            <th scope="col" class="text-center">Entrega</th>
+                                                            <th scope="col" class="text-center">Facturación</th>
                                                             <th scope="col" class="text-center">Acciones</th>
                                                             <!-- <th scope="col">Handle</th> -->
                                                         </tr>
@@ -2818,7 +2812,7 @@
         articuloDesc  = 4528;
         reposicionEst = 10;
         saldoAFavorEst = 11;
-        
+        metodoMultiple = 7;
         // $('div#historic-data table').DataTable({
         //     "order": []
         //     //DataTable Options
@@ -3038,7 +3032,7 @@
                     ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val() || !$("#apellidosFormCliente").val() ) ) || //Debe tener nombre y apellido si es doméstico
                     ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val() ) ) || //Debe tener el nombre de la razón social
                     ( requiereFactura  == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) ) ||
-                    ( requiereContrato == 'si' && ( !$("#numeroContratoCliente").val() || !$("#fechaInicioContratoCliente").val() || !$("#usoContratoCliente").val() ) ) // Si requiere contrato, debe numero de contrato, fecha de inicio de contrato y el uso de contrato
+                    ( requiereContrato == 'si' && ( !$("#fechaInicioContratoCliente").val() ) ) // Si requiere contrato, debe numero de contrato, fecha de inicio de contrato y el uso de contrato
                 ) {
                     next = false;
                 }

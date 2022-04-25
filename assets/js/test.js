@@ -199,7 +199,7 @@ function setAlianzaComercial(customer) {
         $('.alianza-no-contrato').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
         $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(customer.fechaContrato ? customer.fechaContrato : 'Sin asignar');
         $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? infoComercial.limiteCredito : 'Sin asignar');
-        $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
+        $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.terms ? infoComercial.terms : 'Sin asignar');
         $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? infoComercial.saldoDisponible : 'Sin asignar');
         $('.alianza-dias-vencidos').children('td').siblings("td:nth-child(2)").text(infoComercial.diasAtraso ? infoComercial.diasAtraso : 'Sin asignar');
         $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? infoComercial.creditoUtilizado : 'Sin asignar');
@@ -210,7 +210,7 @@ function setAlianzaComercial(customer) {
         $('.alianza-fecha-alta').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaAlta ? infoComercial.fechaAlta : 'Sin asignar');
         $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(customer.fechaContrato ? customer.fechaContrato : 'Sin asignar');
         $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? infoComercial.limiteCredito : 'Sin asignar');
-        $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
+        $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.terms ? infoComercial.terms : 'Sin asignar');
         $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? infoComercial.saldoDisponible : 'Sin asignar');
         $('.alianza-dias-vencidos').children('td').siblings("td:nth-child(2)").text(infoComercial.diasAtraso ? infoComercial.diasAtraso : 'Sin asignar');
         $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? infoComercial.creditoUtilizado : 'Sin asignar');
@@ -527,9 +527,11 @@ function setSelectMetodosPago(items) {
         $("select#metodoPagoPedido").append('<option value="">Seleccione una opción</option>')
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
-                $("select#metodoPagoPedido").append(
-                    '<option value='+items[key].id+'>'+items[key].method+'</option>'
-                );
+                if ( parseInt(items[key].id) != metodoMultiple ) {// Si es diferente a método de pago múltiple, se añade al select
+                    $("select#metodoPagoPedido").append(
+                        '<option value='+items[key].id+'>'+items[key].method+'</option>'
+                    );
+                }
             }
         }
     } else {
@@ -720,7 +722,8 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
     // $($("#tablePedidos thead tr th")[2]).css('z-index', (item.length + 2));
     let tr = 
     '<tr class='+type+' data-item='+"'"+JSON.stringify(item)+"'"+'>'+
-        '<td class="text-center sticky-col" style="z-index: '+(numItems - posicion + 1)+';">'+  
+        '<td class="text-center">'+  
+        // '<td class="text-center sticky-col" style="z-index: '+(numItems - posicion + 1)+';">'+  
             '<div class="btn-group dropend vertical-center drop-options-'+item.id_Transaccion+' d-none '+type+'">'+
                 '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                 '<ul class="dropdown-menu">'+
@@ -740,7 +743,7 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
             '</div>'+
             // '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
         '</td>'+
-        '<td>'+
+        '<td class="text-center sticky-col">'+
             '<div class="text-center">'+
                 '<input class="form-check-input check-opp-caso '+type+'" type="checkbox" value="" id="'+item.id_Transaccion+'">'+
             '</div>'+
@@ -1109,12 +1112,12 @@ function getItemPedido(pedido, tipo) {
                     '<tr class="'+( items[key].itemId == articuloDesc ? 'descuento' : '' )+'">'+
                         '<td class="">'+items[key].item+'</td>'+
                         '<td class="text-center">'+cantidad+'</td>'+
-                        '<td class="text-center">$'+( total + tax )+'</td>'+
+                        '<td class="text-center">$'+parseFloat( total + tax ).toFixed(2)+'</td>'+
                     '</tr>'
                 )
             }
 
-            $('table.table-desgloce-art tfoot').find('.total-pedido-detalle').text('$'+totalFinal);
+            $('table.table-desgloce-art tfoot').find('.total-pedido-detalle').text('$'+parseFloat(totalFinal).toFixed(2));
 
             $('.campos-art').removeClass('d-none');
         }
@@ -1148,7 +1151,7 @@ function setMetodosPago(pedido, tipo) {
             )
         }
 
-        $('table.table-desgloce-metodos-pago tfoot').find('.total-metodos-pago-detalle').text('$'+totalFinal);
+        $('table.table-desgloce-metodos-pago tfoot').find('.total-metodos-pago-detalle').text('$'+parseFloat(totalFinal).toFixed(2));
 
         $('.campos-metodos-pago').removeClass('d-none');
     }

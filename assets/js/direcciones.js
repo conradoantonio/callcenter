@@ -64,6 +64,8 @@ function validateAddressFields() {
 
     // Enlista las direcciones en  una tabla dinámica
     if ( tipoAccion == 'lista' ) {
+        // Valida que el domicilio d facturación sólo lo tenga una dirección
+        validateTableAddress(address.obj);
         // Si es la primera dirección que se agrega, se limpia el texto por defecto de la tabla
         if (! numAddress ) {
             $('table.table-address tbody').children('tr').remove();
@@ -74,11 +76,14 @@ function validateAddressFields() {
                 '<td>'+address.str+'</td>'+
                 '<td class="text-center">'+
                     '<div class="text-center" style="font-size: 20px;">'+
-                        (address.obj.principal ? '<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>' : '<i class="fa-regular fa-square color-primary check-entrega" style="cursor: pointer;"></i>')+
+                        '<div class="content-input content-input-primary">'+
+                            '<input id="domFacturacionDireccion'+address.obj.timeUnix+'" type="checkbox" class="form-check-input form-ptg address-table" '+(address.obj.domFacturacion ? 'checked' : '')+' style="width: auto;" value="">'+
+                        '</div>'+
+                        // (address.obj.principal ? '<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>' : '<i class="fa-regular fa-square color-primary check-entrega" style="cursor: pointer;"></i>')+
                     '</div>'+
                 '</td>'+
                 '<td class="text-center">'+
-                    '<button class="btn btn-sm btn-info edit-address"> <i class="fa fa-pen-to-square"></i> </button>&nbsp;&nbsp;'+
+                    // '<button class="btn btn-sm btn-info edit-address"> <i class="fa fa-pen-to-square"></i> </button>&nbsp;&nbsp;'+
                     '<button class="btn btn-sm btn-danger delete-address"> <i class="fa-solid fa-trash-can"></i> </button>'+
                 '</td>'+
             '</tr>'
@@ -184,6 +189,7 @@ function getAddressOnList() {
     let horaFin         = yLas.split(':');
     let periodo         = parseInt($("#frecuenciaFormCliente").val());
     let tipoContacto    = parseInt($("input[name=tipoAccionFormCliente]:checked").val());
+    let domFacturacion  = $('#domFacturacionDireccion').is(':checked');
 
     if ( horaInicio.length ) {
         customStartTime.setHours(horaInicio[0]);
@@ -200,6 +206,7 @@ function getAddressOnList() {
     }
 
     let addressObj = {
+        timeUnix        : Date.now(),
         principal       : $('table.table-address tbody').find(".address").length == 0 ? true : false,
         stateName       : $("#estadoDireccion").val().trim(),
         domFacturacion  : $('#domFacturacionDireccion').is(':checked'),
@@ -259,12 +266,50 @@ function getAddressOnList() {
     addressObj['zonaVenta']  ? addressStr+= '<br>Zona de venta: '+addressObj['zonaVenta'] : '';
     addressObj['ruta']       ? addressStr+= '<br>Ruta: '+addressObj['ruta'] : '';
 
-    addressObj['domFacturacion'] = addressStr ? true : false;
+    addressObj['domFacturacion'] = domFacturacion;
     return {
         str : addressStr,
         obj : addressObj
     };
 }
+
+// Cada que se agrega una dirección, iterará las direcciones para actualizar el domFacturación en caso de que se haya enviado
+function validateTableAddress(objAddress) {
+    let trDirecciones = $('#tab-client-domicilio table.table-address tbody').children('tr.address');
+    // Si la dirección actual es el domicilio de facturación, entonces todas se desmarcan a excepción de la suya
+    if ( objAddress.domFacturacion == true ) {
+        $('input.address-table').prop('checked', false);// Desmarca todos los check de la tabla
+        $('input#domFacturacionDireccion'+objAddress.timeUnix).prop('checked', true);
+    }
+    // domFacturacionDireccion'+address.obj.timeUnix+'
+    trDirecciones.each(function( index ) {
+        let direccion = $(this).data('address');
+        if ( direccion.timeUnix != objAddress.timeUnix ) {// Va a verificar todas las direcciones a excepción de la creada recientemente
+            
+            if ( objAddress.domFacturacion == true ) {// Si la dirección recientemente agregada es de facturación, se remueven todas las anteriores
+                direccion['domFacturacion'] = false;
+            }
+            console.log('Se actualizará esta dirección');
+        }
+        $(this).data('address', direccion);
+    });
+}
+
+// Checa si se clickea el domicilio de facturación
+$('body').delegate('input.address-table','change', function() {
+    // Falta código para deschequear los otros checkbox
+    let parent = $(this).parent().parent().parent().parent();
+    let direccion = parent.data('address');
+
+    if( this.checked ) {
+        direccion['domFacturacion'] = true;
+    } else {
+        direccion['domFacturacion'] = false;
+    }
+    parent.data('address', direccion);
+
+    validateTableAddress(direccion);
+});
 
 // Formatea la fecha retornada de un campo de netsuite
 function getMomentDateFormat(netSuiteDate, format = 'YYYY-MM-DD') {
