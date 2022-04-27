@@ -36,3 +36,15 @@ Hojas contienen claves (Cada registro tiene una clave)
 El puesto también se encuentra en la otra fuente.
 
 Incluir una validación donde se verifique el total del txt con el total de cada registro del txt
+
+- Revisar la ip por planta (Base de datos)
+- Considerar credenciales individuales
+
+- Enviar ID del txt (Consumir reslet)
+
+- Considerar mostrar direcciones en los resultados de búsqueda
+- La ruta en el grid del cliente, debe cambiar acorde a la dirección seleccionada
+- Recalcular litros a kilos (Ver cuál es la formula)
+- Validar el horario matutino y vespertino por rutas
+- 12:00 am - 01:59 pm turno matutino
+- 2:00 - 11:59 pm turno vespertino

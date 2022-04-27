@@ -239,7 +239,7 @@ function setColoniaZonaData(direccion) {
     $('#zonaPrecioCliente').text('$'+zonaRuta.precio);
     $('#rutaCliente').text(splitRuta[1] ?? "Sin ruta");
     $('#zonaVentaPedido').val(zonaRuta?.zona_venta);
-
+    $('#tipoServicioCliente').text(direccion.typeService ? direccion.typeService : 'Sin tipo de servicio');
     if ( desde ) {
         let medioDia = desde.split(" ");
         let horaInicio = desde.split(":");
@@ -647,7 +647,7 @@ function setCasosOportunidades( data ) {
     $("div#historic-data table thead tr th").css('z-index', "3");
     $($("div#historic-data table thead tr th")[0]).css('z-index', "4");
     $($("div#historic-data table thead tr th")[1]).css('z-index', "4");
-    $($("div#historic-data table thead tr th")[2]).css('z-index', "4");
+    // $($("div#historic-data table thead tr th")[2]).css('z-index', "4");
 
     // Checa casos
     if ( casos.length ) {
@@ -705,7 +705,7 @@ function setCasosOportunidades( data ) {
 
     // Vuelve a mostrar la tabla
     $('div#historic-data table').fancyTable({
-        sortColumn:4,
+        sortColumn:3,
         pagination: true,
         perPage: 10,
         searchable:false,
@@ -749,7 +749,7 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
                 '<input class="form-check-input check-opp-caso '+type+'" type="checkbox" value="" id="'+item.id_Transaccion+'">'+
             '</div>'+
         '</td>'+
-        '<td style="left: 80px;" class="sticky-col"><button class="btn btn-danger"></button></td>'+
+        // '<td style="left: 80px;" class="sticky-col"><button class="btn btn-danger"></button></td>'+
         '<td>'+( item.id_Transaccion ?? 'Sin ID de servicio')+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? dateFormatFromDate(item.fechaCreacion.split(" ")[0], '5')  : dateFormatFromDate(item.fecha, '5') )+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin fecha prometida' ) : 'Sin fecha prometida' )+'</td>'+// Fecha prometida

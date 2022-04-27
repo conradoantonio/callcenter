@@ -176,8 +176,10 @@
         .h-100 {
             height: calc(100vh - 56px);
         }
-
-        .form-ptg {
+        .special-group{
+            padding: 0!important;
+        }
+        .form-ptg, .special-group {
             font-size: 16px;
             border: solid 2px #9d9b99;
             border-radius: 9px;
@@ -196,7 +198,7 @@
             padding-bottom: 11.5px;
         }
 
-        .form-ptg-primary {
+        .form-ptg-primary, .special-group {
             border: solid 2px #355da7;
             color: #355da7;
         }
@@ -595,6 +597,12 @@
         .datepicker-container{
             z-index: 1600 !important; /* has to be larger than 1050 */
         }
+
+        label.label-ptg {
+            color: #355da7;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
     </style>
 </head>
 
@@ -647,7 +655,7 @@
         </div>
     </header>
     <div id="formProductosModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleProductoModal" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 400px;">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 700px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
                     <h5 class="modal-title" id="titleProductoModal">Agregar producto</h5>
@@ -717,10 +725,22 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="content-input content-input-primary">
-                                <label>Total</label>
-                                <input id="totalFormProductos" type="number" readonly class="form-ptg form-ptg-primary">
+                            <label class="label-ptg">Total</label>
+                            <div class="input-group special-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1" style="height: 42px;">$</span>
+                                </div>
+                                <input id="totalFormProductos" type="number" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
+                            <!-- <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+                                <input id="totalFormProductos" type="number" readonly aria-label="Amount (to the nearest dollar)" class="form-ptg form-ptg-primary">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">.00</span>
+                                </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -2008,9 +2028,9 @@
                             <th style="min-width: 40px; z-index: 1; left: 40px;" class="text-center sticky-col">
                                 <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                             </th>
-                            <th style="min-width: 40px; z-index: 1; left: 80px;" class="text-center sticky-col">
+                            <!-- <th style="min-width: 40px; z-index: 1; left: 80px;" class="text-center sticky-col">
                                 <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
-                            </th>
+                            </th> -->
                             <th class="text-center">ID del servicio</th>
                             <th class="text-center">Fecha creación</th>
                             <th class="text-center">Fecha prometida</th>

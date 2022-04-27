@@ -84,20 +84,32 @@ $('select#productoFormProductos').on('change', function(e) {
 $("#agregarProducto").click(function () {
     let direccion   = $('select#direccionCliente').children('option:selected').data('address');
     let minimoGasLp = Number($('select#plantas').children(':selected').data('pedido-minimo'));
+    $('.minimo-gas-lp').text(minimoGasLp);
+
+    console.log(direccion);
     
     if ( direccion ) {
+        let item1Id        = Number(parseInt(direccion.item1Id));
+        let item1Capacidad = Number(parseInt(direccion.item1Capacidad));
+
         if ( direccion.typeServiceId == 1 ) {// Cilindro
             $("#productoFormProductos").val("cilindro");
             $("#totalFormProductos").prop('readonly', true);
             $(".cilindroFormProductos").removeClass("d-none");
             $(".estacionarioFormProductos").addClass("d-none");
+            // Se realiza el cálculo del total
+            $('#cantidadFormProductos').val(item1Capacidad);
+            $('#capacidadFormProductos').val(item1Id);
+            onChangeValue( $('input#cantidadFormProductos') );
         } else if ( direccion.typeServiceId == 2 ) {// Estacionario
             $('.info-minimo-gas-lp').removeClass('d-none');
-            $('.minimo-gas-lp').text(minimoGasLp);
             $("#productoFormProductos").val("estacionario");
             $("#totalFormProductos").attr('readonly', false);
             $(".estacionarioFormProductos").removeClass("d-none");
             $(".cilindroFormProductos").addClass("d-none");
+            // Se realiza el cálculo del total
+            $('#litrosFormProductos').val(item1Capacidad);
+            onChangeValue( $('input#litrosFormProductos') );
         } else if ( direccion.typeServiceId == 4 ) {// Ambos
             
         }
@@ -488,7 +500,7 @@ function onChangeValue(element) {
     let litros       = parseInt( $('#litrosFormProductos').val() );
     let valor        = parseFloat( $('#valorFormProductos').val() ).toFixed(2);
     let articulo     = $('#capacidadFormProductos').children(':selected').data('articulo');
-    // console.log(articulo);
+    console.log(articulo);
     let capArticulo  = ( articulo && articulo.capacidad_litros ? articulo.capacidad_litros : 0 );
     
     cantidad = ( isNaN(cantidad) ? 0 : cantidad );
@@ -496,10 +508,12 @@ function onChangeValue(element) {
     valor    = ( isNaN(valor) ? 0 : valor );
 
     if ( tipoProducto == 'cilindro' ) {// Cilindro
-        if ( elementId == 'cantidadFormProductos' || elementId == 'capacidadFormProductos' ) {
+        if ( elementId == 'cantidadFormProductos' || elementId == 'capacidadFormProductos' || elementId == 'productoFormProductos' ) {// Producto (cilindro) y cantidad de producto
 
             subtotal = parseFloat( capArticulo *  cantidad * prices).toFixed(2);
             $('#valorFormProductos').val(subtotal);
+
+        } else if ( elementId == 'cantidadFormProductos' ) {// Se resetea el formulario ¿?
 
         }
 
@@ -507,7 +521,7 @@ function onChangeValue(element) {
         $('#totalFormProductos').val(total);
         
     } else if ( tipoProducto == 'estacionario' ) {// Estacionario
-        if ( elementId == 'totalFormProductos' ) {// Se calculan los litros a contratar
+        if ( elementId == 'totalFormProductos' || elementId == 'productoFormProductos' ) {// Se calculan los litros a contratar
 
             total = parseFloat( $('#totalFormProductos').val() ).toFixed(2);
             total = ( isNaN(total) ? 0 : total );
@@ -523,6 +537,8 @@ function onChangeValue(element) {
             total = parseFloat(subtotal * 1.16).toFixed(2);
             $('#totalFormProductos').val(total);
             
+        } else if ( elementId == 'cantidadFormProductos' ) {// 
+
         }
 
         $('#valorFormProductos').val(subtotal);
