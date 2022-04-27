@@ -607,13 +607,13 @@
 <body data-topbar="dark" data-spy="scroll" data-offset="175" style="overflow: hidden;">
     <header class="bg-primary-cc">
         <div class="row align-items-center w-100">
-            <div class="col-auto pr-0">
+            <!--<div class="col-auto pr-0">
                 <button id="btnMenu" type="button" class="btn bg-primary-cc btn-flat btn-header"><i
                         class="fa-solid fa-bars"></i></button>
                 <button id="btnBack" type="button" class="btn bg-primary-cc btn-flat btn-header d-none"><i
                         class="fa-solid fa-arrow-left"></i></button>
-            </div>
-            <div class="col-auto p-0">
+            </div>-->
+            <div class="col-auto pr-0">
                 <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108998&c=5298967_SB1&h=58fXy2zvwjIT_OA9h721BFfwCFF1pYHerADEgGg1wbWxKFPt"
                     alt="" height="56">
             </div>
@@ -669,14 +669,22 @@
             </div>
             <div class="row m-0 px-5" style="width: 100vw;">
                 <div class="col-12">
-                    <div class="row mb-2">
+                    <div class="row mb-2 align-items-center">
                         <div class="col"></div>
                         <div class="col-auto">
-                            <div class="content-input text-center rutasSinServicio tab-1">                                
-                                <input onchange="getResumen('1')" type="checkbox" class="form-check-input form-ptg mt-0" style="width: auto;"><label class="c-pointer">&nbsp;&nbsp;&nbsp;Mostrar solo rutas sin servicios</label>
+                            <div class="content-input text-center rutasSinServicio tab-1">     
+                                <input onchange="getResumen('1')" type="date" class="form-ptg"/>
                             </div>
                             <div class="content-input text-center rutasSinServicio tab-2 d-none">                                
-                                <input onchange="getResumen('2')" type="checkbox" class="form-check-input form-ptg mt-0" style="width: auto;"><label class="c-pointer">&nbsp;&nbsp;&nbsp;Mostrar solo rutas sin servicios</label>
+                                <input onchange="getResumen('2')" type="date" class="form-ptg"/>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="content-input text-center rutasSinServicio tab-1">                                
+                                <input onchange="getResumen('1')" type="checkbox" class="form-check-input form-ptg mt-0" style="width: auto;"><label class="c-pointer">&nbsp;&nbsp;Mostrar solo rutas sin servicios</label>
+                            </div>
+                            <div class="content-input text-center rutasSinServicio tab-2 d-none">                                
+                                <input onchange="getResumen('2')" type="checkbox" class="form-check-input form-ptg mt-0" style="width: auto;"><label class="c-pointer">&nbsp;&nbsp;Mostrar solo rutas sin servicios</label>
                             </div>
                         </div>
                     </div>
@@ -753,6 +761,79 @@
         urlStatusOp = '${ds.getListStatusOpp}';
         urlRutas = '${ds.getListRoutes}';
         statusOP = [];
+        statusShow = ["2", "3", "5"];
+
+        $(".rutasSinServicio input[type=date]").val(dateFormatFromDate(new Date(), "2"));
+        $(".rutasSinServicio input[type=date]").prop("max", dateFormatFromDate(new Date(), "2"));
+
+        function dateFormatFromDate(date, format = "1") {
+            if (typeof date == "string") {
+                let aux = date;
+                if(aux.split("-").length > 1) {
+                    date = new Date(parseInt(aux.split("-")[0]), parseInt(aux.split("-")[1]) - 1, parseInt(aux.split("-")[2]));
+                } else {
+                    date = new Date(parseInt(aux.split("/")[2]), parseInt(aux.split("/")[1]) - 1, parseInt(aux.split("/")[0]));
+                }                
+            }
+
+            let day = date.getDate();
+            let month = date.getMonth();
+            let year = date.getFullYear();
+            let fecha = "";
+            let months = ["Enero", "Febrero", "Marzo", "Abrrl", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            if (format == "1") {
+                fecha = day + " de " + months[month] + " - " + timeFormatFromDate(date);
+            } else if (format == "2") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = year + "-" + month + "-" + day;
+            } else if (format == "3") {
+                fecha = day + "/" + month + "/" + year + " " + timeFormatFromDate(date);
+            } else if (format == "4") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = year + "-" + month + "-" + day + "T" + timeFormatFromDate(date, "2");
+            } else if (format == "5") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = day + "/" + month + "/" + year;
+            } else if (format == "6") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = day + "-" + month + "-" + year;
+            } else if (format == "7") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = day + "/" + month + "/" + year + " " + timeFormatFromDate(date);;
+            }
+
+            return fecha;
+        }
 
         $(".rutasSinServicio label").click(function() {
             console.log($(this));
@@ -913,10 +994,13 @@
                                         '<th class="text-center">Ruta</th>'+
                                         '<th class="text-center">Servicios</th>';
                     response.data.forEach(element => {
-                       htmlAux +=       '<th class="text-center">'+element.nombre+'</th>';
-                       statusOP.push(element);
+                        if(statusShow.indexOf(element.id) > -1) {
+                            htmlAux +=       '<th class="text-center">'+element.nombre+'</th>';
+                            statusOP.push(element);
+                        }
                     });
-                    htmlAux +=          '<th class="text-center">Eficiencia</th>'+
+                    htmlAux +=          '<th class="text-center">Antojados</th>'+
+                                        '<th class="text-center">Eficiencia</th>'+
                                     '</tr>';
                     $("#tableCilindros thead").html(htmlAux.replace("@type", "1"));
                     $("#tableEstacionarios thead").html(htmlAux.replace("@type", "2"));
@@ -943,7 +1027,8 @@
             let dataResumen = {
                 "requestType" : 'getResumen',
                 "tipo" : tipo, //1 cilindro, 2 estacionario
-                "ruta" : $("#plantas option:selected").text()
+                "ruta" : $("#plantas option:selected").text(),
+                "fecha": dateFormatFromDate((tipo == "1" ? $($(".rutasSinServicio input[type=date]")[0]).val() : $($(".rutasSinServicio input[type=date]")[1]).val()), "5")
             };
 
             let settings = {
@@ -960,9 +1045,10 @@
                         if(!auxRoutes[element.idRoute]) {
                             auxRoutes[element.idRoute] = {
                                 idRoute: element.idRoute,
-                                routeName: element.routeName,
+                                routeName: element.route,
                                 total: 0,
-                                eficiencia: 0
+                                eficiencia: 0,
+                                antojados: element.antojados
                             }
 
                             statusOP.forEach(element2 => {
@@ -971,16 +1057,18 @@
                                 }
                             });
                         }                        
+                        
                         if(auxRoutes[element.idRoute][element.statusId] >= 0) {
                             auxRoutes[element.idRoute][element.statusId] = parseInt(auxRoutes[element.idRoute][element.statusId]) + parseInt(element.total);
+                            auxRoutes[element.idRoute].total = parseInt(auxRoutes[element.idRoute].total) + parseInt(element.total);
                         }
-
-                        auxRoutes[element.idRoute].total = parseInt(auxRoutes[element.idRoute].total) + parseInt(element.total);
+                        
                         auxRoutes[element.idRoute].eficiencia = ((auxRoutes[element.idRoute]["3"] / auxRoutes[element.idRoute].total) * 100).toFixed(2);
                     });
+                    console.log(auxRoutes);
                     let keys = Object.keys(auxRoutes);
                     $("#"+(tipo == "1" ? "tableCilindros" : "tableEstacionarios")+" tbody").html("");
-                    if(!$(".rutasSinServicio.tab-"+(tipo == "1" ? '1' : '2')).find("input").prop("checked") && keys.length > 0) {    
+                    if(!$(".rutasSinServicio.tab-"+(tipo == "1" ? '1' : '2')).find("input[type=checkbox]").prop("checked") && keys.length > 0) {    
                         keys.forEach(element => {
                             let htmlAux =   '<tr>'+
                                                 '<td></td>'+
@@ -989,43 +1077,51 @@
                             statusOP.forEach(element2 => {
                                 htmlAux +=      '<td class="text-center">'+auxRoutes[element][element2.id]+'</td>';
                             });
-                            htmlAux +=          '<td class="text-center">'+auxRoutes[element].eficiencia+'%</td>'+
+                            htmlAux +=          '<td class="text-center">'+auxRoutes[element].antojados+'</td>'+
+                                                '<td class="text-center">'+auxRoutes[element].eficiencia+'%</td>'+
                                             '</td>';
                             $("#"+(tipo == "1" ? "tableCilindros" : "tableEstacionarios")+" tbody").append(htmlAux);
                         });
                     }
                     if(tipo == "1") {
                         rutasCilindros.forEach(element => {
-                            let htmlAux =   '<tr>'+
-                                                '<td></td>'+
-                                                '<td class="text-center">'+element.name+'</td>'+
-                                                '<td class="text-center">0</td>';
-                            statusOP.forEach(element2 => {
-                                htmlAux +=      '<td class="text-center">0</td>';
-                            });
-                            htmlAux +=          '<td class="text-center">0%</td>'+
-                                            '</td>';
-                            $("#"+(tipo == "1" ? "tableCilindros" : "tableEstacionarios")+" tbody").append(htmlAux);
+                            if(!auxRoutes[element.internalId]) {
+                                let htmlAux =   '<tr>'+
+                                                    '<td></td>'+
+                                                    '<td class="text-center">'+(element.name.split(":").length > 1 ? element.name.split(":")[1] : element.name)+'</td>'+
+                                                    '<td class="text-center">0</td>';
+                                statusOP.forEach(element2 => {
+                                    htmlAux +=      '<td class="text-center">0</td>';
+                                });
+                                htmlAux +=          '<td class="text-center">0</td>'+
+                                                    '<td class="text-center">0.00%</td>'+
+                                                '</td>';
+                                $("#"+(tipo == "1" ? "tableCilindros" : "tableEstacionarios")+" tbody").append(htmlAux);
+                            }
+                            
                         });
                     } else {
                         $("#"+(tipo == "1" ? "tableCilindros" : "tableEstacionarios")+" tbody").html("");
                         rutasEstacionarios.forEach(element => {
-                            let htmlAux =   '<tr>'+
-                                                '<td></td>'+
-                                                '<td class="text-center">'+element.name+'</td>'+
-                                                '<td class="text-center">0</td>';
-                            statusOP.forEach(element2 => {
-                                htmlAux +=      '<td class="text-center">0</td>';
-                            });
-                            htmlAux +=          '<td class="text-center">0%</td>'+
-                                            '</td>';
-                            $("#"+(tipo == "1" ? "tableCilindros" : "tableEstacionarios")+" tbody").append(htmlAux);
+                            if(!auxRoutes[element.internalId]) {
+                                let htmlAux =   '<tr>'+
+                                                    '<td></td>'+
+                                                    '<td class="text-center">'+(element.name.split(":").length > 1 ? element.name.split(":")[1] : element.name)+'</td>'+
+                                                    '<td class="text-center">0</td>';
+                                statusOP.forEach(element2 => {
+                                    htmlAux +=      '<td class="text-center">0</td>';
+                                });
+                                htmlAux +=          '<td class="text-center">0</td>'+
+                                                    '<td class="text-center">0.00%</td>'+
+                                                '</td>';
+                                $("#"+(tipo == "1" ? "tableCilindros" : "tableEstacionarios")+" tbody").append(htmlAux);
+                            }
                         });
                     }   
                     
                     if($("#"+(tipo == "1" ? "tableCilindros" : "tableEstacionarios")+" tbody").children("tr").length == 0) {
                         $("#"+(tipo == "1" ? "tableCilindros" : "tableEstacionarios")+" tbody").html('<tr>'+
-                                                                                                        '<td colspan="'+(statusOP.length + 4)+'" class="text-center fw-bold py-5">Sin resumen encontrado</td>'+
+                                                                                                        '<td colspan="'+(statusOP.length + 5)+'" class="text-center fw-bold py-5">Sin resumen encontrado</td>'+
                                                                                                     '</tr>');
                     }
                 }

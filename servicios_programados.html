@@ -465,12 +465,12 @@
             width: 100%;
             overflow: auto;
             background-color: white;
-            height: calc(100vh - 337px);
+            height: calc(100vh - 312px);
             position: relative;
         }
 
         #content-casos.no-expand {
-            height: calc(100vh - 130px);
+            height: calc(100vh - 157px);
         }
 
         #historic-data {
@@ -599,13 +599,13 @@
 <body data-topbar="dark" data-spy="scroll" data-offset="175" style="overflow: hidden;">
     <header class="bg-primary-cc">
         <div class="row align-items-center w-100">
-            <div class="col-auto pr-0">
+            <!--<div class="col-auto pr-0">
                 <button id="btnMenu" type="button" class="btn bg-primary-cc btn-flat btn-header"><i
                         class="fa-solid fa-bars"></i></button>
                 <button id="btnBack" type="button" class="btn bg-primary-cc btn-flat btn-header d-none"><i
                         class="fa-solid fa-arrow-left"></i></button>
-            </div>
-            <div class="col-auto p-0">
+            </div>-->
+            <div class="col-auto pr-0">
                 <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108998&c=5298967_SB1&h=58fXy2zvwjIT_OA9h721BFfwCFF1pYHerADEgGg1wbWxKFPt"
                     alt="" height="56">
             </div>
@@ -743,11 +743,6 @@
                         
                     </div>
                 </div>
-                <!--<div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        aria-label="Close">Cancelar</button>
-                    <button id="guardarNotaAdicional" type="button" class="btn btn-primary">Guardar</button>
-                </div>-->
             </div>
         </div>
     </div>
@@ -795,8 +790,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="content-input content-input-primary">
-                        <label>Motivo de Cancelacion*</label><br>
-                        <select id="cancelarOppMotivo" class="form-ptg form-ptg-primary">
+                        <label>Estado*</label><br>
+                        <select id="estadoCambiarEstado" class="form-ptg form-ptg-primary">
                         </select>
                     </div>
                 </div>
@@ -804,6 +799,72 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                         aria-label="Close">Cancelar</button>
                     <button id="guardarCambiarEstado" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="formSeguimientoModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titleSeguimientoModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleSeguimientoModal">Seguimiento del servicio: <span id="seguimientoPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <label style="font-weight: bold;">Lista de comentarios</label><br>
+                            <table class="table-gen table-gen-blue text-center" id="table-notas-seguimiento">
+                                <thead>
+                                    <tr>
+                                        <th>Autor</th>
+                                        <th>Fecha</th>
+                                        <th>Contenido</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Nueva nota*</label>
+                                    </div>
+                                </div>
+                                <textarea id="nuevaNotaSeguimiento" rows="3" placeholder="Nota..." class="form-ptg form-ptg-primary"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cancelar</button>
+                    <button id="guardarSeguimiento" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="formNotasAdicionalesModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titleNotasAdicionalesModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 300px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleNotasAdicionalesModal">Agregar nota</h5>
+                </div>
+                <div class="modal-body">
+                    <textarea id="notaAdicional" rows="3" placeholder="Nota..."
+                        class="form-ptg form-ptg-primary"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cancelar</button>
+                    <button id="guardarNotaAdicional" type="button" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>
@@ -941,6 +1002,8 @@
         urlGetItemsOpp = '${ds.getItemsOpp}';
         urPutOppMonitor = '${ds.putOppMonitor}';
         urlPostNoteandMessage = "${ds.postNoteandMessage}";
+        urlGetMessageandNotes = '${ds.getMessageandNotes}';
+        urlGetNotesOfOPP = '${ds.getNotesOfOPP}';
         statusOP = [];
         countServices = 0;
         deftEstacionarVal = "4088";
@@ -1229,20 +1292,80 @@
             });
         }
 
+        $("#notasAdicionalesSeguimiento").click(function () {
+            $("#formNotasAdicionalesModal").modal("show");
+            $("#notaAdicional").val("");
+        });
+
+        $("#guardarSeguimiento").click(function() {
+            let pedido = $("#formSeguimientoModal").data("item");
+            if($("#nuevaNotaSeguimiento").val() && $("#nuevaNotaSeguimiento").val().trim()) {
+                confirmMsg("warning", "¿Seguro que desea guardar el seguimiento?", function(resp) {
+                    if(resp) {
+                        loadMsg();
+                        let nota = [{ 
+                            type: "nota", 
+                            idRelacionado: pedido.no_pedido, 
+                            titulo: "Nota - Avisos y llamadas (seguimiento)", 
+                            nota: $("#nuevaNotaSeguimiento").val().trim(),
+                            transaccion: "oportunidad"
+                        }];
+                        let settings2 = {
+                            url      : urlPostNoteandMessage,
+                            method   : 'POST',
+                            data: JSON.stringify({ informacion: nota })
+                        }
+                        setAjax(settings2).then((response) => {
+                            if(response.success) {
+                                swal.close();
+                                infoMsg('success', '', "Seguimiento guardado de manera correcta", null, function(resp) {
+                                    $("#formSeguimientoModal").modal('hide');
+                                    getServicios();
+                                }); 
+                            } else {
+                                infoMsg('error', 'Error:', "Ocurrio un error al tratar de guardar el seguimiento");
+                                swal.close();
+                            }
+                        }).catch((error) => {
+                            infoMsg('error', 'Error:', "Ocurrio un error al tratar de guardar el seguimiento");
+                            swal.close();
+                        });
+                    }
+                });
+            } else {
+                let aux = "<ul>";
+                if(!$("#nuevaNotaSeguimiento").val() || !$("#nuevaNotaSeguimiento").val().trim()) {
+                    aux += "<li>Nueva nota</li>";
+                }
+                aux += "</ul>";
+                infoMsg('warning', 'Campos requeridos:', aux);
+            }
+        });
+
         vrStatus = [];
         // Método para llenar el select de los estado de la oportunidad
         function setSelectStatusOp(items) {
             vrStatus = [];
             if ( items.length ) {
-                $('#filterEstadoSolicitud').children('option').remove();
+                $('#estadoCambiarEstado').children('option').remove();
                 for ( var key in items ) {
                     vrStatus.push(items[key]);
-                    if ( items.hasOwnProperty( key )) {
-                        $("#filterEstadoSolicitud").append(
+                    if ( items.hasOwnProperty( key ) && items[key].id != "2" && items[key].id != "3" && items[key].id != "6") {
+                        $("#estadoCambiarEstado").append(
                             '<option value="'+items[key].id+'">'+items[key].nombre+'</option>'
                         );
                     }
                 }
+                $('#estadoCambiarEstado').select2({
+                    selectOnClose: true,
+                    placeholder: "Seleccione un estado",
+                    dropdownParent: $('#formCambiarEstadoModal'),
+                    language: {
+                        "noResults": function(){
+                            return "Sin resultados encontrados";
+                        }
+                    }
+                });
                 readyInit();
             } else {
                 console.warn('No hay estados de solicitud por cargar');
@@ -1390,6 +1513,29 @@
             return filt;
         }
 
+        $("#guardarNotaAdicional").click(function () {
+            if ($("#notaAdicional").val().trim()) {
+                $("#notasAdicionales tbody").append(
+                    '<tr class="notasAdicionalesItem">' +
+                        '<td class="p-2">' +
+                            $("#notaAdicional").val().trim() +
+                        '</td>' +
+                        '<td width="50" style="text-align: center;">' +
+                            '<i class="fa-solid fa-trash-can" style="cursor: pointer;" onclick="deleteNota(this)"></i>' +
+                        '</td>' +
+                    '</tr>'
+                );
+                $("#formNotasAdicionalesModal").modal("hide");
+            } else {
+                alert("Llena la nota.");
+            }
+
+        });
+
+        function deleteNota(item) {
+            $(item).parent().parent().remove();
+        }
+
         function removeDuplicates(originalArray, prop) {
             var newArray = [];
             var lookupObject = {};
@@ -1508,8 +1654,6 @@
                     
                     $("#tablePedidos thead tr th").css('z-index', "3");
                     $($("#tablePedidos thead tr th")[0]).css('z-index', "4");
-                    $($("#tablePedidos thead tr th")[1]).css('z-index', "4");
-                    $($("#tablePedidos thead tr th")[2]).css('z-index', "4");
                     
                     response.data.forEach((pedido, position) => {
                         let tipoServicio = "";
@@ -1526,6 +1670,7 @@
                                                     '<li onclick="verDetalles(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-eye color-primary"></i> Ver detalles</li>'+
                                                     '<li onclick="reprogramarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-regular fa-calendar-days color-primary"></i> Reprogramar servicio</li>'+
                                                     '<li onclick="cambiarEstadoServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-arrows-rotate color-primary"></i> Cambiar estado</li>'+
+                                                    '<li onclick="seguimientoPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
                                                 '</ul>'+
                                             '</div>'+
                                             '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
@@ -1562,8 +1707,50 @@
         function cambiarEstadoServicio($this) {
             let servicio = $($this).closest("tr").data("item");
             $("#cambiarEstadoPedido").html(servicio.no_pedido ? servicio.no_pedido : '');
+            $("#estadoCambiarEstado").val(null).trigger("change");;
             $("#formCambiarEstadoModal").data("item", servicio);
-            $("#formReprogramarModal").modal("show");
+            $("#formCambiarEstadoModal").modal("show");
+        }
+
+        function seguimientoPedido($this) {
+            let pedido = $($this).closest("tr").data("item");
+            $("#seguimientoPedido").html(pedido.no_pedido ? pedido.no_pedido : '');
+            let settings = {
+                url      : urlGetNotesOfOPP,
+                method   : 'POST',
+                data     : JSON.stringify({opp : pedido.no_pedido}),
+            }
+            $("#nuevaNotaSeguimiento").val("");
+            $("#sendSmsSeguimiento").prop("checked", true);
+            $("#table-notas-seguimiento tbody").children("tr").remove();
+            $("#table-notas-seguimiento tbody").append('<tr>' +
+                                                            '<td colspan="3" class="text-center">' +
+                                                                'Sin comentarios'+
+                                                            '</td>' +
+                                                        '</tr>');
+            
+            setAjax(settings).then((response) => {
+                if(response.success) {
+                    if(response.data.length > 0) {
+                        $("#table-notas-seguimiento tbody").children("tr").remove();
+                    }
+                    response.data.forEach(element => {
+                        if(element.note && element.note.trim()) {
+                            let trAux = '<tr>' +
+                                            '<td class="ion-text-center sticky-col fw-bold">'+element.author+'</td>'+
+                                            '<td class="ion-text-center sticky-col fw-bold">'+element.date+'</td>'+
+                                            '<td class="ion-text-center sticky-col fw-bold">'+element.note+'</td>'+
+                                        '</tr>';
+                            $("#table-notas-seguimiento tbody").append(trAux);
+                        }
+                        
+                    });
+                    $("#formSeguimientoModal").data("item", pedido);
+                    $("#formSeguimientoModal").modal("show");
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
         }
 
         function reprogramarServicio($this) {
@@ -1656,6 +1843,58 @@
                                     getServicios();
                                 }); 
                             }                                                         
+                        } else {
+                            swal.close();
+                            infoMsg('error', 'Error:', "Ocurrio un error al tratar de reprogramar el servicio");
+                        }            
+                    }).catch((error) => {
+                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de reprogramar el servicio");
+                        console.log(error);
+                        swal.close();
+                    });
+                }
+            });
+        });
+
+        $("#guardarCambiarEstado").click(function() {
+            let servicio = $("#formCambiarEstadoModal").data("item");
+            if(!$("#estadoCambiarEstado").val()) {
+                let aux = "<ul>";
+                if(!$("#estadoCambiarEstado").val()) {
+                    aux += "<li>Estado</li>";
+                }
+                aux += "</ul>";
+                infoMsg('warning', 'Campos requeridos:', aux);
+                return;
+            }
+            confirmMsg("warning", "¿Seguro que desea cambiar el estado del servicio?", function(resp) {
+                if(resp) {
+                    let dataSend = {
+                        "opportunitiesUpdate": [
+                            {
+                                "id": servicio.no_pedido,
+                                "bodyFields": {
+                                    "custbody_ptg_estado_pedido": $("#estadoCambiarEstado").val(),
+                                },
+                                "lines": [
+                                    
+                                ]
+                            }
+                        ]
+                    };
+                    loadMsg();
+                    let settings = {
+                        url      : urPutOppMonitor,
+                        method   : 'PUT',
+                        data: JSON.stringify(dataSend)
+                    }
+                    setAjax(settings).then((response) => {
+                        if(response.success) {
+                            $("#formCambiarEstadoModal").modal("hide");
+                            swal.close();
+                            infoMsg('success', '', "Cambio de estado de manera correcta", null, function(resp) {
+                                getServicios();
+                            });                                                  
                         } else {
                             swal.close();
                             infoMsg('error', 'Error:', "Ocurrio un error al tratar de reprogramar el servicio");
