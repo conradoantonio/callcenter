@@ -176,9 +176,31 @@
         .h-100 {
             height: calc(100vh - 56px);
         }
+
+        /* La clase .special-group clase hace referencia a los inputs con un append */
         .special-group{
             padding: 0!important;
         }
+
+        .special-group > input:read-only {
+            /* cursor: not-allowed; */
+            background-color: white;
+        }
+
+        .special-group > .input-group-prepend {
+            font-size: 16px!important;
+            color: #355da7!important;
+            margin-left: 1px!important;
+        }
+
+        .special-group > input {
+            font-size: 16px;
+            color: #355da7;
+            margin-right: 1px;
+            border-width:0px;
+            border:none;
+        }
+
         .form-ptg, .special-group {
             font-size: 16px;
             border: solid 2px #9d9b99;
@@ -575,6 +597,24 @@
             text-align: center!important;
         }
 
+        tfoot .pag a {
+            color: #000;
+            background-color: #b0c1e0;
+            border-color: #b0c1e0;
+        }
+
+        tfoot .pag a:hover {
+            color: #000;
+            background-color: #9eaeca;
+            border-color: #9eaeca;
+        }
+
+        tfoot .pag a.active, tfoot .pag a.active:hover {
+            color: #fff;
+            background-color: #355da7;
+            border-color: #355da7;
+        }
+
         /* Css para los resultados de búsqueda de un cliente en el select2 */
         li.select2-results__option{
             border-top: solid;
@@ -728,19 +768,10 @@
                             <label class="label-ptg">Total</label>
                             <div class="input-group special-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1" style="height: 42px;">$</span>
+                                    <span class="input-group-text" id="basic-addon1" style="border: none; height: 42px; font-size: 16px; color: #355da7; margin-left: 1px; background-color: white;">$</span>
                                 </div>
                                 <input id="totalFormProductos" type="number" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
-                            <!-- <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">$</span>
-                                </div>
-                                <input id="totalFormProductos" type="number" readonly aria-label="Amount (to the nearest dollar)" class="form-ptg form-ptg-primary">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">.00</span>
-                                </div>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -2329,20 +2360,20 @@
                                 <input id="horarioPreferidoFugaQueja" type="time" class="form-ptg form-ptg-primary">
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
                             <div class="content-input content-input-primary">
                                 <label>Artículo</label>
                                 <select id="articuloFugaQueja" class="form-ptg form-ptg-primary">
                                 </select>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-2">
                             <div class="content-input content-input-primary">
                                 <label>Prioridad</label>
                                 <select id="prioridadFugaQueja" class="form-ptg form-ptg-primary">
-                                    <option value="1">Alta</option>
-                                    <option value="2">Media</option>
                                     <option value="3">Baja</option>
+                                    <option value="2">Media</option>
+                                    <option value="1">Alta</option>
                                 </select>
                             </div>
                         </div>

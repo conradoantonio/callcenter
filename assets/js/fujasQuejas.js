@@ -18,6 +18,7 @@ function getConceptosCasos() {
 // Determina qué conceptos de mostrarán acorde al tipo de caso seleccionado (Fuga/Queja)
 $('select#tipoCasoFugaQueja').on('change', function(e) {
     let tipoCaso = $('#tipoCasoFugaQueja').val();
+    $('#fechaVisitaFugaQueja, #horarioPreferidoFugaQueja').parent().parent().removeClass('d-none');
     $('select#conceptoFugaQueja').children('option').remove();
     $("select#conceptoFugaQueja").append('<option value="">Seleccione una opción</option>');
 
@@ -28,7 +29,12 @@ $('select#tipoCasoFugaQueja').on('change', function(e) {
         else if ( tipoCaso == 2 && conceptoFugasQuejasArr[i].typeName == 'Quejas') {// Quejas
             $("select#conceptoFugaQueja").append('<option value='+conceptoFugasQuejasArr[i].id+'>'+conceptoFugasQuejasArr[i].name+'</option>');
         }
-            
+    }
+
+    if ( tipoCaso == 1 ) { // Fugas
+        // $('#fechaVisitaFugaQueja, #horarioPreferidoFugaQueja').parent().parent().removeClass('d-none');
+    } else if ( tipoCaso == 2 ) { // Quejas
+        $('#fechaVisitaFugaQueja, #horarioPreferidoFugaQueja').parent().parent().addClass('d-none');
     }
 });
 
@@ -61,6 +67,7 @@ $('#guardarNuevaNotaAdicional').on('click', function () {
 $('#guardarFugaQueja').on('click', function () {
     let zonaPrecio  = $('#zonaPrecioCliente').text().replace('$', '');
     let addressObj  = $('#direccionCliente').children(':selected').data('address');
+    let tipo        = $('#tipoCasoFugaQueja').val();
     let canContinue = false;
     if(
         !$("#tipoCasoFugaQueja").val()   ||
@@ -98,8 +105,8 @@ $('#guardarFugaQueja').on('click', function () {
         "concepto"      : $('#conceptoFugaQueja').val(),
         "priceZone"     : zonaPrecio,
         "id_oportuniti" : $('#asociarServicioFugaQueja').val(),
-        "custevent_ptg_fecha_visita" : dateFormatFromDate($('#fechaVisitaFugaQueja').val(), '5'),
-        "custevent_ptg_horario_preferido" : formatTime( $('#horarioPreferidoFugaQueja').val() ),
+        "custevent_ptg_fecha_visita" : tipo == 1 ? dateFormatFromDate($('#fechaVisitaFugaQueja').val(), '5') : '',
+        "custevent_ptg_horario_preferido" : tipo == 1 ? formatTime( $('#horarioPreferidoFugaQueja').val() ) : '',
         "custevent_ptg_relacionar_caso_existente" : $('#asociarCasoFugaQueja').val(),
         "custevent_ptg_direccion_para_casos" : $('#direccionCliente').children(':selected').text(),
         "nameStreet"    : addressObj.nameStreet,
@@ -230,4 +237,7 @@ function clearFugasQuejasForm() {
 
     // Se quitan las notas adicionales
     $('table#notasAdicionales tbody').children('tr.notasAdicionalesItem').remove();
+
+    // Se muestran los campos de fecha visita y horario preferido
+    $('#fechaVisitaFugaQueja, #horarioPreferidoFugaQueja').parent().parent().removeClass('d-none');
 }
