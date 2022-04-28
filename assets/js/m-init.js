@@ -137,6 +137,7 @@ function setSelectPlants(items) {
                 );
             }
         }
+        //$('select#plantas').val("762");
         getRutas();
         getListTravel();
         readyInit();
@@ -156,11 +157,11 @@ function getListTravel() {
     }
 
     setAjax(settings).then((response) => {
-        $('#articuloFugaQueja, #viajeVentaPedido').children('option').remove();
+        $('#asignarViajeRuta, #viajeVentaPedido').children('option').remove();
         if(response.success) {
             response.data.forEach(element => {
                 $("#asignarViajeRuta, #viajeVentaPedido").append(
-                    '<option value="'+element.nViajeId+'">'+element.nViaje +' - '+element.ruta+'</option>'
+                    '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+element.nViaje +' - '+(element.ruta.split(":").length > 1 ? element.ruta.split(":")[1] : element.ruta)+'</option>'
                 );
             });
         }
@@ -185,6 +186,7 @@ function getListTravel() {
         });
         readyInit();
     }).catch((error) => {
+        cons
         readyInit();
         console.log(error);
     });
@@ -241,6 +243,12 @@ function getStatusOportunidad() {
 }
 
 vrStatus = [];
+idPorAsignar = "";
+idAsignado = "";
+idCancelado = "";
+idEntregado = "";
+idPorReprogramar = "";
+idPorConfirmar = "";
 // Método para llenar el select de los estado de la oportunidad
 function setSelectStatusOp(items) {
     vrStatus = [];
@@ -249,14 +257,37 @@ function setSelectStatusOp(items) {
         $('#filterEstadoSolicitud').append(
             '<option value="0">Todos</option>'
         )
-        for ( var key in items ) {
-            vrStatus.push(items[key]);
-            if ( items.hasOwnProperty( key ) && items[key].id != "6") {
+        
+        items.forEach(element => {
+            if(element.nombre.trim().toLowerCase() == "por asignar") {
+                idPorAsignar = element.id;
+            }
+            if(element.nombre.trim().toLowerCase() == "asignado") {
+                idAsignado = element.id;
+            }
+            if(element.nombre.trim().toLowerCase() == "cancelado") {
+                idCancelado = element.id;
+            }
+            if(element.nombre.trim().toLowerCase() == "entregado") {
+                idEntregado = element.id;
+            }
+            if(element.nombre.trim().toLowerCase() == "por reprogramar") {
+                idPorReprogramar = element.id;
+            }
+            if(element.nombre.trim().toLowerCase() == "por confirmar") {
+                idPorConfirmar = element.id;
+            }
+            vrStatus.push(element);
+        });
+
+        vrStatus.forEach(element => {
+            if ( element.id != "6") {
                 $("#filterEstadoSolicitud").append(
-                    '<option value="'+items[key].id+'">'+items[key].nombre+'</option>'
+                    '<option value="'+element.id+'">'+element.nombre+'</option>'
                 );
             }
-        }
+        });
+
         readyInit();
     } else {
         console.warn('No hay estados de solicitud por cargar');
@@ -295,18 +326,21 @@ function getRutas(getPedidos = false) {
 function setSelectRutas(getPedidos = false) {
     $('#filterRuta').parent().parent().removeClass("d-none");
     $('#filterRuta').children('option').remove();    
+    $("#filterRuta").append(
+        '<option value="0">Todas</option>'
+    );
     if ( rutasCilindros.length || rutasEstacionarios.length) {        
         if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "1") {
             rutasCilindros.forEach(element => {
                 $("#filterRuta").append(
-                    '<option value="'+element.internalId+'">'+element.name+'</option>'
+                    '<option value="'+element.internalId+'">'+(element.name && element.name.split(":").length > 1 ? element.name.split(":")[1].trim() : element.name)+'</option>'
                 );
             });
         }
         if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "2") {
             rutasEstacionarios.forEach(element => {
                 $("#filterRuta").append(
-                    '<option value="'+element.internalId+'">'+element.name+'</option>'
+                    '<option value="'+element.internalId+'">'+(element.name && element.name.split(":").length > 1 ? element.name.split(":")[1].trim() : element.name)+'</option>'
                 );
             });
         }
@@ -328,6 +362,9 @@ function setSelectRutas(getPedidos = false) {
         readyInit();
     } else {
         console.warn('No hay rutas por cargar');
+        if(getPedidos) {
+            getServicios(this);
+        }       
         readyInit();
     }
 }
@@ -435,12 +472,16 @@ function getFiltPedidos() {
             filt.status_oportunidad = $("#filterEstadoSolicitud").val();
         }
 
-        if($("#filterTipoProducto").val() != "3" && $("#filterRuta").val()) {
-            //filt.ruta = $("#filterRuta").val();
+        if($("#filterTipoProducto").val() != "3" && $("#filterRuta").val() != "0" && $("#filterRuta").val()) {
+            filt.ruta = $("#filterRuta").val();
         }
 
         if($("#filterTipoProducto").val() != "0") {
             filt.tipo_producto = parseInt($("#filterTipoProducto").val());
+        }
+
+        if($("#plantas").val()) {
+            filt.planta = $("#plantas").val();
         }
 
         if($("#filterSegundaLlamada").prop('checked')) {
@@ -459,7 +500,8 @@ function getFiltPedidos() {
             } else if($("#filterDatosCliente").val() == "email") {
                 filt.email = $("#filterBuscarCliente").val().trim();
             }  
-        } else if ($("#filterBuscarCalle").val().trim() || $("#filterBuscarInt").val().trim() || $("#filterBuscarExt").val().trim()) {
+        } 
+        if ($("#filterBuscarCalle").val().trim() || $("#filterBuscarInt").val().trim() || $("#filterBuscarExt").val().trim()) {
             if($("#filterDatosCliente").val() == "address") {
                 if($("#filterBuscarCalle").val().trim()) {
                     filt.calle = $("#filterBuscarCalle").val().trim();
@@ -501,7 +543,8 @@ function getFiltPedidos() {
             } else if($("#filterDatosCliente").val() == "email") {
                 filt.email_cliente = $("#filterBuscarCliente").val().trim();
             }  
-        } else if ($("#filterBuscarCalle").val().trim() || $("#filterBuscarInt").val().trim() || $("#filterBuscarExt").val().trim()) {
+        } 
+        if ($("#filterBuscarCalle").val().trim() || $("#filterBuscarInt").val().trim() || $("#filterBuscarExt").val().trim()) {
             if($("#filterDatosCliente").val() == "address") {
                 if($("#filterBuscarCalle").val().trim()) {
                     filt.calle = $("#filterBuscarCalle").val().trim();
@@ -590,16 +633,18 @@ function getServicios($event) {
             if(response.success) {
                 response.data = removeDuplicates(response.data, 'no_pedido');
                 if(response.data.length == 0) {
-                    $("#tablePedidos tbody").append('<tr><td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                    $("#tablePedidos tbody").append('<tr><td colspan="20" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
                     initTable("tablePedidos");
                 }
                 response.data.forEach((pedido, position) => {
+                    
                     if(pedido.fecha_prometida) {
                         pedido.fecha_hora_prometida = dateFormatFromString(pedido.fecha_prometida, "2");
                         pedido.fecha_prometida = dateFormatFromDate(new Date(pedido.fecha_prometida.split("/")[2], parseInt(pedido.fecha_prometida.split("/")[1]) - 1, pedido.fecha_prometida.split("/")[0]), "2");
                     }
             
                     if(pedido.fecha_solicitud) {
+                        pedido.fecha_hora_solicitud = dateFormatFromString(pedido.fecha_solicitud + (pedido.horaTrans && pedido.horaTrans.trim() ? ' ' + pedido.horaTrans : ''), "2");
                         pedido.fecha_solicitud = dateFormatFromDate(new Date(pedido.fecha_solicitud.split("/")[2], parseInt(pedido.fecha_solicitud.split("/")[1]) - 1, pedido.fecha_solicitud.split("/")[0]), "2");
                     }
                                 
@@ -620,23 +665,24 @@ function getServicios($event) {
                     }
                 });
                 response.data.sort(dynamicSort("fecha_hora_prometida"));
+                console.log(response.data);
                 response.data = orderOrders(response.data);
                 $("#tablePedidos thead tr th").css('z-index', "3");
                 $($("#tablePedidos thead tr th")[0]).css('z-index', "4");
                 $($("#tablePedidos thead tr th")[1]).css('z-index', "4");
                 $($("#tablePedidos thead tr th")[2]).css('z-index', "4");
+                $($("#tablePedidos thead tr th")[3]).css('z-index', "4");
+                $($("#tablePedidos thead tr th")[4]).css('z-index', "4");
+                $($("#tablePedidos thead tr th")[5]).css('z-index', "4");
                 response.data.forEach((pedido, position) => {
                     let trAux = '<tr data-item='+"'"+JSON.stringify(pedido)+"'"+'>'+
                                     '<td class="text-center sticky-col">'+  
                                         '<div class="btn-group dropend vertical-center">'+                                            
                                             '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                                             '<ul class="dropdown-menu">'+
-                                                '<li onclick="verDetalles(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-eye color-primary"></i> Ver detalles</li>'+
-                                                '<li onclick="gestionarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-gears color-primary"></i> Gestionar servicio</li>'+
-                                                ((pedido.servicio == "1" || pedido.servicio == "2") ? '<li onclick="asignarViaje(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-route color-primary"></i> Asignar viaje(ruta)</li>' : '')+
-                                                '<li onclick="notificarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-bell color-primary"></i> Notificar servicio</li>'+
+                                                (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar ? '<li onclick="gestionarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-gears color-primary"></i> Gestionar servicio</li>' : '')+
                                                 '<li onclick="seguimientoPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
-                                                '<li onclick="cancelarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio</li>'+
+                                                (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar ? '<li onclick="cancelarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio</li>' : '')+
                                             '</ul>'+
                                         '</div>'+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
@@ -648,6 +694,18 @@ function getServicios($event) {
                                     '</td>'+
                                     '<td style="left: 80px;"class="text-center sticky-col">'+
                                         '<input type="checkbox" class="form-check-input form-ptg vertical-center" ' + (pedido.segunda_llamada ? 'checked' : '') + ' disabled style="width: fit-content;">'+
+                                        '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+                                    '</td>'+
+                                    '<td style="left: 120px;"class="text-center sticky-col">'+
+                                        '<i onclick="verDetalles(this)" class="fa-solid fa-eye color-primary c-pointer" title="Ver detalles" data-bs-toggle="tooltip" data-bs-placement="right"></i>'+
+                                        '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+                                    '</td>'+
+                                    '<td style="left: 160px;"class="text-center sticky-col">'+
+                                        (pedido.status_id == idAsignado ? '<i onclick="notificarPedido(this)" class="fa-solid fa-bell color-primary c-pointer" title="Notificar pedido" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
+                                        '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+                                    '</td>'+
+                                    '<td style="left: 200px;"class="text-center sticky-col">'+
+                                        ((pedido.servicio == "1" || pedido.servicio == "2") && (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar) ? '<i onclick="asignarViaje(this)" class="fa-solid fa-route color-primary c-pointer" title="Asignar viaje(ruta)" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.no_pedido + '</td>'+
@@ -673,12 +731,12 @@ function getServicios($event) {
                 });
                 swal.close();
             } else {
-                $("#tablePedidos tbody").append('<tr><td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                $("#tablePedidos tbody").append('<tr><td colspan="20" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
                 swal.close();
             }
         }).catch((error) => {
             console.log(error);
-            $("#tablePedidos tbody").append('<tr><td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+            $("#tablePedidos tbody").append('<tr><td colspan="20" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
             swal.close();
         });
     } else {
@@ -695,14 +753,14 @@ function getServicios($event) {
         setAjax(settings).then((response) => {    
             if(response.success) {
                 if(response.data.length == 0) {
-                    $("#tableCasos tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
+                    $("#tableCasos tbody").append('<tr><td colspan="12" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
                     initTable("tableCasos");
                 }
-                $("#tableCasos thead tr th").css('z-index', (response.data.length + 1));
-                $($("#tableCasos thead tr th")[0]).css('z-index', (response.data.length + 2));
+                $("#tableCasos thead tr th").css('z-index', "3");
+                $($("#tableCasos thead tr th")[0]).css('z-index', "4");
                 response.data.forEach((caso, position) => {
                     let trAux = '<tr data-item='+"'"+JSON.stringify(caso)+"'"+'>'+
-                                    '<td class="text-center sticky-col" style="z-index: '+(response.data.length - position)+';">'+  
+                                    '<td class="text-center sticky-col">'+  
                                         '<div class="btn-group dropend vertical-center">'+                                            
                                             '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                                             '<ul class="dropdown-menu">'+
@@ -716,6 +774,7 @@ function getServicios($event) {
                                     '<td class="text-center">' + (caso.tipo_servicio == "2" ? 'Queja' : 'Fuga') + '</td>'+
                                     '<td class="text-center">' + (caso.estado == "1" ? 'No iniciado' : caso.estado == "2" ? 'En curso' : caso.estado == "3" ? 'Escalado' : caso.estado == "4" ? 'Reabierto' : caso.estado == "5" ? 'Cerrado' : '') + '</td>'+
                                     '<td class="text-center">' + caso.fecha_solicitud + '</td>'+
+                                    '<td class="text-center">' + (caso.fecha_visita ? caso.fecha_visita : 'Sin asignar') + '</td>'+
                                     '<td class="text-center">' + (caso.prioridad == "1" ? 'Alto' : caso.prioridad == "2" ? 'Medio' : 'Bajo') + '</td>'+
                                     '<td class="text-center">' + (caso.concepto_casos_name ? caso.concepto_casos_name : 'Sin concepto') + '</td>'+
                                     '<td class="text-center">' + (caso.nombre ? caso.nombre : 'Sin nombre de cliente') + '</td>'+
@@ -729,12 +788,12 @@ function getServicios($event) {
                 });
                 swal.close();
             } else {
-                $("#tableCasos tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
+                $("#tableCasos tbody").append('<tr><td colspan="12" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
                 swal.close();
             }
         }).catch((error) => {
             console.log(error);
-            $("#tableCasos tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
+            $("#tableCasos tbody").append('<tr><td colspan="12" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
             swal.close();
         });
     }
@@ -753,6 +812,10 @@ function initTable(table) {
     } else {
         $("tfoot").removeClass("expand");
     }
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 }
 
 function gestionarServicio($this) {
@@ -802,8 +865,6 @@ function gestionarServicio($this) {
         $('.productosMetodoPago').find('td.total').text('$'+total+' mxn');
     }
 
-    console.log(urlGetItemsOpp);
-
     let settings = {
         url      : urlGetItemsOpp,
         method   : 'POST',
@@ -811,6 +872,11 @@ function gestionarServicio($this) {
     }
 
     setAjax(settings).then((response) => {
+        if(response.success) {
+            servicio.articulos = response.data;
+        } else {
+            servicio.articulos = [];
+        }
         if(response.success) {
             $('.productosCilindroPedido, .productosEstacionarioPedido').parent().parent().addClass('d-none');
             $('.productosCilindroPedido tbody, .productosEstacionarioPedido tbody').children("tr").remove();
@@ -852,16 +918,17 @@ function gestionarServicio($this) {
             table.children('tfoot').find('td.total').data('total', total);
             table.children('tfoot').find('td.total').text('$'+total+' mxn');            
         }
+        $("#observacionesPagoPedido").val(servicio.observaciones);
+
+        $("#data-pedidos").removeClass("d-none");
+        $("#data-pedidos").data("item", servicio);
         swal.close();
     }).catch((error) => {
         console.log(error);
         swal.close();
     });
 
-    $("#observacionesPagoPedido").val(servicio.observaciones);
-
-    $("#data-pedidos").removeClass("d-none");
-    $("#data-pedidos").data("item", servicio);
+    
 }
 
 function getMetodoPagoNombre(item) {
@@ -919,6 +986,14 @@ $("#guardarPedido").click(function() {
                     }
                 ]
             };
+
+            if(servicio.status_id == idPorAsignar || servicio.status_id == idPorReprogramar) {
+                dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_monitor = userId;
+                dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_estado_pedido = idAsignado;
+                dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_fecha_notificacion = dateFormatFromDate(new Date(), "5");
+                dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_hora_notificacion = formatTime(timeFormatFromDate(new Date(), "2"));
+            }
+
             loadMsg();
             let settings = {
                 url      : urPutOppMonitor,
@@ -927,11 +1002,28 @@ $("#guardarPedido").click(function() {
             }
             setAjax(settings).then((response) => {
                 if(response.success) {
-                    swal.close();
-                    infoMsg('success', '', "Servicio guardado de manera correcta", null, function(resp) {
-                        $(".btn-expand").trigger("click");
-                        getServicios();
-                    });  
+                    servicio.choferId = $("#viajeVentaPedido option:selected").data("item").choferId;
+                    servicio.phoneChofer = $("#viajeVentaPedido option:selected").data("item").choferPhone;
+                    servicio.observaciones = $('#observacionesPagoPedido').val();
+                    //phoneChofer, choferId, observaciones
+                    let auxNoti = getDefaultNotification('pedido', servicio);
+                    let dataSendN = {
+                        notification: {
+                            title: 'Notificación de pedido',
+                            message: auxNoti.notificacion,
+                            ids: [servicio.choferId]
+                        }, sms : {
+                            title: servicio.id_cliente+servicio.label+dateFormatFromDate(new Date(), "8"),
+                            message: auxNoti.sms.trim().replace(/(\r\n|\n|\r)/gm," ")+"\n"+servicio.phoneChofer
+                        }
+                    };
+                    sendNotification(dataSendN, function(resp) {
+                        swal.close();
+                        infoMsg('success', '', "Servicio guardado de manera correcta", null, function(resp) {
+                            $(".btn-expand").trigger("click");
+                            getServicios();
+                        }); 
+                    });
                 } else {
                     swal.close();
                     infoMsg('error', 'Error:', "Ocurrio un error al tratar de editar el servicio");
@@ -966,6 +1058,7 @@ function gestionarCaso($this) {
         getCasosOportunidades(caso);
 
         //Domicilio
+        //$("#direccionFugaQueja").html(caso.direccion_casos ? caso.direccion_casos : 'Sin dirección');
 
         //Detalle del caso 
         $("#prioridadFugaQueja").val(caso.prioridad);
@@ -1002,6 +1095,11 @@ function gestionarCaso($this) {
 
 function getMessageAndNotes(caso) {
     $("#notasAdicionales tbody, #notasAdicionalesQueja tbody").html("");
+    $("#notasAdicionales tbody, #notasAdicionalesQueja tbody").append('<tr>' +
+                                                                            '<td colspan="4" class="text-center">' +
+                                                                                'Sin comentarios'+
+                                                                            '</td>' +
+                                                                        '</tr>');
     let settings = {
         url      : urlGetMessageandNotes,
         method   : 'POST',
@@ -1010,13 +1108,17 @@ function getMessageAndNotes(caso) {
 
     setAjax(settings).then((response) => {
         if(response.success) {
+            if(response.noteData.length > 0) {
+                $("#notasAdicionales tbody, #notasAdicionalesQueja tbody").html("");
+            }
             response.noteData.forEach(element => {
                 if(element.note && element.note.trim()) {
-                    let trAux = '<tr class="notasAdicionalesItem">' +
-                                '<td colspan="2" class="p-2">' +
-                                    element.note +
-                                '</td>' +
-                            '</tr>';
+                    let trAux = '<tr>' +
+                                    '<td class="ion-text-center sticky-col fw-bold">'+element.author+'</td>'+
+                                    '<td class="ion-text-center sticky-col fw-bold">'+element.date+'</td>'+
+                                    '<td class="ion-text-center sticky-col fw-bold">'+element.note+'</td>'+
+                                    '<td class="ion-text-center sticky-col fw-bold"></td>'+
+                                '</tr>';
                     $("#notasAdicionales tbody, #notasAdicionalesQueja tbody").append(trAux);
                 }
                 
@@ -1191,17 +1293,14 @@ function formatTime(value, format = 'hh:mm a') {
 
 $("#guardarCaso").click(function() {
     let caso = $("#data-casos").data("item");
-    if(caso.tipo_servicio == "1" && !(/*$("#direccionFugaQueja").val() &&*/
-       $("#conceptoFugaQueja").val() && $("#conceptoFugaQueja").val() != "0" &&
+    if(caso.tipo_servicio == "1" && 
+       !($("#conceptoFugaQueja").val() && $("#conceptoFugaQueja").val() != "0" &&
        $("#prioridadFugaQueja").val() &&
        $("#articuloFugaQueja").val() && $("#articuloFugaQueja").val() != "0" &&
        $("#fechaVisitaFugaQueja").val() &&
        $("#horarioPreferidoFugaQueja").val() &&
        $("#asignarTecnicoFugaQueja").val() && $("#asignarTecnicoFugaQueja").val() != "0")) {
         let aux = "<ul>";
-        if(!$("#direccionFugaQueja").val()) {
-            aux += "<li>Domicilio</li>";
-        }
         if(!$("#conceptoFugaQueja").val() || $("#conceptoFugaQueja").val() == "0") {
             aux += "<li>Concepto</li>";
         }
@@ -1291,7 +1390,7 @@ $("#guardarCaso").click(function() {
                                     type: "nota", 
                                     idRelacionado: caso.internalId, 
                                     titulo: "Nota - Monitor", 
-                                    nota: $(element).find("td").first().html().trim(),
+                                    nota: $($(element).find("td")[2]).html().trim(),
                                     transaccion: "caso"
                                 });
                             }
@@ -1304,7 +1403,7 @@ $("#guardarCaso").click(function() {
                                     type: "nota", 
                                     idRelacionado: caso.internalId, 
                                     titulo: "Nota - Monitor", 
-                                    nota: $(element).find("td").first().html().trim(),
+                                    nota: $($(element).find("td")[2]).html().trim(),
                                     transaccion: "caso"
                                 });
                             }
@@ -1349,20 +1448,166 @@ $("#guardarCaso").click(function() {
     
 });
 
+function notificarPedido($this) {
+    let pedido = $($this).closest("tr").data("item");
+    console.log(pedido);
+    loadMsg();
+    let settings = {
+        url      : urlGetItemsOpp,
+        method   : 'POST',
+        data     : JSON.stringify({opp : pedido.no_pedido}),
+    }
+
+    setAjax(settings).then((response) => {
+        if(response.success) {
+            pedido.articulos = response.data;
+        } else {
+            pedido.articulos = [];
+        }
+        $("#notificarPedido").html(pedido.no_pedido ? pedido.no_pedido : '');
+        let auxNoti = getDefaultNotification('pedido', pedido);
+        $("#notificarNotificacion").val(auxNoti.notificacion);
+        $("#notificarSms").val(auxNoti.sms.trim().replace(/(\r\n|\n|\r)/gm," "));
+        $("#sendSmsNotificar").prop("checked", true).trigger("change");
+        $("#notificarModal").data("item", pedido);
+        $("#notificarModal").modal("show");
+        swal.close();
+    }).catch((error) => {
+        console.log(error);
+        swal.close();
+    });;
+    
+}
+
+function getDefaultNotification(tipo, item) {
+    let auxNoti = {
+        notificacion: "",
+        sms: ""
+    };
+    if(tipo == 'pedido') {
+        //Llena msj de sms
+        auxNoti.sms += formatTime(timeFormatFromDate(new Date(), "2")) + ","+ item.id_cliente+item.label+",";
+        auxNoti.sms += item.street.trim()+",";
+        auxNoti.sms += item.nExterior.trim()+",";
+        auxNoti.sms += (item.nInterior && item.nInterior.trim()) ? item.nInterior.trim()+"," : '';
+        auxNoti.sms += item.colonia+",";
+        auxNoti.sms += item.nombre_cliente+",";
+        auxNoti.sms += (item.contrato && item.contrato.trim()) ? 'CONT'+item.contrato+"," : '';
+        item.articulos.forEach(element => {
+            auxNoti.sms += ","+element.quantity + "," + element.item;
+        });
+        if(item.objPagos) {
+            let auxPagos = JSON.parse(item.objPagos);
+            if(auxPagos.pago) {
+                auxPagos.pago.forEach(element => {
+                    auxNoti.sms += ","+getMetodoPagoNombre(element);
+                });
+            }
+        }
+        auxNoti.sms += (item.saldoDisponible && item.saldoDisponible.trim() && parseFloat(item.saldoDisponible.trim()) > 0) ? ',$'+item.saldoDisponible.trim() : '';
+        auxNoti.sms += (item.observaciones && item.observaciones.trim()) ? ","+item.observaciones.trim() : '';
+
+        //Llena msj de notificación
+        auxNoti.notificacion +=  "Cliente: " + item.id_cliente + " - " + item.nombre_cliente.trim() + "\n"+
+                    (item.contrato && item.contrato.trim() ? "Contrato: " + item.contrato.trim() +"\n" : "") +
+                    "Dirección: " + item.street.trim()+" #"+item.nExterior.trim()+
+                    ((item.nInterior && item.nInterior.trim()) ? " Int. "+item.nInterior.trim() : '')+
+                    ', '+item.colonia+"\n";
+                    
+                    //+ (item.direccion && item.direccion.trim() ? item.direccion.trim().replace(/(\r\n|\n|\r)/gm," ") : '') +'\n';
+
+        if(item.articulos.length > 0) {
+            auxNoti.notificacion += "Artículos:";
+            item.articulos.forEach(element => {
+                auxNoti.notificacion += "\n\t- "+ element.quantity + " | " + element.item;
+            });
+        }
+                    
+        
+        if(item.objPagos) {
+            let auxPagos = JSON.parse(item.objPagos);
+            if(auxPagos.pago && auxPagos.pago.length > 0) {
+                auxNoti.notificacion += "\nTipos de pago:";
+                auxPagos.pago.forEach(element => {
+                    auxNoti.notificacion += "\n\t- "+getMetodoPagoNombre(element);
+                });
+            }
+        }
+        auxNoti.notificacion += (item.saldoDisponible && item.saldoDisponible.trim() && parseFloat(item.saldoDisponible) > 0) ? '\nLímite de crédito: $' + item.saldoDisponible.trim() : '';     
+        auxNoti.notificacion += (item.observaciones && item.observaciones.trim() ? '\nObservaciones: ' +item.observaciones.trim() : '');
+    } else {
+
+    }
+    return auxNoti;
+}
+
 function seguimientoPedido($this) {
     let pedido = $($this).closest("tr").data("item");
     $("#seguimientoPedido").html(pedido.no_pedido ? pedido.no_pedido : '');
-    $("#seguimientoModal").modal("show");
+    let settings = {
+        url      : urlGetNotesOfOPP,
+        method   : 'POST',
+        data     : JSON.stringify({opp : pedido.no_pedido}),
+    }
+    $("#nuevaNotaSeguimiento").val("");
+    $("#sendSmsSeguimiento").prop("checked", true);
+    $("#table-notas-seguimiento tbody").children("tr").remove();
+    $("#table-notas-seguimiento tbody").append('<tr>' +
+                                                    '<td colspan="3" class="text-center">' +
+                                                        'Sin comentarios'+
+                                                    '</td>' +
+                                                '</tr>');
+    setAjax(settings).then((response) => {
+        if(response.success) {
+            if(response.data.length > 0) {
+                $("#table-notas-seguimiento tbody").children("tr").remove();
+            }
+            response.data.forEach(element => {
+                if(element.note && element.note.trim()) {
+                    let trAux = '<tr>' +
+                                    '<td class="ion-text-center sticky-col fw-bold">'+element.author+'</td>'+
+                                    '<td class="ion-text-center sticky-col fw-bold">'+element.date+'</td>'+
+                                    '<td class="ion-text-center sticky-col fw-bold">'+element.note+'</td>'+
+                                '</tr>';
+                    $("#table-notas-seguimiento tbody").append(trAux);
+                }
+                
+            });
+            $("#seguimientoModal").data("item", pedido);
+            $("#seguimientoModal").modal("show");
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+    
 }
 
 function asignarViaje($this) {
     let pedido = $($this).closest("tr").data("item");
     console.log(pedido);
-    $("#asignarViajePedido").html(pedido.no_pedido ? pedido.no_pedido : '');
-    
-    $('#asignarViajeRuta').val(pedido.id_no_viaje).trigger("change");
-    $("#asignarViajeModal").data("item", pedido);
-    $("#asignarViajeModal").modal("show");
+    loadMsg();
+    let settings = {
+        url      : urlGetItemsOpp,
+        method   : 'POST',
+        data     : JSON.stringify({opp : pedido.no_pedido}),
+    }
+
+    setAjax(settings).then((response) => {
+        if(response.success) {
+            pedido.articulos = response.data;
+        } else {
+            pedido.articulos = [];
+        }
+        $("#asignarViajePedido").html(pedido.no_pedido ? pedido.no_pedido : '');
+        
+        $('#asignarViajeRuta').val(pedido.id_no_viaje).trigger("change");
+        $("#asignarViajeModal").data("item", pedido);
+        $("#asignarViajeModal").modal("show");
+        swal.close();
+    }).catch((error) => {
+        console.log(error);
+        swal.close();
+    });;
 }
 
 function cancelarPedido($this) {
@@ -1388,66 +1633,85 @@ function cancelarPedido($this) {
 $("#guardarCancelarOpp").click(function() {
     let pedido = $("#cancelarOppModal").data("item");
     if($("#cancelarOppObservaciones").val().trim() && $("#cancelarOppMotivo").val()) {
-        let statusID = "";
-        vrStatus.forEach(element => {
-            if(element.nombre.toLowerCase().trim() == "cancelado") {
-                statusID = element.id;
-            }
-        });
-        let dataSend = {
-            "opportunitiesUpdate": [
-                {
-                    "id": pedido.no_pedido,
-                    "bodyFields": {
-                        "custbody_ptg_estado_pedido": statusID,
-                        "custbody_ptg_motivo_cancelation" : $("#cancelarOppMotivo").val()
-                    },
-                    "lines": [
-                        
+        confirmMsg("warning", "¿Seguro que desea enviar la notificación?", function(resp) {
+            if(resp) {
+                let dataSend = {
+                    "opportunitiesUpdate": [
+                        {
+                            "id": pedido.no_pedido,
+                            "bodyFields": {
+                                "custbody_ptg_estado_pedido": idCancelado,
+                                "custbody_ptg_motivo_cancelation" : $("#cancelarOppMotivo").val()
+                            },
+                            "lines": [
+                                
+                            ]
+                        }
                     ]
+                };
+                loadMsg();
+                let settings = {
+                    url      : urPutOppMonitor,
+                    method   : 'PUT',
+                    data: JSON.stringify(dataSend)
                 }
-            ]
-        };
-        loadMsg();
-        let settings = {
-            url      : urPutOppMonitor,
-            method   : 'PUT',
-            data: JSON.stringify(dataSend)
-        }
-        setAjax(settings).then((response) => {
-            if(response.success) {
-                let nota = [{ 
-                    type: "nota", 
-                    idRelacionado: pedido.no_pedido, 
-                    titulo: "Cancelación de servicio", 
-                    nota: $("#cancelarOppObservaciones").val().trim(),
-                    transaccion: "oportunidad"
-                }];
-                let settings2 = {
-                    url      : urlPostNoteandMessage,
-                    method   : 'POST',
-                    data: JSON.stringify({ informacion: nota })
-                }
-                setAjax(settings2).then((response) => {
+                setAjax(settings).then((response) => {
                     if(response.success) {
-                        $("#cancelarOppModal").modal("hide");
-                        swal.close();
-                        infoMsg('success', '', "Servicio cancelado de manera correcta", null, function(resp) {
-                            getServicios();
+                        let nota = [{ 
+                            type: "nota", 
+                            idRelacionado: pedido.no_pedido, 
+                            titulo: "Cancelación de servicio", 
+                            nota: $("#cancelarOppObservaciones").val().trim(),
+                            transaccion: "oportunidad"
+                        }];
+                        let settings2 = {
+                            url      : urlPostNoteandMessage,
+                            method   : 'POST',
+                            data: JSON.stringify({ informacion: nota })
+                        }
+                        setAjax(settings2).then((response) => {
+                            if(response.success) {
+                                if(pedido.choferId) {
+                                    let dataSend2 = {
+                                        notification: {
+                                            title: 'Cancelación de servicio - '+pedido.no_pedido,
+                                            message: $("#cancelarOppObservaciones").val().trim(),
+                                            ids: [pedido.choferId]
+                                        }, sms : {
+                                            title: pedido.id_cliente+pedido.label+dateFormatFromDate(new Date(), "8"),
+                                            message: $("#cancelarOppObservaciones").val().trim().replace(/(\r\n|\n|\r)/gm," ")+"\n"+pedido.phoneChofer
+                                        }
+                                    };
+                                    sendNotification(dataSend2, function(resp) {
+                                        $("#cancelarOppModal").modal("hide");
+                                        swal.close();
+                                        infoMsg('success', '', "Servicio cancelado de manera correcta", null, function(resp) {
+                                            getServicios();
+                                        });
+                                    });
+                                } else {
+                                    $("#cancelarOppModal").modal("hide");
+                                    swal.close();
+                                    infoMsg('success', '', "Servicio cancelado de manera correcta", null, function(resp) {
+                                        getServicios();
+                                    });
+                                }
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                            swal.close();
                         });
-                    }
+                    } else {
+                        swal.close();
+                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de cancelar el servicio");
+                    }            
                 }).catch((error) => {
                     console.log(error);
                     swal.close();
                 });
-            } else {
-                swal.close();
-                infoMsg('error', 'Error:', "Ocurrio un error al tratar de cancelar el servicio");
-            }            
-        }).catch((error) => {
-            console.log(error);
-            swal.close();
+            }
         });
+        
     } else {
         let aux = "<ul>";
         if(!$("#cancelarOppMotivo").val()) {
@@ -1461,43 +1725,200 @@ $("#guardarCancelarOpp").click(function() {
     }
 });
 
+$("#enviarNotificacion").click(function() {
+    let pedido = $("#notificarModal").data("item");
+    if($("#notificarNotificacion").val() && $("#notificarNotificacion").val().trim()) {
+        confirmMsg("warning", "¿Seguro que desea enviar la notificación?", function(resp) {
+            if(resp) {
+                let dataSend = {
+                    notification: {
+                        title: 'Notificación de pedido',
+                        message: $("#notificarNotificacion").val().trim(),
+                        ids: [pedido.choferId]
+                    }
+                };
+                if($("#sendSmsNotificar").prop("checked")) {
+                    dataSend.sms = {
+                        title: pedido.id_cliente+pedido.label+dateFormatFromDate(new Date(), "8"),
+                        message: $("#notificarSms").val().trim()+"\n"+pedido.phoneChofer
+                    }
+                }
+
+                sendNotification(dataSend, function(resp) {
+                    swal.close();
+                    if(resp.success) {
+                        if(!resp.data.notification.status || (resp.data.sms && !resp.data.sms.status)) {
+                            infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                        } else {
+                            $("#notificarModal").modal("hide");
+                            infoMsg('success', '', "Notificación enviada de manera correcta");
+                        }
+                    } else {
+                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                    }
+                });
+            }
+        });
+    } else {
+        let aux = "<ul>";
+        if(!$("#notificarNotificacion").val() || !$("#notificarNotificacion").val().trim()) {
+            aux += "<li>Notificación</li>";
+        }
+        aux += "</ul>";
+        infoMsg('warning', 'Campos requeridos:', aux);
+    }
+});
+
+$("#guardarSeguimiento").click(function() {
+    let pedido = $("#seguimientoModal").data("item");
+    if($("#nuevaNotaSeguimiento").val() && $("#nuevaNotaSeguimiento").val().trim()) {
+        confirmMsg("warning", "¿Seguro que desea enviar la notificación?", function(resp) {
+            if(resp) {
+                loadMsg();
+                let nota = [{ 
+                    type: "nota", 
+                    idRelacionado: pedido.no_pedido, 
+                    titulo: "Seguimiento (Monitor)", 
+                    nota: $("#nuevaNotaSeguimiento").val().trim(),
+                    transaccion: "oportunidad"
+                }];
+                let settings2 = {
+                    url      : urlPostNoteandMessage,
+                    method   : 'POST',
+                    data: JSON.stringify({ informacion: nota })
+                }
+                setAjax(settings2).then((response) => {
+                    if(response.success) {
+                        if(pedido.choferId) {
+                            let dataSend = {
+                                notification: {
+                                    title: 'Nueva nota pedido - '+pedido.no_pedido,
+                                    message: $("#nuevaNotaSeguimiento").val().trim(),
+                                    ids: [pedido.choferId]
+                                }
+                            };
+                            if($("#sendSmsSeguimiento").prop("checked")) {
+                                dataSend.sms = {
+                                    title: pedido.id_cliente+pedido.label+dateFormatFromDate(new Date(), "8"),
+                                    message: $("#nuevaNotaSeguimiento").val().trim().replace(/(\r\n|\n|\r)/gm," ")+"\n"+pedido.phoneChofer
+                                }
+                            }
+
+                            sendNotification(dataSend, function(resp) {
+                                swal.close();
+                                if(resp.success) {
+                                    if(!resp.data.notification.status || (resp.data.sms && !resp.data.sms.status)) {
+                                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                                    } else {
+                                        $("#seguimientoModal").modal("hide");
+                                        infoMsg('success', '', "Nota enviada de manera correcta");
+                                    }
+                                } else {
+                                    infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                                }
+                            });
+                        } else {
+                            $("#seguimientoModal").modal("hide");
+                            swal.close();
+                            infoMsg('success', '', "Nota enviada de manera correcta");
+                        }
+                    }
+                }).catch((error) => {
+                    infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la nota");
+                    swal.close();
+                });
+            }
+        });
+    } else {
+        let aux = "<ul>";
+        if(!$("#nuevaNotaSeguimiento").val() || !$("#nuevaNotaSeguimiento").val().trim()) {
+            aux += "<li>Nueva nota</li>";
+        }
+        aux += "</ul>";
+        infoMsg('warning', 'Campos requeridos:', aux);
+    }
+});
+
+function sendNotification(dataSend, callback) {
+    if(!swal.getState().isOpen) {
+        loadMsg();
+    }
+    let settings = {
+        url      : urlSendNotification,
+        method   : 'POST',
+        data: JSON.stringify(dataSend)
+    }
+    setAjax(settings).then((response) => {
+        callback(response);
+    }).catch((error) => {
+        callback(false);
+    });
+}
+
 $("#guardarAsignarViaje").click(function() {
     let pedido = $("#asignarViajeModal").data("item");
     if($("#asignarViajeRuta").val() && $("#asignarViajeRuta").val().trim()) {
-        let dataSend = {
-            "opportunitiesUpdate": [
-                {
-                    "id": pedido.no_pedido,
-                    "bodyFields": {
-                        "custbody_ptg_numero_viaje": $("#asignarViajeRuta").val()
-                    },
-                    "lines": [
-                        
+        confirmMsg("warning", "¿Seguro que desea asignar un viaje al servicio?", function(resp) {
+            if(resp) {
+                let dataSend = {
+                    "opportunitiesUpdate": [
+                        {
+                            "id": pedido.no_pedido,
+                            "bodyFields": {
+                                "custbody_ptg_numero_viaje": $("#asignarViajeRuta").val()
+                            },
+                            "lines": [
+                                
+                            ]
+                        }
                     ]
+                };
+        
+                if(pedido.status_id == idPorAsignar || pedido.status_id == idPorReprogramar) {
+                    dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_monitor = userId;
+                    dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_estado_pedido = idAsignado;
+                    dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_fecha_notificacion = dateFormatFromDate(new Date(), "5");
+                    dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_hora_notificacion = formatTime(timeFormatFromDate(new Date(), "2"));
                 }
-            ]
-        };
-        loadMsg();
-        let settings = {
-            url      : urPutOppMonitor,
-            method   : 'PUT',
-            data: JSON.stringify(dataSend)
-        }
-        setAjax(settings).then((response) => {
-            if(response.success) {
-                $("#asignarViajeModal").modal("hide");
-                swal.close();
-                infoMsg('success', '', "Viaje asinado de manera correcta", null, function(resp) {
-                    getServicios();
+        
+                loadMsg();
+                let settings = {
+                    url      : urPutOppMonitor,
+                    method   : 'PUT',
+                    data: JSON.stringify(dataSend)
+                }
+                setAjax(settings).then((response) => {
+                    if(response.success) {
+                        pedido.choferId = $("#asignarViajeRuta option:selected").data("item").choferId;
+                        pedido.phoneChofer = $("#asignarViajeRuta option:selected").data("item").choferPhone;
+                        let auxNoti = getDefaultNotification('pedido', pedido);
+                        let dataSendN = {
+                            notification: {
+                                title: 'Notificación de pedido',
+                                message: auxNoti.notificacion,
+                                ids: [pedido.choferId]
+                            }, sms : {
+                                title: pedido.id_cliente+pedido.label+dateFormatFromDate(new Date(), "8"),
+                                message: auxNoti.sms.trim().replace(/(\r\n|\n|\r)/gm," ")+"\n"+pedido.phoneChofer
+                            }
+                        };
+                        sendNotification(dataSendN, function(resp) {
+                            $("#asignarViajeModal").modal("hide");
+                            swal.close();
+                            infoMsg('success', '', "Viaje asinado de manera correcta", null, function(resp) {
+                                getServicios();
+                            });
+                        });
+                    } else {
+                        swal.close();
+                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de asinar el viaje al servicio");
+                    }            
+                }).catch((error) => {
+                    console.log(error);
+                    infoMsg('error', 'Error:', "Ocurrio un error al tratar de asinar el viaje al servicio");
+                    swal.close();
                 });
-            } else {
-                swal.close();
-                infoMsg('error', 'Error:', "Ocurrio un error al tratar de asinar el viaje al servicio");
-            }            
-        }).catch((error) => {
-            console.log(error);
-            infoMsg('error', 'Error:', "Ocurrio un error al tratar de asinar el viaje al servicio");
-            swal.close();
+            }
         });
     } else {
         let aux = "<ul>";
@@ -1556,36 +1977,68 @@ function orderOrders(data) {
         entregados = [],
         faltantes = [];
     data.forEach(element => {
-      if(element.segunda_llamada && (element.status_id == '1' || element.status_id == '2')) {
-        if(element.status_id == '1') {
+      if(element.segunda_llamada && (element.status_id == idPorAsignar || element.status_id == idAsignado)) {
+        if(element.status_id == idPorAsignar) {
           element.status_color = '#000';
-          element.outline = true;
         }
         segundaLlamada.push(element);
-      } else if(element.status_id == '1') {
+      } else if(element.status_id == idPorAsignar) {
         element.status_color = '#000';
         sinNotificar.push(element);
-      } else if(element.status_id == '2') {
+      } else if(element.status_id == idAsignado) {
         notificados.push(element);
-      } else if(element.status_id == '5') {
+      } else if(element.status_id == idCancelado) {
         cancelados.push(element);
-      } else if(element.status_id == '3') {
+      } else if(element.status_id == idEntregado) {
         entregados.push(element);
-      } else {
+      } else if(element.status_id == idPorReprogramar) {
         faltantes.push(element);
       }
     });
 
+    let auxSegundaLlamada = {};
+    segundaLlamada.forEach(element => {
+        if(!auxSegundaLlamada[element.fecha_prometida]) {
+            auxSegundaLlamada[element.fecha_prometida] = [];
+        }
+        auxSegundaLlamada[element.fecha_prometida].push(element);
+    });
+    segundaLlamada = [];
+    Object.keys(auxSegundaLlamada).forEach(element => {
+        auxSegundaLlamada[element].sort(dynamicSort("fecha_hora_notificacion"));
+        auxSegundaLlamada[element].forEach(element2 => {
+            segundaLlamada.push(element2);
+        });
+    });
+    
+    let auxSinNotificar = {};
     sinNotificar.forEach(element => {
-      if(element.tipo_cliente.trim().toLowerCase() == 'doméstico') {
-        sinNotificarD.push(element);
-      } else if(element.tipo_cliente.trim().toLowerCase() == 'comercial') {
-        sinNotificarC.push(element);
-      } else if(element.tipo_cliente.trim().toLowerCase() == 'industrial') {
-        sinNotificarI.push(element);
-      } else {
-        sinNotificarA.push(element);
-      }
+        if(!auxSinNotificar[element.fecha_prometida]) {
+            auxSinNotificar[element.fecha_prometida] = [];
+        }
+        auxSinNotificar[element.fecha_prometida].push(element);
+    });
+    sinNotificar = [];
+    Object.keys(auxSinNotificar).forEach(element => {
+        auxSinNotificar[element].sort(dynamicSort("fecha_hora_solicitud"));
+        auxSinNotificar[element].forEach(element2 => {
+            sinNotificar.push(element2);
+        });
+    });
+
+    let auxNotificados = {};
+    notificados.forEach(element => {
+        if(!auxNotificados[element.fecha_prometida]) {
+            auxNotificados[element.fecha_prometida] = [];
+        }
+        auxNotificados[element.fecha_prometida].push(element);
+    });
+    notificados = [];
+    Object.keys(auxNotificados).forEach(element => {
+        auxNotificados[element].sort(dynamicSort("fecha_hora_solicitud"));
+        auxNotificados[element].forEach(element2 => {
+            notificados.push(element2);
+        });
     });
 
     notificados.forEach(element => {
@@ -1603,21 +2056,11 @@ function orderOrders(data) {
       auxPedidos.push(element);
     });
 
-    /* Sin notificar (Color blanco): del más antiguo al más reciente y por
-    tipo de cliente:
+    /* Sin notificar (Color blanco): del más antiguo al más reciente y por tipo de cliente:
     1. Industrial
     2. Comercial
     3. Domestico*/
-    sinNotificarI.forEach(element => {
-      auxPedidos.push(element);
-    });
-    sinNotificarC.forEach(element => {
-      auxPedidos.push(element);
-    });
-    sinNotificarD.forEach(element => {
-      auxPedidos.push(element);
-    });
-    sinNotificarA.forEach(element => {
+    sinNotificar.forEach(element => {
       auxPedidos.push(element);
     });
 

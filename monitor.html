@@ -576,13 +576,13 @@
 <body data-topbar="dark" data-spy="scroll" data-offset="175" style="overflow: hidden;">
     <header class="bg-primary-cc">
         <div class="row align-items-center w-100">
-            <div class="col-auto pr-0">
+            <!--<div class="col-auto pr-0">
                 <button id="btnMenu" type="button" class="btn bg-primary-cc btn-flat btn-header"><i
                         class="fa-solid fa-bars"></i></button>
                 <button id="btnBack" type="button" class="btn bg-primary-cc btn-flat btn-header d-none"><i
                         class="fa-solid fa-arrow-left"></i></button>
-            </div>
-            <div class="col-auto p-0">
+            </div>-->
+            <div class="col-auto pr-0">
                 <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108998&c=5298967_SB1&h=58fXy2zvwjIT_OA9h721BFfwCFF1pYHerADEgGg1wbWxKFPt"
                     alt="" height="56">
             </div>
@@ -624,7 +624,7 @@
 
     <div id="formNotasAdicionalesModal" class="modal fade" tabindex="-1" role="dialog"
         aria-labelledby="titleNotasAdicionalesModal" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 300px;">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 450px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
                     <h5 class="modal-title" id="titleNotasAdicionalesModal">Agregar nota</h5>
@@ -694,18 +694,84 @@
         </div>
     </div>
 
+    <div id="notificarModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titlenotificarModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 800px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titlenotificarModal">Notificar servicio - <span id="notificarPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col"></div>
+                        <div class="col-auto">
+                            <div class="content-input text-center checkClicked">
+                                <label class="c-pointer" style="margin: auto;">Enviar SMS&nbsp;</label>
+                                <input id="sendSmsNotificar" disabled type="checkbox" class="form-check-input form-ptg" style="width: auto; margin: auto;">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="contentSmsNotificar" class="content-input content-input-primary d-none">
+                        <label>SMS*</label><br>
+                        <textarea rows="3" disabled id="notificarSms" onkeydown="noEnter(event)" class="form-ptg form-ptg-primary">
+                        </textarea>
+                    </div>
+                    <div class="content-input content-input-primary">
+                        <label>Notificación*</label><br>
+                        <textarea rows="3" id="notificarNotificacion" onkeydown="noEnter(event)" class="form-ptg form-ptg-primary">
+                        </textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cerrar</button>
+                    <button id="enviarNotificacion" type="button" class="btn btn-primary">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="seguimientoModal" class="modal fade" tabindex="-1" role="dialog"
         aria-labelledby="titleseguimientoModal" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
                     <h5 class="modal-title" id="titleseguimientoModal">Seguimiento servicio - <span id="seguimientoPedido"></span></h5>
                 </div>
                 <div class="modal-body">
-                    <div class="content-input content-input-primary">
-                        <label>Comentario*</label><br>
-                        <textarea rows="3" id="cancelarOppComentario" class="form-ptg form-ptg-primary">
-                        </textarea>
+                    <div class="row">
+                        <div class="col-12">
+                            <label style="font-weight: bold;">Lista de comentarios</label><br>
+                            <table class="table-gen table-gen-blue text-center" id="table-notas-seguimiento">
+                                <thead>
+                                    <tr>
+                                        <th>Autor</th>
+                                        <th>Fecha</th>
+                                        <th>Contenido</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Nueva nota*</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="content-input text-center checkClicked">
+                                            <label class="c-pointer" style="margin: auto; color: #737373">Enviar SMS&nbsp;</label>
+                                            <input id="sendSmsSeguimiento" disabled type="checkbox" class="form-check-input form-ptg" style="width: auto; margin: auto;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <textarea id="nuevaNotaSeguimiento" rows="3" placeholder="Nota..." class="form-ptg form-ptg-primary"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -889,9 +955,9 @@
                     </div>
                 </div>
                 <div class="col-auto pb-2 tipo-pedido">
-                    <div class="content-input">
+                    <div class="content-input" style="width: 270px;">
                         <label>Ruta</label><br>
-                        <select id="filterRuta" onchange="getServicios(this)" class="form-ptg" style="width: 120px;">
+                        <select id="filterRuta" onchange="getServicios(this)" class="form-ptg" >
                             
                         </select>
                     </div>
@@ -993,6 +1059,15 @@
                                     <th style="min-width: 40px; z-index: 1; left: 80px;" class="text-center sticky-col">
                                       <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
+                                    <th style="min-width: 40px; z-index: 1; left: 120px;" class="text-center sticky-col">
+                                        <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                    </th>
+                                    <th style="min-width: 40px; z-index: 1; left: 160px;" class="text-center sticky-col">
+                                        <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                    </th>
+                                    <th style="min-width: 40px; z-index: 1; left: 200px;" class="text-center sticky-col">
+                                        <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                    </th>
                                     <th style="min-width: 110px" class="text-center">No. Servicio</th>
                                     <th style="min-width: 95px" class="text-center">Id Cliente</th>
                                     <th style="min-width: 135px" class="text-center">Tipo Cliente</th>
@@ -1011,7 +1086,7 @@
                             </thead>
                             <tbody>   
                                 <tr>
-                                    <td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td>
+                                    <td colspan="20" class="text-center fw-bold py-5">Sin pedidos encontrados</td>
                                 </tr>                  
                             </tbody>
                         </table>
@@ -1027,6 +1102,7 @@
                                     <th style="min-width: 135px" class="text-center">Tipo de Servicio</th>
                                     <th style="min-width: 135px" class="text-center">Estado</th>
                                     <th style="min-width: 155px" class="text-center">Fecha Solicitud</th>
+                                    <th style="min-width: 155px" class="text-center">Fecha Visita</th>
                                     <th style="min-width: 135px" class="text-center">Prioridad</th>
                                     <th style="min-width: 205px" class="text-center">Concepto</th>
                                     <th style="min-width: 265px" class="text-center">Nombre Cliente</th>
@@ -1254,26 +1330,25 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row pb-2 mt-3" style="font-size: 22px;">
+                                <!--<div class="row pb-2 mt-3" style="font-size: 22px;">
                                     <div class="col border-bottom-primary">
                                         <label class="color-primary"><strong>Domicilio*</strong></label>
                                     </div>
                                 </div>
                                 <div class="row pb-2">
                                     <div class="col-8">
-                                        <div class="content-input content-input-primary">
-                                            <select id="direccionFugaQueja" class="form-ptg form-ptg-primary">
-                                            </select>
+                                        <div id="direccionFugaQueja">
+                                            
                                         </div>
                                     </div>
-                                </div>
+                                </div>-->
                                 <div class="row pb-2 mt-3" style="font-size: 22px;">
                                     <div class="col border-bottom-primary">
                                         <label class="color-primary"><strong>Detalle del caso</strong></label>
                                     </div>
                                 </div>
                                 <div class="row pb-2">
-                                    <div class="col-6">
+                                    <div class="col-12">
                                         <div class="row ion-align-items-center">
                                             <div class="col">
                                                 <div class="content-input content-input-primary">
@@ -1285,7 +1360,15 @@
                                                     class="fa-solid fa-plus color-primary"></i>
                                             </div>
                                         </div>
-                                        <table id="notasAdicionales" class="table-gen table-gen-blue">
+                                        <table class="table table-striped text-center" id="notasAdicionales">
+                                            <thead>
+                                                <tr>
+                                                    <th>Autor</th>
+                                                    <th>Fecha</th>
+                                                    <th>Contenido</th>
+                                                    <th width="50"></th>
+                                                </tr>
+                                            </thead>
                                             <tbody>
                                             </tbody>
                                         </table>
@@ -1296,7 +1379,9 @@
                                             <select id="conceptoFugaQueja" class="form-ptg form-ptg-primary">
                                             </select>
                                         </div>
-                                        <div class="content-input content-input-primary mt-3">
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="content-input content-input-primary">
                                             <label>Prioridad*</label>
                                             <select id="prioridadFugaQueja" class="form-ptg form-ptg-primary">
                                                 <option value="1">Alta</option>
@@ -1371,24 +1456,30 @@
                                     </div>
                                 </div>
                                 <div class="row pb-2">
-                                    <div class="col-6">
+                                    <div class="col-4">
                                         <div class="content-input content-input-primary">
                                             <label>Concepto*</label>
                                             <select id="conceptoQueja" class="form-ptg form-ptg-primary">
                                             </select>
                                         </div>
-                                        <div class="content-input content-input-primary mt-3">
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="content-input content-input-primary">
                                             <label>Asociar servicio</label>
                                             <select id="asociarServicioQueja" class="form-ptg form-ptg-primary">
                                             </select>
                                         </div>
-                                        <div class="content-input content-input-primary mt-3">
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="content-input content-input-primary">
                                             <label>Asociar a otro caso</label>
                                             <select id="asociarCasoQueja" class="form-ptg form-ptg-primary">
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
                                         <div class="row ion-align-items-center">
                                             <div class="col">
                                                 <div class="content-input content-input-primary">
@@ -1400,7 +1491,15 @@
                                                     class="fa-solid fa-plus color-primary"></i>
                                             </div>
                                         </div>
-                                        <table id="notasAdicionalesQueja" class="table-gen table-gen-blue">
+                                        <table class="table table-striped text-center" id="notasAdicionalesQueja">
+                                            <thead>
+                                                <tr>
+                                                    <th>Autor</th>
+                                                    <th>Fecha</th>
+                                                    <th>Contenido</th>
+                                                    <th width="50"></th>
+                                                </tr>
+                                            </thead>
                                             <tbody>
                                             </tbody>
                                         </table>
@@ -1517,6 +1616,7 @@
 
     <!-- Funciones generales -->
     <script type="text/javascript">
+        userId = '${ds.userId}';
         userName = '${ds.userName}';
         userRole = '${ds.userRole}';
         urlPlantas = '${ds.getPlantas}';
@@ -1537,11 +1637,35 @@
         urlGetItemsOpp = '${ds.getItemsOpp}';
         urlGetMethodPayments = '${ds.getMethodPayments}';
         urlGetListTravelNumber = '${ds.getListTravelNumber}';
+        urlSendNotification = '${ds.sendNotification}';
+        urlGetNotesOfOPP = '${ds.getNotesOfOPP}';
         conceptoFugasQuejasArr = [];
         methodPayments = [];
         deftEstacionarVal = "4088";
 
+        function noEnter(e) {
+            if (e.which === 13 && !e.shiftKey) {
+                e.preventDefault();
+                return false;
+            }
+        }
+
         function initComponents() {
+            $('body').delegate('.checkClicked label', 'click', function () {
+                if(!$(this).parent().find('input[type=checkbox]').prop("disabled")) {
+                    let prop = $(this).parent().find('input[type=checkbox]').prop("checked");
+                    $(this).parent().find('input[type=checkbox]').prop("checked", !prop)
+                }
+            });
+
+            $('body').delegate('#sendSmsNotificar', 'change', function () {
+                if($(this).prop("checked")) {
+                    $("#contentSmsNotificar").removeClass("d-none");
+                } else {
+                    $("#contentSmsNotificar").addClass("d-none");
+                }
+            });
+
             $('body').delegate('.dropdown-toggle', 'show.bs.dropdown', function () {
                 $(this).closest("td").css("z-index", "2");
             });
@@ -1663,28 +1787,25 @@
 
             $("#guardarNotaAdicional").click(function () {
                 if ($("#notaAdicional").val().trim()) {
+                    let trAux = '<tr>' +
+                                    '<td class="ion-text-center sticky-col fw-bold">'+userName+'</td>'+
+                                    '<td class="ion-text-center sticky-col fw-bold">'+dateFormatFromDate(new Date(), "7")+'</td>'+
+                                    '<td class="ion-text-center sticky-col fw-bold">'+$("#notaAdicional").val().trim()+'</td>'+
+                                    '<td class="ion-text-center sticky-col fw-bold">'+
+                                        '<i class="fa-solid fa-trash-can" style="cursor: pointer;" onclick="deleteNota(this)"></i>'  
+                                    '</td>'+
+                                '</tr>';
+                    
                     if($("#typeNota").val().trim().toLowerCase() == "fuga") {
-                        $("#notasAdicionales tbody").append(
-                            '<tr class="notasAdicionalesItem">' +
-                                '<td class="p-2">' +
-                                    $("#notaAdicional").val().trim() +
-                                '</td>' +
-                                '<td width="50" style="text-align: center;">' +
-                                    '<i class="fa-solid fa-trash-can" style="cursor: pointer;" onclick="deleteNota(this)"></i>' +
-                                '</td>' +
-                            '</tr>'
-                        );                      
+                        if($("#notasAdicionales tbody").find("tr").first().find("td").length == 1) {
+                            $("#notasAdicionales tbody").html("");
+                        }
+                        $("#notasAdicionales tbody").append(trAux);
                     } else {
-                        $("#notasAdicionalesQueja tbody").append(
-                            '<tr class="notasAdicionalesItem">' +
-                                '<td class="p-2">' +
-                                    $("#notaAdicional").val().trim() +
-                                '</td>' +
-                                '<td width="50" style="text-align: center;">' +
-                                    '<i class="fa-solid fa-trash-can" style="cursor: pointer;" onclick="deleteNota(this)"></i>' +
-                                '</td>' +
-                            '</tr>'
-                        ); 
+                        if($("#notasAdicionalesQueja tbody").find("tr").first().find("td").length == 1) {
+                            $("#notasAdicionalesQueja tbody").html("");
+                        }
+                        $("#notasAdicionalesQueja tbody").append(trAux);
                     }
                     $("#formNotasAdicionalesModal").modal("hide");
                 } else {
@@ -1814,6 +1935,15 @@
                     month = "0" + month;
                 }
                 fecha = day + "/" + month + "/" + year + " " + timeFormatFromDate(date);;
+            } else if (format == "8") {
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                month = month + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                fecha = year + month + day + timeFormatFromDate(date, "4");;
             }
 
             return fecha;
@@ -1872,7 +2002,7 @@
                 let time = [0, 0];
                 if (datetime.split(" ").length > 1) {
                     time = datetime.split(" ")[1].split(":");
-                    if (datetime.split(" ")[2] == "PM") {
+                    if (datetime.split(" ").length > 2 && datetime.split(" ")[2].toUpperCase() == "PM") {
                         time[0] = parseInt(time[0]) + 12;
                     }
                 }
@@ -1932,6 +2062,12 @@
                 }
 
                 hora = hours + ":" + minutes + ":" + seconds;
+            } else if (format == "4") {
+                if (hours < 10) {
+                    hours = "0" + hours;
+                }
+
+                hora = hours + minutes + seconds;
             }
             return hora;
         }
