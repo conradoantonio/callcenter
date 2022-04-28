@@ -752,7 +752,7 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
         // '<td style="left: 80px;" class="sticky-col"><button class="btn btn-danger"></button></td>'+
         '<td>'+( item.id_Transaccion ?? 'Sin ID de servicio')+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? dateFormatFromDate(item.fechaCreacion.split(" ")[0], '5')  : dateFormatFromDate(item.fecha, '5') )+'</td>'+//Fecha creación
-        '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin fecha prometida' ) : 'Sin fecha prometida' )+'</td>'+// Fecha prometida
+        '<td>'+( type == "casos" ? ( 'Sin fecha prometida' ) : (item.cierrePrevisto ?? 'Sin fecha prometida') )+'</td>'+// Fecha prometida
         '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
         '<td>'+( type == "casos" ? ( item.numeroCaso ?? 'Sin asignar' ) : ( item.numeroDocumento ?? 'Sin asignar' ) )+'</td>'+// Numero de documento u caso
         '<td>'+( type == "casos" ? ( item.asunto ?? 'Sin asignar' ) : ( item.tipoTransaccion ?? 'Sin asignar' ) )+'</td>'+// Asunto
@@ -761,6 +761,16 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
         '<td>'+( type == "casos" ? ( item.estatus ?? 'Sin asignar' ) : ( item.estado ?? 'Sin asignar' ) )+'</td>'+// Estado
         '<td>'+( type == "casos" ? ( item.prioridad ?? 'Sin asignar' ) : 'N/A' )+'</td>'+// Prioridad
     '</tr>';
+    // <th class="text-center">ID del servicio</th>
+    // <th class="text-center">Fecha creación</th>
+    // <th class="text-center">Fecha prometida</th>
+    // <th class="text-center">Tipo Servicio</th>
+    // <th class="text-center">Número de documento</th>
+    // <th class="text-center">Asunto</th>
+    // <th class="text-center">Fecha visita</th>
+    // <th class="text-center">Hora visita</th>
+    // <th class="text-center">Estado</th>
+    // <th class="text-center">Prioridad</th>
 
     return tr;
 }
