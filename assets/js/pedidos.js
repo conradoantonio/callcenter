@@ -209,7 +209,7 @@ $("#agregarMetodoPago").click(function () {
 // Valida los inputs disponibles en los métodos de pago
 $("#metodoPagoPedido").change(function () {
     let metodoId = $(this).val();
-    if ( ["8", "2", "5", "6"].includes( metodoId ) ) {// Si el método de pago es transferencia, prepago, tarjeta de crédito, tarjeta de débito
+    if ( ["8", "2"].includes( metodoId ) ) {// Si el método de pago es transferencia, prepago
         $("#folioAutorizacionPedido").parent().parent().removeClass("d-none");
     } else {
         $("#folioAutorizacionPedido").parent().parent().addClass("d-none");
@@ -467,7 +467,7 @@ function agregarEnvase(conEnvase, table, cilindro, zonaVenta) {
             "article"   : artEnvase.id
         };
 
-        let total = parseFloat( Number(artEnvase.basePrice) ).toFixed(2);
+        let total = parseFloat( Number(artEnvase.basePrice) * 1.16 ).toFixed(2);
 
         // Se llena la información del item
         $(table).children("tbody").append(

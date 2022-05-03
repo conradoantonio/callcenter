@@ -137,8 +137,8 @@ function setCustomerInfo(customer) {
         
         if ( customer.tipoDescuento == "1" ) {// Porcentaje
             tipoDescuento = 'Porcentaje';
-        } else if ( customer.tipoDescuento == "2" ) {// Lineal
-            tipoDescuento = 'Lineal';
+        } else if ( customer.tipoDescuento == "2" ) {// Peso
+            tipoDescuento = 'Pesos';
         }
 
         $('.descuento-tipo').children('td').siblings("td:nth-child(2)").text(tipoDescuento ? tipoDescuento : 'Sin asignar');
@@ -190,7 +190,20 @@ function setCustomerInfo(customer) {
 function setAlianzaComercial(customer) {
     let tipoAlianza = customer.alianzaComercial.toUpperCase();
     let infoComercial = customer.objInfoComercial;
+    $('#badgeAlianza').children('span').removeClass('bg-danger-cc bg-success-cc');
     $('tr.alianza').addClass('d-none');
+
+    // Valida el color que debe mostrar la alianza comercial
+    if ( infoComercial.diasAtraso ) {
+        console.log('tiene el objeto dias atraso');
+        if ( parseInt(infoComercial.diasAtraso) > 0 ) {
+            console.log('tiene dias de atraso, se pone danger');
+            $('#badgeAlianza').children('span').addClass('bg-danger-cc');
+        } else {
+            console.log('No tiene dias de atraso, se pone success');
+            $('#badgeAlianza').children('span').addClass('bg-success-cc');
+        }
+    }
     if ( tipoAlianza ==  'CONTRATO' ) {
         $('#badgeAlianza').removeClass('d-none');
         $('#badgeAlianza').children('span').text('Contrato');
@@ -732,7 +745,7 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
                     '<li onclick="verDetalles(this)" class="'+type+' px-2 py-1 c-pointer" style="font-size: 16px">'+
                         '<i class="fa-solid fa-eye color-primary"></i> Ver detalles'+
                     '</li>'+
-                    '<li onclick="cancelarPedido(this)" class="'+type+' px-2 py-1 c-pointer" style="font-size: 16px">'+
+                    '<li onclick="cancelarPedido(this)" class="'+type+' px-2 py-1 c-pointer d-none" style="font-size: 16px">'+
                         '<i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio'+
                     '</li>'+
                     '<li onclick="verNotasAdicionales(this)" class="'+type+' px-2 py-1 c-pointer" style="font-size: 16px">'+
@@ -756,7 +769,7 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
         '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
         '<td>'+( type == "casos" ? ( item.numeroCaso ?? 'Sin asignar' ) : ( item.numeroDocumento ?? 'Sin asignar' ) )+'</td>'+// Numero de documento u caso
         '<td>'+( type == "casos" ? ( item.asunto ?? 'Sin asignar' ) : ( item.tipoTransaccion ?? 'Sin asignar' ) )+'</td>'+// Asunto
-        '<td>'+( type == "casos" ? ( item.fecha_visita ?? 'Sin asignar' ) : ( item.cierrePrevisto ?? 'Sin asignar' ) )+'</td>'+// Fecha visita
+        '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin asignar' ) : ( 'Sin asignar' ) )+'</td>'+// Fecha visita
         '<td>'+( type == "casos" ? ( item.hora_visita ?? 'Sin asignar' ) : ( item.horaVisita ?? 'Sin asignar' ) )+'</td>'+// Hora visita
         '<td>'+( type == "casos" ? ( item.estatus ?? 'Sin asignar' ) : ( item.estado ?? 'Sin asignar' ) )+'</td>'+// Estado
         '<td>'+( type == "casos" ? ( item.prioridad ?? 'Sin asignar' ) : 'N/A' )+'</td>'+// Prioridad
@@ -942,6 +955,17 @@ function verDetalles($this) {
     $("#verDetallesTelefono").html(customerGlobal.telefono.trim());
     
     if ( $($this).hasClass('oportunidades') ) {
+        let direccion = '';
+
+        direccion += addressObj['nameStreet'];
+        pedido['numExterno'] ? direccion+= ' #'+pedido['numExterno'] : '';
+        pedido['numInterno'] ? direccion+= ' #'+pedido['numInterno'] : '';
+        pedido['colonia']    ? direccion+= ', Col. '+pedido['colonia'] : '';
+        pedido['stateName']  ? direccion+= ', '+pedido['stateName'] : '';
+        pedido['city']       ? direccion+= ', '+pedido['city'] : '';
+        pedido['zip']        ? direccion+= ', C.P. '+pedido['zip'] : '';
+        pedido['zonaVenta']  ? direccion+= 'Zona de venta: '+pedido['zonaVenta'] : '';
+        pedido['ruta']       ? direccion+= 'Ruta: '+pedido['ruta'] : '';
 
         $("#verDetallesServicio").html(pedido.numeroDocumento);
         $("#verDetallesDireccion").html(pedido.rutaAsignada ? pedido.rutaAsignada : 'Sin asignar');
@@ -949,7 +973,8 @@ function verDetalles($this) {
         $("#verDetallesVehiculo").html(pedido.vehiculo ? pedido.vehiculo.trim() : 'Sin asignar');
         $("#verDetallesZona").html(pedido.zone ? pedido.zone : 'Sin asignar');
         $("#verDetallesUsuarioMonitor").html(pedido.monitor ? pedido.monitor.trim() : 'Sin asignar');
-        $("#verDetallesDireccion2").html($('#direccionCliente').children(':selected').text());
+        $("#verDetallesDireccion2").html(direccion);
+        // $("#verDetallesDireccion2").html($('#direccionCliente').children(':selected').text());
         // $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
         $("#verDetallesFechaPrometida").html(pedido.cierrePrevisto ? pedido.cierrePrevisto : 'Sin asignar');
         $("#verDetallesFechaPedido").html(pedido.fecha ? pedido.fecha : 'Sin asignar');
