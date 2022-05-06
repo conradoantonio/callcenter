@@ -15,18 +15,14 @@ $(function() {
                 return JSON.stringify(queryParameters);
             },
             processResults: function (response) {
-                /* if(response.data.length > 0) {
+                if(response.data.length > 0) {
                     response.data.forEach(element => {
-                        element.dateCreated2 = dateFormatFromString(element.dateCreated, "2");
+                        element.text = element.nombre + " - " + getDireccionFormat(element, "cliente") + " - " + element.telefono;
                     });
-                    response.data.sort(dynamicSort("dateCreated2"));
-                    if($("#filtClients").val() == "descendente") {
-                        response.data.reverse();
-                    }
-                } */
+                }
                 return {                     
                     results: $.map(response.data, function(obj) {
-                        return { id: obj.id, text: obj.text };
+                        return { id: obj.id, text: obj.text, idAdress: obj.idAdress };
                     })
                 };
             },
@@ -36,6 +32,47 @@ $(function() {
     });
 });
 
+function getDireccionFormat(item, tipo) { 
+    let auxDir = "";
+    if(tipo == "pedido") {
+        auxDir += (item.street && item.street.trim() ? item.street.trim() : '');
+        auxDir += (item.nExterior && item.nExterior.trim() ? (auxDir ? ' #' : '#') + item.nExterior.trim() : '');
+        auxDir += (item.nInterior && item.nInterior.trim() ? (auxDir ? ' Int. ' : 'Int. ') + item.nInterior.trim() : '');
+        auxDir += (item.colonia && item.colonia.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.colonia.trim()) : '');
+        auxDir += (item.cp && item.cp.trim() ? (auxDir ? ', ' : '') + item.cp.trim() : '');
+        auxDir += (item.municipio && item.municipio.trim() ? (auxDir ? ' ' : '') + capitalizeFirstsLetter(item.municipio.trim()) : '');
+        auxDir += (item.estadoDireccion && item.estadoDireccion.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.estadoDireccion.trim()) : '');
+    } else if(tipo == "caso") {
+        auxDir += (item.calleDireccion && item.calleDireccion.trim() ? item.calleDireccion.trim() : '');
+        auxDir += (item.nExterior && item.nExterior.trim() ? (auxDir ? ' #' : '#') + item.nExterior.trim() : '');
+        auxDir += (item.nInterior && item.nInterior.trim() ? (auxDir ? ' Int. ' : 'Int. ') + item.nInterior.trim() : '');
+        auxDir += (item.colonia && item.colonia.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.colonia.trim()) : '');
+        auxDir += (item.cp && item.cp.trim() ? (auxDir ? ', ' : '') + item.cp.trim() : '');
+        auxDir += (item.municipio && item.municipio.trim() ? (auxDir ? ' ' : '') + capitalizeFirstsLetter(item.municipio.trim()) : '');
+        auxDir += (item.estadoDireccion && item.estadoDireccion.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.estadoDireccion.trim()) : '');
+    } else if(tipo == "cliente") {
+        auxDir += (item.calle && item.calle.trim() ? item.calle.trim() : '');
+        auxDir += (item.nExterior && item.nExterior.trim() ? (auxDir ? ' #' : '#') + item.nExterior.trim() : '');
+        auxDir += (item.nInterior && item.nInterior.trim() ? (auxDir ? ' Int. ' : 'Int. ') + item.nInterior.trim() : '');
+        auxDir += (item.colonia && item.colonia.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.colonia.trim()) : '');
+        auxDir += (item.cp && item.cp.trim() ? (auxDir ? ', C.P. ' : '') + item.cp.trim() : '');
+        auxDir += (item.entre1 && item.entre1.trim() ? (auxDir ? ', Entre ' : '') + capitalizeFirstsLetter(item.entre1.trim()) : '');
+        auxDir += (item.entre2 && item.entre2.trim() ? (auxDir ? ' y ' : '') + capitalizeFirstsLetter(item.entre2.trim()) : '');
+    }
+    return auxDir.trim();
+}
+
+function capitalizeFirstsLetter(string) {
+    let auxStr = "";
+    string.split(" ").forEach(element => {
+        if(auxStr != "") {
+            auxStr += " ";
+        }
+        auxStr += element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
+    });
+    return auxStr.trim();
+}
+
 // Se podrá solicitar la información de un cliente al seleccionar una opción del listado de resultados
 $('.select-search-customer').on("select2:select", function (e) { 
     let clienteId = $(this).val();
@@ -44,15 +81,31 @@ $('.select-search-customer').on("select2:select", function (e) {
         swal({
             title: 'Tiene un pedido en curso, ¿Está seguro de continuar con la búsqueda de un cliente nuevo?',
             icon: 'warning',
-            buttons:["Cancelar", "Aceptar"],
+            buttons:{
+                cancel: {
+                  text: "Cancelar",
+                  value: null,
+                  visible: true,
+                  className: "btn-danger-cc",
+                  closeModal: true,
+                },
+                confirm: {
+                  text: "Aceptar",
+                  value: true,
+                  visible: true,
+                  className: "btn-primary-cc",
+                  closeModal: true
+                }
+            },
             dangerMode: true,
+            cancelButtonColor: "btn-light" 
         }).then((accept) => {
             if ( accept ) {
-                searchCustomer( clienteId );
+                searchCustomer( clienteId, e.params.data.idAdress );
             }
         }).catch(swal.noop);
     } else {
-        searchCustomer( clienteId );
+        searchCustomer( clienteId, e.params.data.idAdress );
     }
     $('select.select-search-customer').val(null).trigger("change");
 });
@@ -72,7 +125,7 @@ if ( userRole != 'administrator' ) {
 }
 
 // Función para filtrar clientes por un texto
-function searchCustomer(clienteId) {
+function searchCustomer(clienteId, idAddress = null) {
     loadMsg('Espere un momento...');
 
     clearCustomerInfo();
@@ -92,7 +145,7 @@ function searchCustomer(clienteId) {
         swal.close();
         // console.log('Cliente encontrado', response);
         customerGlobal = response.data[0];
-        setCustomerInfo(response.data[0]);
+        setCustomerInfo(response.data[0], idAddress);
         $('#filtrarHistorico, #editarCliente, #agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', false);
     }).catch((error) => {
         infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
@@ -103,7 +156,7 @@ function searchCustomer(clienteId) {
 }
 
 // Función para enviar la información del cliente al frontend
-function setCustomerInfo(customer) {
+function setCustomerInfo(customer, idAddress = null) {
     let direcciones = customer.addr;
     let zonaVenta = direccionDefault = null;
     
@@ -156,9 +209,8 @@ function setCustomerInfo(customer) {
                     direccionDefault = direcciones[key];
                 }
                 let textoDireccion = setDir(direcciones[key]);
-
                 $('#direccionCliente').append(
-                    '<option '+(direcciones[key].defaultShipping ? 'selected' : '')+' data-address='+"'"+JSON.stringify(direcciones[key])+"'"+' value="'+direcciones[key].idAddressLine+'">'+textoDireccion+'</option>'
+                    '<option '+((!idAddress && direcciones[key].defaultShipping) || (idAddress == direcciones[key].idAddressLine) ? 'selected' : '')+' data-address='+"'"+JSON.stringify(direcciones[key])+"'"+' value="'+direcciones[key].idAddressLine+'">'+textoDireccion+'</option>'
                 );
             }
         }
@@ -247,9 +299,9 @@ function setColoniaZonaData(direccion) {
     let desde = direccion.ptg_entre_addr;
     let hasta = direccion.ptg_y_addr;
     let horaInicioFormateada = horaFinFormateada = horas = null;
-
+    console.log(zonaRuta);
     $('#zonaVentaCliente').text(zonaRuta.zona_venta);
-    $('#zonaPrecioCliente').text('$'+zonaRuta.precio);
+    $('#zonaPrecioCliente').text(zonaRuta.territorio).data("price", zonaRuta.precio);
     $('#rutaCliente').text(splitRuta[1] ?? "Sin ruta");
     $('#zonaVentaPedido').val(zonaRuta?.zona_venta);
     $('#tipoServicioCliente').text(direccion.typeService ? direccion.typeService : 'Sin tipo de servicio');
@@ -537,7 +589,7 @@ function setSelectMetodosPago(items) {
     $('select#metodoPagoPedido').children('option').remove();
     if ( items.length ) {
         metodosPago = items;
-        $("select#metodoPagoPedido").append('<option value="">Seleccione una opción</option>')
+        $("select#metodoPagoPedido").append('<option value="0">Seleccione una opción</option>')
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
                 if ( parseInt(items[key].id) != metodoMultiple ) {// Si es diferente a método de pago múltiple, se añade al select
@@ -763,7 +815,7 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
             '</div>'+
         '</td>'+
         // '<td style="left: 80px;" class="sticky-col"><button class="btn btn-danger"></button></td>'+
-        '<td>'+( item.id_Transaccion ?? 'Sin ID de servicio')+'</td>'+//Fecha creación
+        (isAdmin ? '<td>'+( item.id_Transaccion ?? 'Sin ID de servicio')+'</td>' : '')+
         '<td>'+( type == "casos" ? dateFormatFromDate(item.fechaCreacion.split(" ")[0], '5')  : dateFormatFromDate(item.fecha, '5') )+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? ( 'Sin fecha prometida' ) : (item.cierrePrevisto ?? 'Sin fecha prometida') )+'</td>'+// Fecha prometida
         '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
@@ -928,7 +980,22 @@ function confirmMsg(type, title, callback) {
     let swalObj = {
         title: title,
         icon: type ?? 'info',
-        buttons:["Cancelar", "Aceptar"],
+        buttons:{
+            cancel: {
+              text: "Cancelar",
+              value: null,
+              visible: true,
+              className: "btn-danger-cc",
+              closeModal: true,
+            },
+            confirm: {
+              text: "Aceptar",
+              value: true,
+              visible: true,
+              className: "btn-primary-cc",
+              closeModal: true
+            }
+        },
         closeOnEsc: false,
         closeOnClickOutside: false,
     };
@@ -957,7 +1024,7 @@ function verDetalles($this) {
     if ( $($this).hasClass('oportunidades') ) {
         let direccion = '';
 
-        direccion += addressObj['nameStreet'];
+        //direccion += addressObj['nameStreet'];
         pedido['numExterno'] ? direccion+= ' #'+pedido['numExterno'] : '';
         pedido['numInterno'] ? direccion+= ' #'+pedido['numInterno'] : '';
         pedido['colonia']    ? direccion+= ', Col. '+pedido['colonia'] : '';

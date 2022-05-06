@@ -70,17 +70,34 @@ function validateAddressFields() {
         if (! numAddress ) {
             $('table.table-address tbody').children('tr').remove();
         }
-
+        //console.log(address);
+        if(address.obj.domFacturacion) {
+            let trs = $('table.table-address tbody').find(".address");
+            for (let x = 0; x < trs.length; x++) {
+                const element = $(trs[x]);
+                let addressAux = element.data('address');
+                addressAux.domFacturacion = false;
+                element.data('address', address);
+                element.find('.check-fact').parent().html('<i class="fa-regular fa-square color-primary check-fact" style="cursor: pointer;"></i>');
+            }
+        }
         $('table.table-address tbody').append(
             '<tr class="address" data-address='+"'"+JSON.stringify(address.obj)+"'"+'>'+
                 '<td>'+address.str+'</td>'+
                 '<td class="text-center">'+
-                    '<div class="text-center" style="font-size: 20px;">'+
+                    '<div class="text-center" style="font-size: 26px;">'+
+                        (address.obj.principal ? '<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>' : '<i class="fa-regular fa-square color-primary check-entrega" style="cursor: pointer;"></i>')+
+                    '</div>'+
+                '</td>'+
+                '<td class="text-center dato-facturacion '+($("input[name=requiereFactura]:checked").val() == "si" ? '' : 'd-none')+'">'+
+                    '<div class="text-center" style="font-size: 26px;">'+
+                        (address.obj.domFacturacion ? '<i class="fa-solid fa-square-check color-primary check-fact" style="cursor: pointer;"></i>' : '<i class="fa-regular fa-square color-primary check-fact" style="cursor: pointer;"></i>')+
+                    '</div>'+/*'<div class="text-center" style="font-size: 20px;">'+
                         '<div class="content-input content-input-primary">'+
                             '<input id="domFacturacionDireccion'+address.obj.timeUnix+'" type="checkbox" class="form-check-input form-ptg address-table" '+(address.obj.domFacturacion ? 'checked' : '')+' style="width: auto;" value="">'+
                         '</div>'+
                         // (address.obj.principal ? '<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>' : '<i class="fa-regular fa-square color-primary check-entrega" style="cursor: pointer;"></i>')+
-                    '</div>'+
+                    '</div>'+*/
                 '</td>'+
                 '<td class="text-center">'+
                     // '<button class="btn btn-sm btn-info edit-address"> <i class="fa fa-pen-to-square"></i> </button>&nbsp;&nbsp;'+
@@ -150,12 +167,22 @@ function validateAddressFields() {
                 ] 
             };
         } else {// Se guarda
+            address.obj.tag = $("#direccionCliente").children("option").length > 9 ? $("#direccionCliente").children("option").length.toString() : "0"+$("#direccionCliente").children("option").length.toString();
+            address.obj.defaultshipping = false;
+            address.obj.addresses = {defaultshipping : false}
+            address.obj.principal = false;
             dataToSend = {
-                id : customerGlobal.id,
-                bodyFields : {
-                    'custentity_ptg_indicaciones_cliente' : customerGlobal?.notasCustomer
-                },
-                bodyAddress : [address.obj]
+                "customers" : [
+                    {
+                        id : customerGlobal.id,
+                        bodyFields : {
+                            'custentity_ptg_indicaciones_cliente' : customerGlobal?.notasCustomer
+                        },
+                        bodyAddress : [
+                            address.obj                          
+                        ]
+                    }
+                ]
             }
 
         }
@@ -174,6 +201,83 @@ function validateAddressFields() {
             infoMsg('error', 'Algo salió mal en la creación del registro');
             console.log('Error en la consulta', error);
         });
+    }
+}
+
+var globalTimeout = null;  
+
+function getDirrecionByCPDelay($event) {
+    if (globalTimeout != null) {
+        clearTimeout(globalTimeout);
+    }
+    globalTimeout = setTimeout(function() {
+        globalTimeout = null;  
+        //ajax code
+        if($("#cpDireccion").val().length >= 5) {
+            getDirrecionByCP();
+        } else {
+            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").val(null).prop("disabled", true).trigger("change");
+        }
+        //
+    }, 1000);  
+}
+
+function getDirrecionByCP(callback = null) {
+    let settings = {
+        url      : urlGetAddressOfZIP,
+        method   : 'POST',
+        data     : JSON.stringify({
+            "zip" : $("#cpDireccion").val()
+        }),
+    }
+    setAjax(settings).then((response) => {
+        console.log(response);
+        if(response.data.length > 0) {
+            let dataEst = {},
+                dataMun = {},
+                dataCol = {};
+            response.data.forEach(element => {
+                if(!dataEst[element.state]) {
+                    dataEst[element.state] = element;
+                }
+                if(!dataMun[element.country]) {
+                    dataMun[element.country] = element;
+                }
+                if(!dataCol[element.colonia]) {
+                    dataCol[element.colonia] = element;
+                }
+            });
+            console.log(dataEst, dataMun, dataCol);
+            setDataDireccion(dataEst, $("#estadoDireccion"));
+            setDataDireccion(dataMun, $("#municipioDireccion"));
+            setDataDireccion(dataCol, $("#coloniaDireccion"));
+
+            if(callback) {
+                callback();
+            }
+        } else {
+            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").val(null).prop("disabled", true).trigger("change");
+            infoMsg('warning', 'Alerta:', 'No se encontraron datos para el Código Postal proporcionado');
+        }
+    }).catch((error) => {
+        console.log('Error en la consulta', error);
+    });
+}
+
+function setDataDireccion(items, elem) {
+    elem.children('option').remove();
+    elem.append('<option value="">Seleccione una opción</option>');
+
+    Object.keys(items).forEach(element => {
+        elem.append('<option data-item='+"'"+JSON.stringify(items[element])+"'"+' value="'+element+'">'+element+'</option>');
+    });
+
+    if(Object.keys(items).length == 1) {
+        elem.val(Object.keys(items)[0]).trigger("change");
+        elem.prop("disabled", true);
+    } else {
+        elem.val(null);
+        elem.prop("disabled", false);
     }
 }
 
@@ -209,7 +313,7 @@ function getAddressOnList() {
         timeUnix        : Date.now(),
         principal       : $('table.table-address tbody').find(".address").length == 0 ? true : false,
         stateName       : $("#estadoDireccion").val().trim(),
-        domFacturacion  : $('#domFacturacionDireccion').is(':checked'),
+        domFacturacion  : $('table.table-address tbody').find(".address").length == 0 ? true : $('#domFacturacionDireccion').is(':checked'),
         city            : $("#municipioDireccion").val().trim(),
         zip             : $("#cpDireccion").val().trim(),
         nameStreet      : $("#calleDireccion").val().trim(),
@@ -221,9 +325,9 @@ function getAddressOnList() {
         street_aux1     : $("#entre1Direccion").val().trim(),
         street_aux2     : $("#entre2Direccion").val().trim(),
         //zonaVenta       : $("#zonaVentaDireccion").val().trim(),
-        ruta            : $("#rutaColoniaIdDireccion").val().trim(),
-        idRoute         : $("#rutaIdDireccion").val().trim(),
-        idRoute2        : $("#rutaId2Direccion").val().trim(),
+        ruta            : $("#coloniaDireccion option:selected").data("item").id,//$("#rutaColoniaIdDireccion").val().trim(),
+        idRoute         : parseInt($("#tipoServicioFormCliente").val()) == 1 || parseInt($("#tipoServicioFormCliente").val()) == 4 ? $("#coloniaDireccion option:selected").data("item").rutaCilId : $("#coloniaDireccion option:selected").data("item").rutaEstaId,//$("#rutaIdDireccion").val().trim(),
+        idRoute2        : parseInt($("#tipoServicioFormCliente").val()) == 4 ? $("#coloniaDireccion option:selected").data("item").rutaEstaId : null,//$("#rutaId2Direccion").val().trim(),
         typeContact     : tipoContacto,
         inThatWeek      : ( tipoContacto != 1 && periodo == '3' ? $('#numeroSemana').val() : null ),
         startDayService : ( tipoContacto != 1 ? dateFormatFromDate( $("#fechaInicioServicio").val(), '5' ) : null ),
@@ -266,7 +370,7 @@ function getAddressOnList() {
     addressObj['zonaVenta']  ? addressStr+= '<br>Zona de venta: '+addressObj['zonaVenta'] : '';
     addressObj['ruta']       ? addressStr+= '<br>Ruta: '+addressObj['ruta'] : '';
 
-    addressObj['domFacturacion'] = domFacturacion;
+    addressObj['domFacturacion'] = $('table.table-address tbody').find(".address").length == 0 ? true : $('#domFacturacionDireccion').is(':checked');
     return {
         str : addressStr,
         obj : addressObj

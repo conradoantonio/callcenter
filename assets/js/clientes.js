@@ -8,8 +8,14 @@ $("#agregarDirecciones, #agregarDireccion").click( function() {
         $("input[name=tipoAccionFormCliente][value=1]").prop("checked", true);
         $("input[name=tipoAccionFormCliente]:checked").trigger("change");
         $("#tipoServicioFormCliente").val("1");
+        //$($(".dato-facturacion").addClass("d-none"));
         $("#tipoServicioFormCliente").trigger("change");
     } else if ( id == 'agregarDireccion' ) {
+        if(customerGlobal.rfc) {
+            $($(".dato-facturacion").removeClass("d-none"));
+        } else {
+            $($(".dato-facturacion").addClass("d-none"));
+        }
         $("#tipoAccionDireccion").val('guardar');
     }
 });
@@ -29,8 +35,14 @@ $('input[name=requiereFactura]').on('change', function(e) {
     let val = $("input[name=requiereFactura]:checked").val();
     if ( val == "si" ) {// Se muestran los datos exclusivos de factura
         $(".dato-facturacion").removeClass("d-none");
+        if($(".table-address tbody").children("tr").length == 1 && $(".table-address tbody").children("tr").text().trim().toLowerCase() == 'sin direcciones') {
+            $(".table-address tbody").children("tr").find("td").prop("colspan", "4");
+        }
     } else {// Se ocultan los campos de factura
         $(".dato-facturacion").addClass("d-none");
+        if($(".table-address tbody").children("tr").length == 1 && $(".table-address tbody").children("tr").text().trim().toLowerCase() == 'sin direcciones') {
+            $(".table-address tbody").children("tr").find("td").prop("colspan", "3");
+        }
     }
 });
 
@@ -72,7 +84,7 @@ $("#agregarCliente").click(function () {
     $("div.guardar-cliente-edit").addClass('d-none');
     $("button.next-to-domicilio").parent().removeClass('d-none');// Se muestra el botón de siguiente para visualizar la vista de domicilio
     
-
+    $($(".dato-facturacion").addClass("d-none"));
     $("#home-view, #btnMenu").addClass("d-none");
     $("#form-client-view, #btnBack").removeClass("d-none");
     $("#btnBack").data("back", "home-view");
@@ -152,6 +164,7 @@ $("button#guardarCliente").click( function() {
 
 $('body').delegate('.check-entrega', 'click', function () {
     let address = $(this).closest('.address').data('address');
+    
     if(!address.principal) {
         for (let x = 0; x < $('table.table-address tbody').find(".address").length; x++) {
             let element = $($('table.table-address tbody').find(".address")[x]);
@@ -161,11 +174,33 @@ $('body').delegate('.check-entrega', 'click', function () {
                 element.data('address', addressAux);
                 element.find('.check-entrega').parent().html('<i class="fa-regular fa-square color-primary check-entrega" style="cursor: pointer;"></i>');
             }
-        }
 
-        address.principal = true;
-        $(this).closest('.address').data('address', address);
-        $(this).parent().html('<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>');
+            if((x + 1) == $('table.table-address tbody').find(".address").length) {
+                address.principal = true;
+                $(this).closest('.address').data('address', address);
+                $(this).parent().html('<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>');
+            }
+        }
+    }
+});
+
+$('body').delegate('.check-fact', 'click', function () {
+    let address = $(this).closest('.address').data('address');
+    if(!address.domFacturacion) {
+        for (let x = 0; x < $('table.table-address tbody').find(".address").length; x++) {
+            let element = $($('table.table-address tbody').find(".address")[x]);
+            let addressAux = element.data('address');
+            if(addressAux.domFacturacion) {
+                addressAux.domFacturacion = false;
+                element.data('address', addressAux);
+                element.find('.check-fact').parent().html('<i class="fa-regular fa-square color-primary check-fact" style="cursor: pointer;"></i>');
+            }
+            if((x + 1) == $('table.table-address tbody').find(".address").length) {
+                address.domFacturacion = true;
+                $(this).closest('.address').data('address', address);
+                $(this).parent().html('<i class="fa-solid fa-square-check color-primary check-fact" style="cursor: pointer;"></i>');
+            }
+        }
     }
 });
 
@@ -174,17 +209,29 @@ $('body').delegate('.delete-address', 'click', function () {
     confirmMsg("warning", "¿Seguro que desea eliminar la dirección?", function(resp) {
         if( resp ) {
             let address = button.closest('.address').data('address');
-            button.parent().parent().remove();
-            // if(address.principal && $('table.table-address tbody').find(".address").length > 1) {
-            //     $(this).closest('.address').remove();
-            //     let element = $($('table.table-address tbody').find(".address")[0]);
-            //     let addressAux = element.data('address');
-            //     addressAux.principal = true;
-            //     element.data('address', address);
-            //     element.find('.check-entrega').parent().html('<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>');
-            // } else {
-            //     $(this).closest('.address').remove();
-            // }
+            //button.parent().parent().remove();
+            if((address.principal || address.domFacturacion) && $('table.table-address tbody').find(".address").length > 1) {
+                button.closest('.address').remove();
+                let element = $($('table.table-address tbody').find(".address")[0]);
+                let addressAux = element.data('address');
+                if(address.principal) {
+                    addressAux.principal = true;
+                    element.find('.check-entrega').parent().html('<i class="fa-solid fa-square-check color-primary check-entrega" style="cursor: pointer;"></i>');
+                }
+                if(address.domFacturacion) {
+                    addressAux.domFacturacion = true;
+                    element.find('.check-fact').parent().html('<i class="fa-solid fa-square-check color-primary check-fact" style="cursor: pointer;"></i>');
+                }
+                element.data('address', addressAux);              
+            } else {
+                let val = $("input[name=requiereFactura]:checked").val();
+                $('table.table-address tbody').append(
+                    '<tr>'+
+                        '<td class="text-center" colspan="'+(val == 'si' ? '4' : '3')+'">Sin direcciones</td>'+
+                    '</tr>'
+                );
+                button.closest('.address').remove();
+            }
         }
     })
 });
@@ -351,6 +398,8 @@ function clearCustomerForm(type = 'create') {
             '<td class="text-center" colspan="3">Sin direcciones</td>'+
         '</tr>'
     );
+
+    $(".only-fact").addClass("d-none");
 
     $(".dato-facturacion").addClass("d-none");
     $(".dato-regimen-moral").addClass("d-none");

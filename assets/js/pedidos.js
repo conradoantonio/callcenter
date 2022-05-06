@@ -131,14 +131,17 @@ $("#agregarProducto").click(function () {
 // Edita un producto agregado en la lista del pedido
 $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() {
     let button   = $(this);
-    let prices   = $('#zonaPrecioCliente').text().replace('$', '');
+    let prices   = $('#zonaPrecioCliente').data("price");
     let artObj   = button.parent().parent().data('item');
     let total    = 0;
     let subtotal = 0;
     // let direccion = $('select#direccionCliente').children('option:selected').data('address');
     
     if ( button.hasClass('edit-producto-cil') ) {// Producto cilindro
-
+        if(!isPriceKG) {
+            prices = prices / 0.54;
+        }
+        $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
         $("#productoFormProductos").val("cilindro");
         $("#totalFormProductos").prop('readonly', true);
         $(".cilindroFormProductos").removeClass("d-none");
@@ -150,10 +153,12 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
         $('#capacidadFormProductos, #pedidoProductoId').val(artObj.article);
         $('#cantidadFormProductos').val(artObj.quantity);
         $('#valorFormProductos').val(subtotal);
-        $('#totalFormProductos').val(total);
-
+        $('#totalFormProductos').val(total);        
     } else if ( button.hasClass('edit-producto-est') ) {// Producto estacionario
-
+        if(isPriceKG) {
+            prices = prices * 0.54;
+        }
+        $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
         $("#productoFormProductos").val("estacionario");
         $("#totalFormProductos").attr('readonly', false);
         $(".estacionarioFormProductos").removeClass("d-none");
@@ -165,8 +170,7 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
         $("#pedidoProductoId").val( artObj.article );// Este input indicará que se trata de un edit
         $("#litrosFormProductos").val( artObj.capacity );
         $("#valorFormProductos").val( subtotal );
-        $("#totalFormProductos").val( total );
-    
+        $("#totalFormProductos").val( total );        
     }
 
     // Se validan los option disponibles si es que algún producto ya fue registrado
@@ -183,27 +187,47 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
 
 // Abre el modal de métodos de pago
 $("#agregarMetodoPago").click(function () {
-    let totalProducto = 0;
-    let totalMetodosPago = 0;
-    let montoRestante = 0;
-    // Calcula el total del pedido basándose en los productos agregados al listado
-    if (! $('.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {// Estacionario
-        totalProducto = $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
-    } else if (! $('.productosCilindroPedido').parent().parent().hasClass('d-none') ) {// Cilindro
-        totalProducto = $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
+    if($("#sinProductos").is(':hidden')) {
+        let totalProducto = 0;
+        let totalMetodosPago = 0;
+        let montoRestante = 0;
+        // Calcula el total del pedido basándose en los productos agregados al listado
+        if (! $('.productosEstacionarioPedido').parent().parent().hasClass('d-none') ) {// Estacionario
+            totalProducto = $('.productosEstacionarioPedido').children('tfoot').find('td.total').data('total');
+        } else if (! $('.productosCilindroPedido').parent().parent().hasClass('d-none') ) {// Cilindro
+            totalProducto = $('.productosCilindroPedido').children('tfoot').find('td.total').data('total');
+        }
+
+        // Calcula el total de método de pago basándose en los especificados en la lista
+        if (! $('.productosMetodoPago').parent().parent().hasClass('d-none') ) {// Contiene métodos
+            totalMetodosPago = $('.productosMetodoPago').children('tfoot').find('td.total').data('total');
+        }
+
+        montoRestante = parseFloat( Number(totalProducto) - Number(totalMetodosPago) ).toFixed(2);
+        montoRestante = montoRestante > 0 ? montoRestante : 0;
+
+        $('#montoPagoPedido').val(montoRestante);
+
+        /* Muestra metodos correctos */
+        let options = $("#metodoPagoPedido").children("option");
+        options.addClass("d-none");
+        $("#metodoPagoPedido").children("option[value=0]").removeClass("d-none");
+        let isEstacionario = $(".productosCilindroPedido").is(':hidden');
+        if(isEstacionario) {
+            for (let x = 0; x < options.length; x++) {
+                const element = options[x];
+                if(methodsEstacionario.indexOf($(element).val()) > -1) {
+                    $(element).removeClass("d-none")
+                }
+            }
+        } else {
+            options.removeClass("d-none");
+        }
+
+        $('#formMetodoPagosModal').modal('show');
+    } else {
+        infoMsg('warning', 'Alerta:', "Es necesario primero agregar un producto para poder ingresar un metodo de pago");
     }
-
-    // Calcula el total de método de pago basándose en los especificados en la lista
-    if (! $('.productosMetodoPago').parent().parent().hasClass('d-none') ) {// Contiene métodos
-        totalMetodosPago = $('.productosMetodoPago').children('tfoot').find('td.total').data('total');
-    }
-
-    montoRestante = parseFloat( Number(totalProducto) - Number(totalMetodosPago) ).toFixed(2);
-    montoRestante = montoRestante > 0 ? montoRestante : 0;
-
-    $('#montoPagoPedido').val(montoRestante);
-
-    $('#formMetodoPagosModal').modal('show');
 });
 
 // Valida los inputs disponibles en los métodos de pago
@@ -224,7 +248,7 @@ $('#guardarMetodoPagoForm').on('click', function () {
     let metodoTxt   = $('#metodoPagoPedido').children(':selected').text();
     // let numMetodos  = $('table.productosMetodoPago tbody').children('tr.metodos').length;
 
-    if(!metodoId || !$("#montoPagoPedido").val() ) {
+    if(!metodoId || metodoId == "0" || !$("#montoPagoPedido").val() ) {
         canContinue = false;
     } else {
         canContinue = true;
@@ -288,7 +312,7 @@ async function onClickAddProducto() {
         let canContinue = false;
         let productoId  = $('#pedidoProductoId').val();
         let defaultProMsg = $('#sinProductos');
-        let prices = $('#zonaPrecioCliente').text().replace('$', '');
+        let prices = $('#zonaPrecioCliente').data("price");
 
         if ( tipoProducto == 'cilindro' ) {
             if( !$("#capacidadFormProductos").val() || $("#cantidadFormProductos").val() <= 0  || $("#valorFormProductos").val() <= 0 || $("#totalFormProductos").val() <= 0 ) {
@@ -296,11 +320,17 @@ async function onClickAddProducto() {
             } else {
                 canContinue = true;
             }
+            if(!isPriceKG) {
+                prices = prices / 0.54;
+            }
         } else if ( tipoProducto == 'estacionario' ) {
             if( $("#litrosFormProductos").val() <= 0 || $("#valorFormProductos").val() <= 0  || $("#totalFormProductos").val() <= 0) {
                 canContinue = false;
             } else {
                 canContinue = true;
+            }
+            if(isPriceKG) {
+                prices = prices * 0.54;
             }
         }
 
@@ -495,7 +525,7 @@ function onChangeValue(element) {
     var elementId    = element.attr('id');
     let subtotal     = total = 0;
     let tipoProducto = $('#productoFormProductos').val();
-    let prices       = $('#zonaPrecioCliente').text().replace('$', '');
+    let prices       = $('#zonaPrecioCliente').data("price");
     let cantidad     = parseInt( $('#cantidadFormProductos').val() );
     let litros       = parseInt( $('#litrosFormProductos').val() );
     let valor        = parseFloat( $('#valorFormProductos').val() ).toFixed(2);
@@ -506,8 +536,12 @@ function onChangeValue(element) {
     cantidad = ( isNaN(cantidad) ? 0 : cantidad );
     litros   = ( isNaN(litros) ? 0 : litros );
     valor    = ( isNaN(valor) ? 0 : valor );
-
+    console.log(prices);
     if ( tipoProducto == 'cilindro' ) {// Cilindro
+        if(!isPriceKG) {
+            prices = prices / 0.54;
+        }
+        $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
         if ( elementId == 'cantidadFormProductos' || elementId == 'capacidadFormProductos' || elementId == 'productoFormProductos' ) {// Producto (cilindro) y cantidad de producto
 
             subtotal = parseFloat( capArticulo *  cantidad * prices).toFixed(2);
@@ -521,6 +555,10 @@ function onChangeValue(element) {
         $('#totalFormProductos').val(total);
         
     } else if ( tipoProducto == 'estacionario' ) {// Estacionario
+        if(isPriceKG) {
+            prices = prices * 0.54;
+        }
+        $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
         if ( elementId == 'totalFormProductos' || elementId == 'productoFormProductos' ) {// Se calculan los litros a contratar
 
             total = parseFloat( $('#totalFormProductos').val() ).toFixed(2);
@@ -530,6 +568,7 @@ function onChangeValue(element) {
             // subtotal = ( isNaN(subtotal) ? 0 : subtotal );
             litros = parseFloat(subtotal / prices).toFixed(2);
             $('#litrosFormProductos').val(litros);
+            
 
         } else if( elementId == 'litrosFormProductos' ) {// Se calcula el total acorde a los litros
 
@@ -625,6 +664,21 @@ async function savePedido() {
             pagosArr.push( $( this ).data('metodo') );
         });
 
+        let isEstacionario = $(".productosCilindroPedido").is(':hidden');
+        if(isEstacionario) {
+            console.log(pagosArr);
+            let conti = true;
+            pagosArr.forEach(element => {
+                if(methodsEstacionario.indexOf(element.tipo_pago) == -1) {
+                    conti = false;
+                }
+            });
+
+            if(!conti) {
+                infoMsg('warning', 'Alerta:', "Un metodo de pago registrado no es compatible con el tipo producto seleccionado");
+                return;
+            }
+        }
         // Si el cliente tiene saldo a favor y seleccionó como método de pago el crédito,
         // se validará si el monto a pagar con crédito es igual o menor al límite del saldo a favor, 
         // para permitir la venta, de lo contrario no se procesa
@@ -668,7 +722,7 @@ async function savePedido() {
             "cases"         : [],
             "time"          : time,
             "turn"          : 1,
-            "paymentMethod" : $('#metodoPagoPedido').val(),
+            //"paymentMethod" : $('#metodoPagoPedido').val(),
             "origen"        : $('#idCliente').val(),
             "comentary"     : $('#observacionesPagoPedido').val(),
             "rangeHour1"    : formatTime( $('#desdePedido').val() ),
@@ -747,7 +801,22 @@ $('body').delegate('.delete-producto-cil, .delete-producto-est','click', functio
     swal({
         title: 'Se dará de baja el producto seleccionado, ¿Está seguro de continuar?',
         icon: 'warning',
-        buttons:["Cancelar", "Aceptar"],
+        buttons:{
+            cancel: {
+              text: "Cancelar",
+              value: null,
+              visible: true,
+              className: "btn-danger-cc",
+              closeModal: true,
+            },
+            confirm: {
+              text: "Aceptar",
+              value: true,
+              visible: true,
+              className: "btn-primary-cc",
+              closeModal: true
+            }
+        },
         dangerMode: true,
     }).then((accept) => {
         if ( accept ) {
@@ -766,7 +835,22 @@ $('body').delegate('.delete-metodo-pago','click', function() {
     swal({
         title: '¿Desea eliminar el método de pago seleccionado?',
         icon: 'warning',
-        buttons:["Cancelar", "Aceptar"],
+        buttons:{
+            cancel: {
+              text: "Cancelar",
+              value: null,
+              visible: true,
+              className: "btn-danger-cc",
+              closeModal: true,
+            },
+            confirm: {
+              text: "Aceptar",
+              value: true,
+              visible: true,
+              className: "btn-primary-cc",
+              closeModal: true
+            }
+        },
         dangerMode: true,
     }).then((accept) => {
         if ( accept ) {
@@ -923,7 +1007,22 @@ $("#guardarCancelarOpp").click(function () {
     swal({
         title: '¿Está seguro de cancelar este registro?',
         icon: 'warning',
-        buttons:["Cancelar", "Aceptar"],
+        buttons:{
+            cancel: {
+              text: "Cancelar",
+              value: null,
+              visible: true,
+              className: "btn-danger-cc",
+              closeModal: true,
+            },
+            confirm: {
+              text: "Aceptar",
+              value: true,
+              visible: true,
+              className: "btn-primary-cc",
+              closeModal: true
+            }
+        },
         dangerMode: true,
     }).then((accept) => {
         if ( accept ) {
@@ -995,7 +1094,22 @@ $("#inputSegundaLlamada").click(function () {
         swal({
             title: '¿Está seguro de marcar una segunda llamada?',
             icon: 'warning',
-            buttons:["Cancelar", "Aceptar"],
+            buttons:{
+                cancel: {
+                  text: "Cancelar",
+                  value: null,
+                  visible: true,
+                  className: "btn-danger-cc",
+                  closeModal: true,
+                },
+                confirm: {
+                  text: "Aceptar",
+                  value: true,
+                  visible: true,
+                  className: "btn-primary-cc",
+                  closeModal: true
+                }
+            },
             dangerMode: true,
         }).then((accept) => {
             if ( accept ) {

@@ -388,7 +388,22 @@ $('body').delegate('.approve-item','click', function() {
     swal({
         title: 'Se aprobará el registro con el ID '+id+', ¿Está seguro de continuar?',
         icon: 'warning',
-        buttons:["Cancelar", "Aceptar"],
+        buttons:{
+            cancel: {
+              text: "Cancelar",
+              value: null,
+              visible: true,
+              className: "btn-danger-cc",
+              closeModal: true,
+            },
+            confirm: {
+              text: "Aceptar",
+              value: true,
+              visible: true,
+              className: "btn-primary-cc",
+              closeModal: true
+            }
+        },
         dangerMode: true,
     }).then((accept) => {
         if ( accept ) {

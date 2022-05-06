@@ -81,17 +81,15 @@ function getListSuppEmp() {
 }
 
 // Método para llenar el select de los motivos de cancelar pedido
-function setSelectListSuppEmp(items) {
+function setSelectListSuppEmp(items) { 
     if ( items.length ) {
         $('#asignarTecnicoFugaQueja, #responsableQueja').children('option').remove();
         $('#asignarTecnicoFugaQueja, #responsableQueja').append('<option value="0">Seleccione una opción</option>');
-        for ( var key in items ) {
-            if ( items.hasOwnProperty( key ) ) {
-                $("#asignarTecnicoFugaQueja, #responsableQueja").append(
-                    '<option value='+items[key].id+'>'+items[key].name+'</option>'
-                );
-            }
-        }
+        items.forEach(element => {
+            $("#asignarTecnicoFugaQueja, #responsableQueja").append(
+                '<option data-item=' + "'" + JSON.stringify(element) + "'" + 'value='+element.id+'>'+element.name+'</option>'
+            );
+        });
         $('#asignarTecnicoFugaQueja, #responsableQueja').select2({
             selectOnClose: true,
             language: {
@@ -157,33 +155,12 @@ function getListTravel() {
     }
 
     setAjax(settings).then((response) => {
-        $('#asignarViajeRuta, #viajeVentaPedido').children('option').remove();
         if(response.success) {
+            vrViajes = [];
             response.data.forEach(element => {
-                $("#asignarViajeRuta, #viajeVentaPedido").append(
-                    '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+element.nViaje +' - '+(element.ruta.split(":").length > 1 ? element.ruta.split(":")[1] : element.ruta)+'</option>'
-                );
+                vrViajes.push(element);
             });
         }
-        $('#asignarViajeRuta').select2({
-            selectOnClose: true,
-            placeholder: "Seleccione un viaje",
-            dropdownParent: $('#asignarViajeModal'),
-            language: {
-                "noResults": function(){
-                    return "Sin resultados encontrados";
-                }
-            }
-        });
-        $('#viajeVentaPedido').select2({
-            selectOnClose: true,
-            placeholder: "Seleccione un viaje",
-            language: {
-                "noResults": function(){
-                    return "Sin resultados encontrados";
-                }
-            }
-        });
         readyInit();
     }).catch((error) => {
         cons
@@ -214,7 +191,7 @@ function setSelectArticulos(items) {
         // $('select#articuloFrecuenteEstFormCliente').children('option').remove();
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
-                let articulo = '<option value='+items[key].id+' data-articulo=' + "'" + JSON.stringify(items[key]) + "'" + '>'+items[key].nombre+'</option>';
+                let articulo = '<option data-pedido-minimo="'+parseFloat(items[key].min).toFixed(2)+'" value='+items[key].id+' data-articulo=' + "'" + JSON.stringify(items[key]) + "'" + '>'+items[key].nombre+'</option>';
 
                 if ( [1,2].includes(Number(items[key].tipo_articulo)) ) {
                     $("select#articuloFugaQueja").append( articulo );
@@ -242,13 +219,6 @@ function getStatusOportunidad() {
     });
 }
 
-vrStatus = [];
-idPorAsignar = "";
-idAsignado = "";
-idCancelado = "";
-idEntregado = "";
-idPorReprogramar = "";
-idPorConfirmar = "";
 // Método para llenar el select de los estado de la oportunidad
 function setSelectStatusOp(items) {
     vrStatus = [];
@@ -295,9 +265,6 @@ function setSelectStatusOp(items) {
     }
 }
 
-rutasCilindros = [];
-rutasEstacionarios = [];
-
 // Función para obtener los estado de la oportunidad
 function getRutas(getPedidos = false) {
     if(getPedidos) {
@@ -333,14 +300,14 @@ function setSelectRutas(getPedidos = false) {
         if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "1") {
             rutasCilindros.forEach(element => {
                 $("#filterRuta").append(
-                    '<option value="'+element.internalId+'">'+(element.name && element.name.split(":").length > 1 ? element.name.split(":")[1].trim() : element.name)+'</option>'
+                    '<option value="'+element.internalId+'">'+getRutaFormat(element, "ruta")+'</option>'
                 );
             });
         }
         if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "2") {
             rutasEstacionarios.forEach(element => {
                 $("#filterRuta").append(
-                    '<option value="'+element.internalId+'">'+(element.name && element.name.split(":").length > 1 ? element.name.split(":")[1].trim() : element.name)+'</option>'
+                    '<option value="'+element.internalId+'">'+getRutaFormat(element, "ruta")+'</option>'
                 );
             });
         }
@@ -533,7 +500,9 @@ function getFiltPedidos() {
             filt.estado = $("#filterEstadoCaso").val();
         }
 
-        filt.prioridad = $("#filterPrioridad").val();
+        if($("#filterPrioridad").val() != "0") {
+            filt.prioridad = $("#filterPrioridad").val();
+        }
 
         if($("#filterBuscarCliente").val().trim()) {
             if($("#filterDatosCliente").val() == "name") {
@@ -675,25 +644,28 @@ function getServicios($event) {
                 $($("#tablePedidos thead tr th")[4]).css('z-index', "4");
                 $($("#tablePedidos thead tr th")[5]).css('z-index', "4");
                 response.data.forEach((pedido, position) => {
+                    let auxDir = getDireccionFormat(pedido, "pedido"),
+                        auxObs = getObservacionesFormat(pedido, "<br>"),
+                        auxRuta = getRutaFormat(pedido, "pedido");
                     let trAux = '<tr data-item='+"'"+JSON.stringify(pedido)+"'"+'>'+
                                     '<td class="text-center sticky-col">'+  
                                         '<div class="btn-group dropend vertical-center">'+                                            
                                             '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                                             '<ul class="dropdown-menu">'+
                                                 (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar ? '<li onclick="gestionarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-gears color-primary"></i> Gestionar servicio</li>' : '')+
-                                                '<li onclick="seguimientoPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
+                                                '<li onclick="seguimientoServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
                                                 (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar ? '<li onclick="cancelarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio</li>' : '')+
                                             '</ul>'+
                                         '</div>'+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td style="left: 40px;"class="text-center sticky-col">'+
-                                        '<button class="btn" style="cursor: default; background: '+pedido.status_color+';"></button>'+
-                                    //(pedido.status_color ? '<i class="'+(pedido.outline ? 'fa-regular' : 'fa-solid')+' fa-square vertical-center" style="color: '+pedido.status_color+';"></i>': '')+
+                                        (pedido.status_color ? '<button class="btn" title="'+pedido.tooltip+'" data-bs-toggle="tooltip" data-bs-placement="right" style="cursor: default; background: '+pedido.status_color+';"></button>' : '')+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td style="left: 80px;"class="text-center sticky-col">'+
-                                        '<input type="checkbox" class="form-check-input form-ptg vertical-center" ' + (pedido.segunda_llamada ? 'checked' : '') + ' disabled style="width: fit-content;">'+
+                                        (pedido.segunda_llamada ? '<i class="fa-solid fa-square-check color-primary" style="font-size: 21px;" title="Segunda llamada" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '<i class="fa-regular fa-square color-primary" style="font-size: 21px;"></i>')+
+                                        //'<input type="checkbox" class="form-check-input form-ptg vertical-center" ' + (pedido.segunda_llamada ? 'checked title="Segunda llamada" data-bs-toggle="tooltip" data-bs-placement="right"' : '') + ' disabled style="width: fit-content;">'+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td style="left: 120px;"class="text-center sticky-col">'+
@@ -701,27 +673,38 @@ function getServicios($event) {
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td style="left: 160px;"class="text-center sticky-col">'+
-                                        (pedido.status_id == idAsignado ? '<i onclick="notificarPedido(this)" class="fa-solid fa-bell color-primary c-pointer" title="Notificar pedido" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
+                                        (pedido.status_id == idAsignado ? '<i onclick="notificarServicio(this)" class="fa-solid fa-bell color-primary c-pointer" title="Notificar pedido" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td style="left: 200px;"class="text-center sticky-col">'+
-                                        ((pedido.servicio == "1" || pedido.servicio == "2") && (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar) ? '<i onclick="asignarViaje(this)" class="fa-solid fa-route color-primary c-pointer" title="Asignar viaje(ruta)" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
+                                        ((pedido.servicio == "1" || pedido.servicio == "2") && (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar) ? '<i onclick="asignarViaje(this)" class="fa-solid fa-truck color-primary c-pointer" title="Asignar viaje(ruta)" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
-                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.no_pedido + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (auxRuta ? auxRuta : 'Sin asignar') + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.zona ? pedido.zona : 'Sin zona') + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (auxObs ? auxObs : 'Sin observaciones') + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (auxDir ? auxDir : 'Sin dirección') + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + dateFormatFromDate(pedido.fecha_prometida, '5') + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + dateFormatFromDate(pedido.fecha_solicitud, '5') + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.fecha_notificacion ? dateFormatFromDate(pedido.fecha_notificacion, '5') + " - " + pedido.hora_notificacion : 'Sin notificar') + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.servicioNombre + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.isPerson ? (pedido.firstName.split(" ")[0] + " " + pedido.lastName.split(" ")[0]) : pedido.companyName) + '</td>'+
+                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.fecha_notificacion ? getRestTime(dateFormatFromString(pedido.fecha_notificacion+(pedido.hora_notificacion ? " "+pedido.hora_notificacion : ''), "1"), "3") : 'Sin notificar') + '</td>'+
+
+                                    /*'<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.documentNumber + '</td>'+
                                     '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.id_cliente + '</td>'+
                                     '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.tipo_cliente ? pedido.tipo_cliente : 'Sin tipo de cliente') + '</td>'+
-                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + dateFormatFromDate(pedido.fecha_solicitud, '5') + '</td>'+
-                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + dateFormatFromDate(pedido.fecha_prometida, '5') + '</td>'+
+                                    
+                                    
                                     '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + pedido.estado + '</td>'+
-                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.nombre_cliente ? pedido.nombre_cliente : 'Sin nombre de cliente') + '</td>'+
+                                    
                                     '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.telefono ? pedido.telefono : 'Sin teléfono') + '</td>'+
-                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.zona ? pedido.zona : 'Sin zona') + '</td>'+
+                                    
                                     '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? pedido.contrato.trim() : 'Sin contrato') + '</td>'+
                                     '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.nombre_vehiculo.trim() ? pedido.nombre_vehiculo.trim() : 'Sin asignar') + '</td>'+
                                     '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.colonia ? pedido.colonia : 'Sin colonia') + '</td>'+
-                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.direccion ? pedido.direccion : 'Sin dirección') + '</td>'+
-                                    '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (pedido.observaciones ? pedido.observaciones : 'Sin observaciones') + '</td>'+
+                                    
+                                    */
                                 '</tr>';
                     $("#tablePedidos tbody").append(trAux);
 
@@ -753,33 +736,46 @@ function getServicios($event) {
         setAjax(settings).then((response) => {    
             if(response.success) {
                 if(response.data.length == 0) {
-                    $("#tableCasos tbody").append('<tr><td colspan="12" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
+                    $("#tableCasos tbody").append('<tr><td colspan="13" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
                     initTable("tableCasos");
                 }
                 $("#tableCasos thead tr th").css('z-index', "3");
                 $($("#tableCasos thead tr th")[0]).css('z-index', "4");
+                $($("#tableCasos thead tr th")[1]).css('z-index', "4");
+                $($("#tableCasos thead tr th")[2]).css('z-index', "4");
                 response.data.forEach((caso, position) => {
+                    let auxDir = getDireccionFormat(caso, "caso");
                     let trAux = '<tr data-item='+"'"+JSON.stringify(caso)+"'"+'>'+
                                     '<td class="text-center sticky-col">'+  
                                         '<div class="btn-group dropend vertical-center">'+                                            
                                             '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                                             '<ul class="dropdown-menu">'+
                                                 '<li onclick="gestionarCaso(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-gears color-primary"></i> Gestionar '+(caso.tipo_servicio == "2" ? 'queja' : 'fuga')+'</li>'+
+                                                '<li onclick="seguimientoServicio(this,'+"'caso'"+')" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
                                             '</ul>'+
                                         '</div>'+
+                                        '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+                                    '</td>'+
+                                    '<td style="left: 40px;"class="text-center sticky-col">'+
+                                        '<i onclick="verDetallesCaso(this)" class="fa-solid fa-eye color-primary c-pointer" title="Ver detalles" data-bs-toggle="tooltip" data-bs-placement="right"></i>'+
+                                        '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+                                    '</td>'+
+                                    '<td style="left: 80px;"class="text-center sticky-col">'+
+                                        (caso.asignadoNombre && caso.asignadoNombre.trim() ? '<i onclick="notificarServicio(this, '+"'caso'"+')" class="fa-solid fa-bell color-primary c-pointer" title="Notificar pedido" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td class="text-center">' + caso.numero_caso + '</td>'+
                                     '<td class="text-center">' + caso.id_cliente + '</td>'+
                                     '<td class="text-center">' + (caso.tipo_servicio == "2" ? 'Queja' : 'Fuga') + '</td>'+
-                                    '<td class="text-center">' + (caso.estado == "1" ? 'No iniciado' : caso.estado == "2" ? 'En curso' : caso.estado == "3" ? 'Escalado' : caso.estado == "4" ? 'Reabierto' : caso.estado == "5" ? 'Cerrado' : '') + '</td>'+
+                                    '<td class="text-center">' + (caso.estado == "1" ? 'No iniciado' : caso.estado == "2" ? 'En curso' : caso.estado == "3" ? 'Escalado' : caso.estado == "5" ? 'Cerrado' : '') + '</td>'+
+                                    '<td class="text-center">' + (caso.asignadoNombre && caso.asignadoNombre.trim() ? caso.asignadoNombre : 'Sin asignar') + '</td>'+
                                     '<td class="text-center">' + caso.fecha_solicitud + '</td>'+
                                     '<td class="text-center">' + (caso.fecha_visita ? caso.fecha_visita : 'Sin asignar') + '</td>'+
                                     '<td class="text-center">' + (caso.prioridad == "1" ? 'Alto' : caso.prioridad == "2" ? 'Medio' : 'Bajo') + '</td>'+
                                     '<td class="text-center">' + (caso.concepto_casos_name ? caso.concepto_casos_name : 'Sin concepto') + '</td>'+
                                     '<td class="text-center">' + (caso.nombre ? caso.nombre : 'Sin nombre de cliente') + '</td>'+
                                     '<td class="text-center">' + (caso.telefono ? caso.telefono : 'Sin teléfono') + '</td>'+
-                                    '<td class="text-center">' + (caso.direccion_casos ? caso.direccion_casos : 'Sin dirección') + '</td>'+
+                                    '<td class="text-center">' + (auxDir ? auxDir : 'Sin dirección') + '</td>'+
                                 '</tr>';
                     $("#tableCasos tbody").append(trAux);
                     if(response.data.length == (position + 1)) {
@@ -788,22 +784,90 @@ function getServicios($event) {
                 });
                 swal.close();
             } else {
-                $("#tableCasos tbody").append('<tr><td colspan="12" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
+                $("#tableCasos tbody").append('<tr><td colspan="13" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
                 swal.close();
             }
         }).catch((error) => {
             console.log(error);
-            $("#tableCasos tbody").append('<tr><td colspan="12" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
+            $("#tableCasos tbody").append('<tr><td colspan="13" class="text-center fw-bold py-5">Sin casos encontrados</td></tr>');
             swal.close();
         });
     }
+}
+
+function getRutaFormat(item, tipo) { 
+    let auxRut = "";
+    let auxRuta = item.name;
+    if(tipo == "pedido") {
+        auxRuta = item.rutaNombre;
+    } else if(tipo == "viajes") {
+        auxRuta = item.ruta;
+    }
+    auxRut += (auxRuta && auxRuta.trim() ? (auxRuta.trim().split(":").length > 1 ? auxRuta.trim().split(":")[1].trim() : auxRuta.trim()) : '')
+    return auxRut;
+}
+
+function getObservacionesFormat(item, separador) { 
+    let auxObs = "";
+    auxObs += (item.observaciones && item.observaciones.trim() ? item.observaciones.trim() : '');
+    if(item.objPagos) {
+        let aux = JSON.parse(item.objPagos);
+        if(aux.pago) {
+            aux.pago.forEach(element => {
+                if(concatObsPagos.indexOf(element.tipo_pago) > -1) {
+                    if(auxObs != "") {
+                        auxObs += separador;
+                    }
+                    auxObs += getMetodoPagoFormat(element);
+                }                    
+            });
+        }
+    }
+    return auxObs.trim();
+}
+
+function getMetodoPagoFormat(item) {     
+    return item.metodo_txt + (item.folio ? " - " + item.folio : '') + " - $" + item.monto;
+}
+
+function getDireccionFormat(item, tipo) { 
+    let auxDir = "";
+    if(tipo == "pedido") {
+        auxDir += (item.street && item.street.trim() ? item.street.trim() : '');
+        auxDir += (item.nExterior && item.nExterior.trim() ? (auxDir ? ' #' : '#') + item.nExterior.trim() : '');
+        auxDir += (item.nInterior && item.nInterior.trim() ? (auxDir ? ' Int. ' : 'Int. ') + item.nInterior.trim() : '');
+        auxDir += (item.colonia && item.colonia.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.colonia.trim()) : '');
+        auxDir += (item.cp && item.cp.trim() ? (auxDir ? ', ' : '') + item.cp.trim() : '');
+        auxDir += (item.municipio && item.municipio.trim() ? (auxDir ? ' ' : '') + capitalizeFirstsLetter(item.municipio.trim()) : '');
+        auxDir += (item.estadoDireccion && item.estadoDireccion.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.estadoDireccion.trim()) : '');
+    } else {
+        auxDir += (item.calleDireccion && item.calleDireccion.trim() ? item.calleDireccion.trim() : '');
+        auxDir += (item.nExterior && item.nExterior.trim() ? (auxDir ? ' #' : '#') + item.nExterior.trim() : '');
+        auxDir += (item.nInterior && item.nInterior.trim() ? (auxDir ? ' Int. ' : 'Int. ') + item.nInterior.trim() : '');
+        auxDir += (item.colonia && item.colonia.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.colonia.trim()) : '');
+        auxDir += (item.cp && item.cp.trim() ? (auxDir ? ', ' : '') + item.cp.trim() : '');
+        auxDir += (item.municipio && item.municipio.trim() ? (auxDir ? ' ' : '') + capitalizeFirstsLetter(item.municipio.trim()) : '');
+        auxDir += (item.estadoDireccion && item.estadoDireccion.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.estadoDireccion.trim()) : '');
+    }
+    return auxDir.trim();
+}
+
+function capitalizeFirstsLetter(string) {
+    let auxStr = "";
+    string.split(" ").forEach(element => {
+        if(auxStr != "") {
+            auxStr += " ";
+        }
+        auxStr += element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
+    });
+    return auxStr.trim();
 }
 
 function initTable(table) {
     $("#"+table).fancyTable({
         sortColumn:0,
         pagination: true,
-        perPage: table == "tablePedidos" ? ($("#filterCantidad").val() != "0" ? parseInt($("#filterCantidad").val()) : $("#"+table+" tbody").children("tr").length) : 10,
+        perPage: table == "tablePedidos" ? ($("#filterCantidad").val() != "0" ? parseInt($("#filterCantidad").val()) : $("#"+table+" tbody").children("tr").length) : 50,
         searchable:false,
         sortable: false
     });
@@ -830,16 +894,40 @@ function gestionarServicio($this) {
 
     $("#dataPedidosCliente").html(servicio.id_cliente + " - " + servicio.nombre_cliente);
     $("#dataPedidosTelefono").html(servicio.telefono.trim());
-    $("#dataPedidosDireccion").html(servicio.direccion.trim());
+    $("#dataPedidosDireccion").html(getDireccionFormat(servicio, "pedido"));
 
-    $("#noPedido").html(servicio.no_pedido);
+    $("#noPedido").html(servicio.documentNumber);
     $("#fechaSolicitudPedido").html(dateFormatFromDate(servicio.fecha_solicitud, '5'));
 
     $("#fechaPrometidaPedido").val(dateFormatFromDate(servicio.fecha_prometida, "2"));
     $("#desdePedido").val(servicio.desde ? getTimeFromString(servicio.desde) : null);
     $("#hastaPedido").val(servicio.hasta ? getTimeFromString(servicio.hasta) : null);
-    $('#viajeVentaPedido').val(servicio.id_no_viaje).trigger("change");
 
+    $('#viajeVentaPedido').children('option').remove();
+    vrViajes.forEach(element => {
+        $("#viajeVentaPedido").append(
+            '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+element.nViaje +' - '+getRutaFormat(element, "viajes")+'</option>'
+        );
+    });
+    if(servicio.id_no_viaje && servicio.id_no_viaje.trim()) {
+        if($("#viajeVentaPedido option[value="+servicio.id_no_viaje+"]").length == 0) {
+            $("#viajeVentaPedido").append(
+                '<option data-item=' + "'" + JSON.stringify({choferId : servicio.choferId, choferPhone: servicio.phoneChofer}) + "'" + ' value="'+servicio.id_no_viaje+'">'+servicio.id_no_viaje +' - '+getRutaFormat(servicio, "pedido")+'</option>'
+            );       
+        }
+    }
+
+    $('#viajeVentaPedido').select2({
+        selectOnClose: true,
+        placeholder: "Seleccione un viaje",
+        language: {
+            "noResults": function(){
+                return "Sin resultados encontrados";
+            }
+        }
+    });
+    $('#viajeVentaPedido').val(servicio.id_no_viaje).trigger("change");
+    
     $("#zonaVentaPedido").val(servicio.zona);
 
     $('.productosMetodoPago tbody').children("tr").remove();
@@ -864,6 +952,8 @@ function gestionarServicio($this) {
         $('.productosMetodoPago').children('tfoot').find('td.total').data('total', total);
         $('.productosMetodoPago').find('td.total').text('$'+total+' mxn');
     }
+
+    $("#observacionesPagoPedido").val(servicio.observaciones);
 
     let settings = {
         url      : urlGetItemsOpp,
@@ -918,7 +1008,6 @@ function gestionarServicio($this) {
             table.children('tfoot').find('td.total').data('total', total);
             table.children('tfoot').find('td.total').text('$'+total+' mxn');            
         }
-        $("#observacionesPagoPedido").val(servicio.observaciones);
 
         $("#data-pedidos").removeClass("d-none");
         $("#data-pedidos").data("item", servicio);
@@ -1041,7 +1130,7 @@ function gestionarCaso($this) {
     let caso = $($this).closest("tr").data("item");
     $("#dataCasosCliente").html(caso.id_cliente + " - " + caso.nombre);
     $("#dataCasosTelefono").html(caso.telefono.trim());
-    $("#dataCasosDireccion").html(caso.direccion_casos.trim());
+    $("#dataCasosDireccion").html(getDireccionFormat(caso, "caso"));
     $("#dataCasosTipoServicio").html((caso.tipo_servicio == "2" ? 'Queja' : 'Fuga').trim());
     $("#tipoCasoFuga, #tipoCasoQueja").addClass("d-none");
     if(!$(".btn-expand").find("i").hasClass('fa-caret-right')) {
@@ -1049,57 +1138,7 @@ function gestionarCaso($this) {
     }
     
     $("#sinSeleccionCaso, #data-pedidos").addClass("d-none");
-
-    if(caso.tipo_servicio == "1") {
-        $("#tipoCasoFuga").removeClass("d-none");     
-        //Reporte
-        $("#noCaso").html(caso.numero_caso);
-        $("#fechaCaso").html(caso.fecha_solicitud);
-        getCasosOportunidades(caso);
-
-        //Domicilio
-        //$("#direccionFugaQueja").html(caso.direccion_casos ? caso.direccion_casos : 'Sin dirección');
-
-        //Detalle del caso 
-        $("#prioridadFugaQueja").val(caso.prioridad);
-        setSelectConceptosCasos(caso);
-        getMessageAndNotes(caso);
-
-        //Información del producto
-        $("#articuloFugaQueja").val(caso.ariculo).trigger("change");
-        $("#capacidadFugaQueja").val(caso.capacidadEstacionario);
-        $("#anioFugaQueja").val(caso.yearTanque);
-        
-        //Programación visita
-        $("#fechaVisitaFugaQueja").val(dateFormatFromDate(caso.fecha_visita, "2"));
-        $("#horarioPreferidoFugaQueja").val(getTimeFromString(caso.horario_preferido));
-        $("#asignarTecnicoFugaQueja").val((caso.asignado_a ? caso.asignado_a : "0")).trigger("change");
-  
-    } else {
-        $("#tipoCasoQueja").removeClass("d-none");
-
-        $("#noQueja").html(caso.numero_caso);
-        $("#fechaQueja").html(caso.fecha_solicitud);
-        setSelectConceptosCasos(caso);
-        getCasosOportunidades(caso);
-        getMessageAndNotes(caso);
-
-        //Escalar caso
-        $("#prioridadFugaQueja").val(caso.prioridad);
-        $("#estadoQueja").val(caso.estado);
-        $("#responsableQueja").val((caso.asignado_a ? caso.asignado_a : "0")).trigger("change");
-    }
-    $("#data-casos").removeClass("d-none");
-    $("#data-casos").data("item", caso);
-}
-
-function getMessageAndNotes(caso) {
-    $("#notasAdicionales tbody, #notasAdicionalesQueja tbody").html("");
-    $("#notasAdicionales tbody, #notasAdicionalesQueja tbody").append('<tr>' +
-                                                                            '<td colspan="4" class="text-center">' +
-                                                                                'Sin comentarios'+
-                                                                            '</td>' +
-                                                                        '</tr>');
+    loadMsg();
     let settings = {
         url      : urlGetMessageandNotes,
         method   : 'POST',
@@ -1125,10 +1164,49 @@ function getMessageAndNotes(caso) {
             });
 
             $("#especificacionesFugaQueja, #justificacionQueja").val(response.messageData && response.messageData.length > 0 && response.messageData[0].message && response.messageData[0].message.trim() ? response.messageData[0].message : '');
+            caso.messageData = response.messageData && response.messageData.length > 0 && response.messageData[0].message && response.messageData[0].message.trim() ? response.messageData[0].message : '';
+            if(caso.tipo_servicio == "1") {
+                $("#tipoCasoFuga").removeClass("d-none");     
+                //Reporte
+                $("#noCaso").html(caso.numero_caso);
+                $("#fechaCaso").html(caso.fecha_solicitud);
+                getCasosOportunidades(caso);
+        
+                //Detalle del caso 
+                $("#prioridadFugaQueja").val(caso.prioridad);
+                setSelectConceptosCasos(caso);
+        
+                //Información del producto
+                $("#articuloFugaQueja").val(caso.ariculo).trigger("change");
+                $("#capacidadFugaQueja").val(caso.capacidadEstacionario);
+                $("#anioFugaQueja").val(caso.yearTanque);
+                
+                //Programación visita
+                $("#fechaVisitaFugaQueja").val(dateFormatFromDate(caso.fecha_visita, "2"));
+                $("#horarioPreferidoFugaQueja").val(getTimeFromString(caso.horario_preferido));
+                $("#asignarTecnicoFugaQueja").val((caso.asignado_a ? caso.asignado_a : "0")).trigger("change");
+          
+            } else {
+                $("#tipoCasoQueja").removeClass("d-none");
+        
+                $("#noQueja").html(caso.numero_caso);
+                $("#fechaQueja").html(caso.fecha_solicitud);
+                setSelectConceptosCasos(caso);
+                getCasosOportunidades(caso);
+        
+                //Escalar caso
+                $("#prioridadFugaQueja").val(caso.prioridad);
+                $("#estadoQueja").val(caso.estado);
+                $("#responsableQueja").val((caso.asignado_a ? caso.asignado_a : "0")).trigger("change");
+            }
+            swal.close();
+            $("#data-casos").removeClass("d-none");
+            $("#data-casos").data("item", caso);
         }
     }).catch((error) => {
         console.log(error);
     });
+    
 }
 
 function setSelectConceptosCasos(caso) {
@@ -1210,23 +1288,27 @@ function setCasosOportunidades(caso, data ) {
     console.log('Oportunidades', oportunidades);
     
     // Checa casos
-    if ( casos.length ) {
-        // numero de documento, fecha
-        for ( var key in casos ) {
-            if ( casos.hasOwnProperty( key ) && caso.numero_caso != casos[key].numeroCaso) {
-                $('#asociarCasoFugaQueja, #asociarCasoQueja').append('<option value="'+casos[key].id_Transaccion+'">No. caso: '+casos[key].numeroCaso+' - Fecha visita: '+casos[key].fecha_visita+'</option>');
-            }
+    casos.forEach(element => {
+        if ( element.numero_caso != element.numeroCaso) {
+            $('#asociarCasoFugaQueja, #asociarCasoQueja').append('<option value="'+element.id_Transaccion+'">No. caso: '+element.numeroCaso+' - '+element.tipo_servicio+(element.tipo_servicio.toLowerCase() == "fuga" ? ' - Fecha visita: '+(element.fecha_visita ? element.fecha_visita : 'Sin asignar') : '')+'</option>');
         }
-    }
+    });
 
     // Checa oportunidades
-    if ( oportunidades.length ) {
-        for ( var key in oportunidades ) {
-            if ( oportunidades.hasOwnProperty( key )) {
-                $('#asociarServicioFugaQueja, #asociarServicioQueja').append('<option value="'+oportunidades[key].id_Transaccion+'"> No. documento: '+oportunidades[key].numeroDocumento+' - Fecha: '+oportunidades[key].fecha+'</option>');
-            }
+    oportunidades.forEach(element => {
+        if(element.fecha) {
+            element.fecha_date = dateFormatFromString(element.fecha, "2");
+            element.fecha = dateFormatFromDate(new Date(element.fecha.split("/")[2], parseInt(element.fecha.split("/")[1]) - 1, element.fecha.split("/")[0]), "5");
         }
-    }
+    });
+
+    oportunidades.sort(dynamicSort("fecha_date"));
+    oportunidades.reverse();
+
+    oportunidades.forEach(element => {
+        $('#asociarServicioFugaQueja, #asociarServicioQueja').append('<option value="'+element.id_Transaccion+'"> No. documento: '+element.numeroDocumento+' - Fecha: '+element.fecha+'</option>');
+    });
+    
     $('#asociarCasoFugaQueja, #asociarCasoQueja').select2({
         selectOnClose: true,
         placeholder: "Seleccione una opción",
@@ -1344,6 +1426,7 @@ $("#guardarCaso").click(function() {
     confirmMsg("warning", "¿Seguro que desea editar el caso?", function(resp) {
         if(resp) {
             let dataSend = [];
+            let isSendNoti = false;
             if(caso.tipo_servicio == "1") {
                 dataSend.push({
                     'id': caso.internalId,
@@ -1360,6 +1443,11 @@ $("#guardarCaso").click(function() {
                     "custevent_ptg_horario_preferido" : $('#horarioPreferidoFugaQueja').val() ? formatTime($('#horarioPreferidoFugaQueja').val()) : null,
                     "assigned": $("#asignarTecnicoFugaQueja").val() && $("#asignarTecnicoFugaQueja").val() != "0" ? $("#asignarTecnicoFugaQueja").val() : null
                 });
+
+                if(caso.estado == "1" || caso.estado == "2") {
+                    dataSend[0].status = "2";
+                    isSendNoti = true;
+                }
             } else {
                 dataSend.push({
                     'id': caso.internalId,
@@ -1371,6 +1459,13 @@ $("#guardarCaso").click(function() {
                     "status": $("#estadoQueja").val(),
                     "assigned": $("#responsableQueja").val() && $("#responsableQueja").val() != "0" ? $("#responsableQueja").val() : null
                 });
+                if($("#estadoQueja").val() == "1") {
+                    dataSend[0].status = "2";
+                }
+
+                if(dataSend[0].status == "2" || dataSend[0].status == "3") {
+                    isSendNoti = true;
+                }
             }
             loadMsg();
             let settings = {
@@ -1415,25 +1510,72 @@ $("#guardarCaso").click(function() {
                             method   : 'POST',
                             data: JSON.stringify({ informacion: notas })
                         }
-                        setAjax(settings2).then((response) => {
-                            if(response.success) {
-                                swal.close();
-                                infoMsg('success', '', "Caso guardado de manera correcta", null, function(resp) {
-                                    $(".btn-expand").trigger("click");
-                                    getServicios();
-                                });                                    
+                        setAjax(settings2).then((response) => { 
+                            if(response.success) { 
+                                if(isSendNoti) {
+                                    caso.asignado_a = (caso.tipo_servicio == "1" ? $("#asignarTecnicoFugaQueja option:selected").data("item").id : $("#responsableQueja option:selected").data("item").id);
+                                    caso.numberAsiggned = (caso.tipo_servicio == "1" ? $("#asignarTecnicoFugaQueja option:selected").data("item").mobilePhone : $("#responsableQueja option:selected").data("item").mobilePhone);
+                                    let auxNoti = getDefaultNotification('caso', caso);
+                                    let dataSendN = {
+                                        notification: {
+                                            title: 'Notificación de '+(caso.tipo_servicio == "1" ? "fuga" : "queja"),
+                                            message: auxNoti.notificacion,
+                                            ids: [caso.asignado_a]
+                                        }, sms : {
+                                            title: caso.id_cliente+caso.label+dateFormatFromDate(new Date(), "8"),
+                                            message: auxNoti.sms.trim().replace(/(\r\n|\n|\r)/gm," ")+"\n"+caso.numberAsiggned
+                                        }
+                                    };
+                                    sendNotification(dataSendN, function(resp) {
+                                        swal.close();
+                                        infoMsg('success', '', "Caso guardado de manera correcta", null, function(resp) {
+                                            $(".btn-expand").trigger("click");
+                                            getServicios();
+                                        });                                        
+                                    });
+                                } else {
+                                    swal.close();
+                                    infoMsg('success', '', "Caso guardado de manera correcta", null, function(resp) {
+                                        $(".btn-expand").trigger("click");
+                                        getServicios();
+                                    }); 
+                                }
                             }
                         }).catch((error) => {
                             infoMsg('error', 'Error:', "Ocurrio un error al tratar de guardar especificaciones o notas del caso");
                             swal.close();
                         });
                     } else {
-                        swal.close();
-                        infoMsg('success', '', "Caso guardado de manera correcta", null, function(resp) {
-                            $(".btn-expand").trigger("click");
-                            getServicios();
-                        });                         
+                        if(isSendNoti) {
+                            caso.asignado_a = (caso.tipo_servicio == "1" ? $("#asignarTecnicoFugaQueja option:selected").data("item").id : $("#responsableQueja option:selected").data("item").id);
+                            caso.numberAsiggned = (caso.tipo_servicio == "1" ? $("#asignarTecnicoFugaQueja option:selected").data("item").mobilePhone : $("#responsableQueja option:selected").data("item").mobilePhone);
+                            let auxNoti = getDefaultNotification('caso', caso);
+                            let dataSendN = {
+                                notification: {
+                                    title: 'Notificación de '+(caso.tipo_servicio == "1" ? "fuga" : "queja"),
+                                    message: auxNoti.notificacion,
+                                    ids: [caso.asignado_a]
+                                }, sms : {
+                                    title: caso.id_cliente+caso.label+dateFormatFromDate(new Date(), "8"),
+                                    message: auxNoti.sms.trim().replace(/(\r\n|\n|\r)/gm," ")+"\n"+caso.numberAsiggned
+                                }
+                            };
+                            sendNotification(dataSendN, function(resp) {
+                                swal.close();
+                                infoMsg('success', '', "Caso guardado de manera correcta", null, function(resp) {
+                                    $(".btn-expand").trigger("click");
+                                    getServicios();
+                                });                                        
+                            });
+                        } else {
+                            swal.close();
+                            infoMsg('success', '', "Caso guardado de manera correcta", null, function(resp) {
+                                $(".btn-expand").trigger("click");
+                                getServicios();
+                            }); 
+                        }                  
                     }
+                    
                 } else {
                     swal.close();
                     infoMsg('error', 'Error:', "Ocurrio un error al tratar de editar el caso");
@@ -1448,35 +1590,51 @@ $("#guardarCaso").click(function() {
     
 });
 
-function notificarPedido($this) {
-    let pedido = $($this).closest("tr").data("item");
-    console.log(pedido);
+function notificarServicio($this, tipo = "pedido") {
+    let item = $($this).closest("tr").data("item");
+    console.log(item);
     loadMsg();
-    let settings = {
-        url      : urlGetItemsOpp,
-        method   : 'POST',
-        data     : JSON.stringify({opp : pedido.no_pedido}),
+    
+    let settings = {}
+    if(tipo == "pedido") {        
+        settings = {
+            url      : urlGetItemsOpp,
+            method   : 'POST',
+            data     : JSON.stringify({opp : item.no_pedido}),
+        }
+    } else {
+        settings = {
+            url      : urlGetMessageandNotes,
+            method   : 'POST',
+            data     : JSON.stringify({case : item.internalId}),
+        }
     }
-
     setAjax(settings).then((response) => {
         if(response.success) {
-            pedido.articulos = response.data;
+            if(tipo == "pedido") {
+                item.articulos = response.data;
+            } else {
+                item.messageData = response.messageData && response.messageData.length > 0 && response.messageData[0].message && response.messageData[0].message.trim() ? response.messageData[0].message : '';
+            }
         } else {
-            pedido.articulos = [];
+            if(tipo == "pedido") {
+                item.articulos = [];
+            } else {
+                item.messageData = '';
+            }
         }
-        $("#notificarPedido").html(pedido.no_pedido ? pedido.no_pedido : '');
-        let auxNoti = getDefaultNotification('pedido', pedido);
+        $("#notificarPedido").html(tipo == 'pedido' ? (item.documentNumber ? 'servicio - '+item.documentNumber : '') : (item.numero_caso ? 'caso - '+item.numero_caso : ''));
+        let auxNoti = getDefaultNotification(tipo, item);
         $("#notificarNotificacion").val(auxNoti.notificacion);
         $("#notificarSms").val(auxNoti.sms.trim().replace(/(\r\n|\n|\r)/gm," "));
         $("#sendSmsNotificar").prop("checked", true).trigger("change");
-        $("#notificarModal").data("item", pedido);
+        $("#notificarModal").data("item", item);
         $("#notificarModal").modal("show");
         swal.close();
     }).catch((error) => {
         console.log(error);
         swal.close();
-    });;
-    
+    });
 }
 
 function getDefaultNotification(tipo, item) {
@@ -1486,7 +1644,7 @@ function getDefaultNotification(tipo, item) {
     };
     if(tipo == 'pedido') {
         //Llena msj de sms
-        auxNoti.sms += formatTime(timeFormatFromDate(new Date(), "2")) + ","+ item.id_cliente+item.label+",";
+        auxNoti.sms += formatTime(timeFormatFromDate(new Date(), "2")) + ","+ item.id_cliente+","+item.label+",";
         auxNoti.sms += item.street.trim()+",";
         auxNoti.sms += item.nExterior.trim()+",";
         auxNoti.sms += (item.nInterior && item.nInterior.trim()) ? item.nInterior.trim()+"," : '';
@@ -1494,13 +1652,19 @@ function getDefaultNotification(tipo, item) {
         auxNoti.sms += item.nombre_cliente+",";
         auxNoti.sms += (item.contrato && item.contrato.trim()) ? 'CONT'+item.contrato+"," : '';
         item.articulos.forEach(element => {
-            auxNoti.sms += ","+element.quantity + "," + element.item;
+            if(auxNoti.sms != "") {
+                auxNoti.sms += ","
+            }
+            auxNoti.sms += element.quantity + "," + element.item;
         });
         if(item.objPagos) {
             let auxPagos = JSON.parse(item.objPagos);
             if(auxPagos.pago) {
+                if(auxNoti.sms != "") {
+                    auxNoti.sms += ","
+                }
                 auxPagos.pago.forEach(element => {
-                    auxNoti.sms += ","+getMetodoPagoNombre(element);
+                    auxNoti.sms += getMetodoPagoFormat(element);
                 });
             }
         }
@@ -1510,12 +1674,8 @@ function getDefaultNotification(tipo, item) {
         //Llena msj de notificación
         auxNoti.notificacion +=  "Cliente: " + item.id_cliente + " - " + item.nombre_cliente.trim() + "\n"+
                     (item.contrato && item.contrato.trim() ? "Contrato: " + item.contrato.trim() +"\n" : "") +
-                    "Dirección: " + item.street.trim()+" #"+item.nExterior.trim()+
-                    ((item.nInterior && item.nInterior.trim()) ? " Int. "+item.nInterior.trim() : '')+
-                    ', '+item.colonia+"\n";
+                    "Dirección: " + getDireccionFormat(item, "pedido")+"\n";
                     
-                    //+ (item.direccion && item.direccion.trim() ? item.direccion.trim().replace(/(\r\n|\n|\r)/gm," ") : '') +'\n';
-
         if(item.articulos.length > 0) {
             auxNoti.notificacion += "Artículos:";
             item.articulos.forEach(element => {
@@ -1529,26 +1689,53 @@ function getDefaultNotification(tipo, item) {
             if(auxPagos.pago && auxPagos.pago.length > 0) {
                 auxNoti.notificacion += "\nTipos de pago:";
                 auxPagos.pago.forEach(element => {
-                    auxNoti.notificacion += "\n\t- "+getMetodoPagoNombre(element);
+                    auxNoti.notificacion += "\n\t- "+getMetodoPagoFormat(element);
                 });
             }
         }
         auxNoti.notificacion += (item.saldoDisponible && item.saldoDisponible.trim() && parseFloat(item.saldoDisponible) > 0) ? '\nLímite de crédito: $' + item.saldoDisponible.trim() : '';     
         auxNoti.notificacion += (item.observaciones && item.observaciones.trim() ? '\nObservaciones: ' +item.observaciones.trim() : '');
     } else {
-
+        //Llena msj de sms
+        auxNoti.sms += formatTime(timeFormatFromDate(new Date(), "2")) + ","+ item.id_cliente+","+item.label+",";
+        auxNoti.sms += item.calleDireccion.trim()+",";
+        auxNoti.sms += item.nExterior.trim()+",";
+        auxNoti.sms += (item.nInterior && item.nInterior.trim()) ? item.nInterior.trim()+"," : '';
+        auxNoti.sms += item.colonia+",";
+        auxNoti.sms += item.nombre+",";
+        auxNoti.sms += (item.contrato && item.contrato.trim()) ? 'CONT'+item.contrato+"," : '';
+        auxNoti.sms += item.tipo_servicio == "1" ? "Fuga" : "Queja";
+        auxNoti.sms += (item.messageData && item.messageData) ? ","+item.messageData.trim() : '';
+    
+        //Llena msj de notificación
+        auxNoti.notificacion +=  "Cliente: " + item.id_cliente + " - " + item.nombre.trim() + "\n"+
+                    (item.contrato && item.contrato.trim() ? "Contrato: " + item.contrato.trim() +"\n" : "") +
+                    "Dirección: " + getDireccionFormat(item, "caso")+"\n";
+             
+        auxNoti.notificacion += (item.messageData && item.messageData.trim() ? 'Observaciones: ' +item.messageData.trim() : '');
     }
     return auxNoti;
 }
 
-function seguimientoPedido($this) {
-    let pedido = $($this).closest("tr").data("item");
-    $("#seguimientoPedido").html(pedido.no_pedido ? pedido.no_pedido : '');
-    let settings = {
-        url      : urlGetNotesOfOPP,
-        method   : 'POST',
-        data     : JSON.stringify({opp : pedido.no_pedido}),
+function seguimientoServicio($this, tipo = "pedido") {
+    let item = $($this).closest("tr").data("item");
+    loadMsg();
+    let settings = {};
+    if(tipo == "pedido") {
+        settings = {
+            url      : urlGetNotesOfOPP,
+            method   : 'POST',
+            data     : JSON.stringify({opp : item.no_pedido}),
+        }
+    } else {
+        settings = {
+            url      : urlGetMessageandNotes,
+            method   : 'POST',
+            data     : JSON.stringify({case : item.internalId}),
+        }
     }
+    $("#seguimientoServicio").html(tipo == 'pedido' ? (item.documentNumber ? 'servicio - '+item.documentNumber : '') : (item.numero_caso ? 'caso - '+item.numero_caso : ''));
+    
     $("#nuevaNotaSeguimiento").val("");
     $("#sendSmsSeguimiento").prop("checked", true);
     $("#table-notas-seguimiento tbody").children("tr").remove();
@@ -1559,10 +1746,11 @@ function seguimientoPedido($this) {
                                                 '</tr>');
     setAjax(settings).then((response) => {
         if(response.success) {
-            if(response.data.length > 0) {
+            let dataAux = (tipo == "pedido" ? response.data : response.noteData);
+            if(dataAux.length > 0) {
                 $("#table-notas-seguimiento tbody").children("tr").remove();
             }
-            response.data.forEach(element => {
+            dataAux.forEach(element => {
                 if(element.note && element.note.trim()) {
                     let trAux = '<tr>' +
                                     '<td class="ion-text-center sticky-col fw-bold">'+element.author+'</td>'+
@@ -1573,11 +1761,13 @@ function seguimientoPedido($this) {
                 }
                 
             });
-            $("#seguimientoModal").data("item", pedido);
+            $("#seguimientoModal").data("item", item);
             $("#seguimientoModal").modal("show");
         }
+        swal.close();
     }).catch((error) => {
         console.log(error);
+        swal.close();
     });
     
 }
@@ -1598,9 +1788,32 @@ function asignarViaje($this) {
         } else {
             pedido.articulos = [];
         }
-        $("#asignarViajePedido").html(pedido.no_pedido ? pedido.no_pedido : '');
-        
+        $("#asignarViajePedido").html(pedido.documentNumber ? pedido.documentNumber : '');
+        $('#asignarViajeRuta').children('option').remove();
+        vrViajes.forEach(element => {
+            $("#asignarViajeRuta").append(
+                '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+element.nViaje +' - '+getRutaFormat(element, "viajes")+'</option>'
+            );
+        });
+        if(pedido.id_no_viaje && pedido.id_no_viaje.trim()) {
+            if($("#asignarViajeRuta option[value="+pedido.id_no_viaje+"]").length == 0) {
+                $("#asignarViajeRuta").append(
+                    '<option data-item=' + "'" + JSON.stringify({choferId : pedido.choferId, choferPhone: pedido.phoneChofer}) + "'" + ' value="'+pedido.id_no_viaje+'">'+pedido.id_no_viaje +' - '+getRutaFormat(pedido, "pedido")+'</option>'
+                );       
+            }
+        }
+        $('#asignarViajeRuta').select2({
+            selectOnClose: true,
+            placeholder: "Seleccione un viaje",
+            dropdownParent: $('#asignarViajeModal'),
+            language: {
+                "noResults": function(){
+                    return "Sin resultados encontrados";
+                }
+            }
+        });
         $('#asignarViajeRuta').val(pedido.id_no_viaje).trigger("change");
+
         $("#asignarViajeModal").data("item", pedido);
         $("#asignarViajeModal").modal("show");
         swal.close();
@@ -1612,7 +1825,7 @@ function asignarViaje($this) {
 
 function cancelarPedido($this) {
     let pedido = $($this).closest("tr").data("item");
-    $("#cancelarOppPedido").html(pedido.no_pedido ? " - " + pedido.no_pedido : '');
+    $("#cancelarOppPedido").html(pedido.documentNumber ? " - " + pedido.documentNumber : '');
     $('#cancelarOppMotivo').val(null);
     $('#cancelarOppMotivo').select2({
         selectOnClose: true,
@@ -1674,7 +1887,7 @@ $("#guardarCancelarOpp").click(function() {
                                 if(pedido.choferId) {
                                     let dataSend2 = {
                                         notification: {
-                                            title: 'Cancelación de servicio - '+pedido.no_pedido,
+                                            title: 'Cancelación de servicio - '+pedido.documentNumber,
                                             message: $("#cancelarOppObservaciones").val().trim(),
                                             ids: [pedido.choferId]
                                         }, sms : {
@@ -1726,21 +1939,21 @@ $("#guardarCancelarOpp").click(function() {
 });
 
 $("#enviarNotificacion").click(function() {
-    let pedido = $("#notificarModal").data("item");
+    let item = $("#notificarModal").data("item");
     if($("#notificarNotificacion").val() && $("#notificarNotificacion").val().trim()) {
         confirmMsg("warning", "¿Seguro que desea enviar la notificación?", function(resp) {
             if(resp) {
                 let dataSend = {
                     notification: {
-                        title: 'Notificación de pedido',
+                        title: 'Notificación de '+(item.numero_caso ? 'caso' : 'pedido'),
                         message: $("#notificarNotificacion").val().trim(),
-                        ids: [pedido.choferId]
+                        ids: [item.numero_caso ? item.asignado_a : item.choferId]
                     }
                 };
                 if($("#sendSmsNotificar").prop("checked")) {
                     dataSend.sms = {
-                        title: pedido.id_cliente+pedido.label+dateFormatFromDate(new Date(), "8"),
-                        message: $("#notificarSms").val().trim()+"\n"+pedido.phoneChofer
+                        title: item.id_cliente+item.label+dateFormatFromDate(new Date(), "8"),
+                        message: $("#notificarSms").val().trim()+"\n"+(item.numero_caso ? item.numberAsiggned : item.phoneChofer)
                     }
                 }
 
@@ -1770,17 +1983,17 @@ $("#enviarNotificacion").click(function() {
 });
 
 $("#guardarSeguimiento").click(function() {
-    let pedido = $("#seguimientoModal").data("item");
+    let item = $("#seguimientoModal").data("item");
     if($("#nuevaNotaSeguimiento").val() && $("#nuevaNotaSeguimiento").val().trim()) {
         confirmMsg("warning", "¿Seguro que desea enviar la notificación?", function(resp) {
             if(resp) {
                 loadMsg();
                 let nota = [{ 
                     type: "nota", 
-                    idRelacionado: pedido.no_pedido, 
+                    idRelacionado: item.numero_caso ? item.internalId : item.no_pedido, 
                     titulo: "Seguimiento (Monitor)", 
                     nota: $("#nuevaNotaSeguimiento").val().trim(),
-                    transaccion: "oportunidad"
+                    transaccion: item.numero_caso ? 'caso' : "oportunidad"
                 }];
                 let settings2 = {
                     url      : urlPostNoteandMessage,
@@ -1789,18 +2002,18 @@ $("#guardarSeguimiento").click(function() {
                 }
                 setAjax(settings2).then((response) => {
                     if(response.success) {
-                        if(pedido.choferId) {
+                        if((item.numero_caso && item.asignado_a) || (!item.numero_caso && item.choferId)) {
                             let dataSend = {
                                 notification: {
-                                    title: 'Nueva nota pedido - '+pedido.no_pedido,
+                                    title: 'Nueva nota '+(item.numero_caso ? 'caso - '+item.numero_caso : 'pedido - '+item.documentNumber),
                                     message: $("#nuevaNotaSeguimiento").val().trim(),
-                                    ids: [pedido.choferId]
+                                    ids: [item.numero_caso ? item.asignado_a : item.choferId]
                                 }
                             };
                             if($("#sendSmsSeguimiento").prop("checked")) {
                                 dataSend.sms = {
-                                    title: pedido.id_cliente+pedido.label+dateFormatFromDate(new Date(), "8"),
-                                    message: $("#nuevaNotaSeguimiento").val().trim().replace(/(\r\n|\n|\r)/gm," ")+"\n"+pedido.phoneChofer
+                                    title: item.id_cliente+item.label+dateFormatFromDate(new Date(), "8"),
+                                    message: $("#nuevaNotaSeguimiento").val().trim().replace(/(\r\n|\n|\r)/gm," ")+"\n"+(item.numero_caso ? item.numberAsiggned : item.phoneChofer)
                                 }
                             }
 
@@ -1935,14 +2148,14 @@ function verDetalles($this) {
     console.log(pedido);
     $("#verDetallesCliente").html(pedido.id_cliente + " - " + pedido.nombre_cliente);
     $("#verDetallesTelefono").html(pedido.telefono.trim());
-    $("#verDetallesDireccion").html(pedido.direccion.trim());
+    $("#verDetallesDireccion").html(getDireccionFormat(pedido, "pedido"));
     $("#verDetallesTipoServicio").html(pedido.tipo_cliente.trim());
 
-    $("#verDetallesServicio").html(pedido.no_pedido);
+    $("#verDetallesServicio").html(pedido.documentNumber);
     $("#verDetallesVehiculo").html(pedido.nombre_vehiculo.trim() ? pedido.nombre_vehiculo.trim() : 'Sin asignar');
     $("#verDetallesZona").html(pedido.zona);
     $("#verDetallesUsuarioMonitor").html(pedido.usuario_monitor.trim() ? pedido.usuario_monitor.trim() : 'Sin asignar');
-    $("#verDetallesDireccion2").html(pedido.direccion);
+    $("#verDetallesDireccion2").html(getDireccionFormat(pedido, "pedido"));
     $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
     $("#verDetallesFechaPedido").html(dateFormatFromDate(pedido.fecha_solicitud, '5'));
     $("#verDetallesFechaNotificacion").html(pedido.fecha_notificacion ? dateFormatFromDate(pedido.fecha_notificacion, '5') + " - " + pedido.hora_notificacion : 'Sin asignar');
@@ -1962,7 +2175,25 @@ function verDetalles($this) {
     $("#formVerDetallesPedidos").modal("show");
 }
 
-countServices = 0;
+function verDetallesCaso($this) {
+    let caso = $($this).closest("tr").data("item");
+    console.log(caso);
+    $("#verDetallesClienteCaso").html(caso.id_cliente + " - " + caso.nombre);
+    $("#verDetallesTelefonoCaso").html(caso.telefono.trim());
+    $("#verDetallesDireccionCaso").html(getDireccionFormat(caso, "caso"));
+    $("#verDetallesTipoServicioCaso").html((caso.tipo_servicio == "2" ? 'Queja' : 'Fuga').trim());
+
+    $("#verDetallesNoCaso").html(caso.numero_caso);
+    $("#verDetallesFechaReporte").html(caso.fecha_solicitud);
+    $("#verDetallesRepuseCilindroDanado").html(caso.repuseCilindro ? 'Si' : 'No');
+    $("#verDetallesRealiceTrasiego").html(caso.isTrasiego ? 'Si' : 'No');
+    $("#verDetallesCantidadRecolectada").html(caso.quantityTrasiego ? caso.quantityTrasiego : '0');
+    $("#verDetallesPruebaHermetica").html(caso.testHermatica ? caso.testHermatica : 'Sin aplicar');
+    $("#verDetallesProblemaLocalizado").html(caso.problemAt ? caso.problemAt : 'Sin aplicar');
+    $("#verDetallesSolucion").html(caso.solutionName ? caso.solutionName : 'Sin aplicar');
+
+    $("#formVerDetallesCaso").modal("show");
+}
 
 function orderOrders(data) {
     let segundaLlamada = [],
@@ -1977,13 +2208,16 @@ function orderOrders(data) {
         entregados = [],
         faltantes = [];
     data.forEach(element => {
+      
       if(element.segunda_llamada && (element.status_id == idPorAsignar || element.status_id == idAsignado)) {
         if(element.status_id == idPorAsignar) {
           element.status_color = '#000';
+          element.tooltip = 'Por asignar';
         }
         segundaLlamada.push(element);
       } else if(element.status_id == idPorAsignar) {
         element.status_color = '#000';
+        element.tooltip = 'Por asignar';
         sinNotificar.push(element);
       } else if(element.status_id == idAsignado) {
         notificados.push(element);
@@ -2045,8 +2279,10 @@ function orderOrders(data) {
       if(element.fecha_hora_notificacion && element.fecha_hora_notificacion <= new Date()) {
         if(getRestTime(element.fecha_hora_notificacion, "2") >= 2) {
           element.status_color = "#f68f1e";
+          element.tooltip = 'Más de dos horas notificado';
         } else {
           element.status_color = "#9a9a9a";
+          element.tooltip = 'Menos de dos horas notificado';
         }
       }
     });

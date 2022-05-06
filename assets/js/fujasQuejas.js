@@ -65,7 +65,7 @@ $('#guardarNuevaNotaAdicional').on('click', function () {
 
 // Guarda la información de un pedido
 $('#guardarFugaQueja').on('click', function () {
-    let zonaPrecio  = $('#zonaPrecioCliente').text().replace('$', '');
+    let zonaPrecio  = $('#zonaPrecioCliente').data("price");
     let addressObj  = $('#direccionCliente').children(':selected').data('address');
     let tipo        = $('#tipoCasoFugaQueja').val();
     let canContinue = false;

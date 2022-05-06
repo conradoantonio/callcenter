@@ -5,9 +5,9 @@
     <meta charset="utf-8" />
     <title>Avisos y llamadas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Dashboard" name="description" />
+    <meta content="Avisos y llamadas" name="description" />
     <meta content="Themesbrand" name="author" />
-    <meta name="keywords" content="Dashboard, clientes, pedidos, potogas">
+    <meta name="keywords" content="Avisos y llamadas, clientes, pedidos, potogas">
     <!-- App favicon -->
     <link rel="shortcut icon"
         href="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108997&c=5298967_SB1&h=MqKO6RyzbmQKiMqwc6-9rA2wJSTQZ0yi96oPgnj9KQwozioR&_xt=.ico">
@@ -593,6 +593,72 @@
         #tablePedidos tfoot.expand, #tableCasos tfoot.expand {
             right: 50%;
         }
+
+        tfoot .pag a {
+            color: #000;
+            background-color: #b0c1e0;
+            border-color: #b0c1e0;
+        }
+
+        tfoot .pag a:hover {
+            color: #000;
+            background-color: #9eaeca;
+            border-color: #9eaeca;
+        }
+
+        tfoot .pag a.active, tfoot .pag a.active:hover {
+            color: #fff;
+            background-color: #355da7;
+            border-color: #355da7;
+        }
+
+        label.label-ptg {
+            color: #355da7;
+            margin-bottom: 5px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .special-group{
+            padding: 0!important;
+        }
+
+        .special-group > input:read-only {
+            /* cursor: not-allowed; */
+            background-color: white;
+        }
+
+        .special-group > .input-group-prepend {
+            font-size: 16px!important;
+            color: #355da7!important;
+            margin-left: 1px!important;
+        }
+
+        .special-group > input {
+            font-size: 16px;
+            color: #355da7;
+            margin-right: 1px;
+            border-width:0px;
+            border:none;
+        }
+        .special-group {
+            font-size: 16px;
+            border: solid 2px #9d9b99;
+            border-radius: 9px;
+            padding-left: 9px;
+            color: #737373;
+            padding-right: 9px;
+            padding-top: 0;
+            padding-bottom: 0;
+            width: 100%;
+            padding-top: 9px;
+            padding-bottom: 9px;
+        }
+
+        .special-group {
+            border: solid 2px #355da7;
+            color: #355da7;
+        }
     </style>
 </head>
 
@@ -664,27 +730,23 @@
                 </div>
                 <div class="modal-body">
                     <div class="content-gen">
-                        <div class="row p-3">
+                        <div class="row p-3 align-items-end">
                           <div class="col-3 title">Servicio</div>
                           <div id="verDetallesServicio" class="col-9 resp"></div>
                         </div>
-                        <div class="row p-3">
-                          <div class="col-3 title">Direccíon</div>
-                          <div id="verDetallesDireccion2" class="col-9 resp"></div>
-                        </div>
-                        <div class="row p-3">
+                        <div class="row p-3 align-items-end">
                           <div class="col-3 title">Fecha Prometida</div>
                           <div id="verDetallesFechaPrometida" class="col-9 resp"></div>
                         </div>
-                        <div class="row p-3">
+                        <div class="row p-3 align-items-end">
                           <div class="col-3 title">Tipo Producto</div>
                           <div id="verDetallesTipoProducto" class="col-9 resp"></div>
                         </div>
-                        <div class="row p-3">
+                        <div class="row p-3 align-items-end">
                             <div class="col-3 title">Estado de seguimiento</div>
                             <div id="verDetallesEstadoSeguimiento" class="col-9 resp"></div>
                         </div>
-                        <div class="row p-3">
+                        <div class="row p-3 align-items-start">
                             <div class="col-3 title">Observaciones</div>
                             <div id="verDetallesObservaciones" class="col-9 resp"></div>
                         </div>
@@ -746,6 +808,193 @@
             </div>
         </div>
     </div>
+
+    <div id="formConfirmarPedidos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleerDetallesPedidosModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 50%;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-body" style="max-height: calc(100vh - 145px); overflow: auto;">
+                    <div class="row align-items-center">
+                        <div class="col"></div>
+                        <div class="col-auto text-center">
+                            <label class="fw-bold color-primary" style="font-size: 22px;" id="dataPedidosCliente"></label><br>
+                            <label class="fw-bold color-primary" style="font-size: 18px;" id="dataPedidosTelefono"></label><br>
+                            <label class="fw-bold color-primary" style="font-size: 16px;" id="dataPedidosDireccion"></label>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col">
+                            <label class="color-primary"><strong>No. Servicio: </strong><span id="noPedido"></span></label>
+                        </div>
+                        <div class="col-auto">
+                            <label class="color-primary"><strong>Fecha solicitud: </strong><span id="fechaSolicitudPedido"></span></label>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-4">
+                            <div class="content-input content-input-primary">
+                                <label>Fecha prometida*</label>
+                                <input id="fechaPrometidaPedido" type="date" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="content-input content-input-primary">
+                                <label>Desde*</label>
+                                <input id="desdePedido" type="time" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="content-input content-input-primary">
+                                <label>Hasta*</label>
+                                <input id="hastaPedido" type="time" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-4">
+                        </div>  
+                        <div class="col-4">
+                            <div class="content-input content-input-primary">
+                                <label>Zona de venta</label>
+                                <input id="zonaVentaPedido" readonly type="text" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2 align-items-center">
+                        <div class="col">
+                            <label class="color-primary ft-18">Lista de pedido</label>
+                        </div>
+                        <div class="col-auto">
+                            <button id="agregarProducto" type="button" class="btn bg-secondary-cc">
+                                <i class="fa-solid fa-plus"></i> Agregar producto
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card-body">
+                            <div class="col-12 d-none">
+                                <div class="table-responsive">
+                                    <table class="table table-striped productosCilindroPedidoForm">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Producto</th>
+                                                <th scope="col" class="text-center">Cantidad</th>
+                                                <th scope="col" class="text-center">Capacidad</th>
+                                                <th scope="col" class="text-center">Valor</th>
+                                                <th scope="col" class="text-center">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="4" style="text-align: right; font-weight: bold;">Descuento</td>
+                                                <td colspan="1" class="text-center descuento" data-descuento="">$0 mxn</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
+                                                <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-12 d-none">
+                                <div class="table-responsive">
+                                    <table class="table table-striped productosEstacionarioPedidoForm">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Producto</th>
+                                                <th scope="col" class="text-center">Cantidad</th>
+                                                <th scope="col" class="text-center">Litros</th>
+                                                <th scope="col" class="text-center">Total</th>
+                                                <th scope="col" class="text-center">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="4" style="text-align: right; font-weight: bold;">Descuento</td>
+                                                <td colspan="1" class="text-center descuento" data-descuento="">$0 mxn</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
+                                                <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-12" id="sinProductos" style="position: relative; min-height: 90px;">
+                                <div
+                                    style="text-align: center; position: absolute; top: 0; bottom: 0; right: 0; left: 0; font-size: 15px; margin: auto; height: 25px;">
+                                    <label class="color-primary">Sin productos en el pedido.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2 align-items-center">
+                        <div class="col">
+                            <label class="color-primary ft-18">Lista de métodos de pago</label>
+                        </div>
+                        <div class="col-auto">
+                            <button id="agregarMetodoPago" type="button" class="btn bg-secondary-cc">
+                                <i class="fa-solid fa-plus"></i> Agregar método de pago
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card-body">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped productosMetodoPagoForm">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Método</th>
+                                                <th scope="col" class="text-center">Folio</th>
+                                                <th scope="col" class="text-center">Cantidad</th>
+                                                <th scope="col" class="text-center">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
+                                                <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-12" id="sinMetodosPago" style="position: relative; min-height: 90px;">
+                                <div
+                                    style="text-align: center; position: absolute; top: 0; bottom: 0; right: 0; left: 0; font-size: 15px; margin: auto; height: 25px;">
+                                    <label class="color-primary">Sin métodos de pago registrados.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2 align-items-center">
+                        <div class="col-12">
+                            <div class="content-input content-input-primary">
+                                <label>Observaciones</label>
+                                <textarea placeholder="Observaciones" id="observacionesPagoPedido" rows="3"
+                                    class="form-ptg form-ptg-primary"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cancelar</button>
+                    <button id="btnConfirmarPedido" type="button" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div id="formReprogramarModal" class="modal fade" tabindex="-1" role="dialog"
         aria-labelledby="titleReprogramarModal" aria-hidden="true">
@@ -793,6 +1042,16 @@
                         <label>Estado*</label><br>
                         <select id="estadoCambiarEstado" class="form-ptg form-ptg-primary">
                         </select>
+                    </div>
+                    <div class="content-input content-input-primary mt-3">
+                        <label>Motivo de Cancelacion*</label><br>
+                        <select id="cambiarEstadoOppMotivo" class="form-ptg form-ptg-primary">
+                        </select>
+                    </div>
+                    <div class="content-input content-input-primary mt-3">
+                        <label>Observaciones*</label><br>
+                        <textarea rows="3" id="cambiarEstadoOppObservaciones" class="form-ptg form-ptg-primary">
+                        </textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -870,6 +1129,142 @@
         </div>
     </div>
 
+    <div id="formProductosModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleProductoModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 700px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleProductoModal">Agregar producto</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row info-minimo-gas-lp d-none">
+                        <div class="col-12">
+                            <div class="alert alert-info" role="alert">
+                                El monto mínimo a vender es de $<span class="minimo-gas-lp"></span> mxn.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 d-none">
+                            <div class="content-input content-input-primary">
+                                <label>Articulo ID</label>
+                                <input id="pedidoProductoId" type="text" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-6">
+                            <div class="content-input content-input-primary">
+                                <label>Producto</label>
+                                <select id="productoFormProductos" class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="cilindro" class="opt-pro-pedido-cilindro">Cilindro</option>
+                                    <option value="estacionario" class="opt-pro-pedido-estacionario">Estacionario</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6 cilindroFormProductos d-none">
+                            <div class="content-input content-input-primary">
+                                <label>Envase</label>
+                                <input id="envaseFormProductos" type="checkbox" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2 cilindroFormProductos d-none">
+                        <div class="col-6">
+                            <div class="content-input content-input-primary">
+                                <label>Capacidad</label>
+                                <select id="capacidadFormProductos" class="form-ptg form-ptg-primary">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="content-input content-input-primary">
+                                <label>Cantidad</label>
+                                <input id="cantidadFormProductos" type="number" min="1" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2 estacionarioFormProductos d-none">
+                        <div class="col-6">
+                            <div class="content-input content-input-primary">
+                                <label>Litros</label>
+                                <input id="litrosFormProductos" type="number" min="1" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-6">
+                            <div class="content-input content-input-primary">
+                                <label>Valor</label>
+                                <input id="valorFormProductos" type="number" readonly class="form-ptg form-ptg-primary">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label class="label-ptg">Total</label>
+                            <div class="input-group special-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1" style="border: none; height: 42px; font-size: 16px; color: #355da7; margin-left: 1px; background-color: white;">$</span>
+                                </div>
+                                <input id="totalFormProductos" type="number" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                            </div>
+                            <!-- <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+                                <input id="totalFormProductos" type="number" readonly aria-label="Amount (to the nearest dollar)" class="form-ptg form-ptg-primary">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">.00</span>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+                    <button id="guardarProductosForm" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="formMetodoPagosModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleMetodoPagosModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 400px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleMetodoPagosModal">Agregar método de pago</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row pb-2">
+                        <div class="col-12 pb-2">
+                            <div class="content-input content-input-primary">
+                                <label>Método de pago</label>
+                                <select id="metodoPagoPedido" class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 pb-2">
+                            <div class="content-input content-input-primary">
+                                <label>Monto a pagar</label>
+                                <input id="montoPagoPedido" oninput="onlyNumbers(this.value, '#montoPagoPedido')" class="form-ptg form-ptg-primary"> </select>
+                            </div>
+                        </div>
+                        <div class="col-12 pb-2 d-none">
+                            <div class="content-input content-input-primary">
+                                <label>Folio de autorización</label>
+                                <input id="folioAutorizacionPedido" class="form-ptg form-ptg-primary"> </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+                    <button id="guardarMetodoPagoForm" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="home-view" class="w-100 m-0">
         <div id="filters-data" class="p-3">
             <div class="btn-expand-down">
@@ -918,6 +1313,9 @@
                                 <tr>
                                     <th style="min-width: 40px; z-index: 1; left: 0;" class="text-center sticky-col">
                                         <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
+                                        <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                    </th>
+                                    <th style="min-width: 40px; z-index: 1; left: 40;" class="text-center sticky-col">
                                         <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
                                     <th style="min-width: 110px" class="text-center">No. Servicio</th>
@@ -1004,9 +1402,41 @@
         urlPostNoteandMessage = "${ds.postNoteandMessage}";
         urlGetMessageandNotes = '${ds.getMessageandNotes}';
         urlGetNotesOfOPP = '${ds.getNotesOfOPP}';
+        urlGetListCancellReason = "${ds.getListCancellReason}";
+        urlGetMethodPayments = '${ds.getMethodPayments}';
+        urlObtenerArticulos = '${ds.getItems}';
         statusOP = [];
         countServices = 0;
-        deftEstacionarVal = "4088";
+        metodoMultiple = 7;
+        articuloGasLp = "4088";
+        defDescuentoID = "4528";
+        methodPayments = [];
+        articulosArr = [];
+        concatObsPagos = ["2", "8"];
+
+        function getArticulos() {
+            let settings = {
+                url      : urlObtenerArticulos,
+                method   : 'GET',
+            }
+
+            setAjax(settings).then((response) => {
+                if ( response.data.length ) {
+                    articulosArr = response.data;
+                    $('#capacidadFormProductos').children('option').remove();
+                    response.data.forEach(element => {
+                        let articulo = '<option value='+element.id+' data-articulo=' + "'" + JSON.stringify(element) + "'" + '>'+element.nombre+'</option>';
+                        if ( element.tipo_articulo == 1 ) {// Cilindro                            
+                            $("#capacidadFormProductos").append( articulo );
+                        }
+                    });
+                    readyInit();
+                }
+            }).catch((error) => {
+                readyInit();
+                console.log(error);
+            });
+        }
 
         // Se inyecta la información del usuario logueado
         $('.user-name').text(userName);
@@ -1019,6 +1449,40 @@
 
         $('body').delegate('.dropdown-toggle', 'hidden.bs.dropdown', function () {
             $(this).closest("td").css("z-index", "1");
+        });
+
+        // Limpia los campos del modal método de pago
+        $('body').delegate('div#formMetodoPagosModal', 'hidden.bs.modal', function () {
+            $(this).find('.form-ptg').val('');
+            $(this).find('select.form-ptg').each(function( index ) {
+                $( this ).val($(this).children("option:first").val());
+            });
+            $('#folioAutorizacionPedido').parent().parent().addClass('d-none');
+        });
+
+        // Abre el modal de métodos de pago
+        $("#agregarMetodoPago").click(function () {
+            let totalProducto = 0;
+            let totalMetodosPago = 0;
+            let montoRestante = 0;
+            // Calcula el total del pedido basándose en los productos agregados al listado
+            if (! $('.productosEstacionarioPedidoForm').parent().parent().hasClass('d-none') ) {// Estacionario
+                totalProducto = $('.productosEstacionarioPedidoForm').children('tfoot').find('td.total').data('total');
+            } else if (! $('.productosCilindroPedidoForm').parent().parent().hasClass('d-none') ) {// Cilindro
+                totalProducto = $('.productosCilindroPedidoForm').children('tfoot').find('td.total').data('total');
+            }
+
+            // Calcula el total de método de pago basándose en los especificados en la lista
+            if (! $('.productosMetodoPagoForm').parent().parent().hasClass('d-none') ) {// Contiene métodos
+                totalMetodosPago = $('.productosMetodoPagoForm').children('tfoot').find('td.total').data('total');
+            }
+
+            montoRestante = parseFloat( Number(totalProducto) - Number(totalMetodosPago) ).toFixed(2);
+            montoRestante = montoRestante > 0 ? montoRestante : 0;
+
+            $('#montoPagoPedido').val(montoRestante);
+
+            $('#formMetodoPagosModal').modal('show');
         });
 
         // Call a global ajax method
@@ -1189,6 +1653,43 @@
 
         }
 
+        // Función para obtener los motivos de cancelar pedido
+        function getListCancellReason() {
+            let dataListCancellReason = {
+                "requestType" : 'getListCancellReason'
+            };
+
+            let settings = {
+                url      : urlGetListCancellReason,
+                method   : 'GET',
+                data     : JSON.stringify(dataListCancellReason),
+            }
+
+            setAjax(settings).then((response) => {
+                if ( response.data.length ) {
+                    $('#cambiarEstadoOppMotivo').children('option').remove();
+                    response.data.forEach(element => {
+                        $("#cambiarEstadoOppMotivo").append(
+                            '<option value='+element.id+'>'+element.name+'</option>'
+                        );
+                    });
+                }
+                $('#cambiarEstadoOppMotivo').select2({
+                    selectOnClose: true,
+                    placeholder: "Seleccione un motivo",
+                    dropdownParent: $('#formCambiarEstadoModal'),
+                    language: {
+                        "noResults": function(){
+                            return "Sin resultados encontrados";
+                        }
+                    }
+                });
+                readyInit();
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+
         function getZonas() {
             let dataZonas = {
                 "requestType" : 'getZonas'
@@ -1269,7 +1770,7 @@
                 for ( var key in items ) {
                     if ( items.hasOwnProperty( key ) ) {
                         $("select#plantas").append(
-                            '<option value='+items[key].id+'>'+items[key].nombre+'</option>'
+                            '<option data-pedido-minimo="'+parseFloat(items[key].min).toFixed(2)+'" value='+items[key].id+'>'+items[key].nombre+'</option>'
                         );
                     }
                 }
@@ -1343,19 +1844,45 @@
         });
 
         vrStatus = [];
+        idPorAsignar = "";
+        idAsignado = "";
+        idCancelado = "";
+        idEntregado = "";
+        idPorReprogramar = "";
+        idPorConfirmar = "";
         // Método para llenar el select de los estado de la oportunidad
         function setSelectStatusOp(items) {
             vrStatus = [];
             if ( items.length ) {
                 $('#estadoCambiarEstado').children('option').remove();
-                for ( var key in items ) {
-                    vrStatus.push(items[key]);
-                    if ( items.hasOwnProperty( key ) && items[key].id != "2" && items[key].id != "3" && items[key].id != "6") {
+                items.forEach(element => {
+                    if(element.nombre.trim().toLowerCase() == "por asignar") {
+                        idPorAsignar = element.id;
+                    }
+                    if(element.nombre.trim().toLowerCase() == "asignado") {
+                        idAsignado = element.id;
+                    }
+                    if(element.nombre.trim().toLowerCase() == "cancelado") {
+                        idCancelado = element.id;
+                    }
+                    if(element.nombre.trim().toLowerCase() == "entregado") {
+                        idEntregado = element.id;
+                    }
+                    if(element.nombre.trim().toLowerCase() == "por reprogramar") {
+                        idPorReprogramar = element.id;
+                    }
+                    if(element.nombre.trim().toLowerCase() == "por confirmar") {
+                        idPorConfirmar = element.id;
+                    }
+                    vrStatus.push(element);
+                });
+                vrStatus.forEach(element => {
+                    if ( element.id != "2" && element.id != "3" && element.id != "6") {
                         $("#estadoCambiarEstado").append(
-                            '<option value="'+items[key].id+'">'+items[key].nombre+'</option>'
+                            '<option value="'+element.id+'">'+element.nombre+'</option>'
                         );
                     }
-                }
+                });
                 $('#estadoCambiarEstado').select2({
                     selectOnClose: true,
                     placeholder: "Seleccione un estado",
@@ -1372,6 +1899,15 @@
                 readyInit();
             }
         }
+
+        $("#metodoPagoPedido").change(function () {
+            let metodoId = $(this).val();
+            if ( ["8", "2"].includes( metodoId ) ) {// Si el método de pago es transferencia, prepago, tarjeta de crédito, tarjeta de débito
+                $("#folioAutorizacionPedido").parent().parent().removeClass("d-none");
+            } else {
+                $("#folioAutorizacionPedido").parent().parent().addClass("d-none");
+            }
+        });
 
         function getRutas(getPedidos = false) {
             if(getPedidos) {
@@ -1410,21 +1946,664 @@
             }
         });
 
+        // Edita un producto agregado en la lista del pedido
+        $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() {
+            let button   = $(this);
+            let prices   = $("#formConfirmarPedidos").data("item").precioZona;
+            let artObj   = button.parent().parent().data('item');
+            let total    = 0;
+            let subtotal = 0;
+            // let direccion = $('select#direccionCliente').children('option:selected').data('address');
+            
+            if ( button.hasClass('edit-producto-cil') ) {// Producto cilindro
+
+                $("#productoFormProductos").val("cilindro");
+                $("#totalFormProductos").prop('readonly', true);
+                $(".cilindroFormProductos").removeClass("d-none");
+                $(".estacionarioFormProductos").addClass("d-none");
+
+                subtotal = parseFloat( Number(artObj.capacity) *  Number(artObj.quantity) * Number(prices)).toFixed(2);
+                total    = parseFloat( Number(subtotal) * 1.16 ).toFixed(2);
+
+                $('#capacidadFormProductos, #pedidoProductoId').val(artObj.article);
+                $('#cantidadFormProductos').val(artObj.quantity);
+                $('#valorFormProductos').val(subtotal);
+                $('#totalFormProductos').val(total);
+
+            } else if ( button.hasClass('edit-producto-est') ) {// Producto estacionario
+                console.log(artObj);
+                $("#productoFormProductos").val("estacionario");
+                $("#totalFormProductos").attr('readonly', false);
+                $(".estacionarioFormProductos").removeClass("d-none");
+                $(".cilindroFormProductos").addClass("d-none");
+
+                subtotal = parseFloat( Number(artObj.capacity) * Number(prices) ).toFixed(2);
+                total    = parseFloat( Number(subtotal) * 1.16 ).toFixed(2);
+
+                $("#pedidoProductoId").val( artObj.article );// Este input indicará que se trata de un edit
+                $("#litrosFormProductos").val( artObj.capacity );
+                $("#valorFormProductos").val( subtotal );
+                $("#totalFormProductos").val( total );
+            
+            }
+
+            // Se validan los option disponibles si es que algún producto ya fue registrado
+            if (! $('table.productosEstacionarioPedidoForm').parent().parent().hasClass('d-none') ) {// Ya se agregó gas LP
+                $(".opt-pro-pedido-cilindro").attr("disabled", true);
+            } else if (! $('table.productosCilindroPedidoForm').parent().parent().hasClass('d-none') ) {// Ya se agregó un cilindro
+                $(".opt-pro-pedido-estacionario").attr("disabled", true);
+            } else {
+                // $(".opt-pro-pedido-cilindro, .opt-pro-pedido-estacionario").attr("disabled", false);
+            }
+
+            $('#formProductosModal').modal('show');
+        });
+
+        $('body').delegate('#guardarProductosForm','click', function() {
+            let tipoProducto = $('#productoFormProductos').val();
+            let canContinue = false;
+            let productoId  = $('#pedidoProductoId').val();
+            let defaultProMsg = $('#sinProductos');
+            let prices = $('#zonaPrecioCliente').text().replace('$', '');
+
+            if ( tipoProducto == 'cilindro' ) {
+                if( !$("#capacidadFormProductos").val() || $("#cantidadFormProductos").val() <= 0  || $("#valorFormProductos").val() <= 0 || $("#totalFormProductos").val() <= 0 ) {
+                    canContinue = false;
+                } else {
+                    canContinue = true;
+                }
+            } else if ( tipoProducto == 'estacionario' ) {
+                if( $("#litrosFormProductos").val() <= 0 || $("#valorFormProductos").val() <= 0  || $("#totalFormProductos").val() <= 0) {
+                    canContinue = false;
+                } else {
+                    canContinue = true;
+                }
+            }
+
+            if (! canContinue ) {
+                alert("Favor de llenar todos los campos con *");
+                return;
+            }
+            // Se remueve el mensaje principal de que no hay productos
+            defaultProMsg.addClass('d-none');
+
+            let itemId   = ( tipoProducto == 'cilindro' ? $( '#capacidadFormProductos' ).val() : articuloGasLp );
+            let searchTr = $('tr[data-item-id="'+itemId+'"]');
+
+            // Se agrega el artículo a la tabla
+            if ( tipoProducto == 'cilindro' ) {// Cilindro
+
+                $('.productosCilindroPedidoForm').parent().parent().removeClass('d-none');
+                
+                let total     = parseFloat($('#totalFormProductos').val()).toFixed(2);
+                let artSel    = $( '#capacidadFormProductos' ).children('option:selected').data('articulo');
+                let capacidad = parseInt( ( artSel && artSel.capacidad_litros ? artSel.capacidad_litros : 0 ) );
+                let envase    = $('#envaseFormProductos').is(':checked');
+                let articulo  = {
+                    "zoneprice" : prices,// Este es el valor de la zona
+                    "tipo"      : 1,
+                    "capacity"  : capacidad,
+                    "quantity"  : $( '#cantidadFormProductos' ).val(),
+                    "article"   : $( '#capacidadFormProductos' ).val()
+                };
+
+                agregarEnvase(envase, $(".productosCilindroPedidoForm"), artSel, prices);
+                
+                if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado
+
+                    if ( productoId ) {// Si es una edición, se reemplazará todo el contenido
+                        searchTr.data('item', articulo);
+                        // searchTr.data('item-id', articulo.article);
+                        searchTr.children('td').siblings("td:nth-child(1)").text(artSel && artSel.nombre ? artSel.nombre : 'Sin nombre asignado');
+                        searchTr.children('td').siblings("td:nth-child(2)").text(articulo['quantity']);
+                        searchTr.children('td').siblings("td:nth-child(3)").text(capacidad+' kg');
+                        searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
+                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                        // searchTr.children('td').siblings("td:nth-child(4)").children('button.delete-producto-cil').data('item-id', articulo.article);
+                    } else {
+                        let firstItem         = searchTr.data('item');
+                        let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(2);
+                        firstItem['quantity'] = parseInt( Number(firstItem['quantity']) + Number(articulo['quantity']));
+        
+                        total = parseFloat(Number(total) + Number(firstTotal)).toFixed(2);
+                        searchTr.data('item', firstItem);
+                        searchTr.children('td').siblings("td:nth-child(2)").text(firstItem['quantity']);
+                        searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
+                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                        console.log(firstItem);
+                    }
+                    
+                } else {
+
+                    // Se llena la información del item
+                    $(".productosCilindroPedidoForm tbody").append(
+                        '<tr data-item-id='+articulo.article+' class="product-item" data-item=' + "'" + JSON.stringify(articulo) + "'" + '>' +
+                            '<td class="text-center">'+(artSel && artSel.nombre ? artSel.nombre : 'Sin nombre asignado')+'</td>'+
+                            '<td class="text-center">'+articulo['quantity']+'</td>'+
+                            '<td class="text-center">'+capacidad+' kg</td>'+
+                            '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                            // '<td class="text-center">'+(envase ? 'Si' : 'No')+'</td>'+
+                            '<td class="text-center">'+
+                                '<button class="btn btn-sm btn-info edit-producto-cil"> <i class="fa fa-pen-to-square"></i> </button> '+
+                                '<button class="btn btn-sm btn-danger delete-producto-cil" data-table-ref=".productosCilindroPedidoForm" data-item-id='+articulo.article+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                            '</td>'+
+                        '</tr>'
+                    );
+
+                }
+
+                setTotalPedido( $(".productosCilindroPedidoForm") );
+
+            } else if ( tipoProducto == 'estacionario' ) {// Estacionario
+
+                $('.productosEstacionarioPedidoForm').parent().parent().removeClass('d-none');
+                
+                let total  = parseFloat( $('#totalFormProductos').val() ).toFixed(2);
+                let litros = parseInt( $("#litrosFormProductos").val() );
+                let articulo = {
+                    "zoneprice" : prices,// Este es el valor de la zona
+                    "tipo"      : 2,
+                    "capacity"  : litros,
+                    "quantity"  : 1,
+                    "article"   : articuloGasLp// ID de GAS LP
+                };
+
+                if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado
+                    
+                    if ( productoId ) {// Si es una edición, se reemplazará todo el contenido
+                        console.log("jeje");
+                        searchTr.data('item', articulo);
+                        searchTr.children('td').siblings("td:nth-child(3)").text(articulo['capacity']);
+                        searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
+                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                    } else {// Se suma el consumo del cliente
+                        console.log("jeje2");
+                        let firstItem         = searchTr.data('item');
+                        let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(2);
+                        firstItem['capacity'] = Number(firstItem['capacity']) + Number(articulo['capacity']);
+        
+                        total = parseFloat(Number(total) + Number(firstTotal)).toFixed(2);
+                        searchTr.data('item', firstItem);
+                        searchTr.children('td').siblings("td:nth-child(3)").text(firstItem['capacity']);
+                        searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
+                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                        console.log(firstItem);
+                    }
+
+                } else {// Se llena la información del item
+                    
+                    $(".productosEstacionarioPedidoForm tbody").append(
+                        '<tr data-item-id='+articulo.article+' class="product-item" data-item=' + "'" + JSON.stringify(articulo) + "'" + '>' +
+                            '<td>Gas LP</td>'+
+                            '<td class="text-center">1</td>'+
+                            '<td class="text-center">'+$("#litrosFormProductos").val()+'</td>'+
+                            '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                            '<td class="text-center">'+
+                                '<button class="btn btn-sm btn-info edit-producto-est"> <i class="fa fa-pen-to-square"></i> </button> '+
+                                '<button class="btn btn-sm btn-danger delete-producto-est" data-table-ref=".productosEstacionarioPedidoForm" data-item-id='+articulo.article+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                            '</td>'+
+                        '</tr>'
+                    );
+
+                }
+
+                setTotalPedido( $(".productosEstacionarioPedidoForm") );
+
+            }
+
+            // Desvanece el modal
+            $('#formProductosModal').modal('hide');
+        });
+
+        // Valida la información mostrada en la lista de artículos
+        function validarTablaProductos(table) {
+            if (! table.children('tbody').children('tr.product-item').length ) {
+                table.parent().parent().addClass('d-none');
+                $('#sinProductos').removeClass('d-none');
+            }
+
+            setTotalPedido(table);
+        }
+
+        // Agrega un método de pago nuevo
+        $('#guardarMetodoPagoForm').on('click', function () {
+            let canContinue = false;
+            // let conFolio    = ["8", "2", "5", "6"];
+            let metodoId    = $("#metodoPagoPedido").val();
+            let metodoTxt   = $('#metodoPagoPedido').children(':selected').text();
+            // let numMetodos  = $('table.productosMetodoPago tbody').children('tr.metodos').length;
+
+            if(!metodoId || !$("#montoPagoPedido").val() ) {
+                canContinue = false;
+            } else {
+                canContinue = true;
+            }
+
+            if(! canContinue ) { 
+                alert("Favor de llenar todos los campos con *");
+                return; 
+            }
+
+            // let searchTr = $('table.productosMetodoPago > tbody > tr[data-metodo-id="'+metodoId+'"]');
+
+            $('#sinMetodosPago').addClass('d-none');
+            $('.productosMetodoPagoForm').parent().parent().removeClass('d-none');
+
+            let total        = parseFloat($('#montoPagoPedido').val()).toFixed(2);
+            let folio        = $('#folioAutorizacionPedido').val().trim();
+            let metodoObj    = {
+                metodo_txt : metodoTxt,
+                tipo_pago  : metodoId,
+                monto      : total,
+                folio      : folio,
+            };
+
+            agregarMetodoPago(metodoObj);
+
+            // if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado y se edita el row
+
+            //     searchTr.data('metodo', metodoObj);
+            //     searchTr.children('td').siblings("td:nth-child(2)").text(folio ? folio : 'No aplica');
+            //     searchTr.children('td').siblings("td:nth-child(3)").data('total', total);
+            //     searchTr.children('td').siblings("td:nth-child(3)").text('$'+total+' mxn');
+            //     console.log(metodoObj);
+                
+            // } else {// Se llena la información del item
+                
+            //     $(".productosMetodoPago tbody").append(
+            //         '<tr data-metodo-id='+metodoId+' class="metodo-item" data-metodo=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
+            //             '<td>'+metodoNombre+'</td>'+
+            //             '<td class="text-center">'+(folio ? folio : 'No aplica')+'</td>'+
+            //             '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+            //             '<td class="text-center">'+
+            //                 '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPago" data-metodo-id='+metodoId+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+            //             '</td>'+
+            //         '</tr>'
+            //     );
+
+            // }
+        
+            // Falta código para setear un total
+            setTotalMetodoPago( $(".productosMetodoPagoForm") );
+            $('#formMetodoPagosModal').modal('hide');
+
+        });
+
+        // Calcula el total del método de pago
+        function setTotalMetodoPago(table, tipoDescuento = 'nativo') {
+            let total = parseFloat(0).toFixed(2);
+
+            if ( tipoDescuento == 'nativo' ) { // Validación para especificar el descuento natural que puede tener el cliente
+                table.children('tbody').children('tr.metodo-item').each(function() {
+                    // let articulo = $( this ).data('item');
+                    let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(2);
+                    total = Number(total) + Number(subtotal);
+                });
+            } else if ( tipoDescuento == 'resurtido' ) {// Descuento por devolución de cilindro
+                total = parseFloat(0).toFixed(2);
+            } else if ( tipoDescuento == 'nota' ) {// Descuento por nota de crédito asociado a Gas LP
+
+            }
+
+            table.children('tfoot').find('td.total').data('total', parseFloat(total).toFixed(2));
+            table.children('tfoot').find('td.total').text('$'+parseFloat(total).toFixed(2)+' mxn');
+        }
+
+        // Agrega un método de pago a la tabla de métodos
+        function agregarMetodoPago(metodoObj) {
+            let searchTr = $('table.productosMetodoPagoForm > tbody > tr[data-metodo-id="'+metodoObj.tipo_pago+'"]');
+
+            if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado y se edita el row
+
+                searchTr.data('metodo', metodoObj);
+                searchTr.children('td').siblings("td:nth-child(2)").text(metodoObj.folio ? metodoObj.folio : 'No aplica');
+                searchTr.children('td').siblings("td:nth-child(3)").data('total', metodoObj.monto);
+                searchTr.children('td').siblings("td:nth-child(3)").text('$'+metodoObj.monto+' mxn');
+                console.log(metodoObj);
+                
+            } else {// Se llena la información del item
+                
+                $(".productosMetodoPagoForm tbody").append(
+                    '<tr data-metodo-id='+metodoObj.tipo_pago+' class="metodo-item" data-metodo=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
+                        '<td>'+metodoObj.metodo_txt+'</td>'+
+                        '<td class="text-center">'+(metodoObj.folio ? metodoObj.folio : 'No aplica')+'</td>'+
+                        '<td class="text-center" data-total='+metodoObj.monto+'>$'+metodoObj.monto+' mxn</td>'+
+                        '<td class="text-center">'+
+                            '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPagoForm" data-metodo-id='+metodoObj.tipo_pago+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                        '</td>'+
+                    '</tr>'
+                );
+
+            }
+        }
+
+        // Elimina un método de pago de la tabla
+        $('body').delegate('.delete-metodo-pago','click', function() {
+            let metodo  = $(this).parent().parent().data('metodo');
+            let table = $(this).data('table-ref');
+            let id    = ( metodo && metodo.tipo_pago ? metodo.tipo_pago : 0 );
+
+            swal({
+                title: '¿Desea eliminar el método de pago seleccionado?',
+                icon: 'warning',
+                buttons:["Cancelar", "Aceptar"],
+                dangerMode: true,
+            }).then((accept) => {
+                if ( accept ) {
+                    $(table).children('tbody').children('tr[data-metodo-id="'+id+'"]').remove();
+                    validarTablaMetodosPago( $(table) );
+                }
+            }).catch(swal.noop);
+        });
+
+        // Valida la información mostrada en la lista de métodos de pago
+        function validarTablaMetodosPago(table) {
+            if (! table.children('tbody').children('tr.metodo-item').length ) {
+                table.parent().parent().addClass('d-none');
+                $('#sinMetodosPago').removeClass('d-none');
+            }
+
+            setTotalMetodosPago(table);
+        }
+
+        // Calcula el total de los métodos de pago agregados
+        function setTotalMetodosPago(table) {
+            let total = parseFloat(0).toFixed(2);
+
+            table.children('tbody').children('tr.metodo-item').each(function() {
+                // let articulo = $( this ).data('item');
+                let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(2);
+                total = parseFloat( Number(total) + Number(subtotal) ).toFixed(2);
+            });
+
+            table.children('tfoot').find('td.total').data('total', total);
+            table.children('tfoot').find('td.total').text('$'+total+' mxn');
+        }
+
+        // Elimina un artículo de la tabla
+        $('body').delegate('.delete-producto-cil, .delete-producto-est','click', function() {
+            let item  = $(this).parent().parent().data('item');
+            let table = $(this).data('table-ref');
+            let id    = ( item && item.article ? item.article : 0 );
+
+            swal({
+                title: 'Se dará de baja el producto seleccionado, ¿Está seguro de continuar?',
+                icon: 'warning',
+                buttons:["Cancelar", "Aceptar"],
+                dangerMode: true,
+            }).then((accept) => {
+                if ( accept ) {
+                    $(table).children('tbody').children('tr[data-item-id="'+id+'"]').remove();
+                    validarTablaProductos( $(table) );
+                }
+            }).catch(swal.noop);
+        });
+
+        // Valida la información que se mostrará en el modal
+        $("#agregarProducto").click(function () {
+            let pedido   = $("#formConfirmarPedidos").data("item");
+            let minimoGasLp = Number($('select#plantas').children(':selected').data('pedido-minimo'));
+            $('.minimo-gas-lp').text(minimoGasLp);
+
+            console.log(pedido);
+            
+            if ( pedido ) {
+                let item1Id        = Number(parseInt(pedido.item1Id));
+                let item1Capacidad = Number(parseInt(pedido.capacidad1));
+
+                if ( pedido.serviceTypeId == 1 ) {// Cilindro
+                    $("#productoFormProductos").val("cilindro");
+                    $("#totalFormProductos").prop('readonly', true);
+                    $(".cilindroFormProductos").removeClass("d-none");
+                    $(".estacionarioFormProductos").addClass("d-none");
+                    // Se realiza el cálculo del total
+                    $('#cantidadFormProductos').val(item1Capacidad);
+                    $('#capacidadFormProductos').val(item1Id);
+                    onChangeValue( $('input#cantidadFormProductos') );
+                } else if ( pedido.serviceTypeId == 2 ) {// Estacionario
+                    $('.info-minimo-gas-lp').removeClass('d-none');
+                    $("#productoFormProductos").val("estacionario");
+                    $("#totalFormProductos").attr('readonly', false);
+                    $(".estacionarioFormProductos").removeClass("d-none");
+                    $(".cilindroFormProductos").addClass("d-none");
+                    // Se realiza el cálculo del total
+                    $('#litrosFormProductos').val(item1Capacidad);
+                    onChangeValue( $('input#litrosFormProductos') );
+                } else if ( pedido.serviceTypeId == 4 ) {// Ambos
+                    
+                }
+            }
+
+            // Se validan los option disponibles si es que algún producto ya fue registrado
+            if (! $('table.productosEstacionarioPedidoForm').parent().parent().hasClass('d-none') ) {// Ya se agregó gas LP
+                $(".opt-pro-pedido-cilindro").attr("disabled", true);
+            } else if (! $('table.productosCilindroPedidoForm').parent().parent().hasClass('d-none') ) {// Ya se agregó un cilindro
+                $(".opt-pro-pedido-estacionario").attr("disabled", true);
+            } else {
+                // $(".opt-pro-pedido-cilindro, .opt-pro-pedido-estacionario").attr("disabled", false);
+            }
+
+            $("#envaseFormProductos").prop("checked", false);
+            $('#formProductosModal').modal('show');
+        });
+
+        // Calcula el total de los productos
+        // Parámetros: 
+        // table: La tabla a realizar el cálculo de total de descuento
+        // table: El tipo de desucento a enviar: nativo, resurtido (Cilindro), nota crédito(Gas LP) 
+        function setTotalPedido(table, tipoDescuento = 'nativo') {
+            let total           = parseFloat(0).toFixed(2);
+            let totalDescontado = parseFloat(0).toFixed(2);
+            let totalLitros     = parseFloat(0).toFixed(2);
+            let descuento       = Number( parseFloat($("#formConfirmarPedidos").data("item").discount ?? 0).toFixed(2) );
+            // console.log(descuento);
+            table.children('tbody').children('tr.product-item').each(function() {
+                let articulo = $( this ).data('item');
+                if ( articulo.tipo == '1' ) { // Cilindro
+                    totalLitros = Number(totalLitros) + Number( parseFloat(articulo.capacity * articulo.quantity).toFixed(2) );
+                } else if  ( articulo.tipo == '2' ) { // Estacionario
+                    totalLitros = Number(totalLitros) + Number( parseFloat(articulo.capacity).toFixed(2) );
+                }
+                let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(4)").data('total')).toFixed(2);
+                total = parseFloat( Number(total) + Number(subtotal) ).toFixed(2);
+            });
+
+            if ( tipoDescuento == 'nativo' ) { // Validación para especificar el descuento natural que puede tener el cliente
+                if ( $("#formConfirmarPedidos").data("item").typeDiscount == '1' ) { // Porcentaje
+                    descuento = Number( parseFloat( descuento / 100 ).toFixed(2) );
+                    totalDescontado = Number( parseFloat( descuento * total ).toFixed(2) );
+                } else if ( $("#formConfirmarPedidos").data("item").typeDiscount == '2' ) { // Neto
+                    totalDescontado = Number( parseFloat( totalLitros * descuento ).toFixed(2) );
+                }
+            } else if ( tipoDescuento == 'resurtido' ) {// Descuento por devolución de cilindro
+                totalDescontado = Number( parseFloat( total).toFixed(2)) ;
+                console.log('Tipo: ', tipoDescuento);
+            } else if ( tipoDescuento == 'nota' ) {// Descuento por nota de crédito asociado a Gas LP
+
+            }
+
+            total = parseFloat( Number(total) - Number(totalDescontado) ).toFixed(2);
+            
+            // Se asigna el descuento
+            table.children('tfoot').find('td.descuento').data('descuento', totalDescontado);
+            table.children('tfoot').find('td.descuento').text('$'+totalDescontado+' mxn');
+
+            // Se asigna el total
+            table.children('tfoot').find('td.total').data('total', total);
+            table.children('tfoot').find('td.total').text('$'+total+' mxn');
+        }
+
+        // Agrega el envase seleccionado de un cilindro
+        function agregarEnvase(conEnvase, table, cilindro, zonaVenta) {
+            if (! conEnvase ) { return; }// Sólo si tiene envase valida el proceso
+
+            let artEnvase = null; 
+
+            // Si el tipo de artículo es envase y coincide con la capacidad del artículo seleccionado
+            for (let i = 0; i < articulosArr.length; i++) {
+                if ( articulosArr[i].tipo_articulo == 5 && articulosArr[i].capacidad_litros == cilindro.capacidad_litros ) {
+                    artEnvase = articulosArr[i];
+                }
+                
+            }
+            
+            if (! artEnvase ) { return; }// No encontró el envase del artículo y no agrega nada
+
+            let searchTr = $('tr[data-item-id="'+artEnvase.id+'"]');
+            
+            if (! searchTr.length ) {// Se verifica si el artículo fue previamente registrado
+
+                let artObj  = {
+                    "zoneprice" : zonaVenta,// Este es el valor de la zona
+                    "tipo"      : 5,
+                    "precio"    : artEnvase.basePrice * 1.16,
+                    "capacity"  : artEnvase.capacidad_litros,
+                    "quantity"  : 1,
+                    "article"   : artEnvase.id
+                };
+
+                let total = parseFloat( Number(artEnvase.basePrice) * 1.16 ).toFixed(2);
+
+                // Se llena la información del item
+                $(table).children("tbody").append(
+                    '<tr data-item-id='+artEnvase.id+' class="product-item" data-item=' + "'" + JSON.stringify(artObj) + "'" + '>' +
+                        '<td class="text-center">'+(artEnvase.nombre ? artEnvase.nombre : 'Sin nombre asignado')+'</td>'+
+                        '<td class="text-center">'+artObj['quantity']+'</td>'+
+                        '<td class="text-center">'+artObj['capacity']+' kg</td>'+
+                        '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                        '<td class="text-center">'+
+                            // '<button class="btn btn-sm btn-info edit-producto-cil"> <i class="fa fa-pen-to-square"></i> </button> '+
+                            '<button class="btn btn-sm btn-danger delete-producto-cil" data-table-ref=".productosCilindroPedidoForm" data-item-id='+artEnvase.id+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                        '</td>'+
+                    '</tr>'
+                );
+                
+            } else {
+                
+                console.log('El envase ya había sido agregado');
+
+            }
+        }
+
+
+        $( "input#litrosFormProductos, input#cantidadFormProductos, input#totalFormProductos" ).on('change keyup paste', function(e) {
+            onChangeValue( $(this) );
+        });
+
+        $('select#productoFormProductos, select#capacidadFormProductos').on('change', function(e) {
+            onChangeValue( $(this) );
+        });
+
+        function onChangeValue(element) {
+            var elementId    = element.attr('id');
+            let subtotal     = total = 0;
+            let tipoProducto = $('#productoFormProductos').val();
+            let prices       = $("#formConfirmarPedidos").data("item").precioZona;
+            let cantidad     = parseInt( $('#cantidadFormProductos').val() );
+            let litros       = parseInt( $('#litrosFormProductos').val() );
+            let valor        = parseFloat( $('#valorFormProductos').val() ).toFixed(2);
+            let articulo     = $('#capacidadFormProductos').children(':selected').data('articulo');
+            console.log(articulo);
+            let capArticulo  = ( articulo && articulo.capacidad_litros ? articulo.capacidad_litros : 0 );
+            
+            cantidad = ( isNaN(cantidad) ? 0 : cantidad );
+            litros   = ( isNaN(litros) ? 0 : litros );
+            valor    = ( isNaN(valor) ? 0 : valor );
+
+            if ( tipoProducto == 'cilindro' ) {// Cilindro
+                if ( elementId == 'cantidadFormProductos' || elementId == 'capacidadFormProductos' || elementId == 'productoFormProductos' ) {// Producto (cilindro) y cantidad de producto
+
+                    subtotal = parseFloat( capArticulo *  cantidad * prices).toFixed(2);
+                    $('#valorFormProductos').val(subtotal);
+
+                } else if ( elementId == 'cantidadFormProductos' ) {// Se resetea el formulario ¿?
+
+                }
+
+                total = parseFloat(subtotal * 1.16).toFixed(2);
+                $('#totalFormProductos').val(total);
+                
+            } else if ( tipoProducto == 'estacionario' ) {// Estacionario
+                if ( elementId == 'totalFormProductos' || elementId == 'productoFormProductos' ) {// Se calculan los litros a contratar
+
+                    total = parseFloat( $('#totalFormProductos').val() ).toFixed(2);
+                    total = ( isNaN(total) ? 0 : total );
+                    subtotal = parseFloat(total / 1.16).toFixed(2);
+                    // subtotal = Math.ceil( $('#valorFormProductos').val() );
+                    // subtotal = ( isNaN(subtotal) ? 0 : subtotal );
+                    litros = parseFloat(subtotal / prices).toFixed(2);
+                    $('#litrosFormProductos').val(litros);
+
+                } else if( elementId == 'litrosFormProductos' ) {// Se calcula el total acorde a los litros
+
+                    subtotal = parseInt(litros * prices); 
+                    total = parseFloat(subtotal * 1.16).toFixed(2);
+                    $('#totalFormProductos').val(total);
+                    
+                } else if ( elementId == 'cantidadFormProductos' ) {// 
+
+                }
+
+                $('#valorFormProductos').val(subtotal);
+            
+            } else {// Todo se coloca en 0
+                
+            }
+        }
+
+        // Valida la información mostrada en el modal del producto
+        $('select#productoFormProductos').on('change', function(e) {
+            let val = $(this).val();
+            $('.info-minimo-gas-lp').addClass('d-none');
+            if ( val == "cilindro" ) {
+                $("#totalFormProductos").prop('readonly', true);
+                $(".cilindroFormProductos").removeClass("d-none");
+                $(".estacionarioFormProductos").addClass("d-none");
+                // $(".opt-pro-pedido-cilindro").attr("disabled", false);
+            } else if ( val == "estacionario" ) {
+                $('.info-minimo-gas-lp').removeClass('d-none');
+                $("#totalFormProductos").attr('readonly', false);
+                $(".estacionarioFormProductos").removeClass("d-none");
+                $(".cilindroFormProductos").addClass("d-none");
+                // $(".opt-pro-pedido-estacionario").attr("disabled", false);
+            } else {
+                $("#totalFormProductos").prop('readonly', true);
+                $(".estacionarioFormProductos, .cilindroFormProductos").addClass("d-none");
+                // $(".opt-pro-pedido-cilindro, .opt-pro-pedido-estacionario").attr("disabled", true);
+            }
+        });
+
+        // Limpia los campos del modal para agregar producto
+        $('body').delegate('div#formProductosModal', 'hidden.bs.modal', function () {
+            $('.info-minimo-gas-lp').addClass('d-none');
+            $('.cilindroFormProductos').addClass('d-none');
+            $('.estacionarioFormProductos').addClass('d-none');
+
+            $("#envaseFormProductos").prop("checked", false);
+            $("#cantidadFormProductos, #litrosFormProductos, #valorFormProductos, #totalFormProductos").val(0);
+            $("#productoFormProductos, #pedidoProductoId").val("");
+            $(".opt-pro-pedido-cilindro, .opt-pro-pedido-estacionario").prop("disabled", false);
+            $("#totalFormProductos").prop('readonly', true);
+        });
+
         function setSelectRutas(getPedidos = false) {
             $('#filterRuta').parent().parent().removeClass("d-none");
             $('#filterRuta').children('option').remove();    
+            $("#filterRuta").append(
+                '<option value="0">Todas</option>'
+            );
             if ( rutasCilindros.length || rutasEstacionarios.length) {        
                 if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "1") {
                     rutasCilindros.forEach(element => {
                         $("#filterRuta").append(
-                            '<option value="'+element.internalId+'">'+element.name+'</option>'
+                            '<option value="'+element.internalId+'">'+(element.name && element.name.split(":").length > 1 ? element.name.split(":")[1].trim() : element.name)+'</option>'
                         );
                     });
                 }
                 if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "2") {
                     rutasEstacionarios.forEach(element => {
                         $("#filterRuta").append(
-                            '<option value="'+element.internalId+'">'+element.name+'</option>'
+                            '<option value="'+element.internalId+'">'+(element.name && element.name.split(":").length > 1 ? element.name.split(":")[1].trim() : element.name)+'</option>'
                         );
                     });
                 }
@@ -1491,12 +2670,16 @@
         function getFiltPedidos() {
             let filt = {};
 
-            if($("#filterRuta").val()) {
-                //filt.ruta = $("#filterRuta").val();
+            if($("#plantas").val()) {
+                filt.planta = $("#plantas").val();
+            }
+
+            if($("#filterRuta").val() != "0" && $("#filterRuta").val()) {
+                filt.ruta = $("#filterRuta").val();
             }
 
             if($("#filterZona").val() != "0") {
-                filt.colonia = "14" //$("#filterZona").val();
+                filt.colonia = $("#filterZona").val();
             }
 
             filt.tipo_producto = parseInt($("#filterTipoProducto").val());
@@ -1507,8 +2690,8 @@
                 }
             });
 
-            filt.fechaPrometida1 = "24/03/2022"//dateFormatFromDate($("#filterProximaLlamada").val(), "5");
-            filt.fechaPrometida2 = "24/03/2022"//dateFormatFromDate($("#filterProximaLlamada").val(), "5");
+            filt.fechaPrometida1 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
+            filt.fechaPrometida2 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
 
             return filt;
         }
@@ -1621,7 +2804,7 @@
                 if(response.success) {
                     response.data = removeDuplicates(response.data, 'no_pedido');
                     if(response.data.length == 0) {
-                        $("#tablePedidos tbody").append('<tr><td colspan="10" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                        $("#tablePedidos tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
                         initTable("tablePedidos");
                     }
                     
@@ -1654,6 +2837,7 @@
                     
                     $("#tablePedidos thead tr th").css('z-index', "3");
                     $($("#tablePedidos thead tr th")[0]).css('z-index', "4");
+                    $($("#tablePedidos thead tr th")[1]).css('z-index', "4");
                     
                     response.data.forEach((pedido, position) => {
                         let tipoServicio = "";
@@ -1662,12 +2846,14 @@
                                 tipoServicio = element.nombre;
                             }
                         });
+                        let auxDir = getDireccionFormat(pedido),
+                            auxObs = getObservacionesFormat(pedido, "<br>");
                         let trAux = '<tr data-item='+"'"+JSON.stringify(pedido)+"'"+'>'+
                                         '<td class="text-center sticky-col">'+  
                                             '<div class="btn-group dropend vertical-center">'+                                            
                                                 '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                                                 '<ul class="dropdown-menu" style="width: max-content;">'+
-                                                    '<li onclick="verDetalles(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-eye color-primary"></i> Ver detalles</li>'+
+                                                    '<li onclick="confirmarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-square-check color-primary"></i> Confirmar servicio</li>'+
                                                     '<li onclick="reprogramarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-regular fa-calendar-days color-primary"></i> Reprogramar servicio</li>'+
                                                     '<li onclick="cambiarEstadoServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-arrows-rotate color-primary"></i> Cambiar estado</li>'+
                                                     '<li onclick="seguimientoPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
@@ -1675,15 +2861,19 @@
                                             '</div>'+
                                             '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                         '</td>'+
-                                        '<td class="text-center">' + pedido.no_pedido + '</td>'+
+                                        '<td style="left: 40px;"class="text-center sticky-col">'+
+                                            '<i onclick="verDetalles(this)" class="fa-solid fa-eye color-primary c-pointer" title="Ver detalles" data-bs-toggle="tooltip" data-bs-placement="right"></i>'+
+                                            '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
+                                        '</td>'+
+                                        '<td class="text-center">' + pedido.documentNumber + '</td>'+
                                         '<td class="text-center">' + pedido.id_cliente + '</td>'+
                                         '<td class="text-center">Aviso</td>'+
                                         '<td class="text-center">' + dateFormatFromDate(pedido.fecha_prometida, '5') + '</td>'+
                                         '<td class="text-center">' + (pedido.nombre_cliente ? pedido.nombre_cliente : 'Sin nombre de cliente') + '</td>'+
                                         '<td class="text-center">' + (pedido.telefono ? pedido.telefono : 'Sin teléfono') + '</td>'+
                                         '<td class="text-center">' + tipoServicio + '</td>'+
-                                        '<td class="text-center">' + (pedido.direccion ? pedido.direccion : 'Sin dirección') + '</td>'+
-                                        '<td class="text-center">' + (pedido.observaciones ? pedido.observaciones : 'Sin observaciones') + '</td>'+
+                                        '<td class="text-center">' + (auxDir ? auxDir : 'Sin dirección') + '</td>'+
+                                        '<td class="text-center">' + (auxObs ? auxObs : 'Sin observaciones') + '</td>'+
                                     '</tr>';
                                     
                         $("#tablePedidos tbody").append(trAux);
@@ -1694,27 +2884,74 @@
                     });
                     swal.close();
                 } else {
-                    $("#tablePedidos tbody").append('<tr><td colspan="10" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                    $("#tablePedidos tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
                     swal.close();
                 }
             }).catch((error) => {
                 console.log(error);
-                $("#tablePedidos tbody").append('<tr><td colspan="10" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                $("#tablePedidos tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
                 swal.close();
             });
         }
 
+        function getObservacionesFormat(item, separador) { 
+            let auxObs = "";
+            auxObs += (item.observaciones && item.observaciones.trim() ? item.observaciones.trim() : '');
+            if(item.objPagos) {
+                let aux = JSON.parse(item.objPagos);
+                if(aux.pago) {
+                    aux.pago.forEach(element => {
+                        if(concatObsPagos.indexOf(element.tipo_pago) > -1) {
+                            if(auxObs != "") {
+                                auxObs += separador;
+                            }
+                            auxObs += getMetodoPagoFormat(element);
+                        }                    
+                    });
+                }
+            }
+            return auxObs.trim();
+        }
+
+        function getMetodoPagoFormat(item) {     
+            return item.metodo_txt + (item.folio ? " - " + item.folio : '') + " - $" + item.monto;
+        }
+
+        function getDireccionFormat(item, tipo) {
+            let auxDir = "";
+            auxDir += (item.street && item.street.trim() ? item.street.trim() : '');
+            auxDir += (item.nExterior && item.nExterior.trim() ? (auxDir ? ' #' : '#') + item.nExterior.trim() : '');
+            auxDir += (item.nInterior && item.nInterior.trim() ? (auxDir ? ' Int. ' : 'Int. ') + item.nInterior.trim() : '');
+            auxDir += (item.colonia && item.colonia.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.colonia.trim()) : '');
+            auxDir += (item.cp && item.cp.trim() ? (auxDir ? ', ' : '') + item.cp.trim() : '');
+            auxDir += (item.municipio && item.municipio.trim() ? (auxDir ? ' ' : '') + capitalizeFirstsLetter(item.municipio.trim()) : '');
+            auxDir += (item.estadoDireccion && item.estadoDireccion.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.estadoDireccion.trim()) : '');
+            return auxDir.trim();
+        }
+
         function cambiarEstadoServicio($this) {
             let servicio = $($this).closest("tr").data("item");
-            $("#cambiarEstadoPedido").html(servicio.no_pedido ? servicio.no_pedido : '');
-            $("#estadoCambiarEstado").val(null).trigger("change");;
+            $("#cambiarEstadoPedido").html(servicio.documentNumber ? servicio.documentNumber : '');
+            $("#estadoCambiarEstado").val(null).trigger("change");
+            $("#cambiarEstadoOppMotivo").val(null).trigger("change")
+            $("#cambiarEstadoOppObservaciones").val(null)
             $("#formCambiarEstadoModal").data("item", servicio);
             $("#formCambiarEstadoModal").modal("show");
         }
 
+        $('body').delegate('#estadoCambiarEstado', 'change', function () {
+            if($(this).val() == idCancelado) {
+                $("#cambiarEstadoOppMotivo").parent().removeClass('d-none');
+                $("#cambiarEstadoOppObservaciones").parent().removeClass('d-none');
+            } else {
+                $("#cambiarEstadoOppMotivo").parent().addClass('d-none');
+                $("#cambiarEstadoOppObservaciones").parent().addClass('d-none');
+            }
+        });
+
         function seguimientoPedido($this) {
             let pedido = $($this).closest("tr").data("item");
-            $("#seguimientoPedido").html(pedido.no_pedido ? pedido.no_pedido : '');
+            $("#seguimientoPedido").html(pedido.documentNumber ? pedido.documentNumber : '');
             let settings = {
                 url      : urlGetNotesOfOPP,
                 method   : 'POST',
@@ -1755,7 +2992,7 @@
 
         function reprogramarServicio($this) {
             let servicio = $($this).closest("tr").data("item");
-            $("#reprogramarPedido").html(servicio.no_pedido ? servicio.no_pedido : '');
+            $("#reprogramarPedido").html(servicio.documentNumber ? servicio.documentNumber : '');
             $("#fechaPrometidaReprogramar").val(dateFormatFromDate(servicio.fecha_prometida, "2"));
             $("#desdeReprogramar").val(servicio.desde ? getTimeFromString(servicio.desde) : null);
             $("#hastaReprogramar").val(servicio.hasta ? getTimeFromString(servicio.hasta) : null);
@@ -1790,6 +3027,7 @@
                             {
                                 "id": servicio.no_pedido,
                                 "bodyFields": {
+                                    "custbody_ptg_estado_pedido": idPorReprogramar,
                                     "expectedclosedate": dateFormatFromDate($("#fechaPrometidaReprogramar").val(), "5"),
                                     "custbody_ptg_entre_las": formatTime( $('#desdeReprogramar').val() ),
                                     "custbody_ptg_y_las" : formatTime( $('#hastaReprogramar').val())
@@ -1858,11 +3096,20 @@
 
         $("#guardarCambiarEstado").click(function() {
             let servicio = $("#formCambiarEstadoModal").data("item");
-            if(!$("#estadoCambiarEstado").val()) {
+            if(!$("#estadoCambiarEstado").val() || ($("#estadoCambiarEstado").val() == idCancelado && (!$("#cambiarEstadoOppMotivo").val() || !$("#cambiarEstadoOppObservaciones").val().trim()))) {
                 let aux = "<ul>";
                 if(!$("#estadoCambiarEstado").val()) {
                     aux += "<li>Estado</li>";
+                } 
+                if($("#estadoCambiarEstado").val() == idCancelado) {
+                    if(!$("#cambiarEstadoOppMotivo").val()) {
+                        aux += "<li>Motivo de Cancelacion</li>";
+                    } 
+                    if(!$("#cambiarEstadoOppObservaciones").val()) {
+                        aux += "<li>Observaciones</li>";
+                    } 
                 }
+                
                 aux += "</ul>";
                 infoMsg('warning', 'Campos requeridos:', aux);
                 return;
@@ -1882,6 +3129,9 @@
                             }
                         ]
                     };
+                    if($("#estadoCambiarEstado").val() == idCancelado) {
+                        dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_motivo_cancelation = $("#cambiarEstadoOppMotivo").val()
+                    }
                     loadMsg();
                     let settings = {
                         url      : urPutOppMonitor,
@@ -1890,11 +3140,38 @@
                     }
                     setAjax(settings).then((response) => {
                         if(response.success) {
-                            $("#formCambiarEstadoModal").modal("hide");
-                            swal.close();
-                            infoMsg('success', '', "Cambio de estado de manera correcta", null, function(resp) {
-                                getServicios();
-                            });                                                  
+                            if($("#estadoCambiarEstado").val() == idCancelado) {
+                                let nota = [{ 
+                                    type: "nota", 
+                                    idRelacionado: servicio.no_pedido, 
+                                    titulo: "Cancelación de servicio", 
+                                    nota: $("#cambiarEstadoOppObservaciones").val().trim(),
+                                    transaccion: "oportunidad"
+                                }];
+                                let settings2 = {
+                                    url      : urlPostNoteandMessage,
+                                    method   : 'POST',
+                                    data: JSON.stringify({ informacion: nota })
+                                }
+                                setAjax(settings2).then((response) => {
+                                    if(response.success) {
+                                        $("#formCambiarEstadoModal").modal("hide");
+                                        swal.close();
+                                        infoMsg('success', '', "Cambio de estado de manera correcta", null, function(resp) {
+                                            getServicios();
+                                        }); 
+                                    }
+                                }).catch((error) => {
+                                    console.log(error);
+                                    swal.close();
+                                });
+                            } else {
+                                $("#formCambiarEstadoModal").modal("hide");
+                                swal.close();
+                                infoMsg('success', '', "Cambio de estado de manera correcta", null, function(resp) {
+                                    getServicios();
+                                });  
+                            }                                                                            
                         } else {
                             swal.close();
                             infoMsg('error', 'Error:', "Ocurrio un error al tratar de reprogramar el servicio");
@@ -1965,17 +3242,371 @@
             }
         }
 
+        function capitalizeFirstsLetter(string) {
+            let auxStr = "";
+            string.split(" ").forEach(element => {
+                if(auxStr != "") {
+                    auxStr += " ";
+                }
+                auxStr += element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
+            });
+            return auxStr.trim();
+        }
+
+        function getToday() {
+            let $this = this;
+            $("#today").html(dateFormatFromDate(new Date(), "7"));
+            $("#fechaPrometidaPedido").prop("min", dateFormatFromDate(new Date(), "2"));
+            setTimeout(function () {
+                $this.getToday();
+            }, 1000);
+        }
+
+        function confirmarServicio($this) {
+            let servicio = $($this).closest("tr").data("item");
+            console.log(servicio);
+            loadMsg();
+            $("#dataPedidosCliente").html(servicio.id_cliente + " - " + servicio.nombre_cliente);
+            $("#dataPedidosTelefono").html(servicio.telefono.trim());
+            $("#dataPedidosDireccion").html(getDireccionFormat(servicio, "pedido"));
+
+            $("#noPedido").html(servicio.documentNumber);
+            $("#fechaSolicitudPedido").html(dateFormatFromDate(servicio.fecha_solicitud, '5'));
+
+            $("#fechaPrometidaPedido").val(dateFormatFromDate(servicio.fecha_prometida, "2"));
+            $("#desdePedido").val(servicio.desde ? getTimeFromString(servicio.desde) : null);
+            $("#hastaPedido").val(servicio.hasta ? getTimeFromString(servicio.hasta) : null);
+            $("#zonaVentaPedido").val(servicio.zona);
+            $("#observacionesPagoPedido").val(servicio.observaciones);
+            $('.productosMetodoPagoForm tbody').children("tr").remove();
+            $('.productosMetodoPagoForm').parent().parent().addClass('d-none');
+            $("#sinMetodosPago").removeClass('d-none');
+            if(servicio.objPagos) {
+                let aux = JSON.parse(servicio.objPagos);
+                let total = 0;
+                if(aux.pago) {
+                    aux.pago.forEach(element => {
+                        $(".productosMetodoPagoForm tbody").append(
+                            '<tr data-metodo-id='+element.tipo_pago+' class="metodo-item" data-metodo=' + "'" + JSON.stringify(element) + "'" + '>' +
+                                '<td>'+getMetodoPagoNombre(element)+'</td>'+
+                                '<td class="text-center">'+(element.folio ? element.folio : 'No aplica')+'</td>'+
+                                '<td class="text-center" data-total='+element.monto+'>$'+element.monto+' mxn</td>'+
+                                '<td class="text-center">'+
+                                    '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPagoForm" data-metodo-id='+element.tipo_pago+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                                '</td>'+
+                            '</tr>'
+                        );
+                        total = total + parseFloat(element.monto);
+                    });
+                    $('.productosMetodoPagoForm').parent().parent().removeClass('d-none');
+                    $("#sinMetodosPago").addClass('d-none');
+                }
+                
+                total = total.toFixed(2);
+                $('.productosMetodoPagoForm').children('tfoot').find('td.total').data('total', total);
+                $('.productosMetodoPagoForm').find('td.total').text('$'+total+' mxn');
+            }
+            let settings = {
+                url      : urlGetItemsOpp,
+                method   : 'POST',
+                data     : JSON.stringify({opp : servicio.no_pedido}),
+            }
+
+            setAjax(settings).then((response) => {
+                if(response.success) {
+                    servicio.articulos = response.data;
+                } else {
+                    servicio.articulos = [];
+                }
+                if(response.success) {
+                    $('.productosCilindroPedidoForm, .productosEstacionarioPedidoForm').parent().parent().addClass('d-none');
+                    $('.productosCilindroPedidoForm tbody, .productosEstacionarioPedidoForm tbody').children("tr").remove();
+                    var table = $('.productosCilindroPedidoForm');
+                    response.data.forEach(element => {
+                        if(element.itemId == articuloGasLp) {
+                            table = $('.productosEstacionarioPedidoForm');
+                        }
+                    });
+                    table.parent().parent().removeClass('d-none');
+                    let total = 0,
+                        descuento = 0;
+                    if(response.data.length > 0) {
+                        $('#sinProductos').addClass('d-none');
+                    } else {
+                        $('#sinProductos').removeClass('d-none');
+                    }
+                    response.data.forEach(articulo => {
+                        if(articulo.itemId != defDescuentoID) {
+                            articulo.capacity = articulo.typeId != "2" ? (articulo.capacidad ? articulo.capacidad : '0') : (articulo.quantity ? articulo.quantity : '0');
+                            articulo.article = articulo.itemId ? articulo.itemId : '0';
+                            articulo.amount = articulo.amount ? parseFloat(articulo.amount) : 0;
+                            articulo.taxAmount = articulo.taxAmount ? parseFloat(articulo.taxAmount) : 0;
+                            if(table.hasClass('productosCilindroPedidoForm')) {
+                                $(".productosCilindroPedidoForm tbody").append(
+                                    '<tr data-item-id='+articulo.itemId+' class="product-item" data-item=' + "'" + JSON.stringify(articulo) + "'" + '>' +
+                                        '<td class="text-center">'+articulo.item+'</td>'+
+                                        '<td class="text-center">'+articulo.quantity+'</td>'+
+                                        '<td class="text-center">'+articulo.capacidad+' kg</td>'+
+                                        '<td class="text-center" data-total='+(articulo.amount+articulo.taxAmount)+'>$'+(articulo.amount+articulo.taxAmount).toFixed(2)+' mxn</td>'+
+                                        '<td class="text-center">'+
+                                            (articulo.typeId != "5" ? '<button class="btn btn-sm btn-info edit-producto-cil"> <i class="fa fa-pen-to-square"></i> </button> ' : '') +
+                                            '<button class="btn btn-sm btn-danger delete-producto-cil" data-table-ref=".productosCilindroPedidoForm" data-item-id='+articulo.article+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                                        '</td>'+
+                                    '</tr>'
+                                );
+                            } else {
+                                $(".productosEstacionarioPedidoForm tbody").append(
+                                    '<tr data-item-id='+articulo.itemId+' class="product-item" data-item=' + "'" + JSON.stringify(articulo) + "'" + '>' +
+                                        '<td>'+articulo.item+'</td>'+
+                                        '<td class="text-center">1</td>'+
+                                        '<td class="text-center">'+articulo.quantity+'</td>'+                                        
+                                        '<td class="text-center" data-total='+(articulo.amount+articulo.taxAmount)+'>$'+(articulo.amount+articulo.taxAmount)+' mxn</td>'+
+                                        '<td class="text-center">'+
+                                            '<button class="btn btn-sm btn-info edit-producto-est"> <i class="fa fa-pen-to-square"></i> </button> '+
+                                            '<button class="btn btn-sm btn-danger delete-producto-est" data-table-ref=".productosEstacionarioPedidoForm" data-item-id='+articulo.article+'> <i class="fa-solid fa-trash-can"></i> </button>'+
+                                        '</td>'+
+                                    '</tr>'
+                                );
+                            }
+                            
+                            total = total + (articulo.amount+articulo.taxAmount);
+                        } else {
+                            descuento = Number(articulo.amount.toString().replace('-',''));
+                        }                        
+                    });
+
+                    descuento = descuento.toFixed(2);
+                    table.children('tfoot').find('td.descuento').data('descuento', descuento);
+                    table.children('tfoot').find('td.descuento').text('$'+descuento+' mxn');  
+
+                    total = total.toFixed(2);
+                    table.children('tfoot').find('td.total').data('total', total);
+                    table.children('tfoot').find('td.total').text('$'+total+' mxn');            
+                }
+                
+
+                $("#formConfirmarPedidos").data("item", servicio);
+                $("#formConfirmarPedidos").modal("show");
+                swal.close();
+            }).catch((error) => {
+                console.log(error);
+                swal.close();
+            });
+            
+        }
+
+        function getMetodoPagoNombre(item) {
+            let aux = "No encontrado";
+            console.log(item);
+            if(item.tipo_pago) {
+                methodPayments.forEach(element => {
+                    if(element.id == item.tipo_pago) {
+                        aux = element.method;
+                    }
+                });
+            }
+            return aux;
+        }
+
+        function getMethodPayments() {
+            let dataListMethodPayments = {
+                "requestType" : 'getMethodPayments'
+            };
+
+            let settings = {
+                url      : urlGetMethodPayments,
+                method   : 'GET',
+                data     : JSON.stringify(dataListMethodPayments),
+            }
+
+            setAjax(settings).then((response) => {
+                $('#metodoPagoPedido').children('option').remove();
+                $("select#metodoPagoPedido").append('<option value="">Seleccione una opción</option>')
+                if(response.success) {                                        
+                    response.data.forEach(element => {
+                        methodPayments.push(element);
+                        if ( parseInt(element.id) != metodoMultiple ) {// Si es diferente a método de pago múltiple, se añade al select
+                            $("#metodoPagoPedido").append(
+                                '<option value='+element.id+'>'+element.method+'</option>'
+                            );
+                        }
+                    });
+                }
+                readyInit()
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        $("#btnConfirmarPedido").click(function() {
+            let servicio = $("#formConfirmarPedidos").data("item");
+            let tablaProd        = null;
+            // Define cuál tabla de productos es la que se usará para calcular totales y descuentos
+            if (! $('.productosEstacionarioPedidoForm').parent().parent().hasClass('d-none') ) { // Estacionario
+                tablaProd = $('.productosEstacionarioPedidoForm');
+            } else if (! $('.productosCilindroPedidoForm').parent().parent().hasClass('d-none') ) { // Cilindro
+                tablaProd = $('.productosCilindroPedidoForm');
+            }
+            if(!$("#fechaPrometidaPedido").val() ||
+            !$("#desdePedido").val() ||
+            !$("#hastaPedido").val() || !tablaProd) {
+                let aux = "<ul>";
+                if(!$("#fechaPrometidaPedido").val()) {
+                    aux += "<li>Fecha prometida</li>";
+                }
+                if(!$("#desdePedido").val()) {
+                    aux += "<li>Desde</li>";
+                }
+                if(!$("#hastaPedido").val()) {
+                    aux += "<li>Hasta</li>";
+                }
+                if(!tablaProd) {
+                    aux += "<li>Agregue al menos un producto a la lista</li>";
+                }
+                aux += "</ul>";
+                infoMsg('warning', 'Campos requeridos:', aux);
+                return;
+            }
+            confirmMsg("warning", "¿Seguro que desea confirmar el servicio?", function(resp) {
+                if(resp) {
+                    let auxArtSend = [];
+                    let articulosArr = [];           
+                    let pagosArr     = [];         
+                    let prices   = $("#formConfirmarPedidos").data("item").precioZona;
+                    let dataSend = {
+                        "opportunitiesUpdate": [
+                            {
+                                "id": servicio.no_pedido,
+                                "bodyFields": {
+                                    "expectedclosedate": dateFormatFromDate($("#fechaPrometidaPedido").val(), "5"),
+                                    "custbody_ptg_entre_las": formatTime( $('#desdePedido').val() ),
+                                    "custbody_ptg_y_las" : formatTime( $('#hastaPedido').val()),
+                                    "memo": $('#observacionesPagoPedido').val(),
+                                    "custbody_ptg_estado_pedido": idPorAsignar,
+                                    'custbody_ptg_opcion_pago_obj': ''
+                                },
+                                "lines": [
+                                    
+                                ]
+                            }
+                        ]
+                    };
+
+                    // Agrega la lista de métodos de pago
+                    $('table.productosMetodoPagoForm > tbody  > tr.metodo-item').each(function() {
+                        let metodoObj = $(this).data('metodo');
+
+                        if ( metodoObj.tipo_pago == '9' ) {// El método de pago es crédito
+                            totalConCredito = parseFloat( Number(metodoObj.monto) ).toFixed(2);
+                        }
+                        pagosArr.push( $( this ).data('metodo') );
+                    });
+                    
+                    // Agrega la lista de artículos
+                    tablaProd.children('tbody').children('tr.product-item').each(function(e) {
+                        articulosArr.push( $(this).data('item') );
+                    });
+                    
+                    servicio.articulos.forEach(element => {
+                        let existArt = false; 
+                        element.nuevo = false;
+                        articulosArr.forEach(element2 => {
+                            if(element.article && element2.article && element.article == element2.article) {
+                                existArt = true;
+                                element.quantity = element2.quantity;
+                            }
+                        });
+                        if(existArt) {
+                            element.update = true;
+                            element.delete = false;
+                        } else {
+                            element.update = false;
+                            element.delete = true;                            
+                        }
+                        if(element.itemId == defDescuentoID) {
+                            element.article = element.itemId
+                            element.quantity = "";
+                            element.rate = Number(tablaProd.find(".descuento").data("descuento") * -1);
+                            element.delete = false;
+                            element.update = true;
+                        } else if(element.article == articuloGasLp) {
+                            element.rate = Number(prices);
+                        } else if(element.typeId == 5) {
+                            element.rate = Number(element.amount);
+                        } else if(element.tipo == 5) {
+                            element.rate = Number(element.precio) / 1.16;
+                        } else {
+                            element.rate = Number(element.capacity) * Number(prices);
+                        }
+                        auxArtSend.push(element);
+                    });
+                    
+                    articulosArr.forEach(element => {
+                        let existArt = false; 
+                        auxArtSend.forEach(element2 => {
+                            if(element.article && element2.article && element.article == element2.article) {
+                                existArt = true;
+                            }
+                        });
+                        if(!existArt) {
+                            if(element.itemId == defDescuentoID) {
+                                element.article = element.itemId
+                                element.quantity = "";
+                                element.rate = Number(tablaProd.find(".descuento").data("descuento") * -1);
+                                element.delete = false;
+                                element.update = true;
+                                element.nuevo = true;
+                            } else if(element.article == articuloGasLp) {
+                                element.rate = Number(prices);
+                            } else if(element.typeId == 5) {
+                                element.rate = Number(element.amount);
+                            } else if(element.tipo == 5) {
+                                element.rate = Number(element.precio) / 1.16;
+                            } else {
+                                element.rate = Number(element.capacity) * Number(prices);
+                            }
+                            auxArtSend.push(element);
+                        }                        
+                    });
+                    dataSend.opportunitiesUpdate[0].linesMonitor = auxArtSend;
+                    dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_opcion_pago_obj = JSON.stringify({pago:pagosArr})
+                    console.log(dataSend);
+                    loadMsg();
+                    let settings = {
+                        url      : urPutOppMonitor,
+                        method   : 'PUT',
+                        data: JSON.stringify(dataSend)
+                    }
+                    setAjax(settings).then((response) => {
+                        if(response.success) {
+                            swal.close();
+                            infoMsg('success', '', "Servicio confirmado de manera correcta", null, function(resp) {
+                                $("#formConfirmarPedidos").modal('hide');
+                                getServicios();
+                            }); 
+                        } else {
+                            swal.close();
+                            infoMsg('error', 'Error:', "Ocurrio un error al tratar de confirmar el servicio");
+                        }            
+                    }).catch((error) => {
+                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de confirmar el servicio");
+                        console.log(error);
+                        swal.close();
+                    });
+                }
+            });
+        });
+
         function verDetalles($this) {
             let pedido = $($this).closest("tr").data("item");
             loadMsg();
             console.log(pedido);
             $("#verDetallesCliente").html(pedido.id_cliente + " - " + pedido.nombre_cliente);
             $("#verDetallesTelefono").html(pedido.telefono.trim());
-            $("#verDetallesDireccion").html(pedido.direccion.trim());
+            $("#verDetallesDireccion").html(getDireccionFormat(pedido));
             $("#verDetallesTipoServicio").html(pedido.tipo_cliente.trim());
 
-            $("#verDetallesServicio").html(pedido.no_pedido);
-            $("#verDetallesDireccion2").html(pedido.direccion);
+            $("#verDetallesServicio").html(pedido.documentNumber);
             $("#verDetallesFechaPrometida").html(dateFormatFromDate(pedido.fecha_prometida, '5'));
             $("#verDetallesTipoProducto").html("");
             vrTiposServicios.forEach(element => {
@@ -2001,7 +3632,7 @@
                     $('.productosCilindroPedido tbody, .productosEstacionarioPedido tbody').children("tr").remove();
                     var table = $('.productosCilindroPedido');
                     response.data.forEach(element => {
-                        if(element.itemId == deftEstacionarVal) {
+                        if(element.itemId == articuloGasLp) {
                             table = $('.productosEstacionarioPedido');
                         }
                     });
@@ -2047,18 +3678,21 @@
         }
 
         function readyInit() {
-            let totalServices = 4;
+            let totalServices = 7;
             countServices += 1;
             if(countServices == totalServices) {
                 getServicios();
             }
         }
-
+        getToday();
         loadMsg();
         getPlantas();
         getTiposServicios();
         getStatusOportunidad();
+        getListCancellReason();
         getZonas();
+        getMethodPayments();
+        getArticulos();
     </script>
 
 </body>

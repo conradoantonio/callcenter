@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Dashboard</title>
+    <title>Call Center</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Dashboard" name="description" />
+    <meta content="Call Center" name="description" />
     <meta content="Themesbrand" name="author" />
-    <meta name="keywords" content="Dashboard, clientes, pedidos, potogas">
+    <meta name="keywords" content="Call Center, clientes, pedidos, potogas">
     <!-- App favicon -->
     <link rel="shortcut icon"
         href="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108997&c=5298967_SB1&h=MqKO6RyzbmQKiMqwc6-9rA2wJSTQZ0yi96oPgnj9KQwozioR&_xt=.ico">
@@ -643,6 +643,31 @@
             margin-bottom: 5px;
             font-size: 16px;
         }
+
+        .btn-danger-cc {
+            background-color: #e64942 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-danger-cc:not([disabled]):hover {
+            background-color: #df4740 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-primary-cc {
+            background-color: #556ee6 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-primary-cc:not([disabled]):hover {
+            background-color: #485ec4 !important;
+            color: #ffffff !important;
+        }
+
+        input:disabled, textarea:disabled, select:disabled {
+            background-color: #e8e8e8;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -698,7 +723,17 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 700px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
-                    <h5 class="modal-title" id="titleProductoModal">Agregar producto</h5>
+                    <h5 class="modal-title w-100" id="titleProductoModal">
+                        <div class="row w-100">
+                            <div class="col">
+                                Agregar producto
+                            </div>
+                            <div class="col-auto">
+                                Precio: $<span id="formProductosModalPrecio"></span>
+                            </div>
+                        </div>
+                        
+                    </h5>
                 </div>
                 <div class="modal-body">
                     <div class="row info-minimo-gas-lp d-none">
@@ -1029,14 +1064,16 @@
                         <div class="col-6">
                             <div class="content-input content-input-primary">
                                 <label>Estado*</label>
-                                <select id="estadoDireccion" class="form-ptg form-ptg-primary">
+                                <select id="estadoDireccion" disabled class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="content-input content-input-primary">
                                 <label>Municipio*</label>
-                                <select id="municipioDireccion" class="form-ptg form-ptg-primary">
+                                <select id="municipioDireccion" disabled class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
                                 </select>
                             </div>
                         </div>
@@ -1045,17 +1082,18 @@
                         <div class="col-6">
                             <div class="content-input content-input-primary">
                                 <label>Colonia*</label>
-                                <select id="coloniaDireccion" class="form-ptg form-ptg-primary">
+                                <select id="coloniaDireccion" disabled class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-3">
                             <div class="content-input content-input-primary">
                                 <label>C.P.*</label>
-                                <input class="form-ptg form-ptg-primary" id="cpDireccion" readonly>
+                                <input class="form-ptg form-ptg-primary" maxlength="5" onkeyup="getDirrecionByCPDelay()" id="cpDireccion">
                             </div>
                         </div>
-                        <div class="col-3 text-center">
+                        <div class="col-3 text-center dato-facturacion d-none">
                             <div class="content-input content-input-primary">
                                 <label>Facturación</label>
                                 <br>
@@ -1943,7 +1981,7 @@
                                 <div class="pr-0">
                                     <div class="row align-items-center">
                                         <div class="col-12">
-                                            <select id="tipoServicioFiltro" class="form-ptg form-ptg-primary">
+                                            <select id="tipoServicioFiltro" class="form-ptg">
                                                 <!-- <option value="">Seleccione una opción</option> -->
                                                 <option value="3">Pedido</option>
                                                 <option value="1">Fuga</option>
@@ -1962,7 +2000,7 @@
                                 <div class="pr-0">
                                     <div class="row align-items-center">
                                         <div class="col-12">
-                                            <select id="estadoSolicitudFiltro" class="form-ptg form-ptg-primary">
+                                            <select id="estadoSolicitudFiltro" class="form-ptg">
                                                 <option value="">Seleccione una opción</option>
                                             </select>
                                         </div>
@@ -1996,7 +2034,7 @@
                                 <div class="pr-0">
                                     <div class="row align-items-center">
                                         <div class="col-12">
-                                            <select id="filtroTipoProductoCaso" class="form-ptg form-ptg-primary">
+                                            <select id="filtroTipoProductoCaso" class="form-ptg">
                                                 <option value="">Seleccione una opción</option>
                                             </select>
                                         </div>
@@ -2012,7 +2050,7 @@
                                 <div class="pr-0">
                                     <div class="row align-items-center">
                                         <div class="col-12">
-                                            <select id="filtroTipoProductoOpp" class="form-ptg form-ptg-primary">
+                                            <select id="filtroTipoProductoOpp" class="form-ptg">
                                                 <option value="">Seleccione una opción</option>
                                                 <option value="1">Cilindro</option>
                                                 <option value="2">Estacionario</option>
@@ -2062,7 +2100,7 @@
                             <!-- <th style="min-width: 40px; z-index: 1; left: 80px;" class="text-center sticky-col">
                                 <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                             </th> -->
-                            <th class="text-center">ID del servicio</th>
+                            <th class="text-center isAdmin d-none">ID del servicio</th>
                             <th class="text-center">Fecha creación</th>
                             <th class="text-center">Fecha prometida</th>
                             <th class="text-center">Tipo Servicio</th>
@@ -2651,7 +2689,7 @@
                                         <div class="col-3 dato-facturacion d-none">
                                             <div class="content-input">
                                                 <label>Uso de CFDI*</label>
-                                                <select id="usoCfdiFormCliente" class="form-ptg form-ptg-primary">
+                                                <select id="usoCfdiFormCliente" class="form-ptg">
                                                     <option value="">Seleccione una opción</option>
                                                     <option value="3">G03 - Expenses in General</option>
                                                 </select>
@@ -2750,7 +2788,8 @@
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Dirección</th>
-                                                            <th scope="col" class="text-center">Facturación</th>
+                                                            <th scope="col" class="text-center">Entrega</th>
+                                                            <th scope="col" class="text-center d-none dato-facturacion">Facturación</th>
                                                             <th scope="col" class="text-center">Acciones</th>
                                                             <!-- <th scope="col">Handle</th> -->
                                                         </tr>
@@ -2863,6 +2902,7 @@
         urlGetListCreditMemoCustomer = '${ds.getListCreditMemoCustomer}';
         urlGetListRMACustomer = '${ds.getListRMACustomer}';
         urlApproveRMACustomer = '${ds.ApproveRMACustomer}';
+        urlGetAddressOfZIP = '${ds.getAddressOfZIP}';
         
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
@@ -2882,6 +2922,15 @@
         reposicionEst = 10;
         saldoAFavorEst = 11;
         metodoMultiple = 7;
+        rolesAdmins = ["administrator", "administrador"]
+        isAdmin = (rolesAdmins.indexOf(userRole.trim().toLowerCase()) > -1);
+        methodsEstacionario = ["1", "9"];
+        isPriceKG = true;
+
+        if(isAdmin) {
+            $(".isAdmin").removeClass("d-none");
+        }
+
         // $('div#historic-data table').DataTable({
         //     "order": []
         //     //DataTable Options
@@ -2913,6 +2962,9 @@
                 $( this ).val($(this).children("option:first").val());
             });
 
+            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").prop("disabled", true);
+            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").children("option").remove();
+            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").append('<option value="">Seleccione una opción</option>');
             $('.dias-semana').prop('disabled', true);
 
             $('#rutaDireccion').data('ruta-obj', null);

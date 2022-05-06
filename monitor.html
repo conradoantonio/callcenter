@@ -5,9 +5,9 @@
     <meta charset="utf-8" />
     <title>Monitor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Dashboard" name="description" />
+    <meta content="Monitor" name="description" />
     <meta content="Themesbrand" name="author" />
-    <meta name="keywords" content="Dashboard, clientes, pedidos, potogas">
+    <meta name="keywords" content="Monitor, clientes, pedidos, potogas">
     <!-- App favicon -->
     <link rel="shortcut icon"
         href="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108997&c=5298967_SB1&h=MqKO6RyzbmQKiMqwc6-9rA2wJSTQZ0yi96oPgnj9KQwozioR&_xt=.ico">
@@ -570,6 +570,24 @@
         #tablePedidos tfoot.expand, #tableCasos tfoot.expand {
             right: 50%;
         }
+
+        tfoot .pag a {
+            color: #000;
+            background-color: #b0c1e0;
+            border-color: #b0c1e0;
+        }
+
+        tfoot .pag a:hover {
+            color: #000;
+            background-color: #9eaeca;
+            border-color: #9eaeca;
+        }
+
+        tfoot .pag a.active, tfoot .pag a.active:hover {
+            color: #fff;
+            background-color: #355da7;
+            border-color: #355da7;
+        }
     </style>
 </head>
 
@@ -699,7 +717,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 800px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
-                    <h5 class="modal-title" id="titlenotificarModal">Notificar servicio - <span id="notificarPedido"></span></h5>
+                    <h5 class="modal-title" id="titlenotificarModal">Notificar <span id="notificarPedido"></span></h5>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -736,7 +754,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
-                    <h5 class="modal-title" id="titleseguimientoModal">Seguimiento servicio - <span id="seguimientoPedido"></span></h5>
+                    <h5 class="modal-title" id="titleseguimientoModal">Seguimiento <span id="seguimientoServicio"></span></h5>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -864,6 +882,63 @@
             </div>
         </div>
     </div>
+
+    <div id="formVerDetallesCaso" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="titleerDetallesPedidosModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header">
+                    <div class="row align-items-center" style="width: 100%;">
+                        <div class="col-auto">
+                            <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=110815&c=5298967_SB1&h=he-4rJolZ3J7WidhKv2oNWSuYY-s45IhArkF-ivqlvB7sd_A"
+                            alt="" width="120">
+                        </div>
+                        <div class="col text-center">
+                            <label class="fw-bold" style="font-size: 22px;" id="verDetallesClienteCaso"></label><br>
+                            <label class="fw-bold" style="font-size: 18px;" id="verDetallesTelefonoCaso"></label><br>
+                            <label class="fw-bold" style="font-size: 16px;" id="verDetallesDireccionCaso"></label><br>
+                            <label class="fw-bold" style="font-size: 16px;">Tipo: <span id="verDetallesTipoServicioCaso"></span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="content-gen">
+                        <div class="row p-3">
+                            <div class="col-5 title">No. Caso</div>
+                            <div id="verDetallesNoCaso" class="col-7 resp"></div>
+                          </div>
+                          <div class="row p-3">
+                            <div class="col-5 title">Fecha reporte</div>
+                            <div id="verDetallesFechaReporte" class="col-7 resp"></div>
+                          </div>
+                        <div class="row p-3">
+                          <div class="col-5 title">Repuse cilindro dañado</div>
+                          <div id="verDetallesRepuseCilindroDanado" class="col-7 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-5 title">Realicé trasiego</div>
+                            <div id="verDetallesRealiceTrasiego" class="col-7 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-5 title">Cantidad recolectada en trasiego</div>
+                            <div id="verDetallesCantidadRecolectada" class="col-7 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-5 title">Prueba hermetica</div>
+                            <div id="verDetallesPruebaHermetica" class="col-7 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-5 title">Problema localizado en</div>
+                            <div id="verDetallesProblemaLocalizado" class="col-7 resp"></div>
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-5 title">Solución</div>
+                            <div id="verDetallesSolucion" class="col-7 resp"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div id="home-view" class="w-100 m-0">
         <div id="filters-data" class="p-3">
@@ -938,8 +1013,7 @@
                             <option value="0">Todos</option>
                             <option value="1">No iniciado</option>
                             <option value="2">En curso</option>
-                            <option value="3">Escalado</option>
-                            <option value="4">Reabierto</option>
+                            <option id="optEscalado" value="3">Escalado</option>
                             <option value="5">Cerrado</option>
                         </select>
                     </div>
@@ -948,6 +1022,7 @@
                     <div class="content-input">
                         <label>Prioridad</label><br>
                         <select id="filterPrioridad" onchange="getServicios(this)" class="form-ptg" style="width: 150px;">
+                            <option value="0">Todos</option>
                             <option value="1">Alto</option>
                             <option value="2">Medio</option>
                             <option value="3">Bajo</option>
@@ -966,9 +1041,9 @@
                     <div class="content-input">
                         <label>Cantidad</label><br>
                         <select id="filterCantidad" onchange="getServicios(this)" class="form-ptg" style="width: 100px;">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
                             <option value="0">Todos</option>
                         </select>
                     </div>
@@ -1068,20 +1143,31 @@
                                     <th style="min-width: 40px; z-index: 1; left: 200px;" class="text-center sticky-col">
                                         <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
-                                    <th style="min-width: 110px" class="text-center">No. Servicio</th>
+                                    <th style="min-width: 250px" class="text-center">Ruta</th>
+                                    <th style="min-width: 130px" class="text-center">Zona</th>
+                                    <th style="min-width: 300px" class="text-center">Observaciones</th>
+                                    <th style="min-width: 355px" class="text-center">Dirección</th>
+                                    <th style="min-width: 155px" class="text-center">Fecha Prometida</th>
+                                    <th style="min-width: 155px" class="text-center">Fecha del Pedido</th>
+                                    <th style="min-width: 155px" class="text-center">Fecha Notificación</th>
+                                    <th style="min-width: 155px" class="text-center">Producto</th>
+                                    <th style="min-width: 265px" class="text-center">Nombre Cliente</th>
+                                    <th style="min-width: 155px" class="text-center">Tiempo</th>
+
+                                    <!--<th style="min-width: 110px" class="text-center">No. Servicio</th>
                                     <th style="min-width: 95px" class="text-center">Id Cliente</th>
                                     <th style="min-width: 135px" class="text-center">Tipo Cliente</th>
-                                    <th style="min-width: 155px" class="text-center">Fecha Solicitud</th>
-                                    <th style="min-width: 155px" class="text-center">Fecha Prometida</th>
+                                    
+                                    
                                     <th style="min-width: 135px" class="text-center">Estado</th>
-                                    <th style="min-width: 265px" class="text-center">Nombre Cliente</th>
+                                    
                                     <th style="min-width: 125px" class="text-center">Teléfono</th>
-                                    <th style="min-width: 130px" class="text-center">Zona</th>
+                                    
                                     <th style="min-width: 150px" class="text-center">Contrato</th>
                                     <th style="min-width: 150px" class="text-center">Vehículo</th>
-                                    <th style="min-width: 200px" class="text-center">Colonia</th>
-                                    <th style="min-width: 355px" class="text-center">Direcciones</th>
-                                    <th style="min-width: 300px" class="text-center">Observaciones</th>
+                                    <th style="min-width: 200px" class="text-center">Colonia</th>-->
+                                    
+                                    
                                 </tr>
                             </thead>
                             <tbody>   
@@ -1097,10 +1183,17 @@
                                         <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
                                         <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
+                                    <th style="min-width: 40px; z-index: 1; left: 40px;" class="text-center sticky-col">
+                                        <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                    </th>
+                                    <th style="min-width: 40px; z-index: 1; left: 80px;" class="text-center sticky-col">
+                                        <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                    </th>
                                     <th style="min-width: 110px" class="text-center">No. Caso</th>
                                     <th style="min-width: 95px" class="text-center">Id Cliente</th>
                                     <th style="min-width: 135px" class="text-center">Tipo de Servicio</th>
                                     <th style="min-width: 135px" class="text-center">Estado</th>
+                                    <th style="min-width: 135px" class="text-center">Técnico /<br>Responsable</th>                                    
                                     <th style="min-width: 155px" class="text-center">Fecha Solicitud</th>
                                     <th style="min-width: 155px" class="text-center">Fecha Visita</th>
                                     <th style="min-width: 135px" class="text-center">Prioridad</th>
@@ -1280,14 +1373,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row pb-2 align-items-center">
-                                <div class="col">
-                                </div>
-                                <div class="col-auto">
-                                    <button id="guardarPedido" type="button" class="btn bg-secondary-cc"><i
-                                            class="fa-solid fa-floppy-disk"></i> Guardar pedido</button>
-                                </div>
-                            </div>
+                            <button id="guardarPedido" type="button" class="btn bg-secondary-cc" title="Guardar pedido" data-bs-toggle="tooltip" data-bs-placement="left" style="font-size: 30px; border-radius: 50%; position: fixed; right: 18px; bottom: 18px; width: 62px;">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                            </button>
                         </div>
                         <div id="data-casos" class="d-none px-3">
                             <div class="row align-items-center">
@@ -1397,20 +1485,20 @@
                                     </div>
                                 </div>
                                 <div class="row pb-2">
-                                    <div class="col-4">
+                                    <div class="col-6">
                                         <div class="content-input content-input-primary">
                                             <label>Artículo*</label>
                                             <select id="articuloFugaQueja" class="form-ptg form-ptg-primary">
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <div class="content-input content-input-primary">
                                             <label>Capacidad</label>
                                             <input id="capacidadFugaQueja" type="number" class="form-ptg form-ptg-primary"/>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <div class="content-input content-input-primary">
                                             <label>Año</label>
                                             <input id="anioFugaQueja" type="number" class="form-ptg form-ptg-primary"/>
@@ -1535,7 +1623,6 @@
                                                 <option value="1">No iniciado</option>
                                                 <option value="2">En curso</option>
                                                 <option value="3">Escalado</option>
-                                                <option value="4">Reabierto</option>
                                                 <option value="5">Cerrado</option>
                                             </select>
                                         </div>
@@ -1551,14 +1638,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row pb-2 align-items-center">
-                                <div class="col">
-                                </div>
-                                <div class="col-auto">
-                                    <button id="guardarCaso" type="button" class="btn bg-secondary-cc"><i
-                                            class="fa-solid fa-floppy-disk"></i> Guardar caso</button>
-                                </div>
-                            </div>
+                            <button id="guardarCaso" type="button" class="btn bg-secondary-cc" title="Guardar caso" data-bs-toggle="tooltip" data-bs-placement="left" style="font-size: 30px; border-radius: 50%; position: fixed; right: 18px; bottom: 18px; width: 62px;">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                            </button>
                         </div>
                     </div>
                     <div id="tab-grafica-servicios" class="p-2 tabs-content">
@@ -1642,6 +1724,18 @@
         conceptoFugasQuejasArr = [];
         methodPayments = [];
         deftEstacionarVal = "4088";
+        vrStatus = [];
+        idPorAsignar = "";
+        idAsignado = "";
+        idCancelado = "";
+        idEntregado = "";
+        idPorReprogramar = "";
+        idPorConfirmar = "";
+        rutasCilindros = [];
+        rutasEstacionarios = [];
+        vrViajes = [];
+        countServices = 0;
+        concatObsPagos = ["2", "8"]
 
         function noEnter(e) {
             if (e.which === 13 && !e.shiftKey) {
@@ -1734,16 +1828,34 @@
 
             $("#articuloFugaQueja").change(function() {
                 if($(this).val() != "4088") {
-                    $("#capacidadFugaQueja").closest(".col-4").addClass("d-none");
+                    $("#capacidadFugaQueja").closest(".col-3").addClass("d-none");
                 } else {
-                    $("#capacidadFugaQueja").closest(".col-4").removeClass("d-none");
+                    $("#capacidadFugaQueja").closest(".col-3").removeClass("d-none");
                 }
             });
 
             $("#plantas").change(function() {
+                changeAltFilterTipoServicio()
                 getRutas(true);
                 getListTravel();
             });
+
+            function changeAltFilterTipoServicio() {
+                $("#sinSeleccionCaso").removeClass("d-none");
+                $("#data-pedidos, #data-casos").addClass("d-none");
+                if($("#filterTipoServicio").val() == "pedidos") {
+                    $(".tipo-pedido").removeClass("d-none");
+                    $(".tipo-caso").addClass("d-none");
+                } else {
+                    $(".tipo-pedido").addClass("d-none");
+                    $(".tipo-caso").removeClass("d-none");
+                    if($("#filterTipoServicio").val() == "fuga") {
+                        $("#optEscalado").addClass("d-none");
+                    } else {
+                        $("#optEscalado").removeClass("d-none");
+                    }
+                }
+            }
 
             $(".btn-expand-down").click(function () {
                 if ($(this).find("i").hasClass('fa-caret-down')) {
@@ -1815,15 +1927,7 @@
             });
 
             $("#filterTipoServicio").change(function() {
-                $("#sinSeleccionCaso").removeClass("d-none");
-                $("#data-pedidos, #data-casos").addClass("d-none");
-                if($(this).val() == "pedidos") {
-                    $(".tipo-pedido").removeClass("d-none");
-                    $(".tipo-caso").addClass("d-none");
-                } else {
-                    $(".tipo-pedido").addClass("d-none");
-                    $(".tipo-caso").removeClass("d-none");
-                }
+                changeAltFilterTipoServicio();
             });
 
             $(".range-date").change(function() {
@@ -1866,8 +1970,10 @@
                 }
             
                 return (days > 0 ? days + (days > 1 ? ' días con ' : ' día con ') : '') + this.getTimeFromDecimal(hours);
-            } else {
+            } else if (type == "2") {
                 return hours;
+            } else if (type == "3") {
+                return this.getTimeFromDecimal(hours, "2");
             }    
         }
 
@@ -1964,7 +2070,7 @@
             }
         }
 
-        function getTimeFromDecimal(decimalTimeString) {
+        function getTimeFromDecimal(decimalTimeString, tipo = "1") {
             var decimalTime = parseFloat(decimalTimeString);
             decimalTime = decimalTime * 60 * 60;
             var hours = Math.floor((decimalTime / (60 * 60)));
@@ -1972,17 +2078,30 @@
             var minutes = Math.floor((decimalTime / 60));
             decimalTime = decimalTime - (minutes * 60);
 
+            if(tipo == "1") {
+                let auxHour = "";
+                auxHour += hours > 0 ? hours > 1 ? hours + ' horas' : ' hora' : '';
 
-            let auxHour = "";
-            auxHour += hours > 0 ? hours > 1 ? hours + ' horas' : ' hora' : '';
-
-            if(minutes > 0) {
-                if(auxHour != "") {
-                    auxHour += " y ";
+                if(minutes > 0) {
+                    if(auxHour != "") {
+                        auxHour += " y ";
+                    }
+                    auxHour += minutes > 0 ? minutes > 1 ? minutes + ' minutos' : minutes + ' minuto' : '';
+                }    
+                return auxHour ? auxHour : '0 minutos';
+            } else {
+                let time = ((hours * 60) + minutes);
+                if (time > 0) {
+                    if (time > 1) {
+                        time += " minutos";
+                    } else {
+                        time += " minuto";
+                    }
+                } else {
+                    time = '0 minutos';
                 }
-                auxHour += minutes > 0 ? minutes > 1 ? minutes + ' minutos' : minutes + ' minuto' : '';
-            }    
-            return auxHour ? auxHour : '0 minutos';
+                return time;
+            }            
         }
 
         function dateFormatFromString(datetime, format = "1") {

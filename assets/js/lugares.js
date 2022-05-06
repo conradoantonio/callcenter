@@ -1,7 +1,7 @@
 // Abre el modal de direcciones
 $("#agregarDirecciones, #agregarDireccion").click(function() {
     $("#formDireccionesModal").modal("show");
-    getStates();
+    //getStates();
 });
 
 // Prellena los datos de una dirección en el modal
@@ -9,7 +9,13 @@ $("#editarDireccion").click(function() {
     let direccion = $('#direccionCliente').children(':selected').data('address');
     $("#tipoAccionDireccion").val('guardar');
     let periodo = '';
+    loadMsg();
     if ( direccion ) {
+        if(customerGlobal.rfc) {
+            $($(".dato-facturacion").removeClass("d-none"));
+        } else {
+            $($(".dato-facturacion").addClass("d-none"));
+        }
         // Se ocultan los campos de frecuencia y posteriormente se decide si se muestran o no
         $('.frecuencia-cada, .frecuencia-semana').addClass('d-none');
         if ( direccion.defaultBilling ) {// Dirección de facturación
@@ -101,44 +107,88 @@ $("#editarDireccion").click(function() {
             $(".tipo-aviso-programado").removeClass('d-none');
         }
     } 
-    $("#formDireccionesModal").modal("show");
+
+    getDirrecionByCP(function() {
+        $("#formDireccionesModal").modal("show");
+        console.log(direccion);
+        if($("#estadoDireccion option[value='"+direccion.stateName+"']").length > 0) {
+            $("#estadoDireccion").val(direccion.stateName);
+        }
+        
+        if($("#municipioDireccion option[value='"+direccion.city+"']").length > 0) {
+            $("#municipioDireccion").val(direccion.city);
+        }
+
+        if($("#coloniaDireccion option[value='"+direccion.colonia+"']").length > 0) {
+            $("#coloniaDireccion").val(direccion.colonia).trigger("change");
+        }
+        swal.close();
+    });
     // Este código de obtener estados se removerá cuando esta lista se encuentre sincronizado con netsuite
-    getStates();
+    //getStates();
 });
 
 // Cuando el select de estados cambie, manda a llamar la petición de obtener ciudades
-$('select#estadoDireccion').on('change', function(e) {
+/*$('select#estadoDireccion').on('change', function(e) {
     // let val = $( "select#estadoDireccion option:selected" ).text();
     let val = $( this ).val();
     if ( val ) {
         getCities( val );
     }
-});
+});*/
 
-$('select#municipioDireccion').on('change', function(e) {
+/*$('select#municipioDireccion').on('change', function(e) {
     // let val = $( "select#municipioDireccion option:selected" ).text();
     let val = $( this ).val();
     if ( val ) {
         getColonies( val );
     }
-});
+});*/
 
 // Se busca la zona de venta/ruta
 $('select#coloniaDireccion').on('change', function(e) {
-    // let val = $( "select#coloniaDireccion option:selected" ).val();
-    let val = $( this ).val();
-    let cp  = $( this ).children('option:selected').data('cp');
-
-    console.log('val y cp: ', val, cp);
-    
-    if ( val ) {
-        $('input#cpDireccion').val( cp );
-        getRoute( val );
-    } else {
-        console.log('Falta código para resetear las rutas');
-        $('input#cpDireccion').val( '' );
-    }
+    setDataAuxDireccion();
 });
+
+function setDataAuxDireccion() {
+    if($("#coloniaDireccion").val()) {
+        let auxItem = $("#coloniaDireccion option:selected").data("item");
+        if(auxItem.rutaCil.split(":")[0].trim() == $("#plantas option:selected").text().trim() || auxItem.rutaEsta.split(":")[0].trim() == $("#plantas option:selected").text().trim()) {
+            $("#zonaVentaDireccion").val(auxItem.zonePrice);
+            if($("#tipoServicioFormCliente").val()) {
+                if ( $("#tipoServicioFormCliente").val() == 1 ) {//Cilindro
+                    console.log('cilindro');
+                    $("#rutaDireccion").val(auxItem.rutaCil && auxItem.rutaCil.split(":").length > 1 ? auxItem.rutaCil.split(":")[1].trim() : auxItem.rutaCil.trim());
+                } else if( $("#tipoServicioFormCliente").val() == 2 ) {// Estacionario
+                    console.log('estacionario');
+                    $("#rutaDireccion").val(auxItem.rutaEsta && auxItem.rutaEsta.split(":").length > 1 ? auxItem.rutaEsta.split(":")[1].trim() : auxItem.rutaEsta.trim());
+                } else if( $("#tipoServicioFormCliente").val() == 4 ) {// Ambas
+                    console.log('ambas');
+                    let aux = "";
+                    if(auxItem.rutaCil) {
+                        aux += auxItem.rutaCil.split(":").length > 1 ? auxItem.rutaCil.split(":")[1].trim() : auxItem.rutaCil.trim();
+                    }
+                    if(aux != "") {
+                        aux += ", ";
+                    }
+                    if(auxItem.rutaEsta) {
+                        aux += auxItem.rutaEsta.split(":").length > 1 ? auxItem.rutaEsta.split(":")[1].trim() : auxItem.rutaEsta.trim();
+                    }
+                    $("#rutaDireccion").val(aux);
+                }
+            } else {
+                $("#rutaDireccion").val("");
+            }
+        } else {
+            infoMsg("error", "Error:", "La colonia seleccionada no pertenece a la planta actual");
+            $("#zonaVentaDireccion").val("");
+            $("#rutaDireccion").val("");
+        }        
+    } else {
+        $("#zonaVentaDireccion").val("");
+        $("#rutaDireccion").val("");
+    }
+}
 
 // Se debe modificar la ruta dependiendo del tipo de servicio
 $('select#tipoServicioFormCliente').on('change', function(e) {
@@ -158,14 +208,10 @@ $('select#tipoServicioFormCliente').on('change', function(e) {
     }
 
     // Setea o resetea los campos de ruta
-    if ( route  ) {
-        setRouteData(route);
-    } else {
-        $("input#rutaDireccion, input#zonaVentaDireccion, input#rutaColoniaIdDireccion, input#rutaIdDireccion, input#rutaId2Direccion").val('');
-    }
+    setDataAuxDireccion();
 
     // Nota: Preferible agregar una función que haga esto.
-    console.log('Falta código para validar los inputs relacionados a las rutas');
+    //console.log('Falta código para validar los inputs relacionados a las rutas');
 });
 
 // Obtiene los estados disponibles
@@ -307,9 +353,9 @@ function getColonies(city) {
 }
 
 // Método para obtener las zonas de venta y ruta de una colonia seleccionada
-function getRoute(val) {
+function getRoute() {
     let colonia = $( "select#coloniaDireccion option:selected").text();
-    let zip     = $( "select#coloniaDireccion option:selected").data('cp');
+    let zip     = $( "#cpDireccion").val();
     let url     = urlObtenerZonas.concat('&zip='+zip+'&colonia='+colonia);
 
     let settings = {
