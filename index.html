@@ -1904,7 +1904,7 @@
                     </div>
 
                     <div class="col pr-0">
-                        <select id="direccionCliente" class="form-ptg">
+                        <select id="direccionCliente" data-toggle="tooltip" data-placement="top" title="" class="form-ptg">
                             <option>Sin direcciones</option>
                         </select>
                     </div>
@@ -2922,6 +2922,7 @@
         reposicionEst = 10;
         saldoAFavorEst = 11;
         metodoMultiple = 7;
+        metodoCredito  = 9;
         rolesAdmins = ["administrator", "administrador"]
         isAdmin = (rolesAdmins.indexOf(userRole.trim().toLowerCase()) > -1);
         methodsEstacionario = ["1", "9"];

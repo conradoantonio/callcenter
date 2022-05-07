@@ -61,9 +61,11 @@ $('input[name=tipoRegimen]').on('change', function(e) {
 // Cuando el select de estados cambie, manda a llamar la petición de obtener ciudades
 $('select#direccionCliente').on('change', function(e) {
     let direccion = $( this ).children('option:selected').data('address');
+    // let option    = $( this ).children('option:selected');
     console.log('esta es la dirección', direccion);
     resetProductList();
     if ( direccion ) {
+        $(this).prop('title', 'hola');// 
         setColoniaZonaData( direccion );
     } else {// Podría ser buena práctica meter este bloque de código en una función
         // Estos campos están en la tarjeta de cliente
@@ -110,6 +112,12 @@ $("#editarCliente").click(function () {
 
     // Este input definirá si es una edición por el id interno del cliente
     $('#idInternoFormCliente').val(customerGlobal.id);
+
+    if ( customerGlobal.fechaContrato ) {// Si el cliente tiene una fecha de contrato, se coloca acá como ilustrativo solamente
+        let fechaContrato = moment(customerGlobal.fechaContrato);
+        $('#fechaInicioContratoCliente').attr('disabled', true);
+        $('#fechaInicioContratoCliente').val(fechaContrato.format('YYYY-MM-DD').toString());
+    }
 
     // Se prellenan los inputs del form
     if ( customerGlobal.typeCustomer == "Doméstico" ) {
@@ -414,6 +422,7 @@ function clearCustomerForm(type = 'create') {
     $("input#requiereContrato2").prop('checked', true);
     $('.dato-contrato').addClass('d-none');
     $("select#giroNegocioFormCliente").parent().addClass('d-none');
+    $('#fechaInicioContratoCliente').attr('disabled', false);
 
     // Tab contacto
     $("input#rfcFormCliente").parent().parent().addClass('d-none');

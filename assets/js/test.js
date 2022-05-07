@@ -30,6 +30,10 @@ $(function() {
         placeholder: 'Buscar por nombre, id, teléfono...',
         language: "es"
     });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 });
 
 function getDireccionFormat(item, tipo) { 
@@ -166,7 +170,7 @@ function setCustomerInfo(customer, idAddress = null) {
     $('#idCliente').text(customer.id);
     $('#nombreCliente').text(customer.nombreCompleto);
     $('#telefonoCliente').text(customer.telefono);
-    $('#giroCliente').text(customer.giroCliente);
+    $('#giroCliente').text(customer.giroCustomer);
     $('#contratoCliente').text(customer.contrato ? customer.contrato : 'Pendiente de validar');
     $('#notasCliente').text(customer.notasCustomer ? customer.notasCustomer : 'Sin notas');
     $('#tipoCliente').text(customer.typeCustomer);
@@ -242,6 +246,7 @@ function setCustomerInfo(customer, idAddress = null) {
 function setAlianzaComercial(customer) {
     let tipoAlianza = customer.alianzaComercial.toUpperCase();
     let infoComercial = customer.objInfoComercial;
+    $('option.opt-method-credito-cliente').addClass('d-none');
     $('#badgeAlianza').children('span').removeClass('bg-danger-cc bg-success-cc');
     $('tr.alianza').addClass('d-none');
 
@@ -249,14 +254,13 @@ function setAlianzaComercial(customer) {
     if ( infoComercial.diasAtraso ) {
         console.log('tiene el objeto dias atraso');
         if ( parseInt(infoComercial.diasAtraso) > 0 ) {
-            console.log('tiene dias de atraso, se pone danger');
             $('#badgeAlianza').children('span').addClass('bg-danger-cc');
         } else {
-            console.log('No tiene dias de atraso, se pone success');
             $('#badgeAlianza').children('span').addClass('bg-success-cc');
         }
     }
     if ( tipoAlianza ==  'CONTRATO' ) {
+        $('option.opt-method-credito-cliente').removeClass('d-none');
         $('#badgeAlianza').removeClass('d-none');
         $('#badgeAlianza').children('span').text('Contrato');
         $('.alianza-no-contrato, .alianza-fecha-inicio, .alianza-limite-credito, .alianza-dias-credito, .alianza-saldo-disponible, .alianza-dias-vencidos, .alianza-monto-adeudo').removeClass('d-none')
@@ -269,6 +273,7 @@ function setAlianzaComercial(customer) {
         $('.alianza-dias-vencidos').children('td').siblings("td:nth-child(2)").text(infoComercial.diasAtraso ? infoComercial.diasAtraso : 'Sin asignar');
         $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? infoComercial.creditoUtilizado : 'Sin asignar');
     } else if ( tipoAlianza ==  'CREDITO' ) {
+        $('option.opt-method-credito-cliente').removeClass('d-none');
         $('#badgeAlianza').children('span').text('Crédito');
         $('#badgeAlianza').removeClass('d-none');
         $('.alianza-fecha-inicio, .alianza-limite-credito, .alianza-dias-credito, .alianza-saldo-disponible, .alianza-dias-vencidos, .alianza-monto-adeudo').removeClass('d-none')
@@ -419,6 +424,8 @@ function setDir(direccion) {
     str += direccion.nameStreet;
     direccion.numExterno      ? str+= ' #'+direccion.numExterno : '';
     direccion.numInterno      ? str+= ' #'+direccion.numInterno : '';
+    direccion.entreCalle      ? str+= ' Entre '+direccion.entreCalle : '';
+    direccion.entreYCalle     ? str+= ' Y '+direccion.entreYCalle : '';
     direccion.colonia         ? str+= ', Col. '+direccion.colonia : '';
     direccion.stateName       ? str+= ', '+direccion.stateName : '';
     direccion.city            ? str+= ', '+direccion.city : '';
@@ -592,9 +599,16 @@ function setSelectMetodosPago(items) {
         $("select#metodoPagoPedido").append('<option value="0">Seleccione una opción</option>')
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
-                if ( parseInt(items[key].id) != metodoMultiple ) {// Si es diferente a método de pago múltiple, se añade al select
+                let metodo = items[key];
+                let metodoId = parseInt(metodo.id);
+                let classMethod = '';
+
+                if ( metodoId == metodoCredito ) { classMethod = 'opt-method-credito-cliente d-none'; } // Es método crédito de cliente
+                else { classMethod = 'opt-method-normal'; } // Es método de pago normal
+
+                if ( metodoId != metodoMultiple ) {// Si es diferente a método de pago múltiple, se añade al select
                     $("select#metodoPagoPedido").append(
-                        '<option value='+items[key].id+'>'+items[key].method+'</option>'
+                        '<option class="'+classMethod+'" value='+metodo.id+'>'+metodo.method+'</option>'
                     );
                 }
             }
@@ -844,7 +858,10 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
 function clearCustomerInfo () {
     // Inhabilita el botón de agregar dirección
     $('#filtrarHistorico, #editarCliente, #agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', true);
-
+    
+    // Se inhabilita el método de pago credito cliente
+    $('option.opt-method-credito-cliente').addClass('d-none');
+    
     // Se reinician los labels
     $('#idCliente').text('0');
     $('#nombreCliente').text('Busque un cliente');

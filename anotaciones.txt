@@ -48,3 +48,33 @@ Incluir una validación donde se verifique el total del txt con el total de cada
 - Validar el horario matutino y vespertino por rutas
 - 12:00 am - 01:59 pm turno matutino
 - 2:00 - 11:59 pm turno vespertino
+
+
+Ordenes de venta
+Transacciones -> sales -> enter sales order -> lista
+
+Presupuesto
+Transacciones -> finanzas -> Configurar presupuesto (Set up budgets)
+
+Un artículo que no es de inventario, necesita una cuenta a configurar
+
+El amount de la cuenta configurable, deberá colocarse en el listado de articulos del budget en el último mes
+
+Acceder a depósitos en netsuite
+Listas -> cadena de suministros -> depositos
+
+Acceder al listado de almacenes
+Configuración -> Compañía -> Locations (o almacenes)
+
+DRD TRANSFERENCIA ALM GENERAL A WIP
+En los filtros, el que dice ensamble, hace referencia a los artículos de tipo ensable enlistados en la orden de venta
+
+Los artículos tipo ensable tienen un listado de componentes.
+
+Tenemos un ensable en la orden de venta
+Ese ensable general, va a tener unos componentes configurados, esos componentes van a ser fantasmas, entonces, para ver la lista de materiales generales, debes ...
+
+BOM = Bill of materials (Lista de materiales)
+
+Transferencia de inventario se encuentra en:
+Transacciones -> inventario -> transferencia de inventario

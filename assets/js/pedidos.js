@@ -224,6 +224,9 @@ $("#agregarMetodoPago").click(function () {
             options.removeClass("d-none");
         }
 
+        // Se vuelve a llamar este método únicamente para que valide el método de pago crédito cliente
+        setAlianzaComercial(customerGlobal);
+
         $('#formMetodoPagosModal').modal('show');
     } else {
         infoMsg('warning', 'Alerta:', "Es necesario primero agregar un producto para poder ingresar un metodo de pago");
