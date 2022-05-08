@@ -61,11 +61,10 @@ $('input[name=tipoRegimen]').on('change', function(e) {
 // Cuando el select de estados cambie, manda a llamar la petición de obtener ciudades
 $('select#direccionCliente').on('change', function(e) {
     let direccion = $( this ).children('option:selected').data('address');
-    // let option    = $( this ).children('option:selected');
     console.log('esta es la dirección', direccion);
     resetProductList();
     if ( direccion ) {
-        $(this).prop('title', 'hola');// 
+        $(this).prop('title', setDir( direccion ));// Activa el tooltip de la dirección
         setColoniaZonaData( direccion );
     } else {// Podría ser buena práctica meter este bloque de código en una función
         // Estos campos están en la tarjeta de cliente
@@ -321,7 +320,7 @@ function saveCustomer() {
             planta : $('select#plantas').val(),
             telefono : $("input#telefonoPrincipalFormCliente").val(),
             telefonoAlt : $("input#telefonoAlternoFormCliente").val(),
-            subsidiary : 25,// Seteado de forma estática
+            subsidiary : userSubsidiary,// Seteado de forma estática
             regimenId : regimenId,
             notaCliente : $('#observacionesFormCliente').val(),
             //typeService : typeService,

@@ -235,11 +235,16 @@ $("#agregarMetodoPago").click(function () {
 
 // Valida los inputs disponibles en los métodos de pago
 $("#metodoPagoPedido").change(function () {
-    let metodoId = $(this).val();
-    if ( ["8", "2"].includes( metodoId ) ) {// Si el método de pago es transferencia, prepago
-        $("#folioAutorizacionPedido").parent().parent().removeClass("d-none");
+    let metodoId = parseInt( $(this).val() );
+    
+    if ( metodosPagoPrepago.includes( metodoId ) ) {// Si el método de pago es transferencia, prepago
+        $(".campo-prepago").removeClass("d-none");
     } else {
-        $("#folioAutorizacionPedido").parent().parent().addClass("d-none");
+        $(".campo-prepago").addClass("d-none");
+    }
+
+    if ( metodoId == metodoTransferencia ) {// Se trata de una transferencia, no debe de mostrar el tipo de tarjeta que es
+        $('#tipoTarjeta').parent().parent().addClass('d-none');
     }
 });
 
@@ -375,7 +380,7 @@ async function onClickAddProducto() {
                     searchTr.children('td').siblings("td:nth-child(2)").text(articulo['quantity']);
                     searchTr.children('td').siblings("td:nth-child(3)").text(capacidad+' kg');
                     searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' MXN');
                     // searchTr.children('td').siblings("td:nth-child(4)").children('button.delete-producto-cil').data('item-id', articulo.article);
                 } else {
                     let firstItem         = searchTr.data('item');
@@ -386,7 +391,7 @@ async function onClickAddProducto() {
                     searchTr.data('item', firstItem);
                     searchTr.children('td').siblings("td:nth-child(2)").text(firstItem['quantity']);
                     searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' MXN');
                     console.log(firstItem);
                 }
                 
@@ -398,7 +403,7 @@ async function onClickAddProducto() {
                         '<td class="text-center">'+(artSel && artSel.nombre ? artSel.nombre : 'Sin nombre asignado')+'</td>'+
                         '<td class="text-center">'+articulo['quantity']+'</td>'+
                         '<td class="text-center">'+capacidad+' kg</td>'+
-                        '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                        '<td class="text-center" data-total='+total+'>$'+total+' MXN</td>'+
                         // '<td class="text-center">'+(envase ? 'Si' : 'No')+'</td>'+
                         '<td class="text-center">'+
                             '<button class="btn btn-sm btn-info edit-producto-cil"> <i class="fa fa-pen-to-square"></i> </button> '+
@@ -431,7 +436,7 @@ async function onClickAddProducto() {
                     searchTr.data('item', articulo);
                     searchTr.children('td').siblings("td:nth-child(3)").text(articulo['capacity']);
                     searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' MXN');
                 } else {// Se suma el consumo del cliente
                     let firstItem         = searchTr.data('item');
                     let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(2);
@@ -441,7 +446,7 @@ async function onClickAddProducto() {
                     searchTr.data('item', firstItem);
                     searchTr.children('td').siblings("td:nth-child(3)").text(firstItem['capacity']);
                     searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                    searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' MXN');
                     console.log(firstItem);
                 }
 
@@ -452,7 +457,7 @@ async function onClickAddProducto() {
                         '<td>Gas LP</td>'+
                         '<td class="text-center">1</td>'+
                         '<td class="text-center">'+$("#litrosFormProductos").val()+'</td>'+
-                        '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                        '<td class="text-center" data-total='+total+'>$'+total+' MXN</td>'+
                         '<td class="text-center">'+
                             '<button class="btn btn-sm btn-info edit-producto-est"> <i class="fa fa-pen-to-square"></i> </button> '+
                             '<button class="btn btn-sm btn-danger delete-producto-est" data-table-ref=".productosEstacionarioPedido" data-item-id='+articulo.article+'> <i class="fa-solid fa-trash-can"></i> </button>'+
@@ -508,7 +513,7 @@ function agregarEnvase(conEnvase, table, cilindro, zonaVenta) {
                 '<td class="text-center">'+(artEnvase.nombre ? artEnvase.nombre : 'Sin nombre asignado')+'</td>'+
                 '<td class="text-center">'+artObj['quantity']+'</td>'+
                 '<td class="text-center">'+artObj['capacity']+' kg</td>'+
-                '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                '<td class="text-center" data-total='+total+'>$'+total+' MXN</td>'+
                 '<td class="text-center">'+
                     // '<button class="btn btn-sm btn-info edit-producto-cil"> <i class="fa fa-pen-to-square"></i> </button> '+
                     '<button class="btn btn-sm btn-danger delete-producto-cil" data-table-ref=".productosCilindroPedido" data-item-id='+artEnvase.id+'> <i class="fa-solid fa-trash-can"></i> </button>'+
@@ -872,7 +877,7 @@ function agregarMetodoPago(metodoObj) {
         searchTr.data('metodo', metodoObj);
         searchTr.children('td').siblings("td:nth-child(2)").text(metodoObj.folio ? metodoObj.folio : 'No aplica');
         searchTr.children('td').siblings("td:nth-child(3)").data('total', metodoObj.monto);
-        searchTr.children('td').siblings("td:nth-child(3)").text('$'+metodoObj.monto+' mxn');
+        searchTr.children('td').siblings("td:nth-child(3)").text('$'+metodoObj.monto+' MXN');
         console.log(metodoObj);
         
     } else {// Se llena la información del item
@@ -881,7 +886,7 @@ function agregarMetodoPago(metodoObj) {
             '<tr data-metodo-id='+metodoObj.tipo_pago+' class="metodo-item" data-metodo=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
                 '<td>'+metodoObj.metodo_txt+'</td>'+
                 '<td class="text-center">'+(metodoObj.folio ? metodoObj.folio : 'No aplica')+'</td>'+
-                '<td class="text-center" data-total='+metodoObj.monto+'>$'+metodoObj.monto+' mxn</td>'+
+                '<td class="text-center" data-total='+metodoObj.monto+'>$'+metodoObj.monto+' MXN</td>'+
                 '<td class="text-center">'+
                     '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPago" data-metodo-id='+metodoObj.tipo_pago+'> <i class="fa-solid fa-trash-can"></i> </button>'+
                 '</td>'+
@@ -920,6 +925,7 @@ function setTotalPedido(table, tipoDescuento = 'nativo') {
     let totalDescontado = parseFloat(0).toFixed(2);
     let totalLitros     = parseFloat(0).toFixed(2);
     let descuento       = Number( parseFloat(customerGlobal.descuento ?? 0).toFixed(2) );
+    let esEstacionario  = !$('.productosEstacionarioPedido').parent().parent().hasClass('d-none');
     // console.log(descuento);
     table.children('tbody').children('tr.product-item').each(function() {
         let articulo = $( this ).data('item');
@@ -939,6 +945,10 @@ function setTotalPedido(table, tipoDescuento = 'nativo') {
         } else if ( customerGlobal?.tipoDescuento == '2' ) { // Neto
             totalDescontado = Number( parseFloat( totalLitros * descuento ).toFixed(2) );
         }
+        if ( esEstacionario ) {// Si el producto es estacionario el descuento se multiplica por .54 para hacer la conversión de kilos a litros
+            console.log('Se aplica descuento multiplicado por .54');
+            totalDescontado = Number( parseFloat( totalDescontado * .54 ).toFixed(2) );
+        } 
     } else if ( tipoDescuento == 'resurtido' ) {// Descuento por devolución de cilindro
         totalDescontado = Number( parseFloat( total).toFixed(2)) ;
         console.log('Tipo: ', tipoDescuento);
@@ -950,11 +960,11 @@ function setTotalPedido(table, tipoDescuento = 'nativo') {
     
     // Se asigna el descuento
     table.children('tfoot').find('td.descuento').data('descuento', totalDescontado);
-    table.children('tfoot').find('td.descuento').text('$'+totalDescontado+' mxn');
+    table.children('tfoot').find('td.descuento').text('$'+totalDescontado+' MXN');
 
     // Se asigna el total
     table.children('tfoot').find('td.total').data('total', total);
-    table.children('tfoot').find('td.total').text('$'+total+' mxn');
+    table.children('tfoot').find('td.total').text('$'+total+' MXN');
 }
 
 // Calcula el total de los métodos de pago agregados
@@ -968,7 +978,7 @@ function setTotalMetodosPago(table) {
     });
 
     table.children('tfoot').find('td.total').data('total', total);
-    table.children('tfoot').find('td.total').text('$'+total+' mxn');
+    table.children('tfoot').find('td.total').text('$'+total+' MXN');
 }
 
 // Calcula el total del método de pago
@@ -988,7 +998,7 @@ function setTotalMetodoPago(table, tipoDescuento = 'nativo') {
     }
 
     table.children('tfoot').find('td.total').data('total', parseFloat(total).toFixed(2));
-    table.children('tfoot').find('td.total').text('$'+parseFloat(total).toFixed(2)+' mxn');
+    table.children('tfoot').find('td.total').text('$'+parseFloat(total).toFixed(2)+' MXN');
 }
 
 // Método que ejecuta la cancelación de un pedido

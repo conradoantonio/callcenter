@@ -739,7 +739,7 @@
                     <div class="row info-minimo-gas-lp d-none">
                         <div class="col-12">
                             <div class="alert alert-info" role="alert">
-                                El monto mínimo a vender es de $<span class="minimo-gas-lp"></span> mxn.
+                                El monto mínimo a vender es de $<span class="minimo-gas-lp"></span> MXN.
                             </div>
                         </div>
                     </div>
@@ -840,10 +840,20 @@
                                 <input id="montoPagoPedido" oninput="onlyNumbers(this.value, '#montoPagoPedido')" class="form-ptg form-ptg-primary"> </select>
                             </div>
                         </div>
-                        <div class="col-12 pb-2 d-none">
+                        <div class="col-12 pb-2 d-none campo-prepago">
                             <div class="content-input content-input-primary">
                                 <label>Folio de autorización</label>
                                 <input id="folioAutorizacionPedido" class="form-ptg form-ptg-primary"> </select>
+                            </div>
+                        </div>
+                        <div class="col-12 pb-2 d-none campo-prepago">
+                            <div class="content-input content-input-primary">
+                                <label>Tipo de tarjeta</label>
+                                <select id="tipoTarjeta" class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="1">Débito</option>
+                                    <option value="2">Crédito</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -2104,7 +2114,7 @@
                             <th class="text-center">Fecha creación</th>
                             <th class="text-center">Fecha prometida</th>
                             <th class="text-center">Tipo Servicio</th>
-                            <th class="text-center">Número de documento</th>
+                            <th class="text-center">Número de servicio</th>
                             <th class="text-center">Asunto</th>
                             <th class="text-center">Fecha visita</th>
                             <th class="text-center">Hora visita</th>
@@ -2249,11 +2259,11 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="4" style="text-align: right; font-weight: bold;">Descuento</td>
-                                                <td colspan="1" class="text-center descuento" data-descuento="">$0 mxn</td>
+                                                <td colspan="1" class="text-center descuento" data-descuento="">$0 MXN</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
-                                                <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                                <td colspan="1" class="text-center total" data-total="">$0 MXN</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -2286,11 +2296,11 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="4" style="text-align: right; font-weight: bold;">Descuento</td>
-                                                <td colspan="1" class="text-center descuento" data-descuento="">$0 mxn</td>
+                                                <td colspan="1" class="text-center descuento" data-descuento="">$0 MXN</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
-                                                <td colspan="1" class="text-center total" data-total="">$0 mxn</td>
+                                                <td colspan="1" class="text-center total" data-total="">$0 MXN</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -2333,7 +2343,7 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
-                                                <td colspan="1" class="text-center total" data-total="">$100 mxn</td>
+                                                <td colspan="1" class="text-center total" data-total="">$100 MXN</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -2903,6 +2913,7 @@
         urlGetListRMACustomer = '${ds.getListRMACustomer}';
         urlApproveRMACustomer = '${ds.ApproveRMACustomer}';
         urlGetAddressOfZIP = '${ds.getAddressOfZIP}';
+        urlGetAccountsPrepayment = '${ds.accountsPrepayment}';
         
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
@@ -2923,7 +2934,9 @@
         saldoAFavorEst = 11;
         metodoMultiple = 7;
         metodoCredito  = 9;
-        rolesAdmins = ["administrator", "administrador"]
+        metodoTransferencia = 8;
+        metodosPagoPrepago = [15, 13, 2, 14, 16, 17, 8];
+        rolesAdmins = ["administrator", "administrador"];
         isAdmin = (rolesAdmins.indexOf(userRole.trim().toLowerCase()) > -1);
         methodsEstacionario = ["1", "9"];
         isPriceKG = true;
@@ -2984,7 +2997,7 @@
             $(this).find('select.form-ptg').each(function( index ) {
                 $( this ).val($(this).children("option:first").val());
             });
-            $('#folioAutorizacionPedido').parent().parent().addClass('d-none');
+            $('.campo-prepago').addClass('d-none');
         });
 
         // Limpia los campos del modal para agregar producto

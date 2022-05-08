@@ -170,7 +170,7 @@ function setCustomerInfo(customer, idAddress = null) {
     $('#idCliente').text(customer.id);
     $('#nombreCliente').text(customer.nombreCompleto);
     $('#telefonoCliente').text(customer.telefono);
-    $('#giroCliente').text(customer.giroCustomer);
+    $('#giroCliente').text(customer.giroCustomer ? customer.giroCustomer : 'Sin giro');
     $('#contratoCliente').text(customer.contrato ? customer.contrato : 'Pendiente de validar');
     $('#notasCliente').text(customer.notasCustomer ? customer.notasCustomer : 'Sin notas');
     $('#tipoCliente').text(customer.typeCustomer);
@@ -220,6 +220,7 @@ function setCustomerInfo(customer, idAddress = null) {
         }
     }
     if ( direccionDefault?.typeService ) {
+        $('#direccionCliente').prop('title', setDir( direccionDefault ));// Activa el tooltip de la dirección
         $('#tipoServicioCliente').text(direccionDefault.typeService);
     }
 
@@ -427,9 +428,9 @@ function setDir(direccion) {
     direccion.entreCalle      ? str+= ' Entre '+direccion.entreCalle : '';
     direccion.entreYCalle     ? str+= ' Y '+direccion.entreYCalle : '';
     direccion.colonia         ? str+= ', Col. '+direccion.colonia : '';
+    direccion.zip             ? str+= ', C.P. '+direccion.zip : '';
     direccion.stateName       ? str+= ', '+direccion.stateName : '';
     direccion.city            ? str+= ', '+direccion.city : '';
-    direccion.zip             ? str+= ', C.P. '+direccion.zip : '';
     direccion.defaultBilling  ? str+= ', Facturación' : '';
 
     return str;
@@ -834,7 +835,7 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
         '<td>'+( type == "casos" ? ( 'Sin fecha prometida' ) : (item.cierrePrevisto ?? 'Sin fecha prometida') )+'</td>'+// Fecha prometida
         '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
         '<td>'+( type == "casos" ? ( item.numeroCaso ?? 'Sin asignar' ) : ( item.numeroDocumento ?? 'Sin asignar' ) )+'</td>'+// Numero de documento u caso
-        '<td>'+( type == "casos" ? ( item.asunto ?? 'Sin asignar' ) : ( item.tipoTransaccion ?? 'Sin asignar' ) )+'</td>'+// Asunto
+        '<td>'+( type == "casos" ? ( item.asunto ?? 'Sin asignar' ) : ( 'Pedido' ) )+'</td>'+// Asunto
         '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin asignar' ) : ( 'Sin asignar' ) )+'</td>'+// Fecha visita
         '<td>'+( type == "casos" ? ( item.hora_visita ?? 'Sin asignar' ) : ( item.horaVisita ?? 'Sin asignar' ) )+'</td>'+// Hora visita
         '<td>'+( type == "casos" ? ( item.estatus ?? 'Sin asignar' ) : ( item.estado ?? 'Sin asignar' ) )+'</td>'+// Estado
