@@ -237,8 +237,9 @@ $("#agregarMetodoPago").click(function () {
 $("#metodoPagoPedido").change(function () {
     let metodoId = parseInt( $(this).val() );
     
-    if ( metodosPagoPrepago.includes( metodoId ) ) {// Si el método de pago es transferencia, prepago
+    if ( metodosPagoPrepago.includes( metodoId ) || metodoId == metodoTransferencia ) {// Si el método de pago es transferencia, prepago
         $(".campo-prepago").removeClass("d-none");
+        getListaCuentas(metodoId);
     } else {
         $(".campo-prepago").addClass("d-none");
     }
@@ -252,11 +253,18 @@ $("#metodoPagoPedido").change(function () {
 $('#guardarMetodoPagoForm').on('click', function () {
     let canContinue = false;
     // let conFolio    = ["8", "2", "5", "6"];
-    let metodoId    = $("#metodoPagoPedido").val();
+    let metodoId    = parseInt( $("#metodoPagoPedido").val() );
     let metodoTxt   = $('#metodoPagoPedido').children(':selected').text();
+    let tipoTarjeta = parseInt($("#tipoTarjeta").val());
+    let tipoCuenta  = parseInt($("#tipoCuenta").val());
+    let folioAut    = $("#folioAutorizacionPedido").val().trim();
     // let numMetodos  = $('table.productosMetodoPago tbody').children('tr.metodos').length;
 
-    if(!metodoId || metodoId == "0" || !$("#montoPagoPedido").val() ) {
+    if(
+        ( !metodoId || metodoId == 0 || !$("#montoPagoPedido").val() ) || 
+        ( metodosPagoPrepago.includes(metodoId) && ( !folioAut || !tipoTarjeta || !tipoCuenta ) ) || //Si son de prepago, pide estos campos
+        ( metodoId == metodoTransferencia  && ( !folioAut || !tipoCuenta ) ) // Si es transferencia, no pide el tipo de tarjeta
+    ) {
         canContinue = false;
     } else {
         canContinue = true;
@@ -273,12 +281,13 @@ $('#guardarMetodoPagoForm').on('click', function () {
     $('.productosMetodoPago').parent().parent().removeClass('d-none');
 
     let total        = parseFloat($('#montoPagoPedido').val()).toFixed(2);
-    let folio        = $('#folioAutorizacionPedido').val().trim();
     let metodoObj    = {
-        metodo_txt : metodoTxt,
-        tipo_pago  : metodoId,
-        monto      : total,
-        folio      : folio,
+        metodo_txt   : metodoTxt,
+        tipo_pago    : metodoId,
+        tipo_cuenta  : tipoCuenta,
+        tipo_tarjeta : tipoTarjeta,
+        monto        : total,
+        folio        : folioAut,
     };
 
     agregarMetodoPago(metodoObj);
@@ -611,6 +620,7 @@ async function savePedido() {
         let canContinue      = true;
         let articulosArr     = [];
         let pagosArr         = [];
+        let prepaymentArr    = [];
         let time             = moment().format('h:mm a');
         let saldoDisponible  = Number(customerGlobal?.objInfoComercial?.saldoDisponible);
         saldoDisponible      = isNaN(saldoDisponible) ? 0 : saldoDisponible;
@@ -665,10 +675,20 @@ async function savePedido() {
         // Agrega la lista de métodos de pago
         $('table.productosMetodoPago > tbody  > tr.metodo-item').each(function() {
             let metodoObj = $(this).data('metodo');
-
+            let metodoId  = parseInt(metodoObj.tipo_pago);
             if ( metodoObj.tipo_pago == '9' ) {// El método de pago es crédito
                 totalConCredito = parseFloat( Number(metodoObj.monto) ).toFixed(2);
             }
+            
+            // Si el método de pago es transferencia o prepago, se enviará una orden de prepago después de guardar el pedido
+            if ( metodosPagoPrepago.includes( metodoId ) || metodoId == metodoTransferencia ) {
+                prepaymentArr.push({
+                    "customer" : customerGlobal.id,
+                    "account" : metodoObj.tipo_cuenta,
+                    "amount" : metodoObj.monto
+                });
+            }
+
             pagosArr.push( $( this ).data('metodo') );
         });
 
@@ -768,6 +788,9 @@ async function savePedido() {
             clearFields();
             getPendingCases();
             getCasosOportunidades();
+            if ( prepaymentArr.length > 0 ) {// Si se realizaron prepagos, se enviará a gestionar
+                sendPrepayment(prepaymentArr);
+            }
         }).catch((error) => {
             opportunities = [];
             infoMsg('error', 'El pedido no ha sido creado', 'Verifique que la información sea correcta');
@@ -775,6 +798,27 @@ async function savePedido() {
             
             console.log(error);
         });
+    });
+}
+
+// Método para envíar un prepago
+function sendPrepayment(prepaymentArr) {
+    let params = {
+        "customerPayments" : prepaymentArr
+    };
+
+    let settings = {
+        url    : urlMakePrepayment,
+        method : 'POST',
+        data   : JSON.stringify(params),
+    }
+
+    setAjax(settings).then((response) => {
+        console.log('Prepagos enviado exitósamente', response);
+    }).catch((error) => {
+        // Limpia los campos de cliente
+        console.log('Ha ocurrido un error al enviar los prepagos');
+        console.log(error);
     });
 }
 

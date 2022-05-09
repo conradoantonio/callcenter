@@ -498,6 +498,27 @@ function getMetodosPago() {
     });
 }
 
+// Función para obtener la lista de cuentas disponibles para los prepagos
+function getListaCuentas(metodoId) {
+    let params = {
+        // "subsidiary"    : userSubsidiary,
+        "subsidiary"    : 25,
+        "methodPayment" : metodoId
+    }
+    let settings = {
+        url      : urlGetAccountsPrepayment,
+        method   : 'POST',
+        data     : JSON.stringify(params)
+    }
+
+    setAjax(settings).then((response) => {
+        setSelectListaCuenta((response.data));
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+
 // Función para obtener la lista de origen del servicio
 function getServiceOrigin() {
     let settings = {
@@ -612,6 +633,25 @@ function setSelectMetodosPago(items) {
                         '<option class="'+classMethod+'" value='+metodo.id+'>'+metodo.method+'</option>'
                     );
                 }
+            }
+        }
+    } else {
+        console.warn('No hay métodos de pago por cargar');
+    }
+}
+
+// Método para llenar el select de la lista de cuentas acorde al prepago seleccionado
+function setSelectListaCuenta(items) {
+    $('select#tipoCuenta').children('option').remove();
+    if ( items.length ) {
+        $("select#tipoCuenta").append('<option value="0">Seleccione una opción</option>')
+        for ( var key in items ) {
+            if ( items.hasOwnProperty( key ) ) {
+                let cuenta = items[key];
+
+                $("select#tipoCuenta").append(
+                    '<option value='+cuenta.accountId+'>'+cuenta.account+'</option>'
+                );
             }
         }
     } else {

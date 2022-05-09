@@ -307,10 +307,12 @@ function armarCasoPendiente (casoArt) {
     $('.productosMetodoPago').parent().parent().removeClass('d-none');
 
     let metodoObj = {
-        metodo_txt : metodoItem.method,
-        tipo_pago  : metodoItem.id,
-        monto      : 0.00,
-        folio      : '',
+        metodo_txt   : metodoItem.method,
+        tipo_pago    : metodoItem.id,
+        tipo_cuenta  : '',
+        tipo_tarjeta : '',
+        monto        : 0.00,
+        folio        : '',
     };
 
     $(".productosMetodoPago tbody").append(
@@ -345,10 +347,12 @@ $('#creditosCliente')
     $('.productosMetodoPago').parent().parent().removeClass('d-none');
 
     let metodoObj    = {
-        metodo_txt : metodoItem.method,
-        tipo_pago  : metodoItem.id,
-        monto      : totalNota,
-        folio      : '',
+        metodo_txt   : metodoItem.method,
+        tipo_pago    : metodoItem.id,
+        tipo_cuenta  : '',
+        tipo_tarjeta : '',
+        monto        : totalNota,
+        folio        : '',
     };
 
     agregarMetodoPago(metodoObj);
@@ -369,10 +373,12 @@ $('#creditosCliente')
     $('.productosMetodoPago').parent().parent().removeClass('d-none');
 
     let metodoObj    = {
-        metodo_txt : metodoItem.method,
-        tipo_pago  : metodoItem.id,
-        monto      : totalNota,
-        folio      : '',
+        metodo_txt   : metodoItem.method,
+        tipo_pago    : metodoItem.id,
+        tipo_cuenta  : '',
+        tipo_tarjeta : '',
+        monto        : totalNota,
+        folio        : '',
     };
 
     agregarMetodoPago(metodoObj);
