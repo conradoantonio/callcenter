@@ -2960,6 +2960,9 @@
         urlGetAddressOfZIP = '${ds.getAddressOfZIP}';
         urlGetAccountsPrepayment = '${ds.accountsPrepayment}';
         urlMakePrepayment = '${ds.makePrepayment}';
+        urlGetEstados = '${ds.getEstados}';
+        urlGetMunicipios = '${ds.getMunicipios}';
+        urlGetColonias = '${ds.getColonias}';
         
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
@@ -3021,10 +3024,10 @@
             $(this).find('select.form-ptg').each(function( index ) {
                 $( this ).val($(this).children("option:first").val());
             });
-
-            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").prop("disabled", true);
-            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").children("option").remove();
-            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").append('<option value="">Seleccione una opción</option>');
+            //$("#estadoDireccion, #coloniaDireccion, #municipioDireccion").prop("disabled", true);
+            //$("#estadoDireccion, #coloniaDireccion, #municipioDireccion").children("option").remove();
+            //$("#estadoDireccion, #coloniaDireccion, #municipioDireccion").append('<option value="">Seleccione una opción</option>');
+            //$("#estadoDireccion, #coloniaDireccion, #municipioDireccion").append('<option value="">Seleccione una opción</option>');
             $('.dias-semana').prop('disabled', true);
 
             $('#rutaDireccion').data('ruta-obj', null);

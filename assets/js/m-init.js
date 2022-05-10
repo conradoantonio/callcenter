@@ -229,8 +229,8 @@ function setSelectStatusOp(items) {
         )
         
         items.forEach(element => {
-            if(element.nombre.trim().toLowerCase() == "por asignar") {
-                idPorAsignar = element.id;
+            if(element.nombre.trim().toLowerCase() == "por notificar") {
+                idPorNotificar = element.id;
             }
             if(element.nombre.trim().toLowerCase() == "asignado") {
                 idAsignado = element.id;
@@ -677,7 +677,7 @@ function getServicios($event) {
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td style="left: 200px;"class="text-center sticky-col">'+
-                                        ((pedido.servicio == "1" || pedido.servicio == "2") && (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar) ? '<i onclick="asignarViaje(this)" class="fa-solid fa-truck color-primary c-pointer" title="Asignar viaje(ruta)" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
+                                        ((pedido.servicio == "1" || pedido.servicio == "2") && (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar) ? '<i onclick="asignarViaje(this)" class="fa-solid fa-truck color-primary c-pointer" title="Asignar ruta" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td class="text-center '+(pedido.tipoContratoId && pedido.tipoContratoId.trim() && pedido.tipoContratoId == "2" ? 'text-danger': '')+'">' + (auxRuta ? auxRuta : 'Sin asignar') + '</td>'+
@@ -750,8 +750,9 @@ function getServicios($event) {
                                         '<div class="btn-group dropend vertical-center">'+                                            
                                             '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                                             '<ul class="dropdown-menu">'+
-                                                '<li onclick="gestionarCaso(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-gears color-primary"></i> Gestionar '+(caso.tipo_servicio == "2" ? 'queja' : 'fuga')+'</li>'+
+                                                (caso.estado == "1" || caso.estado == "2" || caso.estado == "3" ? '<li onclick="gestionarCaso(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-gears color-primary"></i> Gestionar '+(caso.tipo_servicio == "2" ? 'queja' : 'fuga')+'</li>' : '')+
                                                 '<li onclick="seguimientoServicio(this,'+"'caso'"+')" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
+                                                (caso.estado == "7" ? '<li onclick="cerrarCaso(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-square-xmark color-primary"></i> Cerrar '+(caso.tipo_servicio == "2" ? 'queja' : 'fuga')+'</li>' : '')+
                                             '</ul>'+
                                         '</div>'+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
@@ -767,7 +768,7 @@ function getServicios($event) {
                                     '<td class="text-center">' + caso.numero_caso + '</td>'+
                                     '<td class="text-center">' + caso.id_cliente + '</td>'+
                                     '<td class="text-center">' + (caso.tipo_servicio == "2" ? 'Queja' : 'Fuga') + '</td>'+
-                                    '<td class="text-center">' + (caso.estado == "1" ? 'No iniciado' : caso.estado == "2" ? 'En curso' : caso.estado == "3" ? 'Escalado' : caso.estado == "5" ? 'Cerrado' : '') + '</td>'+
+                                    '<td class="text-center">' + (caso.estado == "1" ? 'No iniciado' : caso.estado == "2" ? 'En curso' : caso.estado == "3" ? 'Escalado' : caso.estado == "5" ? 'Cerrado' : caso.estado == "7" ? 'Atendido' : '') + '</td>'+
                                     '<td class="text-center">' + (caso.asignadoNombre && caso.asignadoNombre.trim() ? caso.asignadoNombre : 'Sin asignar') + '</td>'+
                                     '<td class="text-center">' + caso.fecha_solicitud + '</td>'+
                                     '<td class="text-center">' + (caso.fecha_visita ? caso.fecha_visita : 'Sin asignar') + '</td>'+
@@ -804,6 +805,20 @@ function getRutaFormat(item, tipo) {
         auxRuta = item.ruta;
     }
     auxRut += (auxRuta && auxRuta.trim() ? (auxRuta.trim().split(":").length > 1 ? auxRuta.trim().split(":")[1].trim() : auxRuta.trim()) : '')
+
+    if(auxRuta && auxRut.trim()) {
+        auxRut = auxRut.trim();
+        let rout = auxRut.split(" - ").length > 1 ? auxRut.split(" - ")[0] : auxRut;
+        rout = rout.split("-").length > 2 ? rout.split("-")[2] : rout.trim();
+        if(tipo == "pedido") {
+            auxRut = rout + " (" + (item.turno && item.turno.trim() ? item.turno.trim() : 'Sin especificar') + ")";
+        } else if(tipo == "ruta") {
+            auxRut = rout;
+        } else if(tipo == "viajes") {
+            auxRut = rout + " (" + (item.turno && item.turno.trim() ? item.turno.trim() : 'Sin especificar') + ")";
+        }
+    }
+        
     return auxRut;
 }
 
@@ -906,7 +921,7 @@ function gestionarServicio($this) {
     $('#viajeVentaPedido').children('option').remove();
     vrViajes.forEach(element => {
         $("#viajeVentaPedido").append(
-            '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+element.nViaje +' - '+getRutaFormat(element, "viajes")+'</option>'
+            '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+getRutaFormat(element, "viajes")+'</option>'
         );
     });
     if(servicio.id_no_viaje && servicio.id_no_viaje.trim()) {
@@ -1050,7 +1065,7 @@ $("#guardarPedido").click(function() {
             aux += "<li>Hasta</li>";
         }
         if(!$("#viajeVentaPedido").val()) {
-            aux += "<li>Viaje(ruta)</li>";
+            aux += "<li>Ruta</li>";
         }
         aux += "</ul>";
         infoMsg('warning', 'Campos requeridos:', aux);
@@ -1076,7 +1091,7 @@ $("#guardarPedido").click(function() {
                 ]
             };
 
-            if(servicio.status_id == idPorAsignar || servicio.status_id == idPorReprogramar) {
+            if(servicio.status_id == idPorNotificar || servicio.status_id == idPorReprogramar) {
                 dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_monitor = userId;
                 dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_estado_pedido = idAsignado;
                 dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_fecha_notificacion = dateFormatFromDate(new Date(), "5");
@@ -1372,6 +1387,89 @@ function formatTime(value, format = 'hh:mm a') {
 
     return '';
 }
+
+$("#guardarCerrarCaso").click(function() {
+    let caso = $("#cerrarCasoModal").data("item");
+    if(!$("#cerrarCasoObservaciones").val() || !$("#cerrarCasoObservaciones").val().trim()) {
+        let aux = "<ul>";
+        if(!$("#cerrarCasoObservaciones").val() || !$("#cerrarCasoObservaciones").val().trim()) {
+            aux += "<li>Observaciones</li>";
+        }
+        aux += "</ul>";
+        infoMsg('warning', 'Campos requeridos:', aux);
+        return;
+    }
+    confirmMsg("warning", "¿Seguro que desea cerrar el caso?", function(resp) {
+        if(resp) {
+            let dataSend = [];            
+            dataSend.push({
+                'id': caso.internalId,
+                "status": "5"
+            });
+            
+            loadMsg();
+            let settings = {
+                url      : urlPutCases,
+                method   : 'PUT',
+                data: JSON.stringify({casosUpdate : dataSend})
+            }
+
+            setAjax(settings).then((response) => {
+                if(response.success) {
+                    let notas = [];
+                    notas.push({ 
+                        type: "nota", 
+                        idRelacionado: caso.internalId, 
+                        titulo: "Cerrar caso", 
+                        nota: $("#cerrarCasoObservaciones").val().trim(),
+                        transaccion: "caso"
+                    });
+                    if(notas.length > 0) {
+                        let settings2 = {
+                            url      : urlPostNoteandMessage,
+                            method   : 'POST',
+                            data: JSON.stringify({ informacion: notas })
+                        }
+                        setAjax(settings2).then((response) => { 
+                            if(response.success) { 
+                                $("#cerrarCasoModal").modal("hide");
+                                swal.close();
+                                infoMsg('success', '', "Caso cerrado de manera correcta", null, function(resp) {
+                                    $(".btn-expand").trigger("click");
+                                    getServicios();
+                                }); 
+                            }
+                        }).catch((error) => {
+                            //infoMsg('error', 'Error:', "Ocurrio un error al tratar de cerrar");
+                            $("#cerrarCasoModal").modal("hide");
+                            swal.close();
+                            infoMsg('success', '', "Caso cerrado de manera correcta", null, function(resp) {
+                                //$(".btn-expand").trigger("click");
+                                getServicios();
+                            });
+                        });
+                    } else {
+                        $("#cerrarCasoModal").modal("hide");
+                        swal.close();
+                        infoMsg('success', '', "Caso cerrado de manera correcta", null, function(resp) {
+                            //$(".btn-expand").trigger("click");
+                            getServicios();
+                        });                
+                    }
+                    
+                } else {
+                    swal.close();
+                    infoMsg('error', 'Error:', "Ocurrio un error al tratar de cerrar el caso");
+                }            
+            }).catch((error) => {
+                console.log(error);
+                infoMsg('error', 'Error:', "Ocurrio un error al tratar de cerrar el caso");
+                swal.close();
+            });
+        }
+    });
+    
+});
 
 $("#guardarCaso").click(function() {
     let caso = $("#data-casos").data("item");
@@ -1792,13 +1890,13 @@ function asignarViaje($this) {
         $('#asignarViajeRuta').children('option').remove();
         vrViajes.forEach(element => {
             $("#asignarViajeRuta").append(
-                '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+element.nViaje +' - '+getRutaFormat(element, "viajes")+'</option>'
+                '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+getRutaFormat(element, "viajes")+'</option>'
             );
         });
         if(pedido.id_no_viaje && pedido.id_no_viaje.trim()) {
             if($("#asignarViajeRuta option[value="+pedido.id_no_viaje+"]").length == 0) {
                 $("#asignarViajeRuta").append(
-                    '<option data-item=' + "'" + JSON.stringify({choferId : pedido.choferId, choferPhone: pedido.phoneChofer}) + "'" + ' value="'+pedido.id_no_viaje+'">'+pedido.id_no_viaje +' - '+getRutaFormat(pedido, "pedido")+'</option>'
+                    '<option data-item=' + "'" + JSON.stringify({choferId : pedido.choferId, choferPhone: pedido.phoneChofer}) + "'" + ' value="'+pedido.id_no_viaje+'">'+getRutaFormat(pedido, "pedido")+'</option>'
                 );       
             }
         }
@@ -1842,6 +1940,13 @@ function cancelarPedido($this) {
     $("#cancelarOppModal").modal("show");
 }
 
+function cerrarCaso($this) {
+    let caso = $($this).closest("tr").data("item");
+    $("#cerrarCasoPedido").html((caso.tipo_servicio == "2" ? 'queja' : 'fuga') + (caso.numero_caso ? " - " + caso.numero_caso : ''));
+    $('#cerrarCasoObservaciones').val(null);
+    $("#cerrarCasoModal").data("item", caso);
+    $("#cerrarCasoModal").modal("show");
+}
 
 $("#guardarCancelarOpp").click(function() {
     let pedido = $("#cancelarOppModal").data("item");
@@ -2087,7 +2192,7 @@ $("#guardarAsignarViaje").click(function() {
                     ]
                 };
         
-                if(pedido.status_id == idPorAsignar || pedido.status_id == idPorReprogramar) {
+                if(pedido.status_id == idPorNotificar || pedido.status_id == idPorReprogramar) {
                     dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_monitor = userId;
                     dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_estado_pedido = idAsignado;
                     dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_fecha_notificacion = dateFormatFromDate(new Date(), "5");
@@ -2209,15 +2314,15 @@ function orderOrders(data) {
         faltantes = [];
     data.forEach(element => {
       
-      if(element.segunda_llamada && (element.status_id == idPorAsignar || element.status_id == idAsignado)) {
-        if(element.status_id == idPorAsignar) {
+      if(element.segunda_llamada && (element.status_id == idPorNotificar || element.status_id == idAsignado)) {
+        if(element.status_id == idPorNotificar) {
           element.status_color = '#000';
-          element.tooltip = 'Por asignar';
+          element.tooltip = 'Por notificar';
         }
         segundaLlamada.push(element);
-      } else if(element.status_id == idPorAsignar) {
+      } else if(element.status_id == idPorNotificar) {
         element.status_color = '#000';
-        element.tooltip = 'Por asignar';
+        element.tooltip = 'Por notificar';
         sinNotificar.push(element);
       } else if(element.status_id == idAsignado) {
         notificados.push(element);

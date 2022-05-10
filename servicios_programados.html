@@ -1274,7 +1274,7 @@
             </div>
             <div id="content-filters" class="row">
                 <div class="col-auto pb-2 ">
-                    <div class="content-input" style="min-width: 380px;">
+                    <div class="content-input" style="min-width: 280px;">
                         <label>Ruta</label><br>
                         <select id="filterRuta" onchange="getServicios(this)" class="form-ptg">
                             
@@ -1291,17 +1291,33 @@
                 </div>
                 <div class="col-auto pb-2 ">
                     <div class="content-input">
+                        <label>Tipo seguimiento</label><br>
+                        <select id="filterTipoSeguimiento" onchange="getServicios(this)" class="form-ptg">
+                            <option value="1">Aviso</option>
+                            <option value="2">Teléfonico</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-auto pb-2 ">
+                    <div class="content-input">
                         <label>Tipo de Producto</label><br>
                         <select id="filterTipoProducto" onchange="setSelectRutas(true);" class="form-ptg" style="width: 180px;">
                         </select>
                     </div>
-                </div>     
+                </div>    
                 <div class="col-auto pb-2 ">
+                    <div class="content-input">
+                        <label>Estado de seguimiento</label><br>
+                        <select id="filterEstadoSeguimiento" onchange="getServicios(this);" class="form-ptg" style="width: 180px;">
+                        </select>
+                    </div>
+                </div> 
+                <!--<div class="col-auto pb-2 ">
                     <div class="content-input">
                         <label>Próxima llamada</label><br>
                         <input id="filterProximaLlamada" onchange="getServicios(this)" type="date" class="form-ptg"/>
                     </div>
-                </div>        
+                </div>-->
             </div>
         </div>
         <div id="content-data">
@@ -1322,6 +1338,7 @@
                                     <th style="min-width: 95px" class="text-center">Id Cliente</th>
                                     <th style="min-width: 135px" class="text-center">Tipo seguimiento</th>
                                     <th style="min-width: 155px" class="text-center">Fecha Prometida</th>
+                                    <th style="min-width: 130px" class="text-center">Estado</th>
                                     <th style="min-width: 265px" class="text-center">Nombre Cliente</th>
                                     <th style="min-width: 125px" class="text-center">Teléfono</th>
                                     <th style="min-width: 125px" class="text-center">Tipo de producto</th>
@@ -1405,6 +1422,7 @@
         urlGetListCancellReason = "${ds.getListCancellReason}";
         urlGetMethodPayments = '${ds.getMethodPayments}';
         urlObtenerArticulos = '${ds.getItems}';
+        urlGetListStatusCallAlert = '${ds.getListStatusCallAlert}';
         statusOP = [];
         countServices = 0;
         metodoMultiple = 7;
@@ -1413,6 +1431,8 @@
         methodPayments = [];
         articulosArr = [];
         concatObsPagos = ["2", "8"];
+        vrStatusAvisos = [];
+        idDefPorContestar = 3;
 
         function getArticulos() {
             let settings = {
@@ -1430,8 +1450,35 @@
                             $("#capacidadFormProductos").append( articulo );
                         }
                     });
-                    readyInit();
                 }
+                readyInit();
+            }).catch((error) => {
+                readyInit();
+                console.log(error);
+            });
+        }
+
+        function getStatusCallAlert() {
+            let settings = {
+                url      : urlGetListStatusCallAlert,
+                method   : 'GET',
+            }
+
+            setAjax(settings).then((response) => {
+                if ( response.data.length ) {
+                    vrStatusAvisos = [];
+                    $('#filterEstadoSeguimiento').children('option').remove();
+                    response.data.forEach(element => {
+                        element.id = parseInt(element.id);                        
+                    });
+                    response.data.sort(dynamicSort("id"));
+                    response.data.forEach(element => {
+                        vrStatusAvisos.push(element);
+                        $("#filterEstadoSeguimiento").append( '<option '+(element.id == idDefPorContestar ? 'selected' : '')+' value='+element.id+'>'+element.name+'</option>' );
+                    });
+                    
+                }
+                readyInit();
             }).catch((error) => {
                 readyInit();
                 console.log(error);
@@ -1441,7 +1488,7 @@
         // Se inyecta la información del usuario logueado
         $('.user-name').text(userName);
         $('#role').text(userRole);
-        $("#filterProximaLlamada").val(dateFormatFromDate(new Date(), "2"));
+        //$("#filterProximaLlamada").val(dateFormatFromDate(new Date(), "2"));
 
         $('body').delegate('.dropdown-toggle', 'show.bs.dropdown', function () {
             $(this).closest("td").css("z-index", "2");
@@ -1844,7 +1891,7 @@
         });
 
         vrStatus = [];
-        idPorAsignar = "";
+        idPorNotificar = "";
         idAsignado = "";
         idCancelado = "";
         idEntregado = "";
@@ -1856,8 +1903,8 @@
             if ( items.length ) {
                 $('#estadoCambiarEstado').children('option').remove();
                 items.forEach(element => {
-                    if(element.nombre.trim().toLowerCase() == "por asignar") {
-                        idPorAsignar = element.id;
+                    if(element.nombre.trim().toLowerCase() == "por notificar") {
+                        idPorNotificar = element.id;
                     }
                     if(element.nombre.trim().toLowerCase() == "asignado") {
                         idAsignado = element.id;
@@ -2596,14 +2643,14 @@
                 if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "1") {
                     rutasCilindros.forEach(element => {
                         $("#filterRuta").append(
-                            '<option value="'+element.internalId+'">'+(element.name && element.name.split(":").length > 1 ? element.name.split(":")[1].trim() : element.name)+'</option>'
+                            '<option value="'+element.internalId+'">'+getRutaFormat(element, "ruta")+'</option>'
                         );
                     });
                 }
                 if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "2") {
                     rutasEstacionarios.forEach(element => {
                         $("#filterRuta").append(
-                            '<option value="'+element.internalId+'">'+(element.name && element.name.split(":").length > 1 ? element.name.split(":")[1].trim() : element.name)+'</option>'
+                            '<option value="'+element.internalId+'">'+getRutaFormat(element, "ruta")+'</option>'
                         );
                     });
                 }
@@ -2627,6 +2674,32 @@
                 console.warn('No hay rutas por cargar');
                 readyInit();
             }
+        }
+
+        function getRutaFormat(item, tipo) { 
+            let auxRut = "";
+            let auxRuta = item.name;
+            if(tipo == "pedido") {
+                auxRuta = item.rutaNombre;
+            } else if(tipo == "viajes") {
+                auxRuta = item.ruta;
+            }
+            auxRut += (auxRuta && auxRuta.trim() ? (auxRuta.trim().split(":").length > 1 ? auxRuta.trim().split(":")[1].trim() : auxRuta.trim()) : '')
+
+            if(auxRuta && auxRut.trim()) {
+                auxRut = auxRut.trim();
+                let rout = auxRut.split(" - ").length > 1 ? auxRut.split(" - ")[0] : auxRut;
+                rout = rout.split("-").length > 2 ? rout.split("-")[2] : rout.trim();
+                if(tipo == "pedido") {
+                    auxRut = rout + " (" + (item.turno && item.turno.trim() ? item.turno.trim() : 'Sin especificar') + ")";
+                } else if(tipo == "ruta") {
+                    auxRut = rout;
+                } else if(tipo == "viajes") {
+                    auxRut = rout + " (" + (item.turno && item.turno.trim() ? item.turno.trim() : 'Sin especificar') + ")";
+                }
+            }
+                
+            return auxRut;
         }
 
         $("#plantas").change(function() {
@@ -2684,14 +2757,16 @@
 
             filt.tipo_producto = parseInt($("#filterTipoProducto").val());
 
+            filt.status_alert = $("#filterEstadoSeguimiento").val();
+
             vrStatus.forEach(element => {
                 if(element.nombre.toLowerCase() == "por confirmar") {
                     filt.status_oportunidad = element.id;
                 }
             });
 
-            filt.fechaPrometida1 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
-            filt.fechaPrometida2 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
+            //filt.fechaPrometida1 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
+            //filt.fechaPrometida2 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
 
             return filt;
         }
@@ -2870,6 +2945,7 @@
                                         '<td class="text-center">Aviso</td>'+
                                         '<td class="text-center">' + dateFormatFromDate(pedido.fecha_prometida, '5') + '</td>'+
                                         '<td class="text-center">' + (pedido.nombre_cliente ? pedido.nombre_cliente : 'Sin nombre de cliente') + '</td>'+
+                                        '<td class="text-center">' + (pedido.statusAlertName ? pedido.statusAlertName : 'Sin estado asignado') + '</td>'+
                                         '<td class="text-center">' + (pedido.telefono ? pedido.telefono : 'Sin teléfono') + '</td>'+
                                         '<td class="text-center">' + tipoServicio + '</td>'+
                                         '<td class="text-center">' + (auxDir ? auxDir : 'Sin dirección') + '</td>'+
@@ -3482,7 +3558,7 @@
                                     "custbody_ptg_entre_las": formatTime( $('#desdePedido').val() ),
                                     "custbody_ptg_y_las" : formatTime( $('#hastaPedido').val()),
                                     "memo": $('#observacionesPagoPedido').val(),
-                                    "custbody_ptg_estado_pedido": idPorAsignar,
+                                    "custbody_ptg_estado_pedido": idPorNotificar,
                                     'custbody_ptg_opcion_pago_obj': ''
                                 },
                                 "lines": [
@@ -3678,7 +3754,7 @@
         }
 
         function readyInit() {
-            let totalServices = 7;
+            let totalServices = 8;
             countServices += 1;
             if(countServices == totalServices) {
                 getServicios();
@@ -3693,6 +3769,7 @@
         getZonas();
         getMethodPayments();
         getArticulos();
+        getStatusCallAlert();
     </script>
 
 </body>

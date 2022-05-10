@@ -666,11 +666,11 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
-                    <h5 class="modal-title" id="titleAsignarViajeModal">Asignar viaje al servicio: <span id="asignarViajePedido"></span></h5>
+                    <h5 class="modal-title" id="titleAsignarViajeModal">Asignar ruta al servicio: <span id="asignarViajePedido"></span></h5>
                 </div>
                 <div class="modal-body">
                     <div class="content-input content-input-primary">
-                        <label>Viaje*</label><br>
+                        <label>Ruta*</label><br>
                         <select id="asignarViajeRuta" class="form-ptg form-ptg-primary">
                         </select>
                     </div>
@@ -707,6 +707,29 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                         aria-label="Close">Cerrar</button>
                     <button id="guardarCancelarOpp" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cerrarCasoModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titlecerrarCasoModalModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 500px;">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titlecerrarCasoModalModal">Cancelar <span id="cerrarCasoPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="content-input content-input-primary">
+                        <label>Observaciones*</label><br>
+                        <textarea rows="3" id="cerrarCasoObservaciones" class="form-ptg form-ptg-primary">
+                        </textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cerrar</button>
+                    <button id="guardarCerrarCaso" type="button" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>
@@ -1014,6 +1037,7 @@
                             <option value="1">No iniciado</option>
                             <option value="2">En curso</option>
                             <option id="optEscalado" value="3">Escalado</option>
+                            <option value="7">Atendido</option>
                             <option value="5">Cerrado</option>
                         </select>
                     </div>
@@ -1275,7 +1299,7 @@
                                 </div>
                                 <div class="col-4">
                                     <div class="content-input content-input-primary">
-                                        <label>Viaje(ruta)*</label>
+                                        <label>Ruta*</label>
                                         <select id="viajeVentaPedido" readonly type="text" class="form-ptg form-ptg-primary"></select>
                                     </div>
                                 </div>
@@ -1623,7 +1647,7 @@
                                                 <option value="1">No iniciado</option>
                                                 <option value="2">En curso</option>
                                                 <option value="3">Escalado</option>
-                                                <option value="5">Cerrado</option>
+                                                <!--<option value="5">Cerrado</option>-->
                                             </select>
                                         </div>
                                     </div>
@@ -2147,6 +2171,22 @@
 
             return aux2[0].toString() + ":" + aux2[1];
 
+        }
+
+        function getTimeInt(time) {
+            let timeAux = time.split(" "),
+                hour = timeAux[0].split(":")[0];
+
+            if(timeAux[1].toLowerCase() == "pm" || timeAux[1].toLowerCase() == "p.m") {
+                if(hour != "12") {
+                    hour = parseInt(hour) + 12;
+                }                
+            } else if(timeAux[1].toLowerCase() == "am" || timeAux[1].toLowerCase() == "a.m"){
+                if(hour == "12") {
+                    hour = 0;
+                } 
+            }
+            return parseInt(hour);
         }
 
         function timeFormatFromDate(date, format = "1") {

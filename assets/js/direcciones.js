@@ -235,30 +235,32 @@ function getDirrecionByCP(callback = null) {
     setAjax(settings).then((response) => {
         console.log(response);
         if(response.data.length > 0) {
-            let dataEst = {},
-                dataMun = {},
-                dataCol = {};
+            let plantaActual   = $("#plantas option:selected").text().trim();
+            let coloniasAux = [];
+            
             response.data.forEach(element => {
-                if(!dataEst[element.state]) {
-                    dataEst[element.state] = element;
-                }
-                if(!dataMun[element.country]) {
-                    dataMun[element.country] = element;
-                }
-                if(!dataCol[element.colonia]) {
-                    dataCol[element.colonia] = element;
+                if(element.rutaCil && element.rutaCil.split(":")[0].trim() == plantaActual || 
+                   element.rutaEsta && element.rutaEsta.split(":")[0].trim() == plantaActual  || 
+                   element.rutaCilVesp && element.rutaCilVesp.split(":")[0].trim() == plantaActual  || 
+                   element.rutaEstVesp && element.rutaEstVesp.split(":")[0].trim() == plantaActual ) {
+                    coloniasAux.push(element);
                 }
             });
-            console.log(dataEst, dataMun, dataCol);
-            setDataDireccion(dataEst, $("#estadoDireccion"));
-            setDataDireccion(dataMun, $("#municipioDireccion"));
-            setDataDireccion(dataCol, $("#coloniaDireccion"));
+            console.log(coloniasAux);
+            if(coloniasAux.length > 0) {
+                if(coloniasAux.length == 1) {
+                    $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
+                } else {
+                    $("#coloniaDireccion").val(null).trigger("change");
+                }
+            } else {
+                infoMsg('warning', 'Alerta:', 'No se encontraron datos para el Código Postal proporcionado');
+            }
 
             if(callback) {
                 callback();
             }
         } else {
-            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").val(null).prop("disabled", true).trigger("change");
             infoMsg('warning', 'Alerta:', 'No se encontraron datos para el Código Postal proporcionado');
         }
     }).catch((error) => {
@@ -266,7 +268,111 @@ function getDirrecionByCP(callback = null) {
     });
 }
 
-function setDataDireccion(items, elem) {
+function getEstados(trigger = false, callback = null) {
+    let settings = {
+        url      : urlGetEstados,
+        method   : 'POST',
+        data     : JSON.stringify({
+            "planta" : $("#plantas option:selected").text().trim()
+        }),
+    }
+    setAjax(settings).then((response) => {
+        if(response.data.length > 0) {
+            let dataEst = {};
+            response.data.forEach(element => {
+                if(!dataEst[element.state]) {
+                    dataEst[element.state] = element;
+                }
+            });
+            console.log(dataEst);
+            setDataDireccion(dataEst, $("#estadoDireccion"), trigger);
+
+            if(callback) {
+                callback();
+            }
+        } else {
+            $("#estadoDireccion").val(null).prop("disabled", true).trigger("change");
+            infoMsg('warning', 'Alerta:', 'No se encontraron estados para la planta actual favor de volver a intentarlo');
+        }
+    }).catch((error) => {
+        infoMsg('warning', 'Alerta:', 'No se encontraron estados para la planta actual favor de volver a intentarlo');
+    });
+}
+
+function getMunicipios(trigger = false, callback = null) {
+    if(!$("#estadoDireccion").val()) {
+        $("#municipioDireccion").val(null).prop("disabled", true).trigger("change");
+    } else {
+        let settings = {
+            url      : urlGetMunicipios,
+            method   : 'POST',
+            data     : JSON.stringify({
+                "planta" : $("#plantas option:selected").text().trim(),
+                "estado" : $("#estadoDireccion").val().trim()
+            }),
+        }
+        setAjax(settings).then((response) => {
+            if(response.data.length > 0) {
+                let dataMun = {};
+                response.data.forEach(element => {
+                    if(!dataMun[element.country]) {
+                        dataMun[element.country] = element;
+                    }
+                });
+                console.log(dataMun);
+                setDataDireccion(dataMun, $("#municipioDireccion"), trigger);
+    
+                if(callback) {
+                    callback();
+                }
+            } else {
+                $("#municipioDireccion").val(null).prop("disabled", true).trigger("change");
+                infoMsg('warning', 'Alerta:', 'No se encontraron municipios para la planta actual favor de volver a intentarlo');
+            }
+        }).catch((error) => {
+            infoMsg('warning', 'Alerta:', 'No se encontraron municipios para la planta actual favor de volver a intentarlo');
+        });   
+    }    
+}
+
+function getColonias(trigger = false, callback = null) {
+    if(!$("#municipioDireccion").val()) {
+        $("#coloniaDireccion").val(null).prop("disabled", true).trigger("change");
+    } else {
+        let settings = {
+            url      : urlGetColonias,
+            method   : 'POST',
+            data     : JSON.stringify({
+                "planta" : $("#plantas option:selected").text().trim(),
+                "estado" : $("#estadoDireccion").val().trim(),
+                "municipio" : $("#municipioDireccion").val().trim()
+            }),
+        }
+        setAjax(settings).then((response) => {
+            if(response.data.length > 0) {
+                let dataCol = {};
+                response.data.forEach(element => {
+                    if(!dataCol[element.colonia]) {
+                        dataCol[element.colonia] = element;
+                    }
+                });
+                console.log(dataCol);
+                setDataDireccion(dataCol, $("#coloniaDireccion"), trigger);
+    
+                if(callback) {
+                    callback();
+                }
+            } else {
+                $("#coloniaDireccion").val(null).prop("disabled", true).trigger("change");
+                infoMsg('warning', 'Alerta:', 'No se encontraron colonias para la planta actual favor de volver a intentarlo');
+            }
+        }).catch((error) => {
+            infoMsg('warning', 'Alerta:', 'No se encontraron colonias para la planta actual favor de volver a intentarlo');
+        });   
+    }    
+}
+
+function setDataDireccion(items, elem, trigger = true) {
     elem.children('option').remove();
     elem.append('<option value="">Seleccione una opción</option>');
 
@@ -275,7 +381,11 @@ function setDataDireccion(items, elem) {
     });
 
     if(Object.keys(items).length == 1) {
-        elem.val(Object.keys(items)[0]).trigger("change");
+        if(trigger) {
+            elem.val(Object.keys(items)[0]).trigger("change");
+        } else {
+            elem.val(Object.keys(items)[0]);
+        }
         elem.prop("disabled", true);
     } else {
         elem.val(null);

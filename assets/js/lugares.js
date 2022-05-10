@@ -1,6 +1,28 @@
 // Abre el modal de direcciones
 $("#agregarDirecciones, #agregarDireccion").click(function() {
-    $("#formDireccionesModal").modal("show");
+    loadMsg();
+    getEstados(false, function() {
+        if($("#estadoDireccion").children('option').length == 2) {
+            getMunicipios(false, function() {
+                if($("#municipioDireccion").children('option').length == 2) {
+                    getColonias(false, function() {
+                        if($("#coloniaDireccion").children('option').length == 2) {
+                            $("#coloniaDireccion").val(direccion.colonia).trigger("change");
+                        }
+                        $("#formDireccionesModal").modal("show");
+                        swal.close();                        
+                    })
+                } else {
+                    $("#formDireccionesModal").modal("show");
+                    swal.close();
+                }
+            });
+        } else {
+            $("#formDireccionesModal").modal("show");
+            swal.close();
+        }        
+    });
+    
     //getStates();
 });
 
@@ -108,34 +130,37 @@ $("#editarDireccion").click(function() {
         }
     } 
 
-    getDirrecionByCP(function() {
-        $("#formDireccionesModal").modal("show");
-        console.log(direccion);
+    getEstados(false, function() {
         if($("#estadoDireccion option[value='"+direccion.stateName+"']").length > 0) {
             $("#estadoDireccion").val(direccion.stateName);
+            getMunicipios(false, function() {
+                if($("#municipioDireccion option[value='"+direccion.city+"']").length > 0) {
+                    $("#municipioDireccion").val(direccion.city);
+                    getColonias(false, function() {
+                        if($("#coloniaDireccion option[value='"+direccion.colonia+"']").length > 0) {
+                            $("#coloniaDireccion").val(direccion.colonia).trigger("change");
+                        }
+                        $("#formDireccionesModal").modal("show");
+                        swal.close();                        
+                    })
+                } else {
+                    $("#formDireccionesModal").modal("show");
+                    swal.close();
+                }
+            });
+        } else {
+            $("#formDireccionesModal").modal("show");
+            swal.close();
         }
-        
-        if($("#municipioDireccion option[value='"+direccion.city+"']").length > 0) {
-            $("#municipioDireccion").val(direccion.city);
-        }
-
-        if($("#coloniaDireccion option[value='"+direccion.colonia+"']").length > 0) {
-            $("#coloniaDireccion").val(direccion.colonia).trigger("change");
-        }
-        swal.close();
     });
     // Este código de obtener estados se removerá cuando esta lista se encuentre sincronizado con netsuite
     //getStates();
 });
 
 // Cuando el select de estados cambie, manda a llamar la petición de obtener ciudades
-/*$('select#estadoDireccion').on('change', function(e) {
-    // let val = $( "select#estadoDireccion option:selected" ).text();
-    let val = $( this ).val();
-    if ( val ) {
-        getCities( val );
-    }
-});*/
+$('select#estadoDireccion').on('change', function(e) {
+    getMunicipios();
+});
 
 /*$('select#municipioDireccion').on('change', function(e) {
     // let val = $( "select#municipioDireccion option:selected" ).text();
@@ -158,6 +183,7 @@ function setDataAuxDireccion() {
         let auxItem = $("#coloniaDireccion option:selected").data("item");
         if( auxItem.rutaCil.split(":")[0].trim() == plantaActual || auxItem.rutaEsta.split(":")[0].trim() == plantaActual ) {
             $("#zonaVentaDireccion").val(auxItem.zonePrice);
+            $("#cpDireccion").val(auxItem.zip);
             if( tipoServicioId ) {
                 if ( tipoServicioId == 1 ) {//Cilindro
                     console.log('cilindro');
@@ -200,10 +226,12 @@ function setDataAuxDireccion() {
             }
         } else {
             infoMsg("error", "Error:", "La colonia seleccionada no pertenece a la planta actual");
+            $("#cpDireccion").val("");
             $("#zonaVentaDireccion").val("");
             $("#rutaDireccion, #rutaDireccionVesp").val("");
         }        
     } else {
+        $("#cpDireccion").val("");
         $("#zonaVentaDireccion").val("");
         $("#rutaDireccion, #rutaDireccionVesp").val("");
     }
