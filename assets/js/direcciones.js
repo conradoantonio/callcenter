@@ -218,7 +218,7 @@ function getDirrecionByCPDelay($event) {
         if($("#cpDireccion").val().length >= 5) {
             getDirrecionByCP();
         } else {
-            $("#estadoDireccion, #coloniaDireccion, #municipioDireccion").val(null).prop("disabled", true).trigger("change");
+            $("#coloniaDireccion").val(null).prop("disabled", true).trigger("change");
         }
         //
     }, 1000);  

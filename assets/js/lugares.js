@@ -159,16 +159,12 @@ $("#editarDireccion").click(function() {
 
 // Cuando el select de estados cambie, manda a llamar la petición de obtener ciudades
 $('select#estadoDireccion').on('change', function(e) {
-    getMunicipios();
+    getMunicipios(true);
 });
 
-/*$('select#municipioDireccion').on('change', function(e) {
-    // let val = $( "select#municipioDireccion option:selected" ).text();
-    let val = $( this ).val();
-    if ( val ) {
-        getColonies( val );
-    }
-});*/
+$('select#municipioDireccion').on('change', function(e) {
+    getColonias(true);
+});
 
 // Se busca la zona de venta/ruta
 $('select#coloniaDireccion').on('change', function(e) {
