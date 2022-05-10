@@ -847,7 +847,6 @@ function setCasosOportunidades( data ) {
 
 // Método para llenar la tabla de casos y oportunidades
 function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
-    // Se necesita modificar el z-index de los th
     let tr = 
     '<tr class='+type+' data-item='+"'"+JSON.stringify(item)+"'"+'>'+
         '<td class="text-center sticky-col">'+  
@@ -882,21 +881,11 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
         '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
         '<td>'+( type == "casos" ? ( item.numeroCaso ?? 'Sin asignar' ) : ( item.numeroDocumento ?? 'Sin asignar' ) )+'</td>'+// Numero de documento u caso
         '<td>'+( type == "casos" ? ( item.asunto ?? 'Sin asignar' ) : ( 'Pedido' ) )+'</td>'+// Asunto
-        // '<td>'+( type == "casos" ? ( item.fecha_visita ? item.fecha_visita : 'Sin asignar' ) : ( 'Sin asignar' ) )+'</td>'+// Fecha visita
-        // '<td>'+( type == "casos" ? ( item.hora_visita ?? 'Sin asignar' ) : ( item.horaVisita ?? 'Sin asignar' ) )+'</td>'+// Hora visita
+        '<td>'+( type == "casos" ? ( 'N/A' ) : ( item.rutaAsignada ? getRouteNumber(item.rutaAsignada) : 'Sin asignar' ) )+'</td>'+// Ruta
+        '<td>'+( type == "casos" ? ( 'N/A' ) : ( item.representanteVentas ?? 'Sin asignar' ) )+'</td>'+// Atendido por
         '<td>'+( type == "casos" ? ( item.estatus ?? 'Sin asignar' ) : ( item.estado ?? 'Sin asignar' ) )+'</td>'+// Estado
         '<td>'+( type == "casos" ? ( item.prioridad ?? 'Sin asignar' ) : 'N/A' )+'</td>'+// Prioridad
     '</tr>';
-    // <th class="text-center">ID del servicio</th>
-    // <th class="text-center">Fecha creación</th>
-    // <th class="text-center">Fecha prometida</th>
-    // <th class="text-center">Tipo Servicio</th>
-    // <th class="text-center">Número de documento</th>
-    // <th class="text-center">Asunto</th>
-    // <th class="text-center">Fecha visita</th>
-    // <th class="text-center">Hora visita</th>
-    // <th class="text-center">Estado</th>
-    // <th class="text-center">Prioridad</th>
 
     return tr;
 }
@@ -1079,6 +1068,7 @@ function verDetalles($this) {
     $('table.table-desgloce-metodos-pago tbody').children('tr').remove();
     $('.casos-imagenes').children().remove();
     
+    let direccion = '';
     let pedido = $($this).closest("tr").data("item");
     console.log(pedido);
 
@@ -1086,22 +1076,22 @@ function verDetalles($this) {
     $("#verDetallesCliente").html(customerGlobal.id + " - " + customerGlobal.nombreCompleto);
     $("#verDetallesTipoServicio").html(customerGlobal.typeCustomer.trim());
     $("#verDetallesTelefono").html(customerGlobal.telefono.trim());
+    $("#verDetallesDireccion").html('');
     
     if ( $($this).hasClass('oportunidades') ) {
-        let direccion = '';
 
-        //direccion += addressObj['nameStreet'];
-        pedido['numExterno'] ? direccion+= ' #'+pedido['numExterno'] : '';
-        pedido['numInterno'] ? direccion+= ' #'+pedido['numInterno'] : '';
-        pedido['colonia']    ? direccion+= ', Col. '+pedido['colonia'] : '';
-        pedido['stateName']  ? direccion+= ', '+pedido['stateName'] : '';
-        pedido['city']       ? direccion+= ', '+pedido['city'] : '';
-        pedido['zip']        ? direccion+= ', C.P. '+pedido['zip'] : '';
-        pedido['zonaVenta']  ? direccion+= 'Zona de venta: '+pedido['zonaVenta'] : '';
-        pedido['ruta']       ? direccion+= 'Ruta: '+pedido['ruta'] : '';
+        pedido['street']          ? direccion+= pedido['street'] : '';
+        pedido['numExterno']      ? direccion+= ' Num. Ext. '+pedido['numExterno'] : '';
+        pedido['numInterno']      ? direccion+= ' Num. Int. '+pedido['numInterno'] : '';
+        pedido['colonia']         ? direccion+= ', Col. '+pedido['colonia'] : '';
+        pedido['zip']             ? direccion+= ', C.P. '+pedido['zip'] : '';
+        pedido['ciudadDireccion'] ? direccion+= ', '+pedido['ciudadDireccion'] : '';
+        pedido['estadoDireccion'] ? direccion+= ', '+pedido['estadoDireccion'] : '';
+        // pedido['zonaVenta']  ? direccion+= 'Zona de venta: '+pedido['zonaVenta'] : '';
+        // pedido['ruta']       ? direccion+= 'Ruta: '+pedido['ruta'] : '';
 
         $("#verDetallesServicio").html(pedido.numeroDocumento);
-        $("#verDetallesDireccion").html(pedido.rutaAsignada ? pedido.rutaAsignada : 'Sin asignar');
+        $("#verDetallesDireccion").html(direccion ? direccion : 'Sin asignar');
     
         $("#verDetallesVehiculo").html(pedido.vehiculo ? pedido.vehiculo.trim() : 'Sin asignar');
         $("#verDetallesZona").html(pedido.zone ? pedido.zone : 'Sin asignar');
@@ -1126,20 +1116,23 @@ function verDetalles($this) {
         );
 
         $('.campos-oportunidad').removeClass('d-none');
-
-        // $("#verDetallesTipoProducto").html("");
-        // vrTiposServicios.forEach(element => {
-        //     if(pedido.servicio == element.id) {
-        //         $("#verDetallesTipoProducto").html(element.nombre);
-        //     }
-        // });
+       
         setMetodosPago(pedido, 'oportunidad');
         getMsgNotes(pedido, 'oportunidad');
         getItemPedido(pedido, 'oportunidad');
 
     } else if ( $($this).hasClass('casos') ) {
 
+        pedido['calle']        ? direccion+= pedido['calle'] : '';
+        pedido['nExterior']    ? direccion+= ' Num. Ext. '+pedido['nExterior'] : '';
+        pedido['nInterior']    ? direccion+= ' Num. Int. '+pedido['nInterior'] : '';
+        pedido['colonia']      ? direccion+= ', Col. '+pedido['colonia'] : '';
+        pedido['codigoPostal'] ? direccion+= ', C.P. '+pedido['codigoPostal'] : '';
+        pedido['municipio']    ? direccion+= ', '+pedido['municipio'] : '';
+        pedido['estado']       ? direccion+= ', '+pedido['estado'] : '';
+
         $("#verDetallesServicio").html(pedido.numeroCaso);
+        $("#verDetallesDireccion").html( direccion );
 
         $(".casos-tipo").html(pedido.asunto ? pedido.asunto.trim() : 'Sin asignar');
         $(".casos-concepto").html(pedido.conceptoCaso ? pedido.conceptoCaso : 'Sin asignar');
@@ -1149,9 +1142,9 @@ function verDetalles($this) {
         $(".casos-prioridad").html(pedido.prioridad ? pedido.prioridad : 'Sin asignar');
         $(".casos-email").html(pedido.email ? pedido.email : 'Sin asignar');
         $(".casos-telefono").html(pedido.telefono ? pedido.telefono : userName);
-        $(".casos-servicio-asociado").html(pedido.oppName ? pedido.oppName : 'Sin asignar');
+        $(".casos-servicio-asociado").html(pedido.numeroCaso ? pedido.numeroCaso : 'Sin asignar');
         $(".casos-caso-asociado").html(pedido.casoAsociado ? pedido.casoAsociado : 'Sin asignar');
-        $(".casos-descripcion").html(pedido.tipoServicio ? pedido.tipoServicio : 'N/A');
+        $(".casos-descripcion").html(pedido.descripcion ? pedido.descripcion : 'N/A');
         // $(".casos-notas-adicionales").html(pedido.nota ? pedido.nota : 'Sin asignar');
         
         $('.campos-casos').removeClass('d-none');
