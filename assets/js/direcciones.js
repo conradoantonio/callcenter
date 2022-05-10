@@ -218,7 +218,7 @@ function getDirrecionByCPDelay($event) {
         if($("#cpDireccion").val().length >= 5) {
             getDirrecionByCP();
         } else {
-            $("#coloniaDireccion").val(null).prop("disabled", true).trigger("change");
+            $("#coloniaDireccion").val(null).trigger("change");
         }
         //
     }, 1000);  
@@ -249,7 +249,28 @@ function getDirrecionByCP(callback = null) {
             console.log(coloniasAux);
             if(coloniasAux.length > 0) {
                 if(coloniasAux.length == 1) {
-                    $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
+                    $("#estadoDireccion").val(coloniasAux[0].state);
+                    if($("#estadoDireccion").children('option').length > 2) {
+                        getMunicipios(false, function() {
+                            $("#municipioDireccion").val(coloniasAux[0].country);
+                            if($("#municipioDireccion").children('option').length > 2) {
+                                getColonias(false, function() {
+                                    $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
+                                })
+                            } else {
+                                $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
+                            }
+                        });
+                    } else {
+                        $("#municipioDireccion").val(coloniasAux[0].country);
+                        if($("#municipioDireccion").children('option').length > 2) {
+                            getColonias(false, function() {
+                                $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
+                            })
+                        } else {
+                            $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
+                        }
+                    }
                 } else {
                     $("#coloniaDireccion").val(null).trigger("change");
                 }
@@ -291,7 +312,7 @@ function getEstados(trigger = false, callback = null) {
                 callback();
             }
         } else {
-            $("#estadoDireccion").val(null).prop("disabled", true).trigger("change");
+            $("#estadoDireccion").val(null).trigger("change");
             infoMsg('warning', 'Alerta:', 'No se encontraron estados para la planta actual favor de volver a intentarlo');
         }
     }).catch((error) => {
@@ -301,7 +322,7 @@ function getEstados(trigger = false, callback = null) {
 
 function getMunicipios(trigger = false, callback = null) {
     if(!$("#estadoDireccion").val()) {
-        $("#municipioDireccion").val(null).prop("disabled", true).trigger("change");
+        $("#municipioDireccion").val(null).trigger("change");
     } else {
         let settings = {
             url      : urlGetMunicipios,
@@ -326,7 +347,7 @@ function getMunicipios(trigger = false, callback = null) {
                     callback();
                 }
             } else {
-                $("#municipioDireccion").val(null).prop("disabled", true).trigger("change");
+                $("#municipioDireccion").val(null).trigger("change");
                 infoMsg('warning', 'Alerta:', 'No se encontraron municipios para la planta actual favor de volver a intentarlo');
             }
         }).catch((error) => {
@@ -337,7 +358,7 @@ function getMunicipios(trigger = false, callback = null) {
 
 function getColonias(trigger = false, callback = null) {
     if(!$("#municipioDireccion").val()) {
-        $("#coloniaDireccion").val(null).prop("disabled", true).trigger("change");
+        $("#coloniaDireccion").val(null).trigger("change");
     } else {
         let settings = {
             url      : urlGetColonias,
@@ -363,7 +384,7 @@ function getColonias(trigger = false, callback = null) {
                     callback();
                 }
             } else {
-                $("#coloniaDireccion").val(null).prop("disabled", true).trigger("change");
+                $("#coloniaDireccion").val(null).trigger("change");
                 infoMsg('warning', 'Alerta:', 'No se encontraron colonias para la planta actual favor de volver a intentarlo');
             }
         }).catch((error) => {

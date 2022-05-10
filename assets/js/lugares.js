@@ -222,12 +222,12 @@ function setDataAuxDireccion() {
             }
         } else {
             infoMsg("error", "Error:", "La colonia seleccionada no pertenece a la planta actual");
-            $("#cpDireccion").val("");
+            $("#coloniaDireccion").val(null);
             $("#zonaVentaDireccion").val("");
             $("#rutaDireccion, #rutaDireccionVesp").val("");
         }        
     } else {
-        $("#cpDireccion").val("");
+        $("#coloniaDireccion").val(null);
         $("#zonaVentaDireccion").val("");
         $("#rutaDireccion, #rutaDireccionVesp").val("");
     }
