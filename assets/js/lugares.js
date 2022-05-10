@@ -151,42 +151,61 @@ $('select#coloniaDireccion').on('change', function(e) {
 });
 
 function setDataAuxDireccion() {
-    if($("#coloniaDireccion").val()) {
+    let tipoServicioId = $("#tipoServicioFormCliente").val();
+    let plantaActual   = $("#plantas option:selected").text().trim();
+
+    if( $("#coloniaDireccion").val() ) {
         let auxItem = $("#coloniaDireccion option:selected").data("item");
-        if(auxItem.rutaCil.split(":")[0].trim() == $("#plantas option:selected").text().trim() || auxItem.rutaEsta.split(":")[0].trim() == $("#plantas option:selected").text().trim()) {
+        if( auxItem.rutaCil.split(":")[0].trim() == plantaActual || auxItem.rutaEsta.split(":")[0].trim() == plantaActual ) {
             $("#zonaVentaDireccion").val(auxItem.zonePrice);
-            if($("#tipoServicioFormCliente").val()) {
-                if ( $("#tipoServicioFormCliente").val() == 1 ) {//Cilindro
+            if( tipoServicioId ) {
+                if ( tipoServicioId == 1 ) {//Cilindro
                     console.log('cilindro');
                     $("#rutaDireccion").val(auxItem.rutaCil && auxItem.rutaCil.split(":").length > 1 ? auxItem.rutaCil.split(":")[1].trim() : auxItem.rutaCil.trim());
-                } else if( $("#tipoServicioFormCliente").val() == 2 ) {// Estacionario
+                    $("#rutaDireccionVesp").val(auxItem.rutaCilVesp && auxItem.rutaCilVesp.split(":").length > 1 ? auxItem.rutaCilVesp.split(":")[1].trim() : auxItem.rutaCilVesp.trim());
+                } else if( tipoServicioId == 2 ) {// Estacionario
                     console.log('estacionario');
                     $("#rutaDireccion").val(auxItem.rutaEsta && auxItem.rutaEsta.split(":").length > 1 ? auxItem.rutaEsta.split(":")[1].trim() : auxItem.rutaEsta.trim());
-                } else if( $("#tipoServicioFormCliente").val() == 4 ) {// Ambas
+                    $("#rutaDireccionVesp").val(auxItem.rutaEstVesp && auxItem.rutaEstVesp.split(":").length > 1 ? auxItem.rutaEstVesp.split(":")[1].trim() : auxItem.rutaEstVesp.trim());
+                } else if( tipoServicioId == 4 ) {// Ambas
                     console.log('ambas');
-                    let aux = "";
-                    if(auxItem.rutaCil) {
-                        aux += auxItem.rutaCil.split(":").length > 1 ? auxItem.rutaCil.split(":")[1].trim() : auxItem.rutaCil.trim();
+                    // Se asignan primero las rutas matutinas
+                    let auxMat = "";
+                    if( auxItem.rutaCil ) {
+                        auxMat += auxItem.rutaCil.split(":").length > 1 ? auxItem.rutaCil.split(":")[1].trim() : auxItem.rutaCil.trim();
                     }
-                    if(aux != "") {
-                        aux += ", ";
+                    if( auxMat != "" ) {
+                        auxMat += ", ";
                     }
-                    if(auxItem.rutaEsta) {
-                        aux += auxItem.rutaEsta.split(":").length > 1 ? auxItem.rutaEsta.split(":")[1].trim() : auxItem.rutaEsta.trim();
+                    if( auxItem.rutaEsta ) {
+                        auxMat += auxItem.rutaEsta.split(":").length > 1 ? auxItem.rutaEsta.split(":")[1].trim() : auxItem.rutaEsta.trim();
                     }
-                    $("#rutaDireccion").val(aux);
+                    $("#rutaDireccion").val(auxMat);
+
+                    // Se asignan después las rutas vespertinas
+                    let auxVesp = "";
+                    if( auxItem.rutaCilVesp ) {
+                        auxVesp += auxItem.rutaCilVesp.split(":").length > 1 ? auxItem.rutaCilVesp.split(":")[1].trim() : auxItem.rutaCilVesp.trim();
+                    }
+                    if( auxVesp != "" ) {
+                        auxVesp += ", ";
+                    }
+                    if( auxItem.rutaEstVesp ) {
+                        auxVesp += auxItem.rutaEstVesp.split(":").length > 1 ? auxItem.rutaEstVesp.split(":")[1].trim() : auxItem.rutaEstVesp.trim();
+                    }
+                    $("#rutaDireccionVesp").val(auxVesp);
                 }
             } else {
-                $("#rutaDireccion").val("");
+                $("#rutaDireccion, #rutaDireccionVesp").val("");
             }
         } else {
             infoMsg("error", "Error:", "La colonia seleccionada no pertenece a la planta actual");
             $("#zonaVentaDireccion").val("");
-            $("#rutaDireccion").val("");
+            $("#rutaDireccion, #rutaDireccionVesp").val("");
         }        
     } else {
         $("#zonaVentaDireccion").val("");
-        $("#rutaDireccion").val("");
+        $("#rutaDireccion, #rutaDireccionVesp").val("");
     }
 }
 

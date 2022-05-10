@@ -30,10 +30,6 @@ $(function() {
         placeholder: 'Buscar por nombre, id, teléfono...',
         language: "es"
     });
-
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
 });
 
 function getDireccionFormat(item, tipo) { 
@@ -222,6 +218,12 @@ function setCustomerInfo(customer, idAddress = null) {
     if ( direccionDefault?.typeService ) {
         $('#direccionCliente').prop('title', setDir( direccionDefault ));// Activa el tooltip de la dirección
         $('#tipoServicioCliente').text(direccionDefault.typeService);
+        setTextRoutesByAddress(direccionDefault);
+
+        // let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+        // let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        //     return new bootstrap.Tooltip(tooltipTriggerEl);
+        // });
     }
 
     // Obtiene los casos y oportunidades del cliente
@@ -311,7 +313,7 @@ function setColoniaZonaData(direccion) {
     $('#rutaCliente').text(splitRuta[1] ?? "Sin ruta");
     $('#zonaVentaPedido').val(zonaRuta?.zona_venta);
     $('#tipoServicioCliente').text(direccion.typeService ? direccion.typeService : 'Sin tipo de servicio');
-    if ( desde ) {
+    if ( desde ) {// Si la dirección es de aviso o programado, se setea el campo desde de manera automática
         let medioDia = desde.split(" ");
         let horaInicio = desde.split(":");
 
@@ -328,7 +330,10 @@ function setColoniaZonaData(direccion) {
 
         let horaInicioStr = moment(customDate).format('HH:mm');
         $('#desdePedido').val(horaInicioStr);
-    } 
+    } else {// Se setea por default la hora actual en el campo desde
+        let horaDefault = moment().format('HH:mm');
+        $('#desdePedido').val(horaDefault);
+    }
 
     if ( hasta ) {
         let medioDia = hasta.split(" ");
@@ -915,6 +920,8 @@ function clearCustomerInfo () {
     $('#tipoCliente').text('Sin tipo cliente');
     $('#tipoServicioCliente').text('Sin servicio');
     $('#rutaCliente').text('Sin ruta');
+    // Se resetean las rutas
+    $('#rutaCilMat, #rutaCilVesp, #rutaEstMat, #rutaEstVesp').text('Sin ruta');
 
     // Se reinicia el select de las direcciones
     $('select#direccionCliente').children('option').remove();

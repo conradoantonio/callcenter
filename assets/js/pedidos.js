@@ -608,6 +608,7 @@ function onChangeValue(element) {
 async function savePedido() {
     btnGuardarPedido.on('click', function () {
 
+        let direccion        = $('#direccionCliente :selected').data('address');
         let minimoGasLp      = Number($('select#plantas').children(':selected').data('pedido-minimo'));
         let totalPedido      = 0;
         let tipoPedido       = null;
@@ -621,6 +622,7 @@ async function savePedido() {
         let articulosArr     = [];
         let pagosArr         = [];
         let prepaymentArr    = [];
+        let rutas            = [];
         let time             = moment().format('h:mm a');
         let saldoDisponible  = Number(customerGlobal?.objInfoComercial?.saldoDisponible);
         saldoDisponible      = isNaN(saldoDisponible) ? 0 : saldoDisponible;
@@ -647,8 +649,8 @@ async function savePedido() {
             totalMetodosPago = $('.productosMetodoPago').children('tfoot').find('td.total').data('total');
         }
 
-        // Si no se indicó una fecha prometida o el total del pedido es distinto al total de métodos de pago, no permite crear el pedido
-        if( !$("#fechaPrometidaPedido").val().trim() || ( totalPedido != totalMetodosPago ) ) {
+        // Si no se indicó una fecha prometida, una hora inicial o el total del pedido es distinto al total de métodos de pago, no permite crear el pedido
+        if( !$("#fechaPrometidaPedido").val().trim() || !$('#desdePedido').val() || ( totalPedido != totalMetodosPago ) ) {
             canContinue = false;
         }
 
@@ -736,6 +738,12 @@ async function savePedido() {
         let statusOpp    = 1;
         $('.productosCilindroPedido').is(':visible') ? typeService = 1 : '';
         $('.productosEstacionarioPedido').is(':visible') ? typeService = 2 : '';
+
+        // Código para insertar las posibles rutas de la dirección del cliente
+        if ( direccion.route )  { rutas[0] = {id : direccion.idRoute, name : direccion.route}; }// Cilindro matutino
+        if ( direccion.route2 ) { rutas[1] = {id : direccion.idRoute2, name : direccion.route2}; }// Cilindro vesp
+        if ( direccion.route3 ) { rutas[2] = {id : direccion.idRoute3, name : direccion.route3}; }// Estacionario matutino
+        if ( direccion.route4 ) { rutas[3] = {id : direccion.idRoute4, name : direccion.route4}; }// Estacionario vesp
 
         let tmp = {
             // "status"        : 1,

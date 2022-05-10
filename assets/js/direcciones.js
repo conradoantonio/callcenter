@@ -117,14 +117,16 @@ function validateAddressFields() {
             address.obj['domFacturacion'] ? updateAddress['defaultbilling'] = address.obj['domFacturacion'] : '';
             address.obj['stateName'] ? updateAddress['custrecord_ptg_estado'] = address.obj['stateName'] : '';
             address.obj['ruta'] ? updateAddress['custrecord_ptg_colonia_ruta'] = address.obj['ruta'] : '';
-            address.obj['idRoute'] ? updateAddress['custrecord_ptg_ruta_asignada'] = address.obj['idRoute'] : '';
-            address.obj['idRoute2'] ? updateAddress['custrecord_ptg_ruta_asignada2'] = address.obj['idRoute2'] : '';
             address.obj['colonia'] ? updateAddress['custrecord_ptg_nombre_colonia'] = address.obj['colonia'] : '';
             address.obj['lunes'] ? updateAddress['custrecord_ptg_lunes'] = address.obj['lunes'] : '';
             address.obj['stateName'] ? updateAddress['custrecord_ptg_estado'] = address.obj['stateName'] : '';
             address.obj['ruta'] ? updateAddress['custrecord_ptg_colonia_ruta'] = address.obj['ruta'] : '';
-            address.obj['idRoute'] ? updateAddress['custrecord_ptg_ruta_asignada'] = address.obj['idRoute'] : '';
-            address.obj['idRoute2'] ? updateAddress['custrecord_ptg_ruta_asignada2'] = address.obj['idRoute2'] : '';
+            address.obj['idRoute'] ? updateAddress['idRoute'] = address.obj['idRoute'] : '';
+            address.obj['idRoute2'] ? updateAddress['idRoute2'] = address.obj['idRoute2'] : '';
+            address.obj['idRoute3'] ? updateAddress['idRoute3'] = address.obj['idRoute3'] : '';
+            address.obj['idRoute4'] ? updateAddress['idRoute4'] = address.obj['idRoute4'] : '';
+            // address.obj['idRoute'] ? updateAddress['custrecord_ptg_ruta_asignada'] = address.obj['idRoute'] : '';
+            // address.obj['idRoute2'] ? updateAddress['custrecord_ptg_ruta_asignada2'] = address.obj['idRoute2'] : '';
             address.obj['colonia'] ? updateAddress['custrecord_ptg_nombre_colonia'] = address.obj['colonia'] : '';
             address.obj.hasOwnProperty( 'lunes' ) ? updateAddress['custrecord_ptg_lunes'] = address.obj['lunes'] : '';
             address.obj.hasOwnProperty( 'martes' ) ? updateAddress['custrecord_ptg_martes'] = address.obj['martes'] : '';
@@ -281,6 +283,27 @@ function setDataDireccion(items, elem) {
     }
 }
 
+// Muestra las rutas acorde a si la dirección otorgada es cilindro, estacionario o ambas
+function setTextRoutesByAddress(address) {
+    $('#rutaCilMat').text(address.route ? getRouteNumber(address.route) : 'Sin ruta');
+    $('#rutaCilVesp').text(address.route2 ? getRouteNumber(address.route2) : 'Sin ruta');
+    $('#rutaEstMat').text(address.route3 ? getRouteNumber(address.route3) : 'Sin ruta');
+    $('#rutaEstVesp').text(address.route4 ? getRouteNumber(address.route4) : 'Sin ruta');
+}
+
+// Obtiene el número de la ruta
+function getRouteNumber(route) {
+    let rutaSplited = route.split(':');
+    let number = '';
+    if ( rutaSplited[1] ) {// Tiene secciones
+        number = rutaSplited[1].split(' - ');
+
+        return number[0] ?? 'Sin ruta';
+    }
+
+    return 'Sin ruta';
+}
+
 // Coloca una dirección en el listado de direcciones del cliente
 function getAddressOnList() {
     let addressStr = '';
@@ -294,6 +317,7 @@ function getAddressOnList() {
     let periodo         = parseInt($("#frecuenciaFormCliente").val());
     let tipoContacto    = parseInt($("input[name=tipoAccionFormCliente]:checked").val());
     let domFacturacion  = $('#domFacturacionDireccion').is(':checked');
+    let coloniaRutas    = $('#coloniaDireccion').children(':selected').data('item');
 
     if ( horaInicio.length ) {
         customStartTime.setHours(horaInicio[0]);
@@ -326,8 +350,8 @@ function getAddressOnList() {
         street_aux2     : $("#entre2Direccion").val().trim(),
         //zonaVenta       : $("#zonaVentaDireccion").val().trim(),
         ruta            : $("#coloniaDireccion option:selected").data("item").id,//$("#rutaColoniaIdDireccion").val().trim(),
-        idRoute         : parseInt($("#tipoServicioFormCliente").val()) == 1 || parseInt($("#tipoServicioFormCliente").val()) == 4 ? $("#coloniaDireccion option:selected").data("item").rutaCilId : $("#coloniaDireccion option:selected").data("item").rutaEstaId,//$("#rutaIdDireccion").val().trim(),
-        idRoute2        : parseInt($("#tipoServicioFormCliente").val()) == 4 ? $("#coloniaDireccion option:selected").data("item").rutaEstaId : null,//$("#rutaId2Direccion").val().trim(),
+        // idRoute         : parseInt($("#tipoServicioFormCliente").val()) == 1 || parseInt($("#tipoServicioFormCliente").val()) == 4 ? $("#coloniaDireccion option:selected").data("item").rutaCilId : $("#coloniaDireccion option:selected").data("item").rutaEstaId,//$("#rutaIdDireccion").val().trim(),
+        // idRoute2        : parseInt($("#tipoServicioFormCliente").val()) == 4 ? $("#coloniaDireccion option:selected").data("item").rutaEstaId : null,//$("#rutaId2Direccion").val().trim(),
         typeContact     : tipoContacto,
         inThatWeek      : ( tipoContacto != 1 && periodo == '3' ? $('#numeroSemana').val() : null ),
         startDayService : ( tipoContacto != 1 ? dateFormatFromDate( $("#fechaInicioServicio").val(), '5' ) : null ),
@@ -346,6 +370,12 @@ function getAddressOnList() {
         commentsAddress : $("#indicacionesFormCliente").val().trim(),
         tag             : ''
     }
+
+    // Se setean las rutas de las rutas de la colonia seleccionada
+    if ( coloniaRutas && coloniaRutas.rutaCilId ) { addressObj['idRoute'] = coloniaRutas.rutaCilId; }
+    if ( coloniaRutas && coloniaRutas.rutaCilVespId ) { addressObj['idRoute2'] = coloniaRutas.rutaCilVespId; }
+    if ( coloniaRutas && coloniaRutas.rutaEstaId ) { addressObj['idRoute3'] = coloniaRutas.rutaEstaId; }
+    if ( coloniaRutas && coloniaRutas.rutaEstVespId ) { addressObj['idRoute4'] = coloniaRutas.rutaEstVespId; }
 
     // Se agregan campos acorde al tipo de servicio
     if ( tipoServicioId == "1" ) {// Cilindros

@@ -65,6 +65,11 @@ $('select#direccionCliente').on('change', function(e) {
     resetProductList();
     if ( direccion ) {
         $(this).prop('title', setDir( direccion ));// Activa el tooltip de la dirección
+        setTextRoutesByAddress(direccion);
+        // let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+        // let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        //     return new bootstrap.Tooltip(tooltipTriggerEl);
+        // });
         setColoniaZonaData( direccion );
     } else {// Podría ser buena práctica meter este bloque de código en una función
         // Estos campos están en la tarjeta de cliente
