@@ -845,7 +845,7 @@ function sendPrepayment(prepaymentArr) {
 
 async function clearFields() {
     // $('#fechaPrometidaPedido').val('');
-    $('#desdePedido, #hastaPedido, #observacionesPagoPedido').val('');
+    $('#hastaPedido, #observacionesPagoPedido').val('');
 
     $("#sinProductos, #sinMetodosPago").removeClass("d-none");
     

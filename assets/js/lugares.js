@@ -183,12 +183,12 @@ function setDataAuxDireccion() {
             if( tipoServicioId ) {
                 if ( tipoServicioId == 1 ) {//Cilindro
                     console.log('cilindro');
-                    $("#rutaDireccion").val(auxItem.rutaCil && auxItem.rutaCil.split(":").length > 1 ? auxItem.rutaCil.split(":")[1].trim() : auxItem.rutaCil.trim());
-                    $("#rutaDireccionVesp").val(auxItem.rutaCilVesp && auxItem.rutaCilVesp.split(":").length > 1 ? auxItem.rutaCilVesp.split(":")[1].trim() : auxItem.rutaCilVesp.trim());
+                    $("#rutaDireccion").val(auxItem.rutaCil && auxItem.rutaCil.split(":").length > 1 ? auxItem.rutaCil.split(":")[1].trim() : ( auxItem.rutaCil ?? '' ) );
+                    $("#rutaDireccionVesp").val(auxItem.rutaCilVesp && auxItem.rutaCilVesp.split(":").length > 1 ? auxItem.rutaCilVesp.split(":")[1].trim() : ( auxItem.rutaCilVesp ?? '' ) );
                 } else if( tipoServicioId == 2 ) {// Estacionario
                     console.log('estacionario');
-                    $("#rutaDireccion").val(auxItem.rutaEsta && auxItem.rutaEsta.split(":").length > 1 ? auxItem.rutaEsta.split(":")[1].trim() : auxItem.rutaEsta.trim());
-                    $("#rutaDireccionVesp").val(auxItem.rutaEstVesp && auxItem.rutaEstVesp.split(":").length > 1 ? auxItem.rutaEstVesp.split(":")[1].trim() : auxItem.rutaEstVesp.trim());
+                    $("#rutaDireccion").val(auxItem.rutaEsta && auxItem.rutaEsta.split(":").length > 1 ? auxItem.rutaEsta.split(":")[1].trim() : ( auxItem.rutaEsta ?? '' ) );
+                    $("#rutaDireccionVesp").val(auxItem.rutaEstVesp && auxItem.rutaEstVesp.split(":").length > 1 ? auxItem.rutaEstVesp.split(":")[1].trim() : ( auxItem.rutaEstVesp ?? '' ) );
                 } else if( tipoServicioId == 4 ) {// Ambas
                     console.log('ambas');
                     // Se asignan primero las rutas matutinas

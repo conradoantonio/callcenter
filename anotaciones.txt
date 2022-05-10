@@ -49,11 +49,11 @@ Incluir una validación donde se verifique el total del txt con el total de cada
 - 12:00 am - 01:59 pm turno matutino
 - 2:00 - 11:59 pm turno vespertino
 
-- En el formulario de pedidos, hacer como obligatorio el campo desde y asignar por default la hora actual
-- Revisar la dirección en detalles (modal) de servicios/fugas/quejas
-- Al hacer el descuento nativo, al vender gas lp, hacer la conversión y multiplicar el total descontado por .54
-- Mandar a llamar otro servicio cuando la oportunidad a crear lleve un prepago, pendiente de revisar los parámetros y reslet a llamar.
-- Revisar por qué no regresa el campo de descripción para las fugas
+- En el formulario de pedidos, hacer como obligatorio el campo desde y asignar por default la hora actual (YA)
+- Revisar la dirección en detalles (modal) de servicios/fugas/quejas (YA)
+- Al hacer el descuento nativo, al vender gas lp, hacer la conversión y multiplicar el total descontado por .54 (YA)
+- Mandar a llamar otro servicio cuando la oportunidad a crear lleve un prepago, pendiente de revisar los parámetros y reslet a llamar.(YA)
+- Revisar por qué no regresa el campo de descripción para las fugas (YA)
 
 Ordenes de venta
 Transacciones -> sales -> enter sales order -> lista

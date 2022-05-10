@@ -237,6 +237,10 @@ function clearFugasQuejasForm() {
         $( this ).val($(this).children("option:first").val());
     });
 
+    // Campos del formulario quejas y fugas
+    $('#emailFugaQueja').val(customerGlobal ? customerGlobal.email : '');
+    $('#telefonoFugaQueja').val(customerGlobal ? customerGlobal.telefono : '');
+
     $('select#conceptoFugaQueja, #asociarServicioFugaQueja, #asociarCasoFugaQueja').children('option').remove();
     $('select#conceptoFugaQueja, #asociarServicioFugaQueja, #asociarCasoFugaQueja').append('<option value="">Seleccione una opción</option>');
 
