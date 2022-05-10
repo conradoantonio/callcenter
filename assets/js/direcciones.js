@@ -441,11 +441,18 @@ function setTextRoutesByAddress(address) {
 // Obtiene el número de la ruta
 function getRouteNumber(route) {
     let rutaSplited = route.split(':');
-    let number = '';
+    let nombreRuta  = '';
+    let numeroRuta  = '';
     if ( rutaSplited[1] ) {// Tiene secciones
-        number = rutaSplited[1].split(' - ');
+        nombreRuta = rutaSplited[1].split(' - ');
 
-        return number[0] ?? 'Sin ruta';
+        if ( nombreRuta.length && nombreRuta[0] ) {
+            numeroRuta = nombreRuta[0].split('-');
+            if (numeroRuta.length && numeroRuta[2]) {
+                return numeroRuta[2];
+
+            }
+        }
     }
 
     return 'Sin ruta';

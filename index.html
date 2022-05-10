@@ -843,12 +843,21 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-12 pb-2">
-                            <div class="content-input content-input-primary">
-                                <label>Monto a pagar</label>
-                                <input id="montoPagoPedido" oninput="onlyNumbers(this.value, '#montoPagoPedido')" class="form-ptg form-ptg-primary"> </select>
+                        <div class="col-12">
+                            <label class="label-ptg">Monto a pagar</label>
+                            <div class="input-group special-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1" style="border: none; height: 42px; font-size: 16px; color: #355da7; margin-left: 1px; background-color: white;">$</span>
+                                </div>
+                                <input id="montoPagoPedido" type="number" oninput="onlyNumbers(this.value, '#montoPagoPedido')" class="form-control" placeholder="0.00" aria-label="0.00" aria-describedby="basic-addon1">
                             </div>
                         </div>
+                        <!-- <div class="col-12 pb-2">
+                            <div class="content-input content-input-primary">
+                                <label>Monto a pagar</label>
+                                <input id="montoPagoPedido" oninput="onlyNumbers(this.value, '#montoPagoPedido')" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div> -->
                         <div class="col-12 pb-2 d-none campo-prepago">
                             <div class="content-input content-input-primary">
                                 <label>Folio de autorización</label>
@@ -2003,7 +2012,7 @@
                     <div class="col-2">
                         <label>Ruta:</label>
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 d-none">
                         <label class="fw-bold" id="rutaCliente">Sin ruta</label>
                     </div>
                 </div>
@@ -2170,8 +2179,8 @@
                             <th class="text-center">Tipo Servicio</th>
                             <th class="text-center">Número de servicio</th>
                             <th class="text-center">Asunto</th>
-                            <th class="text-center">Fecha visita</th>
-                            <th class="text-center">Hora visita</th>
+                            <!-- <th class="text-center">Fecha visita</th>
+                            <th class="text-center">Hora visita</th> -->
                             <th class="text-center">Estado</th>
                             <th class="text-center">Prioridad</th>
                             <!-- <th style="min-width: 95px;" class="text-center">Fecha Solicitud</th>
