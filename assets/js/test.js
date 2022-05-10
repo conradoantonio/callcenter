@@ -115,7 +115,7 @@ $('span.user-name').text(userName);
 $('span#role').text(userRole);
 
 // Si el rol es distinto a administrador HEB, se eliminan los campos
-if ( userRole != 'administrator' ) {
+if ( userRoleId != 1213 ) {
     console.log(userRole);
     $('.campos-contrato').addClass('d-none');
     // $('.campos-contrato').remove();
@@ -878,6 +878,7 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
         (isAdmin ? '<td>'+( item.id_Transaccion ?? 'Sin ID de servicio')+'</td>' : '')+
         '<td>'+( type == "casos" ? dateFormatFromDate(item.fechaCreacion.split(" ")[0], '5')  : dateFormatFromDate(item.fecha, '5') )+'</td>'+//Fecha creación
         '<td>'+( type == "casos" ? ( 'Sin fecha prometida' ) : (item.cierrePrevisto ?? 'Sin fecha prometida') )+'</td>'+// Fecha prometida
+        '<td>'+( type == "casos" ? ( item.dateClose ? item.dateClose : 'Sin asignar' ) : ('N/A') )+'</td>'+// Fecha de cierre, sólo para casos
         '<td>'+( type == "casos" ? ( item.articulo ?? 'Sin asignar' ) : ( item.tipoServicio ? item.tipoServicio : 'Sin asignar' ) )+'</td>'+// Tipo servicio
         '<td>'+( type == "casos" ? ( item.numeroCaso ?? 'Sin asignar' ) : ( item.numeroDocumento ?? 'Sin asignar' ) )+'</td>'+// Numero de documento u caso
         '<td>'+( type == "casos" ? ( item.asunto ?? 'Sin asignar' ) : ( 'Pedido' ) )+'</td>'+// Asunto
