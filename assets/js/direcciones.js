@@ -215,9 +215,10 @@ function getDirrecionByCPDelay($event) {
     globalTimeout = setTimeout(function() {
         globalTimeout = null;  
         //ajax code
-        if($("#cpDireccion").val().length >= 5) {
+        if($("#cpDireccion").val() && $("#cpDireccion").val().trim().length >= 5) {
             getDirrecionByCP();
         } else {
+            $("#coloniaDireccion").children("option").removeClass("d-none");
             $("#coloniaDireccion").val(null).trigger("change");
         }
         //
@@ -246,7 +247,7 @@ function getDirrecionByCP(callback = null) {
                     coloniasAux.push(element);
                 }
             });
-            console.log(coloniasAux);
+            //console.log(coloniasAux);
             if(coloniasAux.length > 0) {
                 if(coloniasAux.length == 1) {
                     $("#estadoDireccion").val(coloniasAux[0].state);
@@ -255,9 +256,15 @@ function getDirrecionByCP(callback = null) {
                             $("#municipioDireccion").val(coloniasAux[0].country);
                             if($("#municipioDireccion").children('option').length > 2) {
                                 getColonias(false, function() {
+                                    $("#coloniaDireccion").children('option').addClass("d-none");
+                                    $("#coloniaDireccion").children('option[data-cp="'+$("#cpDireccion").val().trim()+'"]').removeClass("d-none");
+                                    $("#coloniaDireccion").children('option[value=""]').removeClass("d-none");
                                     $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
                                 })
                             } else {
+                                $("#coloniaDireccion").children('option').addClass("d-none");
+                                $("#coloniaDireccion").children('option[data-cp="'+$("#cpDireccion").val().trim()+'"]').removeClass("d-none");
+                                $("#coloniaDireccion").children('option[value=""]').removeClass("d-none");
                                 $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
                             }
                         });
@@ -265,13 +272,22 @@ function getDirrecionByCP(callback = null) {
                         $("#municipioDireccion").val(coloniasAux[0].country);
                         if($("#municipioDireccion").children('option').length > 2) {
                             getColonias(false, function() {
+                                $("#coloniaDireccion").children('option').addClass("d-none");
+                                $("#coloniaDireccion").children('option[data-cp="'+$("#cpDireccion").val().trim()+'"]').removeClass("d-none");
+                                $("#coloniaDireccion").children('option[value=""]').removeClass("d-none");
                                 $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
                             })
                         } else {
+                            $("#coloniaDireccion").children('option').addClass("d-none");
+                            $("#coloniaDireccion").children('option[data-cp="'+$("#cpDireccion").val().trim()+'"]').removeClass("d-none");
+                            $("#coloniaDireccion").children('option[value=""]').removeClass("d-none");
                             $("#coloniaDireccion").val(coloniasAux[0].colonia).trigger("change");
                         }
                     }
                 } else {
+                    $("#coloniaDireccion").children('option').addClass("d-none");
+                    $("#coloniaDireccion").children('option[data-cp="'+$("#cpDireccion").val().trim()+'"]').removeClass("d-none");
+                    $("#coloniaDireccion").children('option[value=""]').removeClass("d-none");
                     $("#coloniaDireccion").val(null).trigger("change");
                 }
             } else {
@@ -398,7 +414,7 @@ function setDataDireccion(items, elem, trigger = true) {
     elem.append('<option value="">Seleccione una opción</option>');
 
     Object.keys(items).forEach(element => {
-        elem.append('<option data-item='+"'"+JSON.stringify(items[element])+"'"+' value="'+element+'">'+element+'</option>');
+        elem.append('<option '+(items[element].zip ? 'data-cp="'+items[element].zip+'"' : '')+' data-item='+"'"+JSON.stringify(items[element])+"'"+' value="'+element+'">'+element+'</option>');
     });
 
     if(Object.keys(items).length == 1) {
