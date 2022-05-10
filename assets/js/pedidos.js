@@ -144,14 +144,14 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
         }
         lblPrice = 'Precio x kg';
         $('.precio-unitario-label').html(lblPrice);
-        $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
+        $("#formProductosModalPrecio").html(Number(prices).toFixed(4));
         $("#productoFormProductos").val("cilindro");
         $("#totalFormProductos").prop('readonly', true);
         $(".cilindroFormProductos").removeClass("d-none");
         $(".estacionarioFormProductos").addClass("d-none");
 
-        subtotal = parseFloat( Number(artObj.capacity) *  Number(artObj.quantity) * Number(prices)).toFixed(2);
-        total    = parseFloat( Number(subtotal) * 1.16 ).toFixed(2);
+        subtotal = parseFloat( Number(artObj.capacity) *  Number(artObj.quantity) * Number(prices)).toFixed(4);
+        total    = parseFloat( Number(subtotal) * 1.16 ).toFixed(4);
 
         $('#capacidadFormProductos, #pedidoProductoId').val(artObj.article);
         $('#cantidadFormProductos').val(artObj.quantity);
@@ -163,14 +163,14 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
         }
         lblPrice = 'Precio x litro';
         $('.precio-unitario-label').html(lblPrice);
-        $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
+        $("#formProductosModalPrecio").html(Number(prices).toFixed(4));
         $("#productoFormProductos").val("estacionario");
         $("#totalFormProductos").attr('readonly', false);
         $(".estacionarioFormProductos").removeClass("d-none");
         $(".cilindroFormProductos").addClass("d-none");
 
-        subtotal = parseFloat( Number(artObj.capacity) * Number(prices) ).toFixed(2);
-        total    = parseFloat( Number(subtotal) * 1.16 ).toFixed(2);
+        subtotal = parseFloat( Number(artObj.capacity) * Number(prices) ).toFixed(4);
+        total    = parseFloat( Number(subtotal) * 1.16 ).toFixed(4);
 
         $("#pedidoProductoId").val( artObj.article );// Este input indicará que se trata de un edit
         $("#litrosFormProductos").val( artObj.capacity );
@@ -208,7 +208,7 @@ $("#agregarMetodoPago").click(function () {
             totalMetodosPago = $('.productosMetodoPago').children('tfoot').find('td.total').data('total');
         }
 
-        montoRestante = parseFloat( Number(totalProducto) - Number(totalMetodosPago) ).toFixed(2);
+        montoRestante = parseFloat( Number(totalProducto) - Number(totalMetodosPago) ).toFixed(4);
         montoRestante = montoRestante > 0 ? montoRestante : 0;
 
         $('#montoPagoPedido').val(montoRestante);
@@ -285,7 +285,7 @@ $('#guardarMetodoPagoForm').on('click', function () {
     $('#sinMetodosPago').addClass('d-none');
     $('.productosMetodoPago').parent().parent().removeClass('d-none');
 
-    let total        = parseFloat($('#montoPagoPedido').val()).toFixed(2);
+    let total        = parseFloat($('#montoPagoPedido').val()).toFixed(4);
     let metodoObj    = {
         metodo_txt   : metodoTxt,
         tipo_pago    : metodoId,
@@ -371,7 +371,7 @@ async function onClickAddProducto() {
 
             $('.productosCilindroPedido').parent().parent().removeClass('d-none');
             
-            let total     = parseFloat($('#totalFormProductos').val()).toFixed(2);
+            let total     = parseFloat($('#totalFormProductos').val()).toFixed(4);
             let artSel    = $( '#capacidadFormProductos' ).children('option:selected').data('articulo');
             let capacidad = parseInt( ( artSel && artSel.capacidad_litros ? artSel.capacidad_litros : 0 ) );
             let envase    = $('#envaseFormProductos').is(':checked');
@@ -398,10 +398,10 @@ async function onClickAddProducto() {
                     // searchTr.children('td').siblings("td:nth-child(4)").children('button.delete-producto-cil').data('item-id', articulo.article);
                 } else {
                     let firstItem         = searchTr.data('item');
-                    let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(2);
+                    let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(4);
                     firstItem['quantity'] = parseInt( Number(firstItem['quantity']) + Number(articulo['quantity']));
     
-                    total = parseFloat(Number(total) + Number(firstTotal)).toFixed(2);
+                    total = parseFloat(Number(total) + Number(firstTotal)).toFixed(4);
                     searchTr.data('item', firstItem);
                     searchTr.children('td').siblings("td:nth-child(2)").text(firstItem['quantity']);
                     searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
@@ -434,7 +434,7 @@ async function onClickAddProducto() {
 
             $('.productosEstacionarioPedido').parent().parent().removeClass('d-none');
             
-            let total  = parseFloat( $('#totalFormProductos').val() ).toFixed(2);
+            let total  = parseFloat( $('#totalFormProductos').val() ).toFixed(4);
             let litros = parseInt( $("#litrosFormProductos").val() );
             let articulo = {
                 "zoneprice" : prices,// Este es el valor de la zona
@@ -453,10 +453,10 @@ async function onClickAddProducto() {
                     searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' MXN');
                 } else {// Se suma el consumo del cliente
                     let firstItem         = searchTr.data('item');
-                    let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(2);
+                    let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(4);
                     firstItem['capacity'] = firstItem['capacity'] + articulo['capacity'];
     
-                    total = parseFloat(Number(total) + Number(firstTotal)).toFixed(2);
+                    total = parseFloat(Number(total) + Number(firstTotal)).toFixed(4);
                     searchTr.data('item', firstItem);
                     searchTr.children('td').siblings("td:nth-child(3)").text(firstItem['capacity']);
                     searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
@@ -519,7 +519,7 @@ function agregarEnvase(conEnvase, table, cilindro, zonaVenta) {
             "article"   : artEnvase.id
         };
 
-        let total = parseFloat( Number(artEnvase.basePrice) * 1.16 ).toFixed(2);
+        let total = parseFloat( Number(artEnvase.basePrice) * 1.16 ).toFixed(4);
 
         // Se llena la información del item
         $(table).children("tbody").append(
@@ -551,7 +551,7 @@ function onChangeValue(element) {
     let prices       = $('#zonaPrecioCliente').data("price");
     let cantidad     = parseInt( $('#cantidadFormProductos').val() );
     let litros       = parseInt( $('#litrosFormProductos').val() );
-    let valor        = parseFloat( $('#valorFormProductos').val() ).toFixed(2);
+    let valor        = parseFloat( $('#valorFormProductos').val() ).toFixed(4);
     let articulo     = $('#capacidadFormProductos').children(':selected').data('articulo');
     console.log(articulo);
     let capArticulo  = ( articulo && articulo.capacidad_litros ? articulo.capacidad_litros : 0 );
@@ -566,17 +566,17 @@ function onChangeValue(element) {
         }
         lblPrice = 'Precio x kg';
         $('.precio-unitario-label').html(lblPrice);
-        $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
+        $("#formProductosModalPrecio").html(Number(prices).toFixed(4));
         if ( elementId == 'cantidadFormProductos' || elementId == 'capacidadFormProductos' || elementId == 'productoFormProductos' ) {// Producto (cilindro) y cantidad de producto
 
-            subtotal = parseFloat( capArticulo *  cantidad * prices).toFixed(2);
+            subtotal = parseFloat( capArticulo *  cantidad * prices).toFixed(4);
             $('#valorFormProductos').val(subtotal);
 
         } else if ( elementId == 'cantidadFormProductos' ) {// Se resetea el formulario ¿?
 
         }
 
-        total = parseFloat(subtotal * 1.16).toFixed(2);
+        total = parseFloat(subtotal * 1.16).toFixed(4);
         $('#totalFormProductos').val(total);
         
     } else if ( tipoProducto == 'estacionario' ) {// Estacionario
@@ -585,22 +585,22 @@ function onChangeValue(element) {
         }
         lblPrice = 'Precio x litro';
         $('.precio-unitario-label').html(lblPrice);
-        $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
+        $("#formProductosModalPrecio").html(Number(prices).toFixed(4));
         if ( elementId == 'totalFormProductos' || elementId == 'productoFormProductos' ) {// Se calculan los litros a contratar
 
-            total = parseFloat( $('#totalFormProductos').val() ).toFixed(2);
+            total = parseFloat( $('#totalFormProductos').val() ).toFixed(4);
             total = ( isNaN(total) ? 0 : total );
-            subtotal = parseFloat(total / 1.16).toFixed(2);
+            subtotal = parseFloat(total / 1.16).toFixed(4);
             // subtotal = Math.ceil( $('#valorFormProductos').val() );
             // subtotal = ( isNaN(subtotal) ? 0 : subtotal );
-            litros = parseFloat(subtotal / prices).toFixed(2);
+            litros = parseFloat(subtotal / prices).toFixed(4);
             $('#litrosFormProductos').val(litros);
             
 
         } else if( elementId == 'litrosFormProductos' ) {// Se calcula el total acorde a los litros
 
             subtotal = parseInt(litros * prices); 
-            total = parseFloat(subtotal * 1.16).toFixed(2);
+            total = parseFloat(subtotal * 1.16).toFixed(4);
             $('#totalFormProductos').val(total);
             
         } else if ( elementId == 'cantidadFormProductos' ) {// 
@@ -689,7 +689,7 @@ async function savePedido() {
             let metodoObj = $(this).data('metodo');
             let metodoId  = parseInt(metodoObj.tipo_pago);
             if ( metodoObj.tipo_pago == '9' ) {// El método de pago es crédito
-                totalConCredito = parseFloat( Number(metodoObj.monto) ).toFixed(2);
+                totalConCredito = parseFloat( Number(metodoObj.monto) ).toFixed(4);
             }
             
             // Si el método de pago es transferencia o prepago, se enviará una orden de prepago después de guardar el pedido
@@ -986,42 +986,42 @@ function validarTablaMetodosPago(table) {
 // table: La tabla a realizar el cálculo de total de descuento
 // table: El tipo de desucento a enviar: nativo, resurtido (Cilindro), nota crédito(Gas LP) 
 function setTotalPedido(table, tipoDescuento = 'nativo') {
-    let total           = parseFloat(0).toFixed(2);
-    let totalDescontado = parseFloat(0).toFixed(2);
-    let totalLitros     = parseFloat(0).toFixed(2);
-    let descuento       = Number( parseFloat(customerGlobal.descuento ?? 0).toFixed(2) );
+    let total           = parseFloat(0).toFixed(4);
+    let totalDescontado = parseFloat(0).toFixed(4);
+    let totalLitros     = parseFloat(0).toFixed(4);
+    let descuento       = Number( parseFloat(customerGlobal.descuento ?? 0) ).toFixed(4);
     let esEstacionario  = !$('.productosEstacionarioPedido').parent().parent().hasClass('d-none');
     // console.log(descuento);
     table.children('tbody').children('tr.product-item').each(function() {
         let articulo = $( this ).data('item');
         if ( articulo.tipo == '1' ) { // Cilindro
-            totalLitros = Number(totalLitros) + Number( parseFloat(articulo.capacity * articulo.quantity).toFixed(2) );
+            totalLitros = (Number(totalLitros) + Number( parseFloat(articulo.capacity * articulo.quantity))).toFixed(4);
         } else if  ( articulo.tipo == '2' ) { // Estacionario
-            totalLitros = Number(totalLitros) + Number( parseFloat(articulo.capacity).toFixed(2) );
+            totalLitros = (Number(totalLitros) + Number( parseFloat(articulo.capacity))).toFixed(4);
         }
-        let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(4)").data('total')).toFixed(2);
-        total = parseFloat( Number(total) + Number(subtotal) ).toFixed(2);
+        let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(4)").data('total')).toFixed(4);
+        total = parseFloat( Number(total) + Number(subtotal) ).toFixed(4);
     });
 
     if ( tipoDescuento == 'nativo' ) { // Validación para especificar el descuento natural que puede tener el cliente
         if ( customerGlobal?.tipoDescuento == '1' ) { // Porcentaje
-            descuento = Number( parseFloat( descuento / 100 ).toFixed(2) );
-            totalDescontado = Number( parseFloat( descuento * total ).toFixed(2) );
+            descuento = Number( parseFloat( descuento / 100 ) ).toFixed(4);
+            totalDescontado = Number( parseFloat( descuento * total ) ).toFixed(4);
         } else if ( customerGlobal?.tipoDescuento == '2' ) { // Neto
-            totalDescontado = Number( parseFloat( totalLitros * descuento ).toFixed(2) );
+            totalDescontado = Number( parseFloat( totalLitros * descuento ) ).toFixed(4);
         }
         if ( esEstacionario ) {// Si el producto es estacionario el descuento se multiplica por .54 para hacer la conversión de kilos a litros
             console.log('Se aplica descuento multiplicado por .54');
-            totalDescontado = Number( parseFloat( totalDescontado * .54 ).toFixed(2) );
+            totalDescontado = Number( parseFloat( totalDescontado * .54 ) ).toFixed(4);
         } 
     } else if ( tipoDescuento == 'resurtido' ) {// Descuento por devolución de cilindro
-        totalDescontado = Number( parseFloat( total).toFixed(2)) ;
+        totalDescontado = Number( parseFloat( total)).toFixed(4) ;
         console.log('Tipo: ', tipoDescuento);
     } else if ( tipoDescuento == 'nota' ) {// Descuento por nota de crédito asociado a Gas LP
 
     }
 
-    total = parseFloat( Number(total) - Number(totalDescontado) ).toFixed(2);
+    total = parseFloat( Number(total) - Number(totalDescontado) ).toFixed(4);
     
     // Se asigna el descuento
     table.children('tfoot').find('td.descuento').data('descuento', totalDescontado);
@@ -1034,12 +1034,12 @@ function setTotalPedido(table, tipoDescuento = 'nativo') {
 
 // Calcula el total de los métodos de pago agregados
 function setTotalMetodosPago(table) {
-    let total = parseFloat(0).toFixed(2);
+    let total = parseFloat(0).toFixed(4);
 
     table.children('tbody').children('tr.metodo-item').each(function() {
         // let articulo = $( this ).data('item');
-        let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(2);
-        total = parseFloat( Number(total) + Number(subtotal) ).toFixed(2);
+        let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(4);
+        total = parseFloat( Number(total) + Number(subtotal) ).toFixed(4);
     });
 
     table.children('tfoot').find('td.total').data('total', total);
@@ -1048,22 +1048,22 @@ function setTotalMetodosPago(table) {
 
 // Calcula el total del método de pago
 function setTotalMetodoPago(table, tipoDescuento = 'nativo') {
-    let total = parseFloat(0).toFixed(2);
+    let total = parseFloat(0).toFixed(4);
 
     if ( tipoDescuento == 'nativo' ) { // Validación para especificar el descuento natural que puede tener el cliente
         table.children('tbody').children('tr.metodo-item').each(function() {
             // let articulo = $( this ).data('item');
-            let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(2);
+            let subtotal = parseFloat($( this ).children('td').siblings("td:nth-child(3)").data('total')).toFixed(4);
             total = Number(total) + Number(subtotal);
         });
     } else if ( tipoDescuento == 'resurtido' ) {// Descuento por devolución de cilindro
-        total = parseFloat(0).toFixed(2);
+        total = parseFloat(0).toFixed(4);
     } else if ( tipoDescuento == 'nota' ) {// Descuento por nota de crédito asociado a Gas LP
 
     }
 
-    table.children('tfoot').find('td.total').data('total', parseFloat(total).toFixed(2));
-    table.children('tfoot').find('td.total').text('$'+parseFloat(total).toFixed(2)+' MXN');
+    table.children('tfoot').find('td.total').data('total', parseFloat(total).toFixed(4));
+    table.children('tfoot').find('td.total').text('$'+parseFloat(total).toFixed(4)+' MXN');
 }
 
 // Método que ejecuta la cancelación de un pedido

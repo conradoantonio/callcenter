@@ -180,7 +180,7 @@ function setCustomerInfo(customer, idAddress = null) {
     // Muestra el badge de descuento
     if ( customer.descuento ) {
         let tipoDescuento = null;
-        let saldoVencido = parseFloat(customer.saldoVencido).toFixed(2);
+        let saldoVencido = parseFloat(customer.saldoVencido).toFixed(4);
         $('#badgeDescuento').removeClass('d-none');
         if ( saldoVencido > 0 ) {
             $('#badgeDescuento').children('span.badge').addClass('bg-danger-cc');
@@ -582,7 +582,7 @@ function setSelectPlants(items) {
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
                 $("select#plantas").append(
-                    '<option data-pedido-minimo="'+parseFloat(items[key].min).toFixed(2)+'" value='+items[key].id+'>'+items[key].nombre+'</option>'
+                    '<option data-pedido-minimo="'+parseFloat(items[key].min).toFixed(4)+'" value='+items[key].id+'>'+items[key].nombre+'</option>'
                 );
             }
         }
@@ -1274,12 +1274,12 @@ function getItemPedido(pedido, tipo) {
                     '<tr class="'+( items[key].itemId == articuloDesc ? 'descuento' : '' )+'">'+
                         '<td class="">'+items[key].item+'</td>'+
                         '<td class="text-center">'+cantidad+'</td>'+
-                        '<td class="text-center">$'+parseFloat( total + tax ).toFixed(2)+'</td>'+
+                        '<td class="text-center">$'+parseFloat( total + tax ).toFixed(4)+'</td>'+
                     '</tr>'
                 )
             }
 
-            $('table.table-desgloce-art tfoot').find('.total-pedido-detalle').text('$'+parseFloat(totalFinal).toFixed(2));
+            $('table.table-desgloce-art tfoot').find('.total-pedido-detalle').text('$'+parseFloat(totalFinal).toFixed(4));
 
             $('.campos-art').removeClass('d-none');
         }
@@ -1308,12 +1308,12 @@ function setMetodosPago(pedido, tipo) {
                 '<tr>'+
                     '<td class="">'+( metodo ? metodo.method : 'N/A' )+'</td>'+
                     '<td class="text-center">'+( items[key].folio ? items[key].folio : 'N/A' ) +'</td>'+
-                    '<td style="text-align: right;">$'+parseFloat(monto).toFixed(2)+'</td>'+
+                    '<td style="text-align: right;">$'+parseFloat(monto).toFixed(4)+'</td>'+
                 '</tr>'
             )
         }
 
-        $('table.table-desgloce-metodos-pago tfoot').find('.total-metodos-pago-detalle').text('$'+parseFloat(totalFinal).toFixed(2));
+        $('table.table-desgloce-metodos-pago tfoot').find('.total-metodos-pago-detalle').text('$'+parseFloat(totalFinal).toFixed(4));
 
         $('.campos-metodos-pago').removeClass('d-none');
     }
