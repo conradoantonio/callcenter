@@ -2684,7 +2684,7 @@
                                 </div>
                                 <div class="content-input mt-3 d-none">
                                     <label>Giro del negocio*</label>
-                                    <select id="giroNegocioFormCliente" class="form-ptg form-ptg-primary">
+                                    <select id="giroNegocioFormCliente" class="form-ptg">
                                     </select>
                                 </div>
                                 <div class="row mt-3">
@@ -2750,13 +2750,13 @@
                                         <div class="col-3">
                                             <div class="content-input">
                                                 <label>Correo electrónico*</label>
-                                                <input id="correoFormCliente" placeholder="email@example.com" type="text" class="form-ptg">
+                                                <input id="correoFormCliente" placeholder="email@example.com" type="email" class="form-ptg">
                                             </div>
                                         </div>
                                         <div class="col-3">
                                             <div class="content-input">
                                                 <label>Teléfono principal*</label>
-                                                <input id="telefonoPrincipalFormCliente" placeholder="555 9636 6699" type="text" class="form-ptg">
+                                                <input id="telefonoPrincipalFormCliente" placeholder="555 9636 6699" type="number" class="form-ptg">
                                             </div>
                                         </div>
                                         <div class="col-3">
@@ -2770,7 +2770,7 @@
                                         <div class="col-3">
                                             <div class="content-input">
                                                 <label>Correo de facturación*</label>
-                                                <input id="correoAlternativoFormCliente" placeholder="email@example.com" type="text" class="form-ptg">
+                                                <input id="correoAlternativoFormCliente" placeholder="email@example.com" type="email" class="form-ptg">
                                             </div>
                                         </div>
                                     </div>
@@ -3205,42 +3205,90 @@
             let requiereFactura  = $("input[name=requiereFactura]:checked").val();
             let requiereContrato = $("input[name=requiereContrato]:checked").val();
             if (tab == 'contacto') {
-                // if ($("input[name=requiereFactura]:checked").val() == "si") {
-                //     $("#rfcFormCliente").parent().parent().removeClass("d-none");
-                // } else {
-                //     $("#rfcFormCliente").parent().parent().addClass("d-none");
-                // }
-
                 if (($("input[name=tipoRegimen]:checked").val() == "comercial" || $("input[name=tipoRegimen]:checked").val() == "industrial")) {
                     if (!$("#giroNegocioFormCliente").val()) {
-                        next = false;
+                        let aux = "<ul>";
+                        aux += "<li>Giro del negocio</li>";
+                        aux += "</ul>";
+                        infoMsg('warning', 'Campos requeridos:', aux);
+                        return;
                     }
                 }
             } else if (tab == "domicilio") {
                 if ( 
-                    ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val() || !$("#apellidosFormCliente").val() ) ) || //Debe tener nombre y apellido si es doméstico
-                    ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val() ) ) || //Debe tener el nombre de la razón social
+                    ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val().trim() || !$("#apellidosFormCliente").val().trim() || !$("#correoFormCliente").val().trim() || !$("#telefonoPrincipalFormCliente").val().trim() ) ) || //Debe tener nombre y apellido si es doméstico
+                    ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val()  || !$("#correoFormCliente").val().trim() || !$("#telefonoPrincipalFormCliente").val().trim() ) ) || //Debe tener el nombre de la razón social
                     ( requiereFactura  == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) ) ||
                     ( requiereContrato == 'si' && ( !$("#fechaInicioContratoCliente").val() ) ) // Si requiere contrato, debe numero de contrato, fecha de inicio de contrato y el uso de contrato
                 ) {
-                    next = false;
-                }
-                // if (!$("#nombreFormCliente").val().trim() ||
-                //     !$("#apellidosFormCliente").val().trim() ||
-                //     ($("input[name=requiereFactura]:checked").val() == "si" && !$("#rfcFormCliente").val().trim()) ||
-                //     !$("#correoFormCliente").val().trim() ||
-                //     !$("#telefonoPrincipalFormCliente").val().trim()) {
-                //     next = false;
-                // }
-            }
+                    let aux = "<ul>";
+                    if(tipoRegimen == 'domestico') {
+                        if(!$("#nombreFormCliente").val().trim()) {
+                            aux += "<li>Nombre</li>";
+                        }
+                        if(!$("#apellidosFormCliente").val().trim()) {
+                            aux += "<li>Apellido(s)</li>";
+                        }
+                    } else {
+                        if(!$("#nombreRazonSocialFormCliente").val()) {
+                            aux += "<li>Nombre razón social</li>";
+                        }                        
+                    }
+                    if(requiereFactura  == 'si') {
+                        if(!$("#rfcFormCliente").val().trim()) {
+                        aux += "<li>RFC</li>";
+                        }
+                        if(!$("#usoCfdiFormCliente").val().trim()) {
+                            aux += "<li>Uso de CFDI</li>";
+                        }
+                    }                        
+                    if(!$("#correoFormCliente").val().trim()) {
+                        aux += "<li>Correo electrónico</li>";
+                    }
+                    if(!$("#telefonoPrincipalFormCliente").val().trim()) {
+                        aux += "<li>Teléfono principal</li>";
+                    }
+                    if(requiereFactura  == 'si') {
+                        if(!$("#correoAlternativoFormCliente").val().trim()) {
+                            aux += "<li>Correo de facturación</li>";
+                        }
+                    }
 
-            if (!next) {
-                alert("Favor de llenar todos los campos con *");
-            } else {
-                $(".tabs-clientes").addClass("d-none");
-                $("#tab-client-" + tab).removeClass("d-none");
-                $("[data-tab=" + tab + "]").addClass('active');
+                    if(requiereContrato == 'si') {
+                        if(!$("#fechaInicioContratoCliente").val().trim()) {
+                            aux += "<li>Fecha inicio de contrato</li>";
+                        }
+                    }
+                    
+                    aux += "</ul>";
+                    infoMsg('warning', 'Campos requeridos:', aux);
+                    return;
+                } else { //Valida formato de campos
+                    let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                        rfcRegex = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;                    
+                    let aux = "<ul>";
+                    if(!emailRegex.test($("#correoFormCliente").val().trim())) {
+                        aux += "<li>Correo electrónico</li>";
+                    }
+                    if(requiereFactura  == 'si') {
+                        if(!rfcRegex.test($("#rfcFormCliente").val().trim())) {
+                            aux += "<li>RFC</li>";
+                        }
+                        if(!emailRegex.test($("#correoAlternativoFormCliente").val().trim())) {
+                            aux += "<li>Correo de facturación</li>";
+                        }
+                    }   
+                    if(aux != "<ul>") {
+                        aux += "</ul>";
+                        infoMsg('warning', 'Campos con formato no valido:', aux);
+                        return;
+                    }                 
+                }
             }
+            
+            $(".tabs-clientes").addClass("d-none");
+            $("#tab-client-" + tab).removeClass("d-none");
+            $("[data-tab=" + tab + "]").addClass('active');
 
         }
 

@@ -191,7 +191,7 @@ function setSelectArticulos(items) {
         // $('select#articuloFrecuenteEstFormCliente').children('option').remove();
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
-                let articulo = '<option data-pedido-minimo="'+parseFloat(items[key].min).toFixed(2)+'" value='+items[key].id+' data-articulo=' + "'" + JSON.stringify(items[key]) + "'" + '>'+items[key].nombre+'</option>';
+                let articulo = '<option data-pedido-minimo="'+parseFloat(items[key].min).toFixed(4)+'" value='+items[key].id+' data-articulo=' + "'" + JSON.stringify(items[key]) + "'" + '>'+items[key].nombre+'</option>';
 
                 if ( [1,2].includes(Number(items[key].tipo_articulo)) ) {
                     $("select#articuloFugaQueja").append( articulo );
@@ -963,7 +963,7 @@ function gestionarServicio($this) {
             });
         }
         
-        total = total.toFixed(2);
+        total = total.toFixed(4);
         $('.productosMetodoPago').children('tfoot').find('td.total').data('total', total);
         $('.productosMetodoPago').find('td.total').text('$'+total+' mxn');
     }
@@ -1002,7 +1002,7 @@ function gestionarServicio($this) {
                             '<td class="text-center">'+articulo.item+'</td>'+
                             '<td class="text-center">'+articulo.quantity+'</td>'+
                             '<td class="text-center">'+articulo.capacidad+' kg</td>'+
-                            '<td class="text-center" data-total='+(articulo.amount+articulo.taxAmount)+'>$'+(articulo.amount+articulo.taxAmount).toFixed(2)+' mxn</td>'+
+                            '<td class="text-center" data-total='+(articulo.amount+articulo.taxAmount)+'>$'+(articulo.amount+articulo.taxAmount).toFixed(4)+' mxn</td>'+
                         '</tr>'
                     );
                 } else {
@@ -1019,7 +1019,7 @@ function gestionarServicio($this) {
                 total = total + (articulo.amount+articulo.taxAmount);
             });
 
-            total = total.toFixed(2);
+            total = total.toFixed(4);
             table.children('tfoot').find('td.total').data('total', total);
             table.children('tfoot').find('td.total').text('$'+total+' mxn');            
         }
