@@ -131,6 +131,7 @@ $("#agregarProducto").click(function () {
 // Edita un producto agregado en la lista del pedido
 $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() {
     let button   = $(this);
+    let lblPrice = 'Precio x kg';
     let prices   = $('#zonaPrecioCliente').data("price");
     let artObj   = button.parent().parent().data('item');
     let total    = 0;
@@ -141,6 +142,8 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
         if(!isPriceKG) {
             prices = prices / 0.54;
         }
+        lblPrice = 'Precio x kg';
+        $('.precio-unitario-label').html(lblPrice);
         $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
         $("#productoFormProductos").val("cilindro");
         $("#totalFormProductos").prop('readonly', true);
@@ -158,6 +161,8 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
         if(isPriceKG) {
             prices = prices * 0.54;
         }
+        lblPrice = 'Precio x litro';
+        $('.precio-unitario-label').html(lblPrice);
         $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
         $("#productoFormProductos").val("estacionario");
         $("#totalFormProductos").attr('readonly', false);
@@ -541,6 +546,7 @@ function agregarEnvase(conEnvase, table, cilindro, zonaVenta) {
 function onChangeValue(element) {
     var elementId    = element.attr('id');
     let subtotal     = total = 0;
+    let lblPrice     = 'Precio x kg';
     let tipoProducto = $('#productoFormProductos').val();
     let prices       = $('#zonaPrecioCliente').data("price");
     let cantidad     = parseInt( $('#cantidadFormProductos').val() );
@@ -558,6 +564,8 @@ function onChangeValue(element) {
         if(!isPriceKG) {
             prices = prices / 0.54;
         }
+        lblPrice = 'Precio x kg';
+        $('.precio-unitario-label').html(lblPrice);
         $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
         if ( elementId == 'cantidadFormProductos' || elementId == 'capacidadFormProductos' || elementId == 'productoFormProductos' ) {// Producto (cilindro) y cantidad de producto
 
@@ -575,6 +583,8 @@ function onChangeValue(element) {
         if(isPriceKG) {
             prices = prices * 0.54;
         }
+        lblPrice = 'Precio x litro';
+        $('.precio-unitario-label').html(lblPrice);
         $("#formProductosModalPrecio").html(Number(prices).toFixed(2));
         if ( elementId == 'totalFormProductos' || elementId == 'productoFormProductos' ) {// Se calculan los litros a contratar
 
@@ -699,7 +709,7 @@ async function savePedido() {
             console.log(pagosArr);
             let conti = true;
             pagosArr.forEach(element => {
-                if(methodsEstacionario.indexOf(element.tipo_pago) == -1) {
+                if(methodsEstacionario.indexOf(element.tipo_pago.toString()) == -1) {
                     conti = false;
                 }
             });
@@ -740,10 +750,11 @@ async function savePedido() {
         $('.productosEstacionarioPedido').is(':visible') ? typeService = 2 : '';
 
         // Código para insertar las posibles rutas de la dirección del cliente
-        if ( direccion.route )  { rutas[0] = {id : direccion.idRoute, name : direccion.route}; }// Cilindro matutino
-        if ( direccion.route2 ) { rutas[1] = {id : direccion.idRoute2, name : direccion.route2}; }// Cilindro vesp
-        if ( direccion.route3 ) { rutas[2] = {id : direccion.idRoute3, name : direccion.route3}; }// Estacionario matutino
-        if ( direccion.route4 ) { rutas[3] = {id : direccion.idRoute4, name : direccion.route4}; }// Estacionario vesp
+        // rutas[0] = { id : ( direccion && direccion.idRoute ? direccion.idRoute : '' ), name : ( direccion && direccion.route ? direccion.route : '') }; // Cilindro matutino
+        rutas[0] = { id : direccion?.idRoute,  name : direccion?.route};// Cilindro matutino
+        rutas[1] = { id : direccion?.idRoute2, name : direccion?.route2};// Cilindro vesp
+        rutas[2] = { id : direccion?.idRoute3, name : direccion?.route3};// Estacionario matutino
+        rutas[3] = { id : direccion?.idRoute4, name : direccion?.route4};// Estacionario vesp
 
         let tmp = {
             // "status"        : 1,
@@ -756,6 +767,7 @@ async function savePedido() {
             "operario"      : userId,
             "typeservice"   : typeService,
             "cases"         : [],
+            "routes"        : rutas,
             "time"          : time,
             "turn"          : 1,
             //"paymentMethod" : $('#metodoPagoPedido').val(),
@@ -801,9 +813,10 @@ async function savePedido() {
             }
         }).catch((error) => {
             opportunities = [];
-            infoMsg('error', 'El pedido no ha sido creado', 'Verifique que la información sea correcta');
+            infoMsg('error', 'El pedido no ha sido creado', error.message);
             // Limpia los campos de cliente
             
+            console.log('El error es: ');
             console.log(error);
         });
     });

@@ -729,7 +729,7 @@
                                 Agregar producto
                             </div>
                             <div class="col-auto">
-                                Precio: $<span id="formProductosModalPrecio"></span>
+                                <span class="precio-unitario-label">Precio: $</span><span id="formProductosModalPrecio"></span> <span>MXN</span>
                             </div>
                         </div>
                         
@@ -794,13 +794,22 @@
                     </div>
                     <div class="row pb-2">
                         <div class="col-6">
+                            <label class="label-ptg">Subtotal</label>
+                            <div class="input-group special-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1" style="border: none; height: 42px; font-size: 16px; color: #355da7; margin-left: 1px; background-color: white;">$</span>
+                                </div>
+                                <input id="valorFormProductos" type="number" readonly class="form-control" placeholder="0.00" aria-label="0.00" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <!-- <div class="col-6">
                             <div class="content-input content-input-primary">
                                 <label>Valor</label>
                                 <input id="valorFormProductos" type="number" readonly class="form-ptg form-ptg-primary">
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-6">
-                            <label class="label-ptg">Total</label>
+                            <label class="label-ptg">Total con IVA</label>
                             <div class="input-group special-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1" style="border: none; height: 42px; font-size: 16px; color: #355da7; margin-left: 1px; background-color: white;">$</span>
@@ -1768,7 +1777,7 @@
                                     <tr>
                                         <th>Fecha creación</th>
                                         <th>Cierre previsto</th>
-                                        <th>Número documento</th>
+                                        <th>Número de servicio</th>
                                         <th>Conductor</th>
                                     </tr>
                                 </thead>
