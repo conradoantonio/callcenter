@@ -223,10 +223,7 @@ function setCustomerInfo(customer, idAddress = null) {
         $('#tipoServicioCliente').text(direccionDefault.typeService);
         setTextRoutesByAddress(direccionDefault);
 
-        // let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
-        // let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        //     return new bootstrap.Tooltip(tooltipTriggerEl);
-        // });
+        initTooltips();
     }
 
     // Obtiene los casos y oportunidades del cliente
@@ -1072,7 +1069,9 @@ function verDetalles($this) {
     $('.casos-imagenes').children().remove();
     
     let direccion = '';
-    let pedido = $($this).closest("tr").data("item");
+    let pedido   = $($this).closest("tr").data("item");
+    let ruta     = pedido.rutaAsignada;
+    let vehiculo = ruta ? getRouteNumber(ruta) : 'Sin asignar';
     console.log(pedido);
 
     // Datos generales del modal
@@ -1096,7 +1095,8 @@ function verDetalles($this) {
         $("#verDetallesServicio").html(pedido.numeroDocumento);
         $("#verDetallesDireccion").html(direccion ? direccion : 'Sin asignar');
     
-        $("#verDetallesVehiculo").html(pedido.vehiculo ? pedido.vehiculo.trim() : 'Sin asignar');
+        $("#verDetallesVehiculo").html(vehiculo);
+        // $("#verDetallesVehiculo").html(pedido.vehiculo ? pedido.vehiculo.trim() : 'Sin asignar');
         $("#verDetallesZona").html(pedido.zone ? pedido.zone : 'Sin asignar');
         $("#verDetallesUsuarioMonitor").html(pedido.monitor ? pedido.monitor.trim() : 'Sin asignar');
         $("#verDetallesDireccion2").html(direccion);
@@ -1334,6 +1334,15 @@ function cancelarPedido($this) {
     $("#cancelarOppModal").data("item", pedido);
     $("span#cancelarOppPedido").html(pedido.id_Transaccion ? " - " + pedido.id_Transaccion : '');
     $("#cancelarOppModal").modal("show");
+}
+
+// Inicializa los tooltips
+function initTooltips() {
+    $('.tooltip').remove();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
 }
 
 // Formatea la hora de netsuite para ser compatible con el timepicker del formulario

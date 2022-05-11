@@ -121,10 +121,10 @@ function validateAddressFields() {
             address.obj['lunes'] ? updateAddress['custrecord_ptg_lunes'] = address.obj['lunes'] : '';
             address.obj['stateName'] ? updateAddress['custrecord_ptg_estado'] = address.obj['stateName'] : '';
             address.obj['ruta'] ? updateAddress['custrecord_ptg_colonia_ruta'] = address.obj['ruta'] : '';
-            address.obj['idRoute'] ? updateAddress['idRoute'] = address.obj['idRoute'] : '';
-            address.obj['idRoute2'] ? updateAddress['idRoute2'] = address.obj['idRoute2'] : '';
-            address.obj['idRoute3'] ? updateAddress['idRoute3'] = address.obj['idRoute3'] : '';
-            address.obj['idRoute4'] ? updateAddress['idRoute4'] = address.obj['idRoute4'] : '';
+            address.obj['idRoute'] ? updateAddress['custrecord_ptg_ruta_asignada'] = address.obj['idRoute'] : '';
+            address.obj['idRoute2'] ? updateAddress['custrecord_ptg_ruta_asignada2'] = address.obj['idRoute2'] : '';
+            address.obj['idRoute3'] ? updateAddress['custrecord_ptg_ruta_asignada_3'] = address.obj['idRoute3'] : '';
+            address.obj['idRoute4'] ? updateAddress['custrecord_ptg_ruta_asignada_4'] = address.obj['idRoute4'] : '';
             // address.obj['idRoute'] ? updateAddress['custrecord_ptg_ruta_asignada'] = address.obj['idRoute'] : '';
             // address.obj['idRoute2'] ? updateAddress['custrecord_ptg_ruta_asignada2'] = address.obj['idRoute2'] : '';
             address.obj['colonia'] ? updateAddress['custrecord_ptg_nombre_colonia'] = address.obj['colonia'] : '';
@@ -432,13 +432,50 @@ function setDataDireccion(items, elem, trigger = true) {
 
 // Muestra las rutas acorde a si la dirección otorgada es cilindro, estacionario o ambas
 function setTextRoutesByAddress(address) {
-    $('#rutaCilMat').text(address.route ? getRouteNumber(address.route) : 'Sin ruta');
-    $('#rutaCilVesp').text(address.route2 ? getRouteNumber(address.route2) : 'Sin ruta');
-    $('#rutaEstMat').text(address.route3 ? getRouteNumber(address.route3) : 'Sin ruta');
-    $('#rutaEstVesp').text(address.route4 ? getRouteNumber(address.route4) : 'Sin ruta');
+    $('.r-cil, .r-est').addClass('d-none');
+    
+    if ( address.typeServiceId == 1 ) {// Cilindro
+        $('.r-cil').removeClass('d-none');
+
+        $('#rutaCilMat').text(address.route ? getRouteNumber(address.route) : 'Sin ruta');
+        $('#rutaCilVesp').text(address.route2 ? getRouteNumber(address.route2) : 'Sin ruta');
+        $('#rutaCilMat').prop('title', address.route ? getRouteStr(address.route) : 'Sin ruta');
+        $('#rutaCilVesp').prop('title', address.route2 ? getRouteStr(address.route2) : 'Sin ruta');
+    } 
+    else if ( address.typeServiceId == 2 ) {// Estacionario
+        $('.r-est').removeClass('d-none');
+
+        $('#rutaEstMat').text(address.route ? getRouteNumber(address.route) : 'Sin ruta');
+        $('#rutaEstVesp').text(address.route2 ? getRouteNumber(address.route2) : 'Sin ruta');
+        $('#rutaEstMat').prop('title', address.route ? getRouteStr(address.route) : 'Sin ruta');
+        $('#rutaEstVesp').prop('title', address.route2 ? getRouteStr(address.route2) : 'Sin ruta');
+    } 
+    else if ( address.typeServiceId == 4 ) {// Ambos
+        $('.r-cil, .r-est').removeClass('d-none');
+
+        $('#rutaCilMat').text(address.route ? getRouteNumber(address.route) : 'Sin ruta');
+        $('#rutaCilVesp').text(address.route2 ? getRouteNumber(address.route2) : 'Sin ruta');
+        $('#rutaEstMat').text(address.route3 ? getRouteNumber(address.route3) : 'Sin ruta');
+        $('#rutaEstVesp').text(address.route4 ? getRouteNumber(address.route4) : 'Sin ruta');
+    
+        $('#rutaCilMat').prop('title', address.route ? getRouteStr(address.route) : 'Sin ruta');
+        $('#rutaCilVesp').prop('title', address.route2 ? getRouteStr(address.route2) : 'Sin ruta');
+        $('#rutaEstMat').prop('title', address.route3 ? getRouteStr(address.route3) : 'Sin ruta');
+        $('#rutaEstVesp').prop('title', address.route4 ? getRouteStr(address.route4) : 'Sin ruta');
+    }
+
+    
+    initTooltips();
 }
 
-// Obtiene el número de la ruta
+// Obtiene la ruta completa de la dirección
+function getRouteStr(route) {
+    let splited = route.split(':');
+
+    return splited[1] ?? 'Sin ruta';
+}
+
+// Obtiene el número del vehículo la ruta
 function getRouteNumber(route) {
     let rutaSplited = route.split(':');
     let nombreRuta  = '';
@@ -526,10 +563,15 @@ function getAddressOnList() {
     }
 
     // Se setean las rutas de las rutas de la colonia seleccionada
-    if ( coloniaRutas && coloniaRutas.rutaCilId ) { addressObj['idRoute'] = coloniaRutas.rutaCilId; }
-    if ( coloniaRutas && coloniaRutas.rutaCilVespId ) { addressObj['idRoute2'] = coloniaRutas.rutaCilVespId; }
-    if ( coloniaRutas && coloniaRutas.rutaEstaId ) { addressObj['idRoute3'] = coloniaRutas.rutaEstaId; }
-    if ( coloniaRutas && coloniaRutas.rutaEstVespId ) { addressObj['idRoute4'] = coloniaRutas.rutaEstVespId; }
+    // if ( coloniaRutas && coloniaRutas.rutaCilId ) { addressObj['idRoute'] = coloniaRutas.rutaCilId; }
+    // if ( coloniaRutas && coloniaRutas.rutaCilVespId ) { addressObj['idRoute2'] = coloniaRutas.rutaCilVespId; }
+    // if ( coloniaRutas && coloniaRutas.rutaEstaId ) { addressObj['idRoute3'] = coloniaRutas.rutaEstaId; }
+    // if ( coloniaRutas && coloniaRutas.rutaEstVespId ) { addressObj['idRoute4'] = coloniaRutas.rutaEstVespId; }
+
+    addressObj['idRoute'] = coloniaRutas && coloniaRutas.rutaCilId ? coloniaRutas.rutaCilId : null;
+    addressObj['idRoute2'] = coloniaRutas && coloniaRutas.rutaCilVespId ? coloniaRutas.rutaCilVespId : null;
+    addressObj['idRoute3'] = coloniaRutas && coloniaRutas.rutaEstaId ? coloniaRutas.rutaEstaId : null;
+    addressObj['idRoute4'] = coloniaRutas && coloniaRutas.rutaEstVespId ? coloniaRutas.rutaEstVespId : null;
 
     // Se agregan campos acorde al tipo de servicio
     if ( tipoServicioId == "1" ) {// Cilindros
