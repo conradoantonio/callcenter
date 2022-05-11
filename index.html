@@ -681,7 +681,7 @@
                         class="fa-solid fa-arrow-left"></i></button>
             </div>
             <div class="col-auto p-0">
-                <img src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108998&c=5298967_SB1&h=58fXy2zvwjIT_OA9h721BFfwCFF1pYHerADEgGg1wbWxKFPt"
+                <img id="logo" class="invisible" src="https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=108998&c=5298967_SB1&h=58fXy2zvwjIT_OA9h721BFfwCFF1pYHerADEgGg1wbWxKFPt"
                     alt="" height="56">
             </div>
             <div id="header-title" class="col">
@@ -2980,6 +2980,12 @@
         urlGetEstados = '${ds.getEstados}';
         urlGetMunicipios = '${ds.getMunicipios}';
         urlGetColonias = '${ds.getColonias}';
+
+        if(userSubsidiary == "23") {
+            $("#logo").attr("src", "https://5298967-sb1.app.netsuite.com/core/media/media.nl?id=133844&c=5298967_SB1&h=aEKg2txWkUnSLlh1Evt74heLK0S1v-EPa3EvPye1rRm8exho")
+        } 
+
+        $("#logo").removeClass("invisible");
         
         // urlObtenerEstados  = 'https://apisgratis.com/cp/entidades/';
         // urlObtenerCiudades = 'https://apisgratis.com/cp/ciudades/?estado=SAN%20LUIS%20POTOSI';
