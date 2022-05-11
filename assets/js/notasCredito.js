@@ -205,7 +205,7 @@ function guardarDescuentoNota() {
                 "lines": [
                     {
                         'article'    : articuloDesc,
-                        'rate'       : parseFloat( Number(descuento) * -1 ).toFixed(2),
+                        'rate'       : parseFloat( Number(descuento) * -1 ).toFixed(4),
                         'isDiscount' : true,
                         'nuevo'      : nuevo,
                     }
@@ -277,8 +277,8 @@ function armarCasoPendiente (casoArt) {
     table.parent().parent().removeClass('d-none');
     
     let capacidad  = Number(parseInt(casoArt.capacity));
-    let zonaPrecio = Number(parseFloat(casoArt.priceZone).toFixed(2));
-    let total      = parseFloat( capacidad * zonaPrecio ).toFixed(2);
+    let zonaPrecio = Number(parseFloat(casoArt.priceZone)).toFixed(4);
+    let total      = parseFloat( capacidad * zonaPrecio ).toFixed(4);
     let articulo   = {
         "zoneprice" : zonaPrecio,// Este es el valor de la zona de precio
         "tipo"      : 1,
@@ -340,7 +340,7 @@ $('#creditosCliente')
         let nota = $(this).data('item');
         console.log('Data Item: ', nota);
         itemsArr.push(nota);
-        totalNota += Number(parseFloat(nota.total).toFixed(2));
+        totalNota += Number(parseFloat(nota.total)).toFixed(4);
     });
 
     $('#sinMetodosPago').addClass('d-none');
@@ -366,7 +366,7 @@ $('#creditosCliente')
         let nota = $(this).data('item');
         console.log('Data Item: ', nota);
         itemsArr.push(nota);
-        totalNota += Number(parseFloat(nota.total).toFixed(2));
+        totalNota += Number(parseFloat(nota.total)).toFixed(4);
     });
 
     $('#sinMetodosPago').addClass('d-none');
