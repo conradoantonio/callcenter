@@ -884,7 +884,7 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
         '<td>'+( type == "casos" ? ( 'N/A' ) : ( item.rutaAsignada ? getRouteNumber(item.rutaAsignada) : 'Sin asignar' ) )+'</td>'+// Ruta
         '<td>'+( type == "casos" ? ( 'N/A' ) : ( item.representanteVentas ?? 'Sin asignar' ) )+'</td>'+// Atendido por
         '<td>'+( type == "casos" ? ( item.estatus ?? 'Sin asignar' ) : ( item.estado ?? 'Sin asignar' ) )+'</td>'+// Estado
-        '<td>'+( type == "casos" ? ( item.prioridad ?? 'Sin asignar' ) : 'N/A' )+'</td>'+// Prioridad
+        // '<td>'+( type == "casos" ? ( item.prioridad ?? 'Sin asignar' ) : 'N/A' )+'</td>'+// Prioridad
     '</tr>';
 
     return tr;
@@ -897,6 +897,9 @@ function clearCustomerInfo () {
     
     // Se inhabilita el método de pago credito cliente
     $('option.opt-method-credito-cliente').addClass('d-none');
+
+    // Se muestran las posibles rutas de la dirección del cliente
+    $('.r-cil, .r-est').removeClass('d-none');
     
     // Se reinician los labels
     $('#idCliente').text('0');

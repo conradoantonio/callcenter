@@ -415,7 +415,7 @@ function clearCustomerForm(type = 'create') {
     $(".dato-regimen-fisico").removeClass("d-none");
 
     // Limpia los textarea e inputs de todo el form
-    $('#form-client-view').find('input.form-ptg[type="text"], input.form-ptg[type="time"], input.form-ptg[type="number"], input.form-ptg[type="date"], textarea.form-ptg').val('');
+    $('#form-client-view').find('input.form-ptg[type="text"], input.form-ptg[type="email"], input.form-ptg[type="time"], input.form-ptg[type="number"], input.form-ptg[type="date"], textarea.form-ptg').val('');
 
     // Tab inicio
     $("input#tipoRegimen1").prop('checked', true);
