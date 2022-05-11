@@ -142,9 +142,9 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
         if(!isPriceKG) {
             prices = prices / 0.54;
         }
-        lblPrice = 'Precio x kg';
+        lblPrice = 'Precio x kg ';
         $('.precio-unitario-label').html(lblPrice);
-        $("#formProductosModalPrecio").html(Number(prices).toFixed(4));
+        $("#formProductosModalPrecio").html('$'.concat(Number(prices).toFixed(4)));
         $("#productoFormProductos").val("cilindro");
         $("#totalFormProductos").prop('readonly', true);
         $(".cilindroFormProductos").removeClass("d-none");
@@ -161,9 +161,9 @@ $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() 
         if(isPriceKG) {
             prices = prices * 0.54;
         }
-        lblPrice = 'Precio x litro';
+        lblPrice = 'Precio x litro ';
         $('.precio-unitario-label').html(lblPrice);
-        $("#formProductosModalPrecio").html(Number(prices).toFixed(4));
+        $("#formProductosModalPrecio").html('$'.concat(Number(prices).toFixed(4)));
         $("#productoFormProductos").val("estacionario");
         $("#totalFormProductos").attr('readonly', false);
         $(".estacionarioFormProductos").removeClass("d-none");
@@ -564,9 +564,9 @@ function onChangeValue(element) {
         if(!isPriceKG) {
             prices = prices / 0.54;
         }
-        lblPrice = 'Precio x kg';
+        lblPrice = 'Precio x kg ';
         $('.precio-unitario-label').html(lblPrice);
-        $("#formProductosModalPrecio").html(Number(prices).toFixed(4));
+        $("#formProductosModalPrecio").html('$'.concat(Number(prices).toFixed(4)));
         if ( elementId == 'cantidadFormProductos' || elementId == 'capacidadFormProductos' || elementId == 'productoFormProductos' ) {// Producto (cilindro) y cantidad de producto
 
             subtotal = parseFloat( capArticulo *  cantidad * prices).toFixed(4);
@@ -583,9 +583,9 @@ function onChangeValue(element) {
         if(isPriceKG) {
             prices = prices * 0.54;
         }
-        lblPrice = 'Precio x litro';
+        lblPrice = 'Precio x litro ';
         $('.precio-unitario-label').html(lblPrice);
-        $("#formProductosModalPrecio").html(Number(prices).toFixed(4));
+        $("#formProductosModalPrecio").html('$'.concat(Number(prices).toFixed(4)));
         if ( elementId == 'totalFormProductos' || elementId == 'productoFormProductos' ) {// Se calculan los litros a contratar
 
             total = parseFloat( $('#totalFormProductos').val() ).toFixed(4);

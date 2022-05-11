@@ -179,7 +179,8 @@ function setCustomerInfo(customer, idAddress = null) {
     
     // Muestra el badge de descuento
     if ( customer.descuento ) {
-        let tipoDescuento = null;
+        let tipoDescuento  = null;
+        let totalDescuento = null;
         let saldoVencido = parseFloat(customer.saldoVencido).toFixed(4);
         $('#badgeDescuento').removeClass('d-none');
         if ( saldoVencido > 0 ) {
@@ -190,12 +191,14 @@ function setCustomerInfo(customer, idAddress = null) {
         
         if ( customer.tipoDescuento == "1" ) {// Porcentaje
             tipoDescuento = 'Porcentaje';
+            totalDescuento = customer.descuento;
         } else if ( customer.tipoDescuento == "2" ) {// Peso
-            tipoDescuento = 'Pesos';
+            tipoDescuento  = 'Pesos';
+            totalDescuento = '$'+customer.descuento + ' MXN';
         }
 
         $('.descuento-tipo').children('td').siblings("td:nth-child(2)").text(tipoDescuento ? tipoDescuento : 'Sin asignar');
-        $('.descuento-cantidad').children('td').siblings("td:nth-child(2)").text(customer.descuento ? customer.descuento : 'Sin asignar');
+        $('.descuento-cantidad').children('td').siblings("td:nth-child(2)").text(totalDescuento ?? 'Sin asignar');
     }
 
     // Agrega las direcciones del cliente al select
@@ -270,11 +273,11 @@ function setAlianzaComercial(customer) {
         $('.alianza-fecha-alta').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaAlta ? infoComercial.fechaAlta : 'Sin asignar');
         $('.alianza-no-contrato').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
         $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(customer.fechaContrato ? customer.fechaContrato : 'Sin asignar');
-        $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? infoComercial.limiteCredito : 'Sin asignar');
+        $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? ( '$' + infoComercial.limiteCredito + ' MXN' ) : 'Sin asignar');
         $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.terms ? infoComercial.terms : 'Sin asignar');
-        $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? infoComercial.saldoDisponible : 'Sin asignar');
+        $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? ( '$' + infoComercial.saldoDisponible + ' MXN' ) : 'Sin asignar');
         $('.alianza-dias-vencidos').children('td').siblings("td:nth-child(2)").text(infoComercial.diasAtraso ? infoComercial.diasAtraso : 'Sin asignar');
-        $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? infoComercial.creditoUtilizado : 'Sin asignar');
+        $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? ( '$' + infoComercial.creditoUtilizado + ' MXN' ) : 'Sin asignar');
     } else if ( tipoAlianza ==  'CREDITO' ) {
         $('option.opt-method-credito-cliente').removeClass('d-none');
         $('#badgeAlianza').children('span').text('Crédito');
@@ -282,11 +285,11 @@ function setAlianzaComercial(customer) {
         $('.alianza-fecha-inicio, .alianza-limite-credito, .alianza-dias-credito, .alianza-saldo-disponible, .alianza-dias-vencidos, .alianza-monto-adeudo').removeClass('d-none')
         $('.alianza-fecha-alta').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaAlta ? infoComercial.fechaAlta : 'Sin asignar');
         $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(customer.fechaContrato ? customer.fechaContrato : 'Sin asignar');
-        $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? infoComercial.limiteCredito : 'Sin asignar');
+        $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? ( '$'+ infoComercial.limiteCredito +' MXN' ) : 'Sin asignar');
         $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.terms ? infoComercial.terms : 'Sin asignar');
-        $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? infoComercial.saldoDisponible : 'Sin asignar');
+        $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? ( '$'+ infoComercial.saldoDisponible +' MXN' ) : 'Sin asignar');
         $('.alianza-dias-vencidos').children('td').siblings("td:nth-child(2)").text(infoComercial.diasAtraso ? infoComercial.diasAtraso : 'Sin asignar');
-        $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? infoComercial.creditoUtilizado : 'Sin asignar');
+        $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? ( '$'+ infoComercial.creditoUtilizado +' MXN' ) : 'Sin asignar');
     }
 }
 
