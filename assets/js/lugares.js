@@ -177,7 +177,7 @@ function setDataAuxDireccion() {
 
     if( $("#coloniaDireccion").val() ) {
         let auxItem = $("#coloniaDireccion option:selected").data("item");
-        if( auxItem.rutaCil.split(":")[0].trim() == plantaActual || auxItem.rutaEsta.split(":")[0].trim() == plantaActual ) {
+        if( ( auxItem.rutaCil && auxItem.rutaCil.split(":")[0].trim() == plantaActual ) || ( auxItem.rutaEsta && auxItem.rutaEsta.split(":")[0].trim() == plantaActual ) ) {
             $("#zonaVentaDireccion").val(auxItem.zonePrice);
             $("#cpDireccion").val(auxItem.zip);
             if( tipoServicioId ) {

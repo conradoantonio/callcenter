@@ -506,8 +506,8 @@ function getMetodosPago() {
 // Función para obtener la lista de cuentas disponibles para los prepagos
 function getListaCuentas(metodoId) {
     let params = {
-        // "subsidiary"    : userSubsidiary,
-        "subsidiary"    : 25,
+        "subsidiary"    : userSubsidiary,
+        // "subsidiary"    : 25,
         "methodPayment" : metodoId
     }
     let settings = {
@@ -649,7 +649,7 @@ function setSelectMetodosPago(items) {
 function setSelectListaCuenta(items) {
     $('select#tipoCuenta').children('option').remove();
     if ( items.length ) {
-        $("select#tipoCuenta").append('<option value="0">Seleccione una opción</option>')
+        // $("select#tipoCuenta").append('<option value="0">Seleccione una opción</option>')
         for ( var key in items ) {
             if ( items.hasOwnProperty( key ) ) {
                 let cuenta = items[key];
@@ -892,6 +892,9 @@ function setTrOppCases(item, type = 'casos', numItems = 1, posicion) {
 
 // Método para limpiar la data del cliente cuando falla una búsqueda
 function clearCustomerInfo () {
+    // Se eliminan todos los tooltips
+    $('.tooltip').remove();
+    
     // Inhabilita el botón de agregar dirección
     $('#filtrarHistorico, #editarCliente, #agregarDireccion, #editarDireccion, #guardarPedido, #agregarProducto, #agregarMetodoPago, #guardarFugaQueja').attr('disabled', true);
     
