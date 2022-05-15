@@ -163,7 +163,6 @@ function getListTravel() {
         }
         readyInit();
     }).catch((error) => {
-        cons
         readyInit();
         console.log(error);
     });
