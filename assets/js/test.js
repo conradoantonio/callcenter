@@ -506,8 +506,8 @@ function getMetodosPago() {
 // Función para obtener la lista de cuentas disponibles para los prepagos
 function getListaCuentas(metodoId) {
     let params = {
-        "subsidiary"    : userSubsidiary,
-        // "subsidiary"    : 25,
+        // "subsidiary"    : userSubsidiary,
+        "subsidiary"    : 25,
         "methodPayment" : metodoId
     }
     let settings = {
@@ -1273,7 +1273,8 @@ function getItemPedido(pedido, tipo) {
                 else if ( [articuloDesc].includes( parseInt(items[key].itemId) ) ) { // Es un item de descuento
                     cantidad = 1;
                 } else { // Se trata de un producto de cilindro
-                    cantidad = parseFloat(Number(items[key].capacidad) * Number(items[key].quantity)).toFixed(0);
+                    cantidad = Number(items[key].quantity).toFixed(0);
+                    // cantidad = parseFloat(Number(items[key].capacidad) * Number(items[key].quantity)).toFixed(0);
                     tax = Number(items[key].taxAmount);
                 }
 
@@ -1311,7 +1312,7 @@ function setMetodosPago(pedido, tipo) {
             let monto = Number(items[key].monto);
             totalFinal += monto;
 
-            let metodo = metodosPago.find( metodo => metodo.id === items[key].tipo_pago );
+            let metodo = metodosPago.find( metodo => parseInt( metodo.id ) === items[key].tipo_pago );
             
             $('table.table-desgloce-metodos-pago tbody').append(
                 '<tr>'+

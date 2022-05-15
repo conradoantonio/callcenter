@@ -214,20 +214,20 @@ $("#agregarMetodoPago").click(function () {
         $('#montoPagoPedido').val(montoRestante);
 
         /* Muestra metodos correctos */
-        let options = $("#metodoPagoPedido").children("option");
-        options.addClass("d-none");
-        $("#metodoPagoPedido").children("option[value=0]").removeClass("d-none");
-        let isEstacionario = $(".productosCilindroPedido").is(':hidden');
-        if(isEstacionario) {
-            for (let x = 0; x < options.length; x++) {
-                const element = options[x];
-                if(methodsEstacionario.indexOf($(element).val()) > -1) {
-                    $(element).removeClass("d-none")
-                }
-            }
-        } else {
-            options.removeClass("d-none");
-        }
+        // let options = $("#metodoPagoPedido").children("option");
+        // options.addClass("d-none");
+        // $("#metodoPagoPedido").children("option[value=0]").removeClass("d-none");
+        // let isEstacionario = $(".productosCilindroPedido").is(':hidden');
+        // if(isEstacionario) {
+        //     for (let x = 0; x < options.length; x++) {
+        //         const element = options[x];
+        //         if(methodsEstacionario.indexOf($(element).val()) > -1) {
+        //             $(element).removeClass("d-none")
+        //         }
+        //     }
+        // } else {
+        //     options.removeClass("d-none");
+        // }
 
         // Se vuelve a llamar este método únicamente para que valide el método de pago crédito cliente
         setAlianzaComercial(customerGlobal);
@@ -297,29 +297,6 @@ $('#guardarMetodoPagoForm').on('click', function () {
 
     agregarMetodoPago(metodoObj);
 
-    // if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado y se edita el row
-
-    //     searchTr.data('metodo', metodoObj);
-    //     searchTr.children('td').siblings("td:nth-child(2)").text(folio ? folio : 'No aplica');
-    //     searchTr.children('td').siblings("td:nth-child(3)").data('total', total);
-    //     searchTr.children('td').siblings("td:nth-child(3)").text('$'+total+' mxn');
-    //     console.log(metodoObj);
-        
-    // } else {// Se llena la información del item
-        
-    //     $(".productosMetodoPago tbody").append(
-    //         '<tr data-metodo-id='+metodoId+' class="metodo-item" data-metodo=' + "'" + JSON.stringify(metodoObj) + "'" + '>' +
-    //             '<td>'+metodoNombre+'</td>'+
-    //             '<td class="text-center">'+(folio ? folio : 'No aplica')+'</td>'+
-    //             '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
-    //             '<td class="text-center">'+
-    //                 '<button class="btn btn-sm btn-danger delete-metodo-pago" data-table-ref=".productosMetodoPago" data-metodo-id='+metodoId+'> <i class="fa-solid fa-trash-can"></i> </button>'+
-    //             '</td>'+
-    //         '</tr>'
-    //     );
-
-    // }
-   
     // Falta código para setear un total
     setTotalMetodoPago( $(".productosMetodoPago") );
     $('#formMetodoPagosModal').modal('hide');
@@ -937,7 +914,7 @@ $('body').delegate('.delete-metodo-pago','click', function() {
 function agregarMetodoPago(metodoObj) {
     let searchTr = $('table.productosMetodoPago > tbody > tr[data-metodo-id="'+metodoObj.tipo_pago+'"]');
 
-    if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado y se edita el row
+    if ( searchTr.length && ( !metodosPagoPrepago.includes(metodoObj.tipo_pago) && metodoObj.tipo_pago != metodoTransferencia ) ) {// Se verifica si el artículo fue previamente registrado y si no es un prepago se edita el row
 
         searchTr.data('metodo', metodoObj);
         searchTr.children('td').siblings("td:nth-child(2)").text(metodoObj.folio ? metodoObj.folio : 'No aplica');

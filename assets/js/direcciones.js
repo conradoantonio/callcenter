@@ -26,6 +26,7 @@ $("#frecuenciaFormCliente").on('change', function(e) {
 function validateAddressFields() {
     let tipoAccion = $("#tipoAccionDireccion").val();
     let canContinue = true;
+    let requiereFactura = $("input[name=requiereFactura]:checked").val();
     let numAddress = $('table.table-address tbody').children('tr.address').length;
 
     if(
@@ -37,6 +38,7 @@ function validateAddressFields() {
         !$("#exteriorDireccion").val().trim()  ||
         !$("#zonaVentaDireccion").val().trim() ||
         !$("#rutaDireccion").val().trim()      ||
+        !$("#entre1Direccion").val().trim()    ||
         !$("#tipoServicioFormCliente").val().trim() ||
         ( $("#tipoServicioFormCliente").val() == 1 && ( !$("#articuloFrecuenteCilFormCliente").val() || !$("#inputCapacidadCilTipoServicio").val() ) ) ||
         ( $("#tipoServicioFormCliente").val() == 2 && ( !$("#articuloFrecuenteEstFormCliente").val() || !$("#inputCapacidadEstTipoServicio").val().trim() ) ) ||
@@ -82,7 +84,7 @@ function validateAddressFields() {
             }
         }
         $('table.table-address tbody').append(
-            '<tr class="address" data-address='+"'"+JSON.stringify(address.obj)+"'"+'>'+
+            '<tr class="address" data-time="'+address.obj.timeUnix+'" data-address='+"'"+JSON.stringify(address.obj)+"'"+'>'+
                 '<td>'+address.str+'</td>'+
                 '<td class="text-center">'+
                     '<div class="text-center" style="font-size: 26px;">'+
@@ -498,6 +500,7 @@ function getRouteNumber(route) {
 // Coloca una dirección en el listado de direcciones del cliente
 function getAddressOnList() {
     let addressStr = '';
+    let requiereFactura = $("input[name=requiereFactura]:checked").val();
     let customStartTime = customEndTime = new Date();
     let yLas            = $("#lasFormCliente").val();
     let entreLas        = $("#entreFormCliente").val();
@@ -528,7 +531,7 @@ function getAddressOnList() {
         timeUnix        : Date.now(),
         principal       : $('table.table-address tbody').find(".address").length == 0 ? true : false,
         stateName       : $("#estadoDireccion").val().trim(),
-        domFacturacion  : $('table.table-address tbody').find(".address").length == 0 ? true : $('#domFacturacionDireccion').is(':checked'),
+        domFacturacion  : ( $('table.table-address tbody').find(".address").length == 0 ? (requiereFactura == 'si' ? true : false) : ( requiereFactura == 'si' ? $('#domFacturacionDireccion').is(':checked') : false ) ),
         city            : $("#municipioDireccion").val().trim(),
         zip             : $("#cpDireccion").val().trim(),
         nameStreet      : $("#calleDireccion").val().trim(),
@@ -596,7 +599,7 @@ function getAddressOnList() {
     addressObj['zonaVenta']  ? addressStr+= '<br>Zona de venta: '+addressObj['zonaVenta'] : '';
     addressObj['ruta']       ? addressStr+= '<br>Ruta: '+addressObj['ruta'] : '';
 
-    addressObj['domFacturacion'] = $('table.table-address tbody').find(".address").length == 0 ? true : $('#domFacturacionDireccion').is(':checked');
+    // addressObj['domFacturacion'] = $('table.table-address tbody').find(".address").length == 0 ? true : $('#domFacturacionDireccion').is(':checked');
     return {
         str : addressStr,
         obj : addressObj

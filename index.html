@@ -984,7 +984,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">Desgloce de servicios</th>
-                                                <th scope="col" class="text-center">Cantidad/Litros</th>
+                                                <th scope="col" class="text-center">Cantidad / Litros</th>
                                                 <th scope="col" class="text-center">Total</th>
                                             </tr>
                                         </thead>
@@ -2770,14 +2770,14 @@
                                     <div class="row pb-2">
                                         <div class="col-3">
                                             <div class="content-input">
-                                                <label>Correo electrónico*</label>
+                                                <label>Correo electrónico</label>
                                                 <input id="correoFormCliente" placeholder="email@example.com" type="email" class="form-ptg">
                                             </div>
                                         </div>
                                         <div class="col-3">
                                             <div class="content-input">
                                                 <label>Teléfono principal*</label>
-                                                <input id="telefonoPrincipalFormCliente" placeholder="555 9636 6699" type="number" class="form-ptg">
+                                                <input id="telefonoPrincipalFormCliente" placeholder="555 9636 6699" type="text" class="form-ptg">
                                             </div>
                                         </div>
                                         <div class="col-3">
@@ -3013,6 +3013,11 @@
         methodsEstacionario = ["1", "9"];
         isPriceKG = true;
 
+        // Expresiones regulares
+        emailRegex  = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        rfcRegex    = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;  
+        // telNumRegex = /^\s*-?[0-9]{7,10}\s*$/g;
+        telNumRegex = /^\s*-?[0-9]{1,10}\s*$/i;
         if(isAdmin) {
             $(".isAdmin").removeClass("d-none");
         }
@@ -3243,8 +3248,8 @@
                 }
             } else if (tab == "domicilio") {
                 if ( 
-                    ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val().trim() || !$("#apellidosFormCliente").val().trim() || !$("#correoFormCliente").val().trim() || !$("#telefonoPrincipalFormCliente").val().trim() ) ) || //Debe tener nombre y apellido si es doméstico
-                    ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val()  || !$("#correoFormCliente").val().trim() || !$("#telefonoPrincipalFormCliente").val().trim() ) ) || //Debe tener el nombre de la razón social
+                    ( tipoRegimen == 'domestico' && ( !$("#nombreFormCliente").val().trim() || !$("#apellidosFormCliente").val().trim() || !$("#telefonoPrincipalFormCliente").val().trim() ) ) || //Debe tener nombre y apellido si es doméstico
+                    ( tipoRegimen != 'domestico' && ( !$("#nombreRazonSocialFormCliente").val()  || !$("#telefonoPrincipalFormCliente").val().trim() ) ) || //Debe tener el nombre de la razón social
                     ( requiereFactura  == 'si' && ( !$("#rfcFormCliente").val() || !$("#usoCfdiFormCliente").val() || !$("#correoAlternativoFormCliente").val() ) ) ||
                     ( requiereContrato == 'si' && ( !$("#fechaInicioContratoCliente").val() ) ) // Si requiere contrato, debe numero de contrato, fecha de inicio de contrato y el uso de contrato
                 ) {
@@ -3269,9 +3274,9 @@
                             aux += "<li>Uso de CFDI</li>";
                         }
                     }                        
-                    if(!$("#correoFormCliente").val().trim()) {
-                        aux += "<li>Correo electrónico</li>";
-                    }
+                    // if(!$("#correoFormCliente").val().trim()) {
+                    //     aux += "<li>Correo electrónico</li>";
+                    // }
                     if(!$("#telefonoPrincipalFormCliente").val().trim()) {
                         aux += "<li>Teléfono principal</li>";
                     }
@@ -3291,11 +3296,17 @@
                     infoMsg('warning', 'Campos requeridos:', aux);
                     return;
                 } else { //Valida formato de campos
-                    let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-                        rfcRegex = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;                    
+                    console.log($("#telefonoPrincipalFormCliente").val());
+                    console.log('Test: '+ ( !telNumRegex.test($("#telefonoPrincipalFormCliente").val().toString().trim())));
                     let aux = "<ul>";
-                    if(!emailRegex.test($("#correoFormCliente").val().trim())) {
+                    if( $("#correoFormCliente").val().trim() && ( !emailRegex.test($("#correoFormCliente").val().trim())) ) {
                         aux += "<li>Correo electrónico</li>";
+                    }
+                    if( !telNumRegex.test($("#telefonoPrincipalFormCliente").val().toString().trim()) ) {//
+                        aux += "<li>Teléfono principal</li>";
+                    }
+                    if( $("#telefonoAlternoFormCliente").val() && ( !telNumRegex.test( $("#telefonoAlternoFormCliente").val().trim() ) ) ) {
+                        aux += "<li>Teléfono alternativo</li>";
                     }
                     if(requiereFactura  == 'si') {
                         if(!rfcRegex.test($("#rfcFormCliente").val().trim())) {
