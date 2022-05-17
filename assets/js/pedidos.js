@@ -735,7 +735,7 @@ async function savePedido() {
 
         let tmp = {
             // "status"        : 1,
-            "zona_precio"   : 2,//Este es el Id de la zona
+            "zona_precio"   : direccionSel.dataZoneRoute.territorio_id,//Este es el Id de la zona
             "customer"      : $('#idCliente').text(),
             "plantaRelated" : $('#plantas').val(),
             "closeDate"     : dateFormatFromDate($('#fechaPrometidaPedido').val(), '5'),

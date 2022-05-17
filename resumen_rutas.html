@@ -1072,7 +1072,7 @@
                         keys.forEach(element => {
                             let htmlAux =   '<tr>'+
                                                 '<td></td>'+
-                                                '<td class="text-center">'+auxRoutes[element].routeName+'</td>'+
+                                                '<td class="text-center">'+auxRoutes[element].routeName.split("-")[2]+'</td>'+
                                                 '<td class="text-center">'+auxRoutes[element].total+'</td>';
                             statusOP.forEach(element2 => {
                                 htmlAux +=      '<td class="text-center">'+auxRoutes[element][element2.id]+'</td>';
@@ -1088,7 +1088,7 @@
                             if(!auxRoutes[element.internalId]) {
                                 let htmlAux =   '<tr>'+
                                                     '<td></td>'+
-                                                    '<td class="text-center">'+(element.name.split(":").length > 1 ? element.name.split(":")[1] : element.name)+'</td>'+
+                                                    '<td class="text-center">'+(element.name.split(":").length > 1 ? element.name.split(":")[1].split("-")[2] : element.name)+'</td>'+
                                                     '<td class="text-center">0</td>';
                                 statusOP.forEach(element2 => {
                                     htmlAux +=      '<td class="text-center">0</td>';
@@ -1106,7 +1106,7 @@
                             if(!auxRoutes[element.internalId]) {
                                 let htmlAux =   '<tr>'+
                                                     '<td></td>'+
-                                                    '<td class="text-center">'+(element.name.split(":").length > 1 ? element.name.split(":")[1] : element.name)+'</td>'+
+                                                    '<td class="text-center">'+(element.name.split(":").length > 1 ? element.name.split(":")[1].split("-")[2] : element.name)+'</td>'+
                                                     '<td class="text-center">0</td>';
                                 statusOP.forEach(element2 => {
                                     htmlAux +=      '<td class="text-center">0</td>';

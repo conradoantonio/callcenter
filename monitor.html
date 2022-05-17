@@ -772,6 +772,41 @@
         </div>
     </div>
 
+    <div id="formHistoricoCambiosModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titleHistoricoCambiosModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 1050px; max-width: calc(100vw - 100px);">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleHistoricoCambiosModal">Historial de cambios del servicio: <span id="historicoCambiosPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="max-height: calc(100vh - 270px); overflow: auto;">
+                        <div class="col-12">
+                            <table class="table-gen table-gen-blue text-center" id="table-historico-cambios">
+                                <thead>
+                                    <tr>
+                                        <th width="150px">Autor</th>
+                                        <th width="100px">Fecha</th>
+                                        <th width="100px">Origen</th>
+                                        <th width="150px">Campo</th>
+                                        <th>Valor anterior</th>
+                                        <th>Valor nuevo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                        aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="seguimientoModal" class="modal fade" tabindex="-1" role="dialog"
         aria-labelledby="titleseguimientoModal" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px;">
@@ -1283,7 +1318,7 @@
                                 </div>
                                 <div class="col-4">
                                     <div class="content-input content-input-primary">
-                                        <label>Hasta*</label>
+                                        <label>Hasta</label>
                                         <input id="hastaPedido" type="time" class="form-ptg form-ptg-primary">
                                     </div>
                                 </div>
@@ -1745,6 +1780,7 @@
         urlGetListTravelNumber = '${ds.getListTravelNumber}';
         urlSendNotification = '${ds.sendNotification}';
         urlGetNotesOfOPP = '${ds.getNotesOfOPP}';
+        urlGetHistoricoOpp = '${ds.getHistoricoOpp}';
         conceptoFugasQuejasArr = [];
         methodPayments = [];
         deftEstacionarVal = "4088";
@@ -1757,9 +1793,8 @@
         idPorConfirmar = "";
         rutasCilindros = [];
         rutasEstacionarios = [];
-        vrViajes = [];
         countServices = 0;
-        concatObsPagos = ["2", "8"]
+        concatObsPagos = ["15", "13", "2", "14", "16", "17", "8"]
 
         function noEnter(e) {
             if (e.which === 13 && !e.shiftKey) {
@@ -1861,7 +1896,6 @@
             $("#plantas").change(function() {
                 changeAltFilterTipoServicio()
                 getRutas(true);
-                getListTravel();
             });
 
             function changeAltFilterTipoServicio() {
@@ -1908,6 +1942,7 @@
             });
 
             $("#filterDatosCliente").change(function() {
+                $("#filterBuscarCalle, #filterBuscarExt, #filterBuscarInt, #filterBuscarCliente").val(null);
                 if($(this).val() == 'address') {
                     $("#filterBuscarCalle").closest(".col-auto").removeClass("d-none");
                     $("#filterBuscarInt").closest(".col-auto").removeClass("d-none");
@@ -2147,7 +2182,9 @@
                     time = datetime.split(" ")[1].split(":");
                     if (datetime.split(" ").length > 2 && datetime.split(" ")[2].toUpperCase() == "PM") {
                         time[0] = parseInt(time[0]) + 12;
-                    }
+                    } else if (datetime.split(" ").length > 2 && datetime.split(" ")[2].toUpperCase() == "AM") {
+                        time[0] = parseInt(0);
+                    } 
                 }
                 return new Date(date[2], parseInt(date[1]) - 1, date[0], time[0], time[1]);
             }
@@ -2249,7 +2286,8 @@
         });
 
         function llenaCampos() {
-            $("#filterFechaPrometidaIni").val(dateFormatFromDate(removeDays(new Date(), "15"), "2"));            
+            //$("#filterFechaPrometidaIni").val(dateFormatFromDate(removeDays(new Date(), "15"), "2"));    
+            $("#filterFechaPrometidaIni").val(dateFormatFromDate(removeDays(new Date(), "1"), "2"));            
             $("#filterFechaPrometidaFin").val(dateFormatFromDate(new Date(), "2"));
             $("#filterFechaPrometidaIni").prop("max", $("#filterFechaPrometidaFin").val());
             $("#filterFechaPrometidaFin").prop("min", $("#filterFechaPrometidaIni").val());

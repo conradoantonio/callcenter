@@ -137,35 +137,11 @@ function setSelectPlants(items) {
         }
         //$('select#plantas').val("762");
         getRutas();
-        getListTravel();
         readyInit();
     } else {
         console.warn('No hay plantas por cargar');
         readyInit();
     }
-}
-
-function getListTravel() {
-    let settings = {
-        url      : urlGetListTravelNumber,
-        method   : 'POST',
-        data: JSON.stringify({
-            namePlanta : $("#plantas option:selected").text()
-        })
-    }
-
-    setAjax(settings).then((response) => {
-        if(response.success) {
-            vrViajes = [];
-            response.data.forEach(element => {
-                vrViajes.push(element);
-            });
-        }
-        readyInit();
-    }).catch((error) => {
-        readyInit();
-        console.log(error);
-    });
 }
 
 // Función para obtener los artículos
@@ -650,9 +626,10 @@ function getServicios($event) {
                                     '<td class="text-center sticky-col">'+  
                                         '<div class="btn-group dropend vertical-center">'+                                            
                                             '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
-                                            '<ul class="dropdown-menu">'+
+                                            '<ul class="dropdown-menu" style="width: 190px">'+
                                                 (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar ? '<li onclick="gestionarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-gears color-primary"></i> Gestionar servicio</li>' : '')+
                                                 '<li onclick="seguimientoServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
+                                                '<li onclick="historicoCambios(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-clock-rotate-left color-primary"></i> Historial de cambios</li>'+
                                                 (pedido.status_id != idCancelado && pedido.status_id != idEntregado && pedido.status_id != idPorConfirmar ? '<li onclick="cancelarPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-circle-xmark text-danger"></i> Cancelar servicio</li>' : '')+
                                             '</ul>'+
                                         '</div>'+
@@ -672,7 +649,7 @@ function getServicios($event) {
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td style="left: 160px;"class="text-center sticky-col">'+
-                                        (pedido.status_id == idAsignado ? '<i onclick="notificarServicio(this)" class="fa-solid fa-bell color-primary c-pointer" title="Notificar pedido" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
+                                        (pedido.status_id == idAsignado || pedido.status_id == idPorNotificar ? '<i onclick="notificarServicio(this)" class="fa-solid fa-bell color-primary c-pointer" title="Notificar pedido" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
                                         '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                     '</td>'+
                                     '<td style="left: 200px;"class="text-center sticky-col">'+
@@ -799,7 +776,7 @@ function getRutaFormat(item, tipo) {
     let auxRut = "";
     let auxRuta = item.name;
     if(tipo == "pedido") {
-        auxRuta = item.rutaNombre;
+        auxRuta = item.routeText;
     } else if(tipo == "viajes") {
         auxRuta = item.ruta;
     }
@@ -821,6 +798,52 @@ function getRutaFormat(item, tipo) {
     return auxRut;
 }
 
+function historicoCambios($this) {
+    loadMsg();
+    let pedido = $($this).closest("tr").data("item");
+    $("#historicoCambiosPedido").html(pedido.documentNumber ? pedido.documentNumber : '');
+    let settings = {
+        url      : urlGetHistoricoOpp+"&id="+pedido.no_pedido,
+        method   : 'GET'
+    }
+    $("#table-historico-cambios tbody").children("tr").remove();
+    $("#table-historico-cambios tbody").append('<tr>' +
+                                                    '<td colspan="5" class="text-center">' +
+                                                        'Sin cambios registrados'+
+                                                    '</td>' +
+                                                '</tr>');
+    
+    setAjax(settings).then((response) => {
+        if(response.success) {
+            if(response.data.length > 0) {
+                $("#table-historico-cambios tbody").children("tr").remove();
+            }
+            response.data.forEach(element => {
+                let trAux = "";
+                if(element.fieldName.trim().toLowerCase() == "ptg - opción de pago obj") {
+                    trAux += getChangesMetodosPago(element);
+                } else {
+                    trAux += '<tr>' +
+                                '<td class="ion-text-center fw-bold">'+element.userName+'</td>'+
+                                '<td class="ion-text-center fw-bold">'+element.date+'</td>'+
+                                '<td class="ion-text-center fw-bold">'+(element.ui.trim()== 'Script (RESTlet)' ? 'Call Center/<br>Monitor' : 'Netsuite')+'</td>'+
+                                '<td class="ion-text-center fw-bold">'+element.fieldName+'</td>'+
+                                '<td class="ion-text-center fw-bold">'+element.oldvalue+'</td>'+
+                                '<td class="ion-text-center fw-bold">'+element.newvalue+'</td>'+
+                            '</tr>';
+                }
+                $("#table-historico-cambios tbody").append(trAux);
+            });
+            $("#formHistoricoCambiosModal").data("item", pedido);
+            swal.close();
+            $("#formHistoricoCambiosModal").modal("show");
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+
 function getObservacionesFormat(item, separador) { 
     let auxObs = "";
     auxObs += (item.observaciones && item.observaciones.trim() ? item.observaciones.trim() : '');
@@ -828,7 +851,7 @@ function getObservacionesFormat(item, separador) {
         let aux = JSON.parse(item.objPagos);
         if(aux.pago) {
             aux.pago.forEach(element => {
-                if(concatObsPagos.indexOf(element.tipo_pago) > -1) {
+                if(concatObsPagos.indexOf(element.tipo_pago.toString()) > -1) {
                     if(auxObs != "") {
                         auxObs += separador;
                     }
@@ -918,29 +941,6 @@ function gestionarServicio($this) {
     $("#hastaPedido").val(servicio.hasta ? getTimeFromString(servicio.hasta) : null);
 
     $('#viajeVentaPedido').children('option').remove();
-    vrViajes.forEach(element => {
-        $("#viajeVentaPedido").append(
-            '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+getRutaFormat(element, "viajes")+'</option>'
-        );
-    });
-    if(servicio.id_no_viaje && servicio.id_no_viaje.trim()) {
-        if($("#viajeVentaPedido option[value="+servicio.id_no_viaje+"]").length == 0) {
-            $("#viajeVentaPedido").append(
-                '<option data-item=' + "'" + JSON.stringify({choferId : servicio.choferId, choferPhone: servicio.phoneChofer}) + "'" + ' value="'+servicio.id_no_viaje+'">'+servicio.id_no_viaje +' - '+getRutaFormat(servicio, "pedido")+'</option>'
-            );       
-        }
-    }
-
-    $('#viajeVentaPedido').select2({
-        selectOnClose: true,
-        placeholder: "Seleccione un viaje",
-        language: {
-            "noResults": function(){
-                return "Sin resultados encontrados";
-            }
-        }
-    });
-    $('#viajeVentaPedido').val(servicio.id_no_viaje).trigger("change");
     
     $("#zonaVentaPedido").val(servicio.zona);
 
@@ -1025,7 +1025,62 @@ function gestionarServicio($this) {
 
         $("#data-pedidos").removeClass("d-none");
         $("#data-pedidos").data("item", servicio);
-        swal.close();
+        let settings2 = {
+            url      : urlGetListTravelNumber,
+            method   : 'POST',
+            data: JSON.stringify({
+                namePlanta : $("#plantas option:selected").text()
+            })
+        }
+
+        let auxViajeId = servicio.id_no_viaje;
+    
+        setAjax(settings2).then((response) => {
+            if(response.success) {
+                response.data.forEach(element => {
+                    $("#viajeVentaPedido").append(
+                        '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+getRutaFormat(element, "viajes")+'</option>'
+                    );
+                });
+                if(servicio.id_no_viaje && servicio.id_no_viaje.trim()) {
+                    if($("#viajeVentaPedido option[value="+servicio.id_no_viaje+"]").length == 0) {
+                        $("#viajeVentaPedido").append(
+                            '<option data-item=' + "'" + JSON.stringify({choferId : servicio.choferId, choferPhone: servicio.phoneChofer}) + "'" + ' value="noviaje">'+getRutaFormat(servicio, "pedido")+'</option>'
+                        );  
+                        auxViajeId = "noviaje";     
+                    }
+                } else {
+                    let aux = $("#viajeVentaPedido").children('option');
+                    for (let x = 0; x < aux.length; x++) {
+                        const element = $(aux[x]);
+                        if(element.data("item").ruta == servicio.routeText) {
+                            auxViajeId = element.data("item").nViajeId;
+                        }
+                    }
+
+                    if(!auxViajeId) {
+                        auxViajeId = "noviaje";
+                        $("#viajeVentaPedido").append(
+                            '<option value="noviaje">'+getRutaFormat(servicio, "pedido")+'</option>'
+                        );
+                    }
+                }
+                $('#viajeVentaPedido').select2({
+                    selectOnClose: true,
+                    placeholder: "Seleccione una ruta",
+                    language: {
+                        "noResults": function(){
+                            return "Sin resultados encontrados";
+                        }
+                    }
+                });
+                $('#viajeVentaPedido').val(auxViajeId).trigger("change");
+        
+                swal.close();
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
     }).catch((error) => {
         console.log(error);
         swal.close();
@@ -1051,7 +1106,6 @@ $("#guardarPedido").click(function() {
     let servicio = $("#data-pedidos").data("item");
     if(!$("#fechaPrometidaPedido").val() ||
        !$("#desdePedido").val() ||
-       !$("#hastaPedido").val() ||
        !$("#viajeVentaPedido").val()) {
         let aux = "<ul>";
         if(!$("#fechaPrometidaPedido").val()) {
@@ -1060,9 +1114,6 @@ $("#guardarPedido").click(function() {
         if(!$("#desdePedido").val()) {
             aux += "<li>Desde</li>";
         }
-        if(!$("#hastaPedido").val()) {
-            aux += "<li>Hasta</li>";
-        }
         if(!$("#viajeVentaPedido").val()) {
             aux += "<li>Ruta</li>";
         }
@@ -1070,6 +1121,12 @@ $("#guardarPedido").click(function() {
         infoMsg('warning', 'Campos requeridos:', aux);
         return;
     }
+
+    if($("#viajeVentaPedido").val() == "noviaje") {
+        infoMsg('warning', 'Ruta sin viaje asignado');
+        return;
+    }
+
     confirmMsg("warning", "¿Seguro que desea editar el servicio?", function(resp) {
         if(resp) {
             let dataSend = {
@@ -1079,7 +1136,6 @@ $("#guardarPedido").click(function() {
                         "bodyFields": {
                             "expectedclosedate": dateFormatFromDate($("#fechaPrometidaPedido").val(), "5"),
                             "custbody_ptg_entre_las": formatTime( $('#desdePedido').val() ),
-                            "custbody_ptg_y_las" : formatTime( $('#hastaPedido').val()),
                             "custbody_ptg_numero_viaje" : $('#viajeVentaPedido').val(),
                             "memo": $('#observacionesPagoPedido').val()
                         },
@@ -1089,6 +1145,10 @@ $("#guardarPedido").click(function() {
                     }
                 ]
             };
+
+            if($('#hastaPedido').val()) {
+                dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_y_las = formatTime( $('#hastaPedido').val());
+            }
 
             if(servicio.status_id == idPorNotificar || servicio.status_id == idPorReprogramar) {
                 dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_monitor = userId;
@@ -1870,7 +1930,8 @@ function seguimientoServicio($this, tipo = "pedido") {
 }
 
 function asignarViaje($this) {
-    let pedido = $($this).closest("tr").data("item");
+    let pedido = $($this).closest("tr").data("item"),
+        auxViajeId = pedido.id_no_viaje;
     console.log(pedido);
     loadMsg();
     let settings = {
@@ -1887,33 +1948,63 @@ function asignarViaje($this) {
         }
         $("#asignarViajePedido").html(pedido.documentNumber ? pedido.documentNumber : '');
         $('#asignarViajeRuta').children('option').remove();
-        vrViajes.forEach(element => {
-            $("#asignarViajeRuta").append(
-                '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+getRutaFormat(element, "viajes")+'</option>'
-            );
-        });
-        if(pedido.id_no_viaje && pedido.id_no_viaje.trim()) {
-            if($("#asignarViajeRuta option[value="+pedido.id_no_viaje+"]").length == 0) {
-                $("#asignarViajeRuta").append(
-                    '<option data-item=' + "'" + JSON.stringify({choferId : pedido.choferId, choferPhone: pedido.phoneChofer}) + "'" + ' value="'+pedido.id_no_viaje+'">'+getRutaFormat(pedido, "pedido")+'</option>'
-                );       
-            }
+        let settings2 = {
+            url      : urlGetListTravelNumber,
+            method   : 'POST',
+            data: JSON.stringify({
+                namePlanta : $("#plantas option:selected").text()
+            })
         }
-        $('#asignarViajeRuta').select2({
-            selectOnClose: true,
-            placeholder: "Seleccione un viaje",
-            dropdownParent: $('#asignarViajeModal'),
-            language: {
-                "noResults": function(){
-                    return "Sin resultados encontrados";
+    
+        setAjax(settings2).then((response) => {
+            if(response.success) {
+                response.data.forEach(element => {
+                    $("#asignarViajeRuta").append(
+                        '<option data-item=' + "'" + JSON.stringify(element) + "'" + ' value="'+element.nViajeId+'">'+getRutaFormat(element, "viajes")+'</option>'
+                    );
+                });
+                if(pedido.id_no_viaje && pedido.id_no_viaje.trim()) {
+                    if($("#asignarViajeRuta option[value="+pedido.id_no_viaje+"]").length == 0) {
+                        $("#asignarViajeRuta").append(
+                            '<option data-item=' + "'" + JSON.stringify({choferId : pedido.choferId, choferPhone: pedido.phoneChofer}) + "'" + ' value="noviaje">'+getRutaFormat(pedido, "pedido")+'</option>'
+                        );    
+                        auxViajeId = "noviaje";   
+                    }
+                } else {
+                    let aux = $("#asignarViajeRuta").children('option');
+                    for (let x = 0; x < aux.length; x++) {
+                        const element = $(aux[x]);
+                        if(element.data("item").ruta == pedido.routeText) {
+                            auxViajeId = element.data("item").nViajeId;
+                        }
+                    }
+                    if(!auxViajeId) {
+                        auxViajeId = "noviaje";
+                        $("#asignarViajeRuta").append(
+                            '<option value="noviaje">'+getRutaFormat(pedido, "pedido")+'</option>'
+                        );
+                    }
                 }
+                $('#asignarViajeRuta').select2({
+                    selectOnClose: true,
+                    placeholder: "Seleccione una ruta",
+                    dropdownParent: $('#asignarViajeModal'),
+                    language: {
+                        "noResults": function(){
+                            return "Sin resultados encontrados";
+                        }
+                    }
+                });
+                $('#asignarViajeRuta').val(auxViajeId).trigger("change");
+        
+                $("#asignarViajeModal").data("item", pedido);
+                $("#asignarViajeModal").modal("show");
+                swal.close();
             }
+        }).catch((error) => {
+            console.log(error);
         });
-        $('#asignarViajeRuta').val(pedido.id_no_viaje).trigger("change");
-
-        $("#asignarViajeModal").data("item", pedido);
-        $("#asignarViajeModal").modal("show");
-        swal.close();
+        
     }).catch((error) => {
         console.log(error);
         swal.close();
@@ -1958,7 +2049,8 @@ $("#guardarCancelarOpp").click(function() {
                             "id": pedido.no_pedido,
                             "bodyFields": {
                                 "custbody_ptg_estado_pedido": idCancelado,
-                                "custbody_ptg_motivo_cancelation" : $("#cancelarOppMotivo").val()
+                                "custbody_ptg_motivo_cancelation" : $("#cancelarOppMotivo").val(),
+                                "entitystatus": 14
                             },
                             "lines": [
                                 
@@ -2047,33 +2139,161 @@ $("#enviarNotificacion").click(function() {
     if($("#notificarNotificacion").val() && $("#notificarNotificacion").val().trim()) {
         confirmMsg("warning", "¿Seguro que desea enviar la notificación?", function(resp) {
             if(resp) {
-                let dataSend = {
-                    notification: {
-                        title: 'Notificación de '+(item.numero_caso ? 'caso' : 'pedido'),
-                        message: $("#notificarNotificacion").val().trim(),
-                        ids: [item.numero_caso ? item.asignado_a : item.choferId]
-                    }
-                };
-                if($("#sendSmsNotificar").prop("checked")) {
-                    dataSend.sms = {
-                        title: item.id_cliente+item.label+dateFormatFromDate(new Date(), "8"),
-                        message: $("#notificarSms").val().trim()+"\n"+(item.numero_caso ? item.numberAsiggned : item.phoneChofer)
-                    }
-                }
-
-                sendNotification(dataSend, function(resp) {
-                    swal.close();
-                    if(resp.success) {
-                        if(!resp.data.notification.status || (resp.data.sms && !resp.data.sms.status)) {
-                            infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
-                        } else {
-                            $("#notificarModal").modal("hide");
-                            infoMsg('success', '', "Notificación enviada de manera correcta");
+                if(item.numero_caso) {
+                    let dataSend = {
+                        notification: {
+                            title: 'Notificación de caso',
+                            message: $("#notificarNotificacion").val().trim(),
+                            ids: [item.asignado_a]
                         }
-                    } else {
-                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                    };
+                    if($("#sendSmsNotificar").prop("checked")) {
+                        dataSend.sms = {
+                            title: item.id_cliente+item.label+dateFormatFromDate(new Date(), "8"),
+                            message: $("#notificarSms").val().trim()+"\n"+item.numberAsiggned
+                        }
                     }
-                });
+    
+                    sendNotification(dataSend, function(resp) {
+                        swal.close();
+                        if(resp.success) {
+                            if(!resp.data.notification.status || (resp.data.sms && !resp.data.sms.status)) {
+                                infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                            } else {
+                                $("#notificarModal").modal("hide");
+                                infoMsg('success', '', "Notificación enviada de manera correcta");
+                            }
+                        } else {
+                            infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                        }
+                    });
+                } else {
+                    let settings2 = {
+                        url      : urlGetListTravelNumber,
+                        method   : 'POST',
+                        data: JSON.stringify({
+                            namePlanta : $("#plantas option:selected").text()
+                        })
+                    }
+                
+                    setAjax(settings2).then((response) => {
+                        if(response.success) {
+                            let exist = false;
+                            let auxIdViaj = '',
+                                choferId = '',
+                                phoneChofer = '';
+                            response.data.forEach(element => {
+                                if(element.ruta == item.routeText) {
+                                    exist = true;
+                                    auxIdViaj = element.nViajeId;
+                                    choferId = element.choferId;
+                                    phoneChofer = element.choferPhone;
+                                }
+                            });
+
+                            if(exist) {
+                                if(item.status_id == idPorNotificar || item.status_id == idPorReprogramar) {
+                                    let dataSend2 = {
+                                        "opportunitiesUpdate": [
+                                            {
+                                                "id": item.no_pedido,
+                                                "bodyFields": {
+                                                    "custbody_ptg_numero_viaje": auxIdViaj,
+                                                    custbody_ptg_monitor : userId,
+                                                    custbody_ptg_estado_pedido : idAsignado,
+                                                    custbody_ptg_fecha_notificacion : dateFormatFromDate(new Date(), "5"),
+                                                    custbody_ptg_hora_notificacion : formatTime(timeFormatFromDate(new Date(), "2"))
+                                                },
+                                                "lines": [
+                                                    
+                                                ]
+                                            }
+                                        ]
+                                    };
+                                    let settings = {
+                                        url      : urPutOppMonitor,
+                                        method   : 'PUT',
+                                        data: JSON.stringify(dataSend2)
+                                    }
+                                    setAjax(settings).then((response) => {
+                                        if(response.success) {
+                                            item.choferId = choferId;
+                                            item.phoneChofer = phoneChofer;
+                                            let dataSend = {
+                                                notification: {
+                                                    title: 'Notificación de pedido',
+                                                    message: $("#notificarNotificacion").val().trim(),
+                                                    ids: [item.choferId]
+                                                }
+                                            };
+                                            if($("#sendSmsNotificar").prop("checked")) {
+                                                dataSend.sms = {
+                                                    title: item.id_cliente+item.label+dateFormatFromDate(new Date(), "8"),
+                                                    message: $("#notificarSms").val().trim()+"\n"+item.phoneChofer
+                                                }
+                                            }
+                            
+                                            sendNotification(dataSend, function(resp) {
+                                                swal.close();
+                                                if(resp.success) {
+                                                    if(!resp.data.notification.status || (resp.data.sms && !resp.data.sms.status)) {
+                                                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                                                    } else {
+                                                        $("#notificarModal").modal("hide");
+                                                        infoMsg('success', '', "Notificación enviada de manera correcta");
+                                                    }
+                                                } else {
+                                                    infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                                                }
+                                            });
+                                        } else {
+                                            swal.close();
+                                            infoMsg('error', 'Error:', "Ocurrio un error al tratar de asinar el viaje al servicio");
+                                        }            
+                                    }).catch((error) => {
+                                        console.log(error);
+                                        infoMsg('error', 'Error:', "Ocurrio un error al tratar de asinar el viaje al servicio");
+                                        swal.close();
+                                    });
+                                } else {
+                                    let dataSend = {
+                                        notification: {
+                                            title: 'Notificación de pedido',
+                                            message: $("#notificarNotificacion").val().trim(),
+                                            ids: [item.choferId]
+                                        }
+                                    };
+                                    if($("#sendSmsNotificar").prop("checked")) {
+                                        dataSend.sms = {
+                                            title: item.id_cliente+item.label+dateFormatFromDate(new Date(), "8"),
+                                            message: $("#notificarSms").val().trim()+"\n"+item.phoneChofer
+                                        }
+                                    }
+                    
+                                    sendNotification(dataSend, function(resp) {
+                                        swal.close();
+                                        if(resp.success) {
+                                            if(!resp.data.notification.status || (resp.data.sms && !resp.data.sms.status)) {
+                                                infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                                            } else {
+                                                $("#notificarModal").modal("hide");
+                                                infoMsg('success', '', "Notificación enviada de manera correcta");
+                                            }
+                                        } else {
+                                            infoMsg('error', 'Error:', "Ocurrio un error al tratar de enviar la notificación favor de volver a intentarlo");
+                                        }
+                                    });
+                                }
+
+                            } else {
+                                infoMsg('error', 'Error:', "No existe viaje para la ruta seleccionada");
+                            }
+                        }
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                        
+                }
             }
         });
     } else {
@@ -2175,6 +2395,10 @@ function sendNotification(dataSend, callback) {
 $("#guardarAsignarViaje").click(function() {
     let pedido = $("#asignarViajeModal").data("item");
     if($("#asignarViajeRuta").val() && $("#asignarViajeRuta").val().trim()) {
+        if($("#asignarViajeRuta").val() == "noviaje") {
+            infoMsg('warning', 'Ruta sin viaje asignado');
+            return;
+        }
         confirmMsg("warning", "¿Seguro que desea asignar un viaje al servicio?", function(resp) {
             if(resp) {
                 let dataSend = {
@@ -2256,7 +2480,7 @@ function verDetalles($this) {
     $("#verDetallesTipoServicio").html(pedido.tipo_cliente.trim());
 
     $("#verDetallesServicio").html(pedido.documentNumber);
-    $("#verDetallesVehiculo").html(pedido.nombre_vehiculo.trim() ? pedido.nombre_vehiculo.trim() : 'Sin asignar');
+    $("#verDetallesVehiculo").html(getRutaFormat(pedido, "pedido"));
     $("#verDetallesZona").html(pedido.zona);
     $("#verDetallesUsuarioMonitor").html(pedido.usuario_monitor.trim() ? pedido.usuario_monitor.trim() : 'Sin asignar');
     $("#verDetallesDireccion2").html(getDireccionFormat(pedido, "pedido"));
@@ -2327,8 +2551,12 @@ function orderOrders(data) {
         notificados.push(element);
       } else if(element.status_id == idCancelado) {
         cancelados.push(element);
+        element.status_color = 'red';
+        element.tooltip = 'Cancelados';
       } else if(element.status_id == idEntregado) {
         entregados.push(element);
+        element.status_color = 'green';
+        element.tooltip = 'Entregados';
       } else if(element.status_id == idPorReprogramar) {
         faltantes.push(element);
       }
@@ -2378,13 +2606,15 @@ function orderOrders(data) {
             notificados.push(element2);
         });
     });
-
+    console.log(notificados);
     notificados.forEach(element => {
       if(element.fecha_hora_notificacion && element.fecha_hora_notificacion <= new Date()) {
+          console.log(getRestTime(element.fecha_hora_notificacion, "2"));
         if(getRestTime(element.fecha_hora_notificacion, "2") >= 2) {
           element.status_color = "#f68f1e";
           element.tooltip = 'Más de dos horas notificado';
         } else {
+            console.log("jojo");
           element.status_color = "#9a9a9a";
           element.tooltip = 'Menos de dos horas notificado';
         }

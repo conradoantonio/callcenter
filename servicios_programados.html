@@ -582,7 +582,7 @@
             border-radius: 0 10px 10px 0;
         }
 
-        #tablePedidos tfoot, #tableCasos tfoot {
+        #tablePedidos tfoot, #tableTelefonico tfoot {
             position: fixed;
             width: fit-content;
             margin: auto;
@@ -590,7 +590,7 @@
             right: 0;
             bottom: 0;
         }
-        #tablePedidos tfoot.expand, #tableCasos tfoot.expand {
+        #tablePedidos tfoot.expand, #tableTelefonico tfoot.expand {
             right: 50%;
         }
 
@@ -1008,11 +1008,11 @@
                         <label>Fecha prometida*</label>
                         <input id="fechaPrometidaReprogramar" type="date" class="form-ptg form-ptg-primary">
                     </div>
-                    <div class="content-input content-input-primary">
+                    <div class="content-input content-input-primary mt-3">
                         <label>Desde*</label>
                         <input id="desdeReprogramar" type="time" class="form-ptg form-ptg-primary">
                     </div>
-                    <div class="content-input content-input-primary">
+                    <div class="content-input content-input-primary mt-3">
                         <label>Hasta*</label>
                         <input id="hastaReprogramar" type="time" class="form-ptg form-ptg-primary">
                     </div>
@@ -1041,11 +1041,6 @@
                     <div class="content-input content-input-primary">
                         <label>Estado*</label><br>
                         <select id="estadoCambiarEstado" class="form-ptg form-ptg-primary">
-                        </select>
-                    </div>
-                    <div class="content-input content-input-primary mt-3">
-                        <label>Motivo de Cancelacion*</label><br>
-                        <select id="cambiarEstadoOppMotivo" class="form-ptg form-ptg-primary">
                         </select>
                     </div>
                     <div class="content-input content-input-primary mt-3">
@@ -1109,6 +1104,41 @@
         </div>
     </div>
 
+    <div id="formHistoricoCambiosModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="titleHistoricoCambiosModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 1050px; max-width: calc(100vw - 100px);">
+            <div class="modal-content " style="border: 0">
+                <div class="modal-header bg-primary-cc">
+                    <h5 class="modal-title" id="titleHistoricoCambiosModal">Historial de cambios del servicio: <span id="historicoCambiosPedido"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="max-height: calc(100vh - 270px); overflow: auto;">
+                        <div class="col-12">
+                            <table class="table-gen table-gen-blue text-center" id="table-historico-cambios">
+                                <thead>
+                                    <tr>
+                                        <th width="150px">Autor</th>
+                                        <th width="100px">Fecha</th>
+                                        <th width="100px">Origen</th>
+                                        <th width="150px">Campo</th>
+                                        <th>Valor anterior</th>
+                                        <th>Valor nuevo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                        aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="formNotasAdicionalesModal" class="modal fade" tabindex="-1" role="dialog"
         aria-labelledby="titleNotasAdicionalesModal" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 300px;">
@@ -1133,13 +1163,23 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 700px;">
             <div class="modal-content " style="border: 0">
                 <div class="modal-header bg-primary-cc">
-                    <h5 class="modal-title" id="titleProductoModal">Agregar producto</h5>
+                    <h5 class="modal-title w-100" id="titleProductoModal">
+                        <div class="row w-100">
+                            <div class="col">
+                                Agregar producto
+                            </div>
+                            <div class="col-auto">
+                                <span class="precio-unitario-label">Precio: $</span><span id="formProductosModalPrecio"></span> <span>MXN</span>
+                            </div>
+                        </div>
+                        
+                    </h5>
                 </div>
                 <div class="modal-body">
                     <div class="row info-minimo-gas-lp d-none">
                         <div class="col-12">
                             <div class="alert alert-info" role="alert">
-                                El monto mínimo a vender es de $<span class="minimo-gas-lp"></span> mxn.
+                                El monto mínimo a vender es de $<span class="minimo-gas-lp"></span> MXN.
                             </div>
                         </div>
                     </div>
@@ -1194,28 +1234,28 @@
                     </div>
                     <div class="row pb-2">
                         <div class="col-6">
+                            <label class="label-ptg">Subtotal</label>
+                            <div class="input-group special-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1" style="border: none; height: 42px; font-size: 16px; color: #355da7; margin-left: 1px; background-color: white;">$</span>
+                                </div>
+                                <input id="valorFormProductos" type="number" readonly class="form-control" placeholder="0.00" aria-label="0.00" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <!-- <div class="col-6">
                             <div class="content-input content-input-primary">
                                 <label>Valor</label>
                                 <input id="valorFormProductos" type="number" readonly class="form-ptg form-ptg-primary">
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-6">
-                            <label class="label-ptg">Total</label>
+                            <label class="label-ptg">Total con IVA</label>
                             <div class="input-group special-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1" style="border: none; height: 42px; font-size: 16px; color: #355da7; margin-left: 1px; background-color: white;">$</span>
                                 </div>
                                 <input id="totalFormProductos" type="number" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
-                            <!-- <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">$</span>
-                                </div>
-                                <input id="totalFormProductos" type="number" readonly aria-label="Amount (to the nearest dollar)" class="form-ptg form-ptg-primary">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">.00</span>
-                                </div>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -1243,16 +1283,43 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-12 pb-2">
-                            <div class="content-input content-input-primary">
-                                <label>Monto a pagar</label>
-                                <input id="montoPagoPedido" oninput="onlyNumbers(this.value, '#montoPagoPedido')" class="form-ptg form-ptg-primary"> </select>
+                        <div class="col-12">
+                            <label class="label-ptg">Monto a pagar</label>
+                            <div class="input-group special-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1" style="border: none; height: 42px; font-size: 16px; color: #355da7; margin-left: 1px; background-color: white;">$</span>
+                                </div>
+                                <input id="montoPagoPedido" type="number" oninput="onlyNumbers(this.value, '#montoPagoPedido')" class="form-control" placeholder="0.00" aria-label="0.00" aria-describedby="basic-addon1">
                             </div>
                         </div>
-                        <div class="col-12 pb-2 d-none">
+                        <!-- <div class="col-12 pb-2">
+                            <div class="content-input content-input-primary">
+                                <label>Monto a pagar</label>
+                                <input id="montoPagoPedido" oninput="onlyNumbers(this.value, '#montoPagoPedido')" class="form-ptg form-ptg-primary">
+                            </div>
+                        </div> -->
+                        <div class="col-12 pb-2 d-none campo-prepago">
                             <div class="content-input content-input-primary">
                                 <label>Folio de autorización</label>
                                 <input id="folioAutorizacionPedido" class="form-ptg form-ptg-primary"> </select>
+                            </div>
+                        </div>
+                        <div class="col-12 pb-2 d-none campo-prepago">
+                            <div class="content-input content-input-primary">
+                                <label>Tipo de tarjeta</label>
+                                <select id="tipoTarjeta" class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="1">Débito</option>
+                                    <option value="2">Crédito</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 pb-2 d-none campo-prepago">
+                            <div class="content-input content-input-primary">
+                                <label>Cuenta</label>
+                                <select id="tipoCuenta" class="form-ptg form-ptg-primary">
+                                    <option value="">Seleccione una opción</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -1312,6 +1379,27 @@
                         </select>
                     </div>
                 </div> 
+                <div class="col-auto pb-2 filt-only-telefonico d-none">
+                    <div class="row align-items-end">
+                        <div class="col-auto">
+                            <div class="content-input">
+                                <label>Cada</label><br>
+                                <input id="cadaFormCliente" type="number" value="2" min="1" class="form-ptg" style="width: 90px;">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="content-input">
+                                <label>&nbsp;</label><br>
+                                <select id="filterPeriodo" onchange="getServicios(this);" class="form-ptg" style="width: 120px;">
+                                    <option value="1">día(s)</option>
+                                    <option value="2" selected>Semana(s)</option>
+                                    <option value="3">Mes(es)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div> 
                 <!--<div class="col-auto pb-2 ">
                     <div class="content-input">
                         <label>Próxima llamada</label><br>
@@ -1331,7 +1419,7 @@
                                         <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
                                         <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
-                                    <th style="min-width: 40px; z-index: 1; left: 40;" class="text-center sticky-col">
+                                    <th style="min-width: 40px; z-index: 1; left: 40px;" class="text-center sticky-col">
                                         <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
                                     </th>
                                     <th style="min-width: 110px" class="text-center">No. Servicio</th>
@@ -1348,7 +1436,34 @@
                             </thead>
                             <tbody>   
                                 <tr>
-                                    <td colspan="17" class="text-center fw-bold py-5">Sin pedidos encontrados</td>
+                                    <td colspan="12" class="text-center fw-bold py-5">Sin pedidos encontrados</td>
+                                </tr>                  
+                            </tbody>
+                        </table>
+                        <table id="tableTelefonico" class="table-gen table-gen-blue tipo-pedido d-none">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 40px; z-index: 1; left: 0;" class="text-center sticky-col">
+                                        <i class="fa-solid fa-arrow-rotate-right c-pointer" onclick="getServicios(this)"></i>
+                                        <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                    </th>
+                                    <th style="min-width: 40px; z-index: 1; left: 40px;" class="text-center sticky-col">
+                                        <div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>
+                                    </th>
+                                    <th style="min-width: 95px" class="text-center">Id Cliente</th>
+                                    <th style="min-width: 135px" class="text-center">Tipo seguimiento</th>
+                                    <th style="min-width: 155px" class="text-center">Fecha último pedido</th>
+                                    <th style="min-width: 130px" class="text-center">Estado</th>
+                                    <th style="min-width: 265px" class="text-center">Nombre Cliente</th>
+                                    <th style="min-width: 125px" class="text-center">Teléfono</th>
+                                    <th style="min-width: 125px" class="text-center">Tipo de producto</th>
+                                    <th style="min-width: 355px" class="text-center">Dirección</th>
+                                    <th style="min-width: 300px" class="text-center">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>   
+                                <tr>
+                                    <td colspan="12" class="text-center fw-bold py-5">Sin pedidos encontrados</td>
                                 </tr>                  
                             </tbody>
                         </table>
@@ -1424,6 +1539,11 @@
         urlObtenerArticulos = '${ds.getItems}';
         urlGetListStatusCallAlert = '${ds.getListStatusCallAlert}';
         urlGetColonias = '${ds.getColonias}';
+        urlObtenerClientePorId = '${ds.getCustomerV2}';
+        urlGetHistoricoOpp = '${ds.getHistoricoOpp}';
+        ulrGetOppTelefonico = '${ds.getOppTelefonico}';
+        urlPostControlTelefonico = '${ds.postCtrlTel}';
+        urlGetCtrlTel = '${ds.getCtrlTel}';
         statusOP = [];
         countServices = 0;
         metodoMultiple = 7;
@@ -1434,6 +1554,14 @@
         concatObsPagos = ["2", "8"];
         vrStatusAvisos = [];
         idDefPorContestar = 3;
+        isPriceKG = true;
+        methodsEstacionario = ["1", "9"];
+        metodoCredito  = 9;
+        idPorContactar = "";
+        idPendiente = "";
+        idNoContesta = "";
+        metodosPagoPrepago = [15, 13, 2, 14, 16, 17];
+        metodoTransferencia = 8;
 
         function getArticulos() {
             let settings = {
@@ -1459,6 +1587,51 @@
             });
         }
 
+        // Setea los datos dependiendo del tipo de alianza del cliente: contrato, crédito o contado
+        function setAlianzaComercial(customer) {
+            let tipoAlianza = customer.alianzaComercial.toUpperCase();
+            let infoComercial = customer.objInfoComercial;
+            $('option.opt-method-credito-cliente').addClass('d-none');
+            $('#badgeAlianza').children('span').removeClass('bg-danger-cc bg-success-cc');
+            $('tr.alianza').addClass('d-none');
+
+            // Valida el color que debe mostrar la alianza comercial
+            if ( infoComercial.diasAtraso ) {
+                console.log('tiene el objeto dias atraso');
+                if ( parseInt(infoComercial.diasAtraso) > 0 ) {
+                    $('#badgeAlianza').children('span').addClass('bg-danger-cc');
+                } else {
+                    $('#badgeAlianza').children('span').addClass('bg-success-cc');
+                }
+            }
+            if ( tipoAlianza ==  'CONTRATO' ) {
+                $('option.opt-method-credito-cliente').removeClass('d-none');
+                $('#badgeAlianza').removeClass('d-none');
+                $('#badgeAlianza').children('span').text('Contrato');
+                $('.alianza-no-contrato, .alianza-fecha-inicio, .alianza-limite-credito, .alianza-dias-credito, .alianza-saldo-disponible, .alianza-dias-vencidos, .alianza-monto-adeudo').removeClass('d-none')
+                $('.alianza-fecha-alta').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaAlta ? infoComercial.fechaAlta : 'Sin asignar');
+                $('.alianza-no-contrato').children('td').siblings("td:nth-child(2)").text(infoComercial.contrato ? infoComercial.contrato : 'Sin asignar');
+                $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(customer.fechaContrato ? customer.fechaContrato : 'Sin asignar');
+                $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? ( '$' + infoComercial.limiteCredito + ' MXN' ) : 'Sin asignar');
+                $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.terms ? infoComercial.terms : 'Sin asignar');
+                $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? ( '$' + infoComercial.saldoDisponible + ' MXN' ) : 'Sin asignar');
+                $('.alianza-dias-vencidos').children('td').siblings("td:nth-child(2)").text(infoComercial.diasAtraso ? infoComercial.diasAtraso : 'Sin asignar');
+                $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? ( '$' + infoComercial.creditoUtilizado + ' MXN' ) : 'Sin asignar');
+            } else if ( tipoAlianza ==  'CREDITO' ) {
+                $('option.opt-method-credito-cliente').removeClass('d-none');
+                $('#badgeAlianza').children('span').text('Crédito');
+                $('#badgeAlianza').removeClass('d-none');
+                $('.alianza-fecha-inicio, .alianza-limite-credito, .alianza-dias-credito, .alianza-saldo-disponible, .alianza-dias-vencidos, .alianza-monto-adeudo').removeClass('d-none')
+                $('.alianza-fecha-alta').children('td').siblings("td:nth-child(2)").text(infoComercial.fechaAlta ? infoComercial.fechaAlta : 'Sin asignar');
+                $('.alianza-fecha-inicio').children('td').siblings("td:nth-child(2)").text(customer.fechaContrato ? customer.fechaContrato : 'Sin asignar');
+                $('.alianza-limite-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.limiteCredito ? ( '$'+ infoComercial.limiteCredito +' MXN' ) : 'Sin asignar');
+                $('.alianza-dias-credito').children('td').siblings("td:nth-child(2)").text(infoComercial.terms ? infoComercial.terms : 'Sin asignar');
+                $('.alianza-saldo-disponible').children('td').siblings("td:nth-child(2)").text(infoComercial.saldoDisponible ? ( '$'+ infoComercial.saldoDisponible +' MXN' ) : 'Sin asignar');
+                $('.alianza-dias-vencidos').children('td').siblings("td:nth-child(2)").text(infoComercial.diasAtraso ? infoComercial.diasAtraso : 'Sin asignar');
+                $('.alianza-monto-adeudo').children('td').siblings("td:nth-child(2)").text(infoComercial.creditoUtilizado ? ( '$'+ infoComercial.creditoUtilizado +' MXN' ) : 'Sin asignar');
+            }
+        }
+
         function getStatusCallAlert() {
             let settings = {
                 url      : urlGetListStatusCallAlert,
@@ -1468,14 +1641,27 @@
             setAjax(settings).then((response) => {
                 if ( response.data.length ) {
                     vrStatusAvisos = [];
-                    $('#filterEstadoSeguimiento').children('option').remove();
+                    $('#filterEstadoSeguimiento, #estadoCambiarEstado').children('option').remove();
+                    $('#estadoCambiarEstado').append('<option value="">Seleccione una opción</option>');
                     response.data.forEach(element => {
+                        if(element.name.trim().toLowerCase() == "por contactar") {
+                            idPorContactar = element.id;
+                        }
+                        if(element.name.trim().toLowerCase() == "pendiente") {
+                            idPendiente = element.id;
+                        }
+                        if(element.name.trim().toLowerCase() == "no contesta") {
+                            idNoContesta = element.id;
+                        }
                         element.id = parseInt(element.id);                        
                     });
                     response.data.sort(dynamicSort("id"));
                     response.data.forEach(element => {
                         vrStatusAvisos.push(element);
-                        $("#filterEstadoSeguimiento").append( '<option '+(element.id == idDefPorContestar ? 'selected' : '')+' value='+element.id+'>'+element.name+'</option>' );
+                        $("#filterEstadoSeguimiento").append( '<option '+(element.id == idPorContactar ? 'selected' : '')+' value='+element.id+'>'+element.name+'</option>' );
+                        if(element.id.toString() != idPorContactar) {
+                            $("#estadoCambiarEstado").append( '<option value='+element.id+'>'+element.name+'</option>' );
+                        }
                     });
                     
                 }
@@ -1505,32 +1691,75 @@
             $(this).find('select.form-ptg').each(function( index ) {
                 $( this ).val($(this).children("option:first").val());
             });
-            $('#folioAutorizacionPedido').parent().parent().addClass('d-none');
+            $('.campo-prepago').addClass('d-none');
         });
 
         // Abre el modal de métodos de pago
         $("#agregarMetodoPago").click(function () {
-            let totalProducto = 0;
-            let totalMetodosPago = 0;
-            let montoRestante = 0;
-            // Calcula el total del pedido basándose en los productos agregados al listado
-            if (! $('.productosEstacionarioPedidoForm').parent().parent().hasClass('d-none') ) {// Estacionario
-                totalProducto = $('.productosEstacionarioPedidoForm').children('tfoot').find('td.total').data('total');
-            } else if (! $('.productosCilindroPedidoForm').parent().parent().hasClass('d-none') ) {// Cilindro
-                totalProducto = $('.productosCilindroPedidoForm').children('tfoot').find('td.total').data('total');
+            if($("#sinProductos").is(':hidden')) {
+                loadMsg();
+                let totalProducto = 0;
+                let totalMetodosPago = 0;
+                let montoRestante = 0;
+                // Calcula el total del pedido basándose en los productos agregados al listado
+                if (! $('.productosEstacionarioPedidoForm').parent().parent().hasClass('d-none') ) {// Estacionario
+                    totalProducto = $('.productosEstacionarioPedidoForm').children('tfoot').find('td.total').data('total');
+                } else if (! $('.productosCilindroPedidoForm').parent().parent().hasClass('d-none') ) {// Cilindro
+                    totalProducto = $('.productosCilindroPedidoForm').children('tfoot').find('td.total').data('total');
+                }
+
+                // Calcula el total de método de pago basándose en los especificados en la lista
+                if (! $('.productosMetodoPagoForm').parent().parent().hasClass('d-none') ) {// Contiene métodos
+                    totalMetodosPago = $('.productosMetodoPagoForm').children('tfoot').find('td.total').data('total');
+                }
+
+                montoRestante = parseFloat( Number(totalProducto) - Number(totalMetodosPago) ).toFixed(4);
+                montoRestante = montoRestante > 0 ? montoRestante : 0;
+
+                $('#montoPagoPedido').val(montoRestante);
+
+                /* Muestra metodos correctos */
+                let options = $("#metodoPagoPedido").children("option");
+                options.addClass("d-none");
+                $("#metodoPagoPedido").children("option[value=0]").removeClass("d-none");
+                let isEstacionario = $(".productosCilindroPedido").is(':hidden');
+                if(isEstacionario) {
+                    for (let x = 0; x < options.length; x++) {
+                        const element = options[x];
+                        if(methodsEstacionario.indexOf($(element).val()) > -1) {
+                            $(element).removeClass("d-none")
+                        }
+                    }
+                } else {
+                    options.removeClass("d-none");
+                }
+
+                // Se vuelve a llamar este método únicamente para que valide el método de pago crédito cliente
+                let dataSearchCustomer = {
+                    "internalId" : $("#formConfirmarPedidos").data("item").id_cliente,
+                    // "planta"     : $("select#plantas").val(),
+                };
+
+                let settings = {
+                    url    : urlObtenerClientePorId,
+                    method : 'POST',
+                    data   : JSON.stringify(dataSearchCustomer),
+                }
+
+                setAjax(settings).then((response) => {
+                    swal.close();
+                    $('#formMetodoPagosModal').modal('show');
+                    setAlianzaComercial(response.data[0]);
+                }).catch((error) => {
+                    infoMsg('error', 'Cliente no encontrado', 'Verifique que la información sea correcta');
+                    // Limpia los campos de cliente
+                    console.log(error);
+                    swal.close();
+                });
+                
+            } else {
+                infoMsg('warning', 'Alerta:', "Es necesario primero agregar un producto para poder ingresar un metodo de pago");
             }
-
-            // Calcula el total de método de pago basándose en los especificados en la lista
-            if (! $('.productosMetodoPagoForm').parent().parent().hasClass('d-none') ) {// Contiene métodos
-                totalMetodosPago = $('.productosMetodoPagoForm').children('tfoot').find('td.total').data('total');
-            }
-
-            montoRestante = parseFloat( Number(totalProducto) - Number(totalMetodosPago) ).toFixed(4);
-            montoRestante = montoRestante > 0 ? montoRestante : 0;
-
-            $('#montoPagoPedido').val(montoRestante);
-
-            $('#formMetodoPagosModal').modal('show');
         });
 
         // Call a global ajax method
@@ -1849,18 +2078,26 @@
                 confirmMsg("warning", "¿Seguro que desea guardar el seguimiento?", function(resp) {
                     if(resp) {
                         loadMsg();
-                        let nota = [{ 
-                            type: "nota", 
-                            idRelacionado: pedido.no_pedido, 
-                            titulo: "Nota - Avisos y llamadas (seguimiento)", 
-                            nota: $("#nuevaNotaSeguimiento").val().trim(),
-                            transaccion: "oportunidad"
-                        }];
                         let settings2 = {
                             url      : urlPostNoteandMessage,
                             method   : 'POST',
-                            data: JSON.stringify({ informacion: nota })
+                            data     : ''
                         }
+                        if($("#filterTipoSeguimiento").val() == "1") {
+                            let nota = [{ 
+                                type: "nota", 
+                                idRelacionado: pedido.no_pedido, 
+                                titulo: "Nota - Avisos y llamadas (seguimiento)", 
+                                nota: $("#nuevaNotaSeguimiento").val().trim(),
+                                transaccion: "oportunidad"
+                            }];
+                            settings2.data = JSON.stringify({ informacion: nota });
+                        } else {
+                            settings2.url  = urlPostControlTelefonico;
+                            settings2.data = JSON.stringify({ id_cliente: pedido.id_cliente, id_opp: pedido.id, observacion:  $("#nuevaNotaSeguimiento").val().trim(), estado: (pedido.estado_id ? pedido.estado_id : idPorContactar)})
+                        }
+                        
+                        
                         setAjax(settings2).then((response) => {
                             if(response.success) {
                                 swal.close();
@@ -1899,7 +2136,6 @@
         function setSelectStatusOp(items) {
             vrStatus = [];
             if ( items.length ) {
-                $('#estadoCambiarEstado').children('option').remove();
                 items.forEach(element => {
                     if(element.nombre.trim().toLowerCase() == "por notificar") {
                         idPorNotificar = element.id;
@@ -1920,23 +2156,6 @@
                         idPorConfirmar = element.id;
                     }
                     vrStatus.push(element);
-                });
-                vrStatus.forEach(element => {
-                    if ( element.id != "2" && element.id != "3" && element.id != "6") {
-                        $("#estadoCambiarEstado").append(
-                            '<option value="'+element.id+'">'+element.nombre+'</option>'
-                        );
-                    }
-                });
-                $('#estadoCambiarEstado').select2({
-                    selectOnClose: true,
-                    placeholder: "Seleccione un estado",
-                    dropdownParent: $('#formCambiarEstadoModal'),
-                    language: {
-                        "noResults": function(){
-                            return "Sin resultados encontrados";
-                        }
-                    }
                 });
                 readyInit();
             } else {
@@ -1994,6 +2213,7 @@
         // Edita un producto agregado en la lista del pedido
         $('body').delegate('.edit-producto-cil, .edit-producto-est','click', function() {
             let button   = $(this);
+            let lblPrice = 'Precio x kg';
             let prices   = $("#formConfirmarPedidos").data("item").precioZona;
             let artObj   = button.parent().parent().data('item');
             let total    = 0;
@@ -2001,7 +2221,12 @@
             // let direccion = $('select#direccionCliente').children('option:selected').data('address');
             
             if ( button.hasClass('edit-producto-cil') ) {// Producto cilindro
-
+                if(!isPriceKG) {
+                    prices = prices / 0.54;
+                }
+                lblPrice = 'Precio x kg ';
+                $('.precio-unitario-label').html(lblPrice);
+                $("#formProductosModalPrecio").html('$'.concat(Number(prices).toFixed(4)));
                 $("#productoFormProductos").val("cilindro");
                 $("#totalFormProductos").prop('readonly', true);
                 $(".cilindroFormProductos").removeClass("d-none");
@@ -2013,10 +2238,14 @@
                 $('#capacidadFormProductos, #pedidoProductoId').val(artObj.article);
                 $('#cantidadFormProductos').val(artObj.quantity);
                 $('#valorFormProductos').val(subtotal);
-                $('#totalFormProductos').val(total);
-
+                $('#totalFormProductos').val(total);        
             } else if ( button.hasClass('edit-producto-est') ) {// Producto estacionario
-                console.log(artObj);
+                if(isPriceKG) {
+                    prices = prices * 0.54;
+                }
+                lblPrice = 'Precio x litro ';
+                $('.precio-unitario-label').html(lblPrice);
+                $("#formProductosModalPrecio").html('$'.concat(Number(prices).toFixed(4)));
                 $("#productoFormProductos").val("estacionario");
                 $("#totalFormProductos").attr('readonly', false);
                 $(".estacionarioFormProductos").removeClass("d-none");
@@ -2028,8 +2257,7 @@
                 $("#pedidoProductoId").val( artObj.article );// Este input indicará que se trata de un edit
                 $("#litrosFormProductos").val( artObj.capacity );
                 $("#valorFormProductos").val( subtotal );
-                $("#totalFormProductos").val( total );
-            
+                $("#totalFormProductos").val( total );        
             }
 
             // Se validan los option disponibles si es que algún producto ya fue registrado
@@ -2049,7 +2277,7 @@
             let canContinue = false;
             let productoId  = $('#pedidoProductoId').val();
             let defaultProMsg = $('#sinProductos');
-            let prices = $('#zonaPrecioCliente').text().replace('$', '');
+            let prices = $('#zonaPrecioCliente').data("price");
 
             if ( tipoProducto == 'cilindro' ) {
                 if( !$("#capacidadFormProductos").val() || $("#cantidadFormProductos").val() <= 0  || $("#valorFormProductos").val() <= 0 || $("#totalFormProductos").val() <= 0 ) {
@@ -2057,11 +2285,17 @@
                 } else {
                     canContinue = true;
                 }
+                if(!isPriceKG) {
+                    prices = prices / 0.54;
+                }
             } else if ( tipoProducto == 'estacionario' ) {
                 if( $("#litrosFormProductos").val() <= 0 || $("#valorFormProductos").val() <= 0  || $("#totalFormProductos").val() <= 0) {
                     canContinue = false;
                 } else {
                     canContinue = true;
+                }
+                if(isPriceKG) {
+                    prices = prices * 0.54;
                 }
             }
 
@@ -2103,7 +2337,7 @@
                         searchTr.children('td').siblings("td:nth-child(2)").text(articulo['quantity']);
                         searchTr.children('td').siblings("td:nth-child(3)").text(capacidad+' kg');
                         searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' MXN');
                         // searchTr.children('td').siblings("td:nth-child(4)").children('button.delete-producto-cil').data('item-id', articulo.article);
                     } else {
                         let firstItem         = searchTr.data('item');
@@ -2114,7 +2348,7 @@
                         searchTr.data('item', firstItem);
                         searchTr.children('td').siblings("td:nth-child(2)").text(firstItem['quantity']);
                         searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' MXN');
                         console.log(firstItem);
                     }
                     
@@ -2126,7 +2360,7 @@
                             '<td class="text-center">'+(artSel && artSel.nombre ? artSel.nombre : 'Sin nombre asignado')+'</td>'+
                             '<td class="text-center">'+articulo['quantity']+'</td>'+
                             '<td class="text-center">'+capacidad+' kg</td>'+
-                            '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                            '<td class="text-center" data-total='+total+'>$'+total+' MXN</td>'+
                             // '<td class="text-center">'+(envase ? 'Si' : 'No')+'</td>'+
                             '<td class="text-center">'+
                                 '<button class="btn btn-sm btn-info edit-producto-cil"> <i class="fa fa-pen-to-square"></i> </button> '+
@@ -2156,13 +2390,11 @@
                 if ( searchTr.length ) {// Se verifica si el artículo fue previamente registrado
                     
                     if ( productoId ) {// Si es una edición, se reemplazará todo el contenido
-                        console.log("jeje");
                         searchTr.data('item', articulo);
                         searchTr.children('td').siblings("td:nth-child(3)").text(articulo['capacity']);
                         searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' MXN');
                     } else {// Se suma el consumo del cliente
-                        console.log("jeje2");
                         let firstItem         = searchTr.data('item');
                         let firstTotal        = parseFloat( searchTr.children('td').siblings("td:nth-child(4)").data('total') ).toFixed(4);
                         firstItem['capacity'] = Number(firstItem['capacity']) + Number(articulo['capacity']);
@@ -2171,7 +2403,7 @@
                         searchTr.data('item', firstItem);
                         searchTr.children('td').siblings("td:nth-child(3)").text(firstItem['capacity']);
                         searchTr.children('td').siblings("td:nth-child(4)").data('total', total);
-                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' mxn');
+                        searchTr.children('td').siblings("td:nth-child(4)").text('$'+total+' MXN');
                         console.log(firstItem);
                     }
 
@@ -2182,7 +2414,7 @@
                             '<td>Gas LP</td>'+
                             '<td class="text-center">1</td>'+
                             '<td class="text-center">'+$("#litrosFormProductos").val()+'</td>'+
-                            '<td class="text-center" data-total='+total+'>$'+total+' mxn</td>'+
+                            '<td class="text-center" data-total='+total+'>$'+total+' MXN</td>'+
                             '<td class="text-center">'+
                                 '<button class="btn btn-sm btn-info edit-producto-est"> <i class="fa fa-pen-to-square"></i> </button> '+
                                 '<button class="btn btn-sm btn-danger delete-producto-est" data-table-ref=".productosEstacionarioPedidoForm" data-item-id='+articulo.article+'> <i class="fa-solid fa-trash-can"></i> </button>'+
@@ -2192,12 +2424,22 @@
 
                 }
 
-                setTotalPedido( $(".productosEstacionarioPedidoForm") );
+                setTotalPedido( $(".productosEstacionarioPedido") );
 
             }
 
             // Desvanece el modal
             $('#formProductosModal').modal('hide');
+        });
+
+        $('body').delegate('#filterTipoSeguimiento','change', function() {
+            if($(this).val() == "1") {
+                $(".filt-only-aviso").removeClass('d-none');
+                $(".filt-only-telefonico").addClass('d-none');
+            } else {
+                $(".filt-only-telefonico").removeClass('d-none');
+                $(".filt-only-aviso").addClass('d-none');
+            }
         });
 
         // Valida la información mostrada en la lista de artículos
@@ -2214,11 +2456,18 @@
         $('#guardarMetodoPagoForm').on('click', function () {
             let canContinue = false;
             // let conFolio    = ["8", "2", "5", "6"];
-            let metodoId    = $("#metodoPagoPedido").val();
+            let metodoId    = parseInt( $("#metodoPagoPedido").val() );
             let metodoTxt   = $('#metodoPagoPedido').children(':selected').text();
+            let tipoTarjeta = parseInt($("#tipoTarjeta").val());
+            let tipoCuenta  = parseInt($("#tipoCuenta").val());
+            let folioAut    = $("#folioAutorizacionPedido").val().trim();
             // let numMetodos  = $('table.productosMetodoPago tbody').children('tr.metodos').length;
 
-            if(!metodoId || !$("#montoPagoPedido").val() ) {
+            if(
+                ( !metodoId || metodoId == 0 || !$("#montoPagoPedido").val() ) || 
+                ( metodosPagoPrepago.includes(metodoId) && ( !folioAut || !tipoTarjeta || !tipoCuenta ) ) || //Si son de prepago, pide estos campos
+                ( metodoId == metodoTransferencia  && ( !tipoCuenta ) ) // Si es transferencia, no pide el tipo de tarjeta
+            ) {
                 canContinue = false;
             } else {
                 canContinue = true;
@@ -2235,12 +2484,13 @@
             $('.productosMetodoPagoForm').parent().parent().removeClass('d-none');
 
             let total        = parseFloat($('#montoPagoPedido').val()).toFixed(4);
-            let folio        = $('#folioAutorizacionPedido').val().trim();
             let metodoObj    = {
-                metodo_txt : metodoTxt,
-                tipo_pago  : metodoId,
-                monto      : total,
-                folio      : folio,
+                metodo_txt   : metodoTxt,
+                tipo_pago    : metodoId,
+                tipo_cuenta  : tipoCuenta,
+                tipo_tarjeta : tipoTarjeta,
+                monto        : total,
+                folio        : folioAut,
             };
 
             agregarMetodoPago(metodoObj);
@@ -2542,6 +2792,7 @@
         function onChangeValue(element) {
             var elementId    = element.attr('id');
             let subtotal     = total = 0;
+            let lblPrice     = 'Precio x kg';
             let tipoProducto = $('#productoFormProductos').val();
             let prices       = $("#formConfirmarPedidos").data("item").precioZona;
             let cantidad     = parseInt( $('#cantidadFormProductos').val() );
@@ -2554,8 +2805,14 @@
             cantidad = ( isNaN(cantidad) ? 0 : cantidad );
             litros   = ( isNaN(litros) ? 0 : litros );
             valor    = ( isNaN(valor) ? 0 : valor );
-
+            console.log(prices);
             if ( tipoProducto == 'cilindro' ) {// Cilindro
+                if(!isPriceKG) {
+                    prices = prices / 0.54;
+                }
+                lblPrice = 'Precio x kg ';
+                $('.precio-unitario-label').html(lblPrice);
+                $("#formProductosModalPrecio").html('$'.concat(Number(prices).toFixed(4)));
                 if ( elementId == 'cantidadFormProductos' || elementId == 'capacidadFormProductos' || elementId == 'productoFormProductos' ) {// Producto (cilindro) y cantidad de producto
 
                     subtotal = parseFloat( capArticulo *  cantidad * prices).toFixed(4);
@@ -2569,6 +2826,12 @@
                 $('#totalFormProductos').val(total);
                 
             } else if ( tipoProducto == 'estacionario' ) {// Estacionario
+                if(isPriceKG) {
+                    prices = prices * 0.54;
+                }
+                lblPrice = 'Precio x litro ';
+                $('.precio-unitario-label').html(lblPrice);
+                $("#formProductosModalPrecio").html('$'.concat(Number(prices).toFixed(4)));
                 if ( elementId == 'totalFormProductos' || elementId == 'productoFormProductos' ) {// Se calculan los litros a contratar
 
                     total = parseFloat( $('#totalFormProductos').val() ).toFixed(4);
@@ -2578,6 +2841,7 @@
                     // subtotal = ( isNaN(subtotal) ? 0 : subtotal );
                     litros = parseFloat(subtotal / prices).toFixed(4);
                     $('#litrosFormProductos').val(litros);
+                    
 
                 } else if( elementId == 'litrosFormProductos' ) {// Se calcula el total acorde a los litros
 
@@ -2641,14 +2905,14 @@
                 if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "1") {
                     rutasCilindros.forEach(element => {
                         $("#filterRuta").append(
-                            '<option value="'+element.internalId+'">'+getRutaFormat(element, "ruta")+'</option>'
+                            '<option data-item='+"'"+JSON.stringify(element)+"'"+' value="'+element.internalId+'">'+getRutaFormat(element, "ruta")+'</option>'
                         );
                     });
                 }
                 if($("#filterTipoProducto").val() == "0" || $("#filterTipoProducto").val() == "2") {
                     rutasEstacionarios.forEach(element => {
                         $("#filterRuta").append(
-                            '<option value="'+element.internalId+'">'+getRutaFormat(element, "ruta")+'</option>'
+                            '<option data-item='+"'"+JSON.stringify(element)+"'"+' value="'+element.internalId+'">'+getRutaFormat(element, "ruta")+'</option>'
                         );
                     });
                 }
@@ -2740,14 +3004,15 @@
         }
 
         function getFiltPedidos() {
-            let filt = {};
+            let filt = {},
+                tipoSeguimiento = $("#filterTipoSeguimiento").val();
 
             if($("#plantas").val()) {
                 filt.planta = $("#plantas").val();
             }
 
             if($("#filterRuta").val() != "0" && $("#filterRuta").val()) {
-                filt.ruta = $("#filterRuta").val();
+                filt.route_string = $("#filterRuta option:selected").data("item").name.trim();
             }
 
             if($("#filterZona").val() != "0") {
@@ -2758,14 +3023,16 @@
 
             filt.status_alert = $("#filterEstadoSeguimiento").val();
 
-            vrStatus.forEach(element => {
-                if(element.nombre.toLowerCase() == "por confirmar") {
-                    filt.status_oportunidad = element.id;
-                }
-            });
+            
+            if(tipoSeguimiento == "1") {
+                vrStatus.forEach(element => {
+                    if(element.nombre.toLowerCase() == "por confirmar") {
+                        filt.status_oportunidad = element.id;
+                    }
+                });
+            } else {
 
-            //filt.fechaPrometida1 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
-            //filt.fechaPrometida2 = dateFormatFromDate($("#filterProximaLlamada").val(), "5");
+            }
 
             return filt;
         }
@@ -2863,108 +3130,158 @@
         }
 
         function getServicios() {
+            let tipoSeguimiento = $("#filterTipoSeguimiento").val();
             let settings = {
                 url      : urlGetOpp,
                 method   : 'POST',
                 data: JSON.stringify(getFiltPedidos())
             }
+            if(tipoSeguimiento != "1") {
+                $("#tablePedidos").addClass("d-none");
+                $("#tableTelefonico").removeClass("d-none");
+                settings.url = ulrGetOppTelefonico;
+            } else {
+                $("#tablePedidos").removeClass("d-none");
+                $("#tableTelefonico").addClass("d-none");
+            }
+            
             if(!swal.getState().isOpen) {
                 loadMsg();
             }
             
-            $("#tablePedidos tbody").children("tr").remove();
+            $("#tablePedidos tbody, #tableTelefonico tbody").children("tr").remove();
             setAjax(settings).then((response) => {   
                 console.log(response);     
                 if(response.success) {
-                    response.data = removeDuplicates(response.data, 'no_pedido');
+                    if(tipoSeguimiento != "1") {
+                        response.data = removeDuplicates(response.data, 'no_pedido');
+                    } else {
+                        response.data = removeDuplicates(response.data, 'id_cliente');
+                    }
                     if(response.data.length == 0) {
-                        $("#tablePedidos tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                        $("#tablePedidos tbody").append('<tr><td colspan="12" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                        $("#tableTelefonico tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
                         initTable("tablePedidos");
+                        initTable("tableTelefonico");
                     }
                     
-                    response.data.forEach((pedido, position) => {
-                        if(pedido.fecha_prometida) {
-                            pedido.fecha_hora_prometida = dateFormatFromString(pedido.fecha_prometida, "2");
-                            pedido.fecha_prometida = dateFormatFromDate(new Date(pedido.fecha_prometida.split("/")[2], parseInt(pedido.fecha_prometida.split("/")[1]) - 1, pedido.fecha_prometida.split("/")[0]), "2");
-                        }
-                
-                        if(pedido.fecha_solicitud) {
-                            pedido.fecha_solicitud = dateFormatFromDate(new Date(pedido.fecha_solicitud.split("/")[2], parseInt(pedido.fecha_solicitud.split("/")[1]) - 1, pedido.fecha_solicitud.split("/")[0]), "2");
-                        }
-                                    
-                        if(pedido.fecha_notificacion) {
-                            pedido.fecha_hora_notificacion = dateFormatFromString(pedido.fecha_notificacion+(pedido.hora_notificacion ? " "+pedido.hora_notificacion : ''), "2");
-                            pedido.fecha_notificacion = dateFormatFromDate(new Date(pedido.fecha_notificacion.split("/")[2], parseInt(pedido.fecha_notificacion.split("/")[1]) - 1, pedido.fecha_notificacion.split("/")[0]), "2");
-                        }
-                        vrStatus.forEach(element2 => {
-                            if(element2.id == pedido.status_id) {
-                                pedido.estado = element2.nombre;
+                    if(tipoSeguimiento != "1") {
+                        response.data.forEach((pedido, position) => {
+                            if(pedido.fecha_prometida) {
+                                pedido.fecha_hora_prometida = dateFormatFromString(pedido.fecha_prometida, "2");
+                                pedido.fecha_prometida = dateFormatFromDate(new Date(pedido.fecha_prometida.split("/")[2], parseInt(pedido.fecha_prometida.split("/")[1]) - 1, pedido.fecha_prometida.split("/")[0]), "2");
+                            }
+                    
+                            if(pedido.fecha_solicitud) {
+                                pedido.fecha_solicitud = dateFormatFromDate(new Date(pedido.fecha_solicitud.split("/")[2], parseInt(pedido.fecha_solicitud.split("/")[1]) - 1, pedido.fecha_solicitud.split("/")[0]), "2");
+                            }
+                                        
+                            if(pedido.fecha_notificacion) {
+                                pedido.fecha_hora_notificacion = dateFormatFromString(pedido.fecha_notificacion+(pedido.hora_notificacion ? " "+pedido.hora_notificacion : ''), "2");
+                                pedido.fecha_notificacion = dateFormatFromDate(new Date(pedido.fecha_notificacion.split("/")[2], parseInt(pedido.fecha_notificacion.split("/")[1]) - 1, pedido.fecha_notificacion.split("/")[0]), "2");
+                            }
+                            vrStatus.forEach(element2 => {
+                                if(element2.id == pedido.status_id) {
+                                    pedido.estado = element2.nombre;
+                                }
+                            });
+                            if(pedido.desde) {
+                                pedido.desde = getTimeFromString(pedido.desde);
+                            }
+                            if(pedido.hasta) {
+                                pedido.hasta = getTimeFromString(pedido.hasta);
                             }
                         });
-                        if(pedido.desde) {
-                            pedido.desde = getTimeFromString(pedido.desde);
-                        }
-                        if(pedido.hasta) {
-                            pedido.hasta = getTimeFromString(pedido.hasta);
-                        }
-                    });
+                    }
                     
-                    $("#tablePedidos thead tr th").css('z-index', "3");
+                    $("#tablePedidos thead tr th, #tableTelefonico thead tr th").css('z-index', "3");
                     $($("#tablePedidos thead tr th")[0]).css('z-index', "4");
                     $($("#tablePedidos thead tr th")[1]).css('z-index', "4");
+                    $($("#tableTelefonico thead tr th")[0]).css('z-index', "4");
+                    $($("#tableTelefonico thead tr th")[1]).css('z-index', "4");
                     
                     response.data.forEach((pedido, position) => {
-                        let tipoServicio = "";
-                        vrTiposServicios.forEach(element => {
-                            if(pedido.servicio == element.id) {
-                                tipoServicio = element.nombre;
+                        let tipoServicio = "",
+                            tipoSeg = "Aviso",
+                            fecha = pedido.fecha_prometida,
+                            telefono = pedido.telefono;
+
+                        if(tipoSeguimiento == "1") {
+                            vrTiposServicios.forEach(element => {
+                                if(pedido.servicio == element.id) {
+                                    tipoServicio = element.nombre;
+                                }
+                            });
+                        } else {
+                            pedido.street = pedido.calle;
+                            tipoSeg = "Telefónico";
+                            fecha = pedido.fecha_cierre;
+                            telefono = pedido.telefono_cliente;
+                            tipoServicio = pedido.tipo_servicio;
+                            if(pedido.estado) {
+                                pedido.statusAlertName = pedido.estado;
+                            } else {
+                                pedido.statusAlertName = 'Por contactar';
                             }
-                        });
+                            
+                        }
+
                         let auxDir = getDireccionFormat(pedido),
                             auxObs = getObservacionesFormat(pedido, "<br>");
+
+                        fecha = dateFormatFromDate(fecha, '5');
+                        
                         let trAux = '<tr data-item='+"'"+JSON.stringify(pedido)+"'"+'>'+
                                         '<td class="text-center sticky-col">'+  
                                             '<div class="btn-group dropend vertical-center">'+                                            
                                                 '<i class="fa-solid fa-ellipsis-vertical c-pointer dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 24px;"></i>'+
                                                 '<ul class="dropdown-menu" style="width: max-content;">'+
-                                                    '<li onclick="confirmarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-square-check color-primary"></i> Confirmar servicio</li>'+
-                                                    '<li onclick="reprogramarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-regular fa-calendar-days color-primary"></i> Reprogramar servicio</li>'+
+                                                    '<li onclick="confirmarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-square-check color-primary"></i> '+(tipoSeguimiento ? 'Confirmar servicio' : 'Crear servicio')+'</li>'+
+                                                    (tipoSeguimiento == "1" ? '<li onclick="reprogramarServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-regular fa-calendar-days color-primary"></i> Reprogramar servicio</li>' : "")+
                                                     '<li onclick="cambiarEstadoServicio(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-arrows-rotate color-primary"></i> Cambiar estado</li>'+
                                                     '<li onclick="seguimientoPedido(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-comment-dots color-primary"></i> Seguimiento</li>'+
+                                                    (tipoSeguimiento == "1" ? '<li onclick="historicoCambios(this)" class="px-2 py-1 c-pointer" style="font-size: 16px"><i class="fa-solid fa-clock-rotate-left color-primary"></i> Historial de cambios</li>' : '')+
                                                 '</ul>'+
                                             '</div>'+
                                             '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                         '</td>'+
-                                        '<td style="left: 40px;"class="text-center sticky-col">'+
-                                            '<i onclick="verDetalles(this)" class="fa-solid fa-eye color-primary c-pointer" title="Ver detalles" data-bs-toggle="tooltip" data-bs-placement="right"></i>'+
+                                        '<td style="left: 40px;" class="text-center sticky-col">'+
+                                            (tipoSeguimiento == "1" ? '<i onclick="verDetalles(this)" class="fa-solid fa-eye color-primary c-pointer" title="Ver detalles" data-bs-toggle="tooltip" data-bs-placement="right"></i>' : '')+
                                             '<div style="position: absolute; right: 0; top: 0; height: 100%; width: 1px; background-color: #000;"></div>'+
                                         '</td>'+
-                                        '<td class="text-center">' + pedido.documentNumber + '</td>'+
+                                        (tipoSeguimiento == "1" ? '<td class="text-center">' + pedido.documentNumber + '</td>' : '')+
                                         '<td class="text-center">' + pedido.id_cliente + '</td>'+
-                                        '<td class="text-center">Aviso</td>'+
-                                        '<td class="text-center">' + dateFormatFromDate(pedido.fecha_prometida, '5') + '</td>'+
-                                        '<td class="text-center">' + (pedido.nombre_cliente ? pedido.nombre_cliente : 'Sin nombre de cliente') + '</td>'+
+                                        '<td class="text-center">'+ tipoSeg +'</td>'+
+                                        '<td class="text-center">' + fecha + '</td>'+
                                         '<td class="text-center">' + (pedido.statusAlertName ? pedido.statusAlertName : 'Sin estado asignado') + '</td>'+
-                                        '<td class="text-center">' + (pedido.telefono ? pedido.telefono : 'Sin teléfono') + '</td>'+
+                                        '<td class="text-center">' + (pedido.nombre_cliente ? pedido.nombre_cliente : 'Sin nombre de cliente') + '</td>'+
+                                        '<td class="text-center">' + (telefono ? telefono : 'Sin teléfono') + '</td>'+
                                         '<td class="text-center">' + tipoServicio + '</td>'+
                                         '<td class="text-center">' + (auxDir ? auxDir : 'Sin dirección') + '</td>'+
                                         '<td class="text-center">' + (auxObs ? auxObs : 'Sin observaciones') + '</td>'+
                                     '</tr>';
                                     
-                        $("#tablePedidos tbody").append(trAux);
+                        $("#"+(tipoSeguimiento == "1" ? 'tablePedidos' : 'tableTelefonico')+" tbody").append(trAux);
 
                         if(response.data.length == (position + 1)) {
-                            initTable("tablePedidos");
+                            initTable('tablePedidos');
+                            initTable('tableTelefonico');
                         }
                     });
                     swal.close();
                 } else {
-                    $("#tablePedidos tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                    $("#tablePedidos tbody").append('<tr><td colspan="12" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                    $("#tableTelefonico tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                    initTable('tablePedidos');
+                    initTable('tableTelefonico');
                     swal.close();
                 }
             }).catch((error) => {
                 console.log(error);
-                $("#tablePedidos tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                $("#tablePedidos tbody").append('<tr><td colspan="12" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                $("#tableTelefonico tbody").append('<tr><td colspan="11" class="text-center fw-bold py-5">Sin pedidos encontrados</td></tr>');
+                initTable('tablePedidos');
+                initTable('tableTelefonico');
                 swal.close();
             });
         }
@@ -2999,7 +3316,7 @@
             auxDir += (item.nInterior && item.nInterior.trim() ? (auxDir ? ' Int. ' : 'Int. ') + item.nInterior.trim() : '');
             auxDir += (item.colonia && item.colonia.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.colonia.trim()) : '');
             auxDir += (item.cp && item.cp.trim() ? (auxDir ? ', ' : '') + item.cp.trim() : '');
-            auxDir += (item.municipio && item.municipio.trim() ? (auxDir ? ' ' : '') + capitalizeFirstsLetter(item.municipio.trim()) : '');
+            auxDir += (item.municipio && item.municipio.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.municipio.trim()) : '');
             auxDir += (item.estadoDireccion && item.estadoDireccion.trim() ? (auxDir ? ', ' : '') + capitalizeFirstsLetter(item.estadoDireccion.trim()) : '');
             return auxDir.trim();
         }
@@ -3007,62 +3324,153 @@
         function cambiarEstadoServicio($this) {
             let servicio = $($this).closest("tr").data("item");
             $("#cambiarEstadoPedido").html(servicio.documentNumber ? servicio.documentNumber : '');
-            $("#estadoCambiarEstado").val(null).trigger("change");
+            $("#estadoCambiarEstado").val(servicio.estado_id).trigger("change");
             $("#cambiarEstadoOppMotivo").val(null).trigger("change")
             $("#cambiarEstadoOppObservaciones").val(null)
             $("#formCambiarEstadoModal").data("item", servicio);
             $("#formCambiarEstadoModal").modal("show");
         }
 
-        $('body').delegate('#estadoCambiarEstado', 'change', function () {
-            if($(this).val() == idCancelado) {
-                $("#cambiarEstadoOppMotivo").parent().removeClass('d-none');
-                $("#cambiarEstadoOppObservaciones").parent().removeClass('d-none');
-            } else {
-                $("#cambiarEstadoOppMotivo").parent().addClass('d-none');
-                $("#cambiarEstadoOppObservaciones").parent().addClass('d-none');
-            }
-        });
-
         function seguimientoPedido($this) {
+            loadMsg();
             let pedido = $($this).closest("tr").data("item");
-            $("#seguimientoPedido").html(pedido.documentNumber ? pedido.documentNumber : '');
-            let settings = {
-                url      : urlGetNotesOfOPP,
-                method   : 'POST',
-                data     : JSON.stringify({opp : pedido.no_pedido}),
-            }
             $("#nuevaNotaSeguimiento").val("");
-            $("#sendSmsSeguimiento").prop("checked", true);
             $("#table-notas-seguimiento tbody").children("tr").remove();
             $("#table-notas-seguimiento tbody").append('<tr>' +
                                                             '<td colspan="3" class="text-center">' +
                                                                 'Sin comentarios'+
                                                             '</td>' +
                                                         '</tr>');
-            
+            let settings = {
+                url      : urlGetNotesOfOPP,
+                method   : 'POST',
+                data     : JSON.stringify({opp : pedido.no_pedido}),
+            }
+
+            if($("#filterTipoSeguimiento").val() == "1") {
+                $("#seguimientoPedido").html(pedido.documentNumber ? pedido.documentNumber : '');
+            } else {
+                settings.url = urlGetCtrlTel;
+                settings.data = JSON.stringify({id_opp : pedido.id, id_cliente: pedido.id_cliente})
+            }
             setAjax(settings).then((response) => {
                 if(response.success) {
                     if(response.data.length > 0) {
                         $("#table-notas-seguimiento tbody").children("tr").remove();
                     }
                     response.data.forEach(element => {
-                        if(element.note && element.note.trim()) {
+                        if($("#filterTipoSeguimiento").val() == "1") {
+                            if(element.note && element.note.trim()) {
+                                let trAux = '<tr>' +
+                                                '<td class="ion-text-center sticky-col fw-bold">'+element.author+'</td>'+
+                                                '<td class="ion-text-center sticky-col fw-bold">'+element.date+'</td>'+
+                                                '<td class="ion-text-center sticky-col fw-bold">'+element.note+'</td>'+
+                                            '</tr>';
+                                $("#table-notas-seguimiento tbody").append(trAux);
+                            }
+                        } else {
                             let trAux = '<tr>' +
-                                            '<td class="ion-text-center sticky-col fw-bold">'+element.author+'</td>'+
-                                            '<td class="ion-text-center sticky-col fw-bold">'+element.date+'</td>'+
-                                            '<td class="ion-text-center sticky-col fw-bold">'+element.note+'</td>'+
+                                            '<td class="ion-text-center sticky-col fw-bold">'+element.nombre+'</td>'+
+                                            '<td class="ion-text-center sticky-col fw-bold">'+element.fecha+'</td>'+
+                                            '<td class="ion-text-center sticky-col fw-bold">'+element.observaciones+'</td>'+
                                         '</tr>';
                             $("#table-notas-seguimiento tbody").append(trAux);
                         }
-                        
                     });
                     $("#formSeguimientoModal").data("item", pedido);
+                    swal.close();
                     $("#formSeguimientoModal").modal("show");
                 }
             }).catch((error) => {
                 console.log(error);
             });
+        }
+
+        function historicoCambios($this) {
+            loadMsg();
+            let pedido = $($this).closest("tr").data("item");
+            $("#historicoCambiosPedido").html(pedido.documentNumber ? pedido.documentNumber : '');
+            let settings = {
+                url      : urlGetHistoricoOpp+"&id="+pedido.no_pedido,
+                method   : 'GET'
+            }
+            $("#table-historico-cambios tbody").children("tr").remove();
+            $("#table-historico-cambios tbody").append('<tr>' +
+                                                            '<td colspan="5" class="text-center">' +
+                                                                'Sin cambios registrados'+
+                                                            '</td>' +
+                                                        '</tr>');
+            
+            setAjax(settings).then((response) => {
+                if(response.success) {
+                    if(response.data.length > 0) {
+                        $("#table-historico-cambios tbody").children("tr").remove();
+                    }
+                    response.data.forEach(element => {
+                        let trAux = "";
+                        if(element.fieldName.trim().toLowerCase() == "ptg - opción de pago obj") {
+                            trAux += getChangesMetodosPago(element);
+                        } else {
+                            trAux += '<tr>' +
+                                        '<td class="ion-text-center fw-bold">'+element.userName+'</td>'+
+                                        '<td class="ion-text-center fw-bold">'+element.date+'</td>'+
+                                        '<td class="ion-text-center fw-bold">'+(element.ui.trim()== 'Script (RESTlet)' ? 'Call Center/<br>Monitor' : 'Netsuite')+'</td>'+
+                                        '<td class="ion-text-center fw-bold">'+element.fieldName+'</td>'+
+                                        '<td class="ion-text-center fw-bold">'+element.oldvalue+'</td>'+
+                                        '<td class="ion-text-center fw-bold">'+element.newvalue+'</td>'+
+                                    '</tr>';
+                        }
+                        $("#table-historico-cambios tbody").append(trAux);
+                    });
+                    $("#formHistoricoCambiosModal").data("item", pedido);
+                    swal.close();
+                    $("#formHistoricoCambiosModal").modal("show");
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        function getChangesMetodosPago(item){
+            let trAux = "",
+                auxTdPagoOld = '',
+                auxTdPagoNew = '';
+            let auxOldVal = {},
+                auxNewVal = {};
+            if(item.oldvalue.trim() != "") {
+                auxOldVal = JSON.parse(item.oldvalue);
+            }
+            if(item.newvalue.trim() != "") {
+                auxNewVal = JSON.parse(item.newvalue);
+            }
+            
+            trAux += '<tr>' +
+                        '<td class="ion-text-center fw-bold">'+item.userName+'</td>'+
+                        '<td class="ion-text-center fw-bold">'+item.date+'</td>'+
+                        '<td class="ion-text-center fw-bold">'+(item.ui.trim()== 'Script (RESTlet)' ? 'Call Center/<br>Monitor' : 'Netsuite')+'</td>'+
+                        '<td class="ion-text-center fw-bold">Método de pagos</td>';
+
+            if(auxOldVal.pago) {
+                auxOldVal.pago.forEach(element => {
+                    if(auxTdPagoOld != "") {
+                        auxTdPagoOld += '<br>'
+                    }
+                    auxTdPagoOld += element.metodo_txt+(element.folio ? ' - Folio: '+element.folio : '')+' ($'+element.monto+')';
+                });
+            }
+            
+            if(auxNewVal.pago) {
+                auxNewVal.pago.forEach(element => {
+                    if(auxTdPagoNew != "") {
+                        auxTdPagoNew += '<br>'
+                    }
+                    auxTdPagoNew += element.metodo_txt+(element.folio ? ' - Folio: '+element.folio : '')+' ($'+element.monto+')';
+                });
+            }
+            trAux +=    '<td class="ion-text-center fw-bold">'+auxTdPagoOld+'</td>'+
+                        '<td class="ion-text-center fw-bold">'+auxTdPagoNew+'</td>'+
+                    '</tr>';
+            return trAux;
         }
 
         function reprogramarServicio($this) {
@@ -3095,6 +3503,16 @@
                 infoMsg('warning', 'Campos requeridos:', aux);
                 return;
             }
+
+            /* Valida que fecha sea mayor a hoy */
+            if(dateFormatFromString(dateFormatFromDate(new Date(), "2")) > dateFormatFromString($("#fechaPrometidaReprogramar").val())) {
+                let aux = "<ul>";
+                aux += "<li>Fecha prometida menor a la fecha actual</li>";
+                aux += "</ul>";
+                infoMsg('warning', 'Errores:', aux);
+                return;
+            }
+
             confirmMsg("warning", "¿Seguro que desea reprogramar el servicio?", function(resp) {
                 if(resp) {
                     let dataSend = {
@@ -3102,10 +3520,10 @@
                             {
                                 "id": servicio.no_pedido,
                                 "bodyFields": {
-                                    "custbody_ptg_estado_pedido": idPorReprogramar,
                                     "expectedclosedate": dateFormatFromDate($("#fechaPrometidaReprogramar").val(), "5"),
                                     "custbody_ptg_entre_las": formatTime( $('#desdeReprogramar').val() ),
-                                    "custbody_ptg_y_las" : formatTime( $('#hastaReprogramar').val())
+                                    "custbody_ptg_y_las" : formatTime( $('#hastaReprogramar').val()),
+                                    "custbody_ptg_turno_equipo": idPorContactar
                                 },
                                 "lines": [
                                     
@@ -3170,20 +3588,17 @@
         });
 
         $("#guardarCambiarEstado").click(function() {
-            let servicio = $("#formCambiarEstadoModal").data("item");
+            let servicio = $("#formCambiarEstadoModal").data("item"),
+                tipoSeguimiento = $("#filterTipoSeguimiento").val();
             if(!$("#estadoCambiarEstado").val() || ($("#estadoCambiarEstado").val() == idCancelado && (!$("#cambiarEstadoOppMotivo").val() || !$("#cambiarEstadoOppObservaciones").val().trim()))) {
                 let aux = "<ul>";
                 if(!$("#estadoCambiarEstado").val()) {
                     aux += "<li>Estado</li>";
                 } 
-                if($("#estadoCambiarEstado").val() == idCancelado) {
-                    if(!$("#cambiarEstadoOppMotivo").val()) {
-                        aux += "<li>Motivo de Cancelacion</li>";
-                    } 
-                    if(!$("#cambiarEstadoOppObservaciones").val()) {
-                        aux += "<li>Observaciones</li>";
-                    } 
-                }
+
+                if(!$("#cambiarEstadoOppObservaciones").val()) {
+                    aux += "<li>Observaciones</li>";
+                } 
                 
                 aux += "</ul>";
                 infoMsg('warning', 'Campos requeridos:', aux);
@@ -3191,31 +3606,36 @@
             }
             confirmMsg("warning", "¿Seguro que desea cambiar el estado del servicio?", function(resp) {
                 if(resp) {
-                    let dataSend = {
-                        "opportunitiesUpdate": [
-                            {
-                                "id": servicio.no_pedido,
-                                "bodyFields": {
-                                    "custbody_ptg_estado_pedido": $("#estadoCambiarEstado").val(),
-                                },
-                                "lines": [
-                                    
-                                ]
-                            }
-                        ]
-                    };
-                    if($("#estadoCambiarEstado").val() == idCancelado) {
-                        dataSend.opportunitiesUpdate[0].bodyFields.custbody_ptg_motivo_cancelation = $("#cambiarEstadoOppMotivo").val()
-                    }
+                    let dataSend = {};
                     loadMsg();
                     let settings = {
                         url      : urPutOppMonitor,
                         method   : 'PUT',
                         data: JSON.stringify(dataSend)
                     }
+                    if(tipoSeguimiento == "1") {
+                        dataSend = {
+                            "opportunitiesUpdate": [
+                                {
+                                    "id": servicio.no_pedido,
+                                    "bodyFields": {
+                                        "custbody_ptg_estado_aviso_llamadas": $("#estadoCambiarEstado").val(),
+                                    },
+                                    "lines": [
+                                        
+                                    ]
+                                }
+                            ]
+                        };
+                    } else {
+                        settings.url  = urlPostControlTelefonico;
+                        settings.method  = "POST";
+                        settings.data = JSON.stringify({ id_cliente: servicio.id_cliente, id_opp: servicio.id, estado: $("#estadoCambiarEstado").val(), observacion:  $("#cambiarEstadoOppObservaciones").val().trim()})
+                    }
+                    
                     setAjax(settings).then((response) => {
                         if(response.success) {
-                            if($("#estadoCambiarEstado").val() == idCancelado) {
+                            if(tipoSeguimiento == "1") {
                                 let nota = [{ 
                                     type: "nota", 
                                     idRelacionado: servicio.no_pedido, 
@@ -3239,14 +3659,14 @@
                                 }).catch((error) => {
                                     console.log(error);
                                     swal.close();
-                                });
+                                });   
                             } else {
                                 $("#formCambiarEstadoModal").modal("hide");
                                 swal.close();
                                 infoMsg('success', '', "Cambio de estado de manera correcta", null, function(resp) {
                                     getServicios();
-                                });  
-                            }                                                                            
+                                }); 
+                            }                                                                     
                         } else {
                             swal.close();
                             infoMsg('error', 'Error:', "Ocurrio un error al tratar de reprogramar el servicio");
@@ -3331,7 +3751,7 @@
         function getToday() {
             let $this = this;
             $("#today").html(dateFormatFromDate(new Date(), "7"));
-            $("#fechaPrometidaPedido").prop("min", dateFormatFromDate(new Date(), "2"));
+            $("#fechaPrometidaPedido, #fechaPrometidaReprogramar").prop("min", dateFormatFromDate(new Date(), "2"));
             setTimeout(function () {
                 $this.getToday();
             }, 1000);
@@ -3497,12 +3917,16 @@
             setAjax(settings).then((response) => {
                 $('#metodoPagoPedido').children('option').remove();
                 $("select#metodoPagoPedido").append('<option value="">Seleccione una opción</option>')
-                if(response.success) {                                        
+                if(response.success) {          
                     response.data.forEach(element => {
                         methodPayments.push(element);
+                        let classMethod = '';
+                        if ( parseInt(element.id) == metodoCredito ) { classMethod = 'opt-method-credito-cliente d-none'; } // Es método crédito de cliente
+                        else { classMethod = 'opt-method-normal'; } // Es método de pago normal
+
                         if ( parseInt(element.id) != metodoMultiple ) {// Si es diferente a método de pago múltiple, se añade al select
                             $("#metodoPagoPedido").append(
-                                '<option value='+element.id+'>'+element.method+'</option>'
+                                '<option class="'+classMethod+'" value='+element.id+'>'+element.method+'</option>'
                             );
                         }
                     });
@@ -3540,6 +3964,14 @@
                 }
                 aux += "</ul>";
                 infoMsg('warning', 'Campos requeridos:', aux);
+                return;
+            }
+            /* Valida que fecha sea mayor a hoy */
+            if(dateFormatFromString(dateFormatFromDate(new Date(), "2")) > dateFormatFromString($("#fechaPrometidaPedido").val())) {
+                let aux = "<ul>";
+                aux += "<li>Fecha prometida menor a la fecha actual</li>";
+                aux += "</ul>";
+                infoMsg('warning', 'Errores:', aux);
                 return;
             }
             confirmMsg("warning", "¿Seguro que desea confirmar el servicio?", function(resp) {
